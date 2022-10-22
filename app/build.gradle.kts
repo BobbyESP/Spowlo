@@ -177,6 +177,10 @@ dependencies {
 
     //MMKV (used for Configuration)
     implementation("com.tencent:mmkv:1.2.14")
+
+    //SimpleStorage (SAF Simplifier)
+    implementation("com.anggrayudi:storage:1.5.0")
+
     //Unit testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("junit:junit:4.13.2")
