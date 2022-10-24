@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Spowlo</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="follow_system">Follow system</string>
 </resources>
