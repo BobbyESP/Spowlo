@@ -1,14 +1,28 @@
 <resources>
-    <string name="app_name">Spowlo</string>
+    <string name="app_name" translatable="false">Spowlo</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="follow_system">Follow system</string>
     <string name="back">Go back</string>
     <string name="settings">Settings</string>
     <string name="general">General</string>
-    <string name="general_description">TODO</string>
+    <string name="general_description">General settings of the app</string>
     <string name="display">Display</string>
-    <string name="display_description">TODO</string>
-    <string name="about_description">todo</string>
+    <string name="display_description">Change your app theme, dynamic color, language...</string>
+    <string name="about_description">App version, credits, bug reporting...</string>
     <string name="about">About</string>
+    <string name="dynamic_color">Dynamic Color</string>
+    <string name="dynamic_color_desc">Apply the colors following your wallpaper.</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="language">Language</string>
+    <string name="checked">Checked</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="english" translatable="false">English</string>
+    <string name="spanish" translatable="false">Español</string>
+    <string name="system_default">System Default</string>
+    <string name="additional_settings">Additional Settings</string>
+    <string name="high_contrast">High Contrast | AMOLED</string>
+    <string name="translate">Translate the app</string>
+    <string name="translate_desc">Help to translate the app to your language in Hosted Weblate</string>
 </resources>

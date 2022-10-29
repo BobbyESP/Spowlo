@@ -1,8 +1,10 @@
 package com.bobbyesp.spowlo.util
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.presentation.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
@@ -29,10 +31,12 @@ object PreferencesUtil {
 
     fun containsKey(key: String) = kv.containsKey(key)
 
+    //Configuration fields
     const val DARK_THEME = "dark_theme_value"
     const val HIGH_CONTRAST = "high_contrast"
     const val THEME_COLOR = "theme_color"
     const val DYNAMIC_COLOR = "dynamic_color"
+    const val LANGUAGE = "language"
 
     private val mutableAppSettingsStateFlow = MutableStateFlow(
         AppSettings(
@@ -90,6 +94,45 @@ object PreferencesUtil {
         }
     }
 
+
+    const val SYSTEM_DEFAULT = 0
+    //Languages
+    private const val ENGLISH = 1
+    private const val SPANISH = 2
+
+    val languageMap: Map<Int, String> = mapOf(
+        Pair(ENGLISH, "en-US"),
+        Pair(SPANISH, "es-ES")
+    )
+
+    fun getLanguageConfiguration(languageNumber: Int = kv.decodeInt(LANGUAGE)): String {
+        return if (languageMap.containsKey(languageNumber)) languageMap[languageNumber].toString() else ""
+    }
+
+    fun getLanguageNumberByCode(languageCode: String): Int {
+        languageMap.entries.forEach {
+            if (it.value == languageCode) return it.key
+        }
+        return SYSTEM_DEFAULT
+    }
+
+    fun getLanguageNumber(): Int {
+        return if (Build.VERSION.SDK_INT >= 33)
+            getLanguageNumberByCode(
+                LocaleListCompat.getAdjustedDefault()[0]?.toLanguageTag().toString()
+            )
+        else getInt(LANGUAGE, 0)
+    }
+
+    @Composable
+    fun getLanguageDesc(language: Int = getLanguageNumber()): String{
+        return when (language) {
+            ENGLISH -> stringResource(id = R.string.english)
+            SPANISH -> stringResource(id = R.string.spanish)
+            else -> stringResource(id = R.string.system_default)
+        }
+    }
+
     data class DarkThemePreference(
         val darkThemeValue: Int = FOLLOW_SYSTEM,
         val isHighContrastModeEnabled: Boolean = false
@@ -116,5 +159,5 @@ object PreferencesUtil {
             }
         }
     }
-    private const val TAG = "PreferenceUtil"
+    private const val TAG = "PreferencesUtil"
 }

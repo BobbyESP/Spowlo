@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.presentation
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDynamicColorSwitch
@@ -25,6 +27,8 @@ import com.bobbyesp.spowlo.presentation.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
@@ -36,13 +40,12 @@ class MainActivity : ComponentActivity() {
             v.setPadding(0, 0, 0, 0)
             insets
         }
-        //BY THE MOMENT DISABLED
-       /* runBlocking {
+       runBlocking {
             if (Build.VERSION.SDK_INT < 33)
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
                 )
-        }*/
+        }
         context = this.baseContext
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
@@ -61,10 +64,15 @@ class MainActivity : ComponentActivity() {
     }
     companion object {
         private const val TAG = "MainActivity"
-    }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+        fun setLanguage(locale: String) {
+            Log.d(TAG, "setLanguage: $locale")
+            val localeListCompat =
+                if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
+                else LocaleListCompat.forLanguageTags(locale)
+            Spowlo.applicationScope.launch(Dispatchers.Main) {
+                AppCompatDelegate.setApplicationLocales(localeListCompat)
+            }
+        }
+    }
 }

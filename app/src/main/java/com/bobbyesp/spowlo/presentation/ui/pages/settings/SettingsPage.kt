@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.presentation.ui.pages.settings
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,12 +22,15 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.components.SettingItem
 import com.bobbyesp.spowlo.util.CPUInfoUtil
+import android.os.Build;
+import androidx.compose.material.icons.outlined.Info
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(navController: NavController) {
     val context = LocalContext.current
-    val cpuArch = CPUInfoUtil.getCPUArch()
+    val cpuArch = CPUInfoUtil.getPrincipalCPUArch()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier) {
@@ -63,16 +67,17 @@ fun SettingsPage(navController: NavController) {
                 item {
                     SettingItem(title = stringResource(id = R.string.about), description = stringResource(
                         id = R.string.about_description),
-                        icon = Icons.Outlined.Settings) {
+                        icon = Icons.Outlined.Info) {
                         navController.navigate(Route.ABOUT_SETTINGS){
                             launchSingleTop = true
                         }
                     }
                 }
             }
-            Box(modifier = Modifier.fillMaxSize()){
+           Box(modifier = Modifier.fillMaxSize().padding(bottom = 8.dp)){
                 Text(text = "CPU Arch: $cpuArch",
-                    modifier = Modifier.align(Alignment.BottomCenter))
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    style = MaterialTheme.typography.bodySmall)
             }
         }
     }
