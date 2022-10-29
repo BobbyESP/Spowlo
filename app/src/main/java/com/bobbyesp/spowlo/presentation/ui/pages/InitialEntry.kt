@@ -36,7 +36,7 @@ fun InitialEntry() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
     ){
         AnimatedNavHost(
             modifier = Modifier
