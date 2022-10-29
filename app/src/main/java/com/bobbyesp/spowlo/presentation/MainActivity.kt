@@ -22,6 +22,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDynamicColorSwitch
 import com.bobbyesp.spowlo.presentation.ui.common.LocalSeedColor
 import com.bobbyesp.spowlo.presentation.ui.common.SettingsProvider
+import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import kotlinx.coroutines.runBlocking
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     seedColor = LocalSeedColor.current,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    Greeting(name = "Android!")
+                    InitialEntry()
                 }
             }
 

@@ -8,5 +8,8 @@ class Route {
         const val ABOUT = "about"
         const val CREDITS = "credits"
         const val LANGUAGES = "languages"
+        const val GENERAL_SETTINGS = "general_settings"
+        const val DISPLAY_SETTINGS = "display_settings"
+        const val ABOUT_SETTINGS = "about_settings"
     }
 }

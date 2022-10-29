@@ -3,4 +3,12 @@
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="follow_system">Follow system</string>
+    <string name="back">Go back</string>
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+    <string name="general_description">TODO</string>
+    <string name="display">Display</string>
+    <string name="display_description">TODO</string>
+    <string name="about_description">todo</string>
+    <string name="about">About</string>
 </resources>
