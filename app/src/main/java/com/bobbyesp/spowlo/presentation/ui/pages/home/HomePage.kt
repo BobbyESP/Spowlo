@@ -1,10 +1,8 @@
 package com.bobbyesp.spowlo.presentation.ui.pages.home
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -13,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -26,6 +25,11 @@ import androidx.navigation.NavController
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.presentation.ui.components.PackagesListItem
+import com.bobbyesp.spowlo.presentation.ui.components.PackagesListItemType
+import com.bobbyesp.spowlo.presentation.ui.components.RelevantInfoItem
+import com.bobbyesp.spowlo.util.CPUInfoUtil
+import com.bobbyesp.spowlo.util.VersionsUtil
 
 @OptIn(
     ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class,
@@ -38,6 +42,19 @@ fun HomePage(navController: NavController) {
     val hapticFeedback = LocalHapticFeedback.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    //save expanded states for each item
+    val expandedStates = remember { mutableMapOf<Int, Boolean>() }
+
+    //get expanded states for each item
+    fun getExpandedState(type: PackagesListItemType): Boolean {
+        return expandedStates[type.type] ?: false
+    }
+
+    //save expanded states for each item
+    fun setExpandedState(type: PackagesListItemType, expanded: Boolean) {
+        expandedStates[type.type] = expanded
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +64,8 @@ fun HomePage(navController: NavController) {
             .align(Alignment.Center)
             .fillMaxSize(),
         topBar = {
-            TopAppBar(title = {},
+            TopAppBar(
+                title = {},
             modifier = Modifier.padding(horizontal = 8.dp),
             navigationIcon = {
                 IconButton(onClick = {navController.navigate(Route.SETTINGS) }) {
@@ -61,8 +79,29 @@ fun HomePage(navController: NavController) {
             Column(modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())) {
-
+                .verticalScroll(rememberScrollState()))
+            {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Start)
+                    .padding(horizontal = 14.dp)
+                    .padding(top = 12.dp, bottom = 12.dp))
+                {
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.displaySmall
+                    )
+                }
+                PackagesListItem( type = PackagesListItemType.Regular, expanded = getExpandedState(PackagesListItemType.Regular), onClick = { setExpandedState(PackagesListItemType.Regular, !getExpandedState(PackagesListItemType.Regular)) })
+                PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = getExpandedState(PackagesListItemType.RegularCloned), onClick = { setExpandedState(PackagesListItemType.RegularCloned, !getExpandedState(PackagesListItemType.RegularCloned)) })
+                PackagesListItem( type = PackagesListItemType.Amoled, expanded = getExpandedState(PackagesListItemType.Amoled), onClick = { setExpandedState(PackagesListItemType.Amoled, !getExpandedState(PackagesListItemType.Amoled)) })
+                PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = getExpandedState(PackagesListItemType.AmoledCloned), onClick = { setExpandedState(PackagesListItemType.AmoledCloned, !getExpandedState(PackagesListItemType.AmoledCloned)) })
+                RelevantInfoItem(
+                    cpuArch = CPUInfoUtil.getPrincipalCPUArch(),
+                    originalSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "regular"),
+                    clonedSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "cloned"),
+                )
             }
         }
     }
