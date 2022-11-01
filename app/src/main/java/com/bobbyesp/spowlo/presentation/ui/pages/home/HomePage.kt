@@ -81,27 +81,32 @@ fun HomePage(navController: NavController) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()))
             {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Start)
-                    .padding(horizontal = 14.dp)
-                    .padding(top = 12.dp, bottom = 12.dp))
+                Column(modifier = Modifier
+                    .padding(16.dp))
                 {
-                    Text(
-                        modifier = Modifier,
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.displaySmall
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start)
+                        .padding(start = 8.dp, top = 12.dp, bottom = 12.dp))
+                    {
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.displaySmall
+                        )
+                    }
+                    PackagesListItem( type = PackagesListItemType.Regular, expanded = getExpandedState(PackagesListItemType.Regular), onClick = { setExpandedState(PackagesListItemType.Regular, !getExpandedState(PackagesListItemType.Regular)) })
+                    PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = getExpandedState(PackagesListItemType.RegularCloned), onClick = { setExpandedState(PackagesListItemType.RegularCloned, !getExpandedState(PackagesListItemType.RegularCloned)) })
+                    PackagesListItem( type = PackagesListItemType.Amoled, expanded = getExpandedState(PackagesListItemType.Amoled), onClick = { setExpandedState(PackagesListItemType.Amoled, !getExpandedState(PackagesListItemType.Amoled)) })
+                    PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = getExpandedState(PackagesListItemType.AmoledCloned), onClick = { setExpandedState(PackagesListItemType.AmoledCloned, !getExpandedState(PackagesListItemType.AmoledCloned)) })
+                    Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
+                    RelevantInfoItem(
+                        cpuArch = CPUInfoUtil.getPrincipalCPUArch(),
+                        originalSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "regular"),
+                        clonedSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "cloned"),
                     )
                 }
-                PackagesListItem( type = PackagesListItemType.Regular, expanded = getExpandedState(PackagesListItemType.Regular), onClick = { setExpandedState(PackagesListItemType.Regular, !getExpandedState(PackagesListItemType.Regular)) })
-                PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = getExpandedState(PackagesListItemType.RegularCloned), onClick = { setExpandedState(PackagesListItemType.RegularCloned, !getExpandedState(PackagesListItemType.RegularCloned)) })
-                PackagesListItem( type = PackagesListItemType.Amoled, expanded = getExpandedState(PackagesListItemType.Amoled), onClick = { setExpandedState(PackagesListItemType.Amoled, !getExpandedState(PackagesListItemType.Amoled)) })
-                PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = getExpandedState(PackagesListItemType.AmoledCloned), onClick = { setExpandedState(PackagesListItemType.AmoledCloned, !getExpandedState(PackagesListItemType.AmoledCloned)) })
-                RelevantInfoItem(
-                    cpuArch = CPUInfoUtil.getPrincipalCPUArch(),
-                    originalSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "regular"),
-                    clonedSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "cloned"),
-                )
+
             }
         }
     }
