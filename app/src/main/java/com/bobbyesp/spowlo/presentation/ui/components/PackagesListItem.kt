@@ -45,6 +45,8 @@ fun PackagesListItem(
     modifier: Modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
     type: PackagesListItemType = PackagesListItemType.Regular,
     expanded: Boolean = false,
+    versions: List<String>,
+    archs: ArchType,
     onClick: () -> Unit = {}
 ) {
     var isExpanded by remember { mutableStateOf(expanded) }
@@ -91,39 +93,41 @@ fun PackagesListItem(
                             .weight(1f, true))
 
                         val animatedDegree = animateFloatAsState(targetValue = if (isExpanded) 0f else -180f)
-
-                        FilledTonalIconButton(
-                            modifier = Modifier
-                                .padding()
-                                .align(Alignment.Bottom)
-                                .size(24.dp),
-                            onClick = { isExpanded = !isExpanded }) {
-                            Icon(
-                                Icons.Outlined.ExpandLess,
-                                null,
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.rotate(animatedDegree.value)
-                            )
+                        Box(modifier = Modifier
+                            .padding(2.dp)
+                            .align(Alignment.Bottom)){
+                            FilledTonalIconButton(
+                                modifier = Modifier
+                                    .padding()
+                                    .size(24.dp),
+                                onClick = { isExpanded = !isExpanded }) {
+                                Icon(
+                                    Icons.Outlined.ExpandLess,
+                                    null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.rotate(animatedDegree.value)
+                                )
+                            }
                         }
                     }
                 }
             }
         }
         AnimatedVisibility(visible = isExpanded) {
-            Divider(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-            )
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
             ) {
-                PackageItem()
-                Divider()
-                PackageItem()
-                Divider()
-                PackageItem()
+                versions.forEach { version ->
+                    PackageItem( version = version, type = archs)
+                    if (versions.indexOf(version) != versions.lastIndex) {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -133,8 +137,8 @@ fun PackagesListItem(
 @Preview
 fun CardPreview(){
     Column() {
-        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = true)
-        PackagesListItem(type = PackagesListItemType.Amoled, expanded = true)
+       // PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = true, versions = listOf("1.0.0", "1.0.1", "1.0.2").random(), archs = listOf(ArchType.Arm64, ArchType.Arm).random())
+        //PackagesListItem(type = PackagesListItemType.Amoled, expanded = true, versions = listOf("1.0.0", "1.0.1", "1.0.2").random(), archs = listOf(ArchType.Arm64, ArchType.Arm).random())
     }
 
 }

@@ -7,22 +7,17 @@ import com.bobbyesp.spowlo.Spowlo
 object VersionsUtil {
 
     //Spotify market package name
-    var packageName: String = ""
+    private var packageName: String = ""
 
     fun getSpotifyVersion(type: String): String {
 
         val pm = Spowlo.context.packageManager
 
-        if (type == "regular") {
+        when(type){
+            "regular" -> packageName = "com.spotify.music"
 
-            packageName = "com.spotify.music"
-
-        } else if (type == "cloned") {
-
-            packageName = "com.spotify.musix"
-
+            "cloned" -> packageName = "com.spotify.musix"
         }
-
         return try {
             val packageInfo = pm.getPackageInfo(packageName, 0)
             val versionName = packageInfo.versionName

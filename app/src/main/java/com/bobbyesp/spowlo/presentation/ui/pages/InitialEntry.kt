@@ -16,6 +16,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomePage
+import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.AppearancePreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.DarkThemePreferences
@@ -27,12 +28,11 @@ private const val TAG = "InitialEntry"
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun InitialEntry() {
+fun InitialEntry(homeViewModel: HomeViewModel) {
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val onBackPressed = { navController.popBackStack() }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +52,7 @@ fun InitialEntry() {
             startDestination = Route.HOME){
 
             animatedComposable(Route.HOME){
-                HomePage(navController = navController)
+                HomePage(navController = navController, homeViewModel = homeViewModel)
             }
 
             animatedComposable(Route.SETTINGS){

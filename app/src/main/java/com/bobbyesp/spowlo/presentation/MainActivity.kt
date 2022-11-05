@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +26,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.LocalDynamicColorSwitch
 import com.bobbyesp.spowlo.presentation.ui.common.LocalSeedColor
 import com.bobbyesp.spowlo.presentation.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
+import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
+
+    private val homeViewModel: HomeViewModel by viewModels()
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     seedColor = LocalSeedColor.current,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    InitialEntry()
+                    InitialEntry(homeViewModel)
                 }
             }
 

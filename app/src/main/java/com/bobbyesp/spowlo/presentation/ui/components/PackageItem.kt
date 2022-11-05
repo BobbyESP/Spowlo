@@ -33,21 +33,18 @@ fun PackageItem(
     version: String = "8.7.78.373",
     onLongClick: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.clickable(onClick = onClick)) {
+    Surface(modifier = modifier.clickable(onClick = onClick).padding(top = 4.dp, bottom = 4.dp)) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            FilledTonalButtonWithIcon(
-                onClick = {},
-                icon = Icons.Filled.Memory,
-                text = type.type
-            )
+            ArchTag(arch = type)
             Text(
                 modifier = Modifier.padding(start = 8.dp),
-                text = version
+                text = version,
+                style = MaterialTheme.typography.bodySmall,
             )
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -92,7 +89,6 @@ fun PackageItem(
         }
     }
 }
-
 
 @Composable
 @Preview
