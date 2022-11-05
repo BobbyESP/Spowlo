@@ -44,10 +44,6 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val keyboardController = LocalSoftwareKeyboardController.current
     val viewState = homeViewModel.stateFlow.collectAsState()
 
-    if (!viewState.value.loaded){
-        homeViewModel.setup()
-    }
-
     val version by remember{
         mutableStateOf(
             listOf(

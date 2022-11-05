@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ fun InitialEntry(homeViewModel: HomeViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val onBackPressed = { navController.popBackStack() }
+    val viewState = homeViewModel.stateFlow.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,6 +55,9 @@ fun InitialEntry(homeViewModel: HomeViewModel) {
 
             animatedComposable(Route.HOME){
                 HomePage(navController = navController, homeViewModel = homeViewModel)
+                if (!viewState.value.loaded){
+                    homeViewModel.setup()
+                }
             }
 
             animatedComposable(Route.SETTINGS){
