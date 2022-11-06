@@ -44,16 +44,27 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val keyboardController = LocalSoftwareKeyboardController.current
     val viewState = homeViewModel.stateFlow.collectAsState()
 
-    val version by remember{
+    val regularVersions by remember {
         mutableStateOf(
-            listOf(
-                "8.7.69.691",
-                "6.9.32.420",
-                "3.7.21.541",
-                "2.1.69.420"
-            )
+            viewState.value.regular_versions
         )
     }
+    val regularClonedVersions by remember {
+        mutableStateOf(
+            viewState.value.regular_cloned_versions
+        )
+    }
+    val amoledVersions by remember {
+        mutableStateOf(
+            viewState.value.amoled_versions
+        )
+    }
+    val amoledClonedVersions by remember {
+        mutableStateOf(
+            viewState.value.amoled_cloned_versions
+        )
+    }
+
     val archs by remember{
         mutableStateOf(
             listOf(
@@ -61,16 +72,6 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                 ArchType.Arm
             ).random()
         )
-    }
-    //save expanded states for each item
-    val expandedStates = remember { mutableMapOf<Int, Boolean>() }
-    //get expanded states for each item
-    fun getExpandedState(type: PackagesListItemType): Boolean {
-        return expandedStates[type.type] ?: false
-    }
-    //save expanded states for each item
-    fun setExpandedState(type: PackagesListItemType, expanded: Boolean) {
-        expandedStates[type.type] = expanded
     }
     with(viewState.value){
         Box(
@@ -113,16 +114,18 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                                 style = MaterialTheme.typography.displaySmall
                             )
                         }
-                        PackagesListItem( type = PackagesListItemType.Regular, expanded = getExpandedState(PackagesListItemType.Regular), onClick = { setExpandedState(PackagesListItemType.Regular, !getExpandedState(PackagesListItemType.Regular)) }, archs = archs, versions = version)
-                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = getExpandedState(PackagesListItemType.RegularCloned), onClick = { setExpandedState(PackagesListItemType.RegularCloned, !getExpandedState(PackagesListItemType.RegularCloned)) }, archs = archs, versions = version)
-                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = getExpandedState(PackagesListItemType.Amoled), onClick = { setExpandedState(PackagesListItemType.Amoled, !getExpandedState(PackagesListItemType.Amoled)) }, archs = archs, versions = version)
-                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = getExpandedState(PackagesListItemType.AmoledCloned), onClick = { setExpandedState(PackagesListItemType.AmoledCloned, !getExpandedState(PackagesListItemType.AmoledCloned)) }, archs = archs, versions = version)
+                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions)
+                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions)
+                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions)
+                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions)
                         Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
                         AnimatedVisibility(visible = loaded) {
                             when(loaded){
                                 false -> {
                                     Box(modifier = Modifier.fillMaxWidth()) {
-                                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                                        CircularProgressIndicator(modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .size(24.dp))
                                     }
                                 }
                                 true -> {

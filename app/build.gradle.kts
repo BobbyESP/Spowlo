@@ -132,9 +132,9 @@ android {
 dependencies {
     implementation(project(":color"))
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.0-rc01")
-    implementation("com.google.android.material:material:1.8.0-alpha01")
-    implementation("androidx.activity:activity-compose:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.7.0-alpha01")
+    implementation("com.google.android.material:material:1.8.0-alpha02")
+    implementation("androidx.activity:activity-compose:1.6.1")
     //Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
@@ -157,7 +157,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
     implementation("io.coil-kt:coil-compose:$coilVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
@@ -173,7 +173,9 @@ dependencies {
     // Retrofit and okhttp
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
+    implementation("com.google.code.gson:gson:2.9.0")
 
     //MMKV (used for Configuration)
     implementation("com.tencent:mmkv:1.2.14")

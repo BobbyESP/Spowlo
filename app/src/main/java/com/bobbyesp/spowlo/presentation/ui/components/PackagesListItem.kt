@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
 
 enum class PackagesListItemType(
     val type: Int,
@@ -45,8 +46,7 @@ fun PackagesListItem(
     modifier: Modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
     type: PackagesListItemType = PackagesListItemType.Regular,
     expanded: Boolean = false,
-    versions: List<String>,
-    archs: ArchType,
+    packages: List<PackagesObject>,
     onClick: () -> Unit = {}
 ) {
     var isExpanded by remember { mutableStateOf(expanded) }
@@ -118,9 +118,18 @@ fun PackagesListItem(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
             ) {
-                versions.forEach { version ->
-                    PackageItem( version = version, type = archs)
-                    if (versions.indexOf(version) != versions.lastIndex) {
+                packages.forEach { version ->
+                    //for every object of the list, create a new PackageItem with the data
+                    PackageItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        version = packages[packages.indexOf(version)].Title,
+                        link = packages[packages.indexOf(version)].Link,
+                        onClick = onClick
+                    )
+
+                    if (packages.indexOf(version) != packages.lastIndex) {
                         Divider(
                             modifier = Modifier
                                 .fillMaxWidth()

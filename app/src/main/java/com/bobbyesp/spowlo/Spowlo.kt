@@ -6,9 +6,11 @@ import android.content.Context
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
+@HiltAndroidApp
 class Spowlo : Application() {
     override fun onCreate() {
         super.onCreate()

@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDarkTheme
@@ -29,13 +30,15 @@ import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+  //  private val homeViewModel: HomeViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +64,8 @@ class MainActivity : ComponentActivity() {
                     seedColor = LocalSeedColor.current,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    InitialEntry(homeViewModel)
+                    val viewModel = hiltViewModel<HomeViewModel>()
+                    InitialEntry(viewModel)
                 }
             }
 

@@ -13,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
@@ -51,7 +52,7 @@ fun InitialEntry(homeViewModel: HomeViewModel) {
                 )
                 .align(Alignment.Center),
             navController = navController,
-            startDestination = Route.HOME){
+            startDestination = Route.HOME)  {
 
             animatedComposable(Route.HOME){
                 HomePage(navController = navController, homeViewModel = homeViewModel)

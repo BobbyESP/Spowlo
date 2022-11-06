@@ -1,5 +1,5 @@
 buildscript {
-    val composeVersion by extra("1.3.0-beta03")
+    val composeVersion by extra("1.3.0")
     val lifecycleVersion by extra("2.6.0-alpha02")
     val navigationVersion by extra("2.5.2")
     val roomVersion by extra("2.4.3")
