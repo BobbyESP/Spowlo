@@ -36,4 +36,5 @@
     <string name="cpu_arch">CPU/ARCH</string>
     <string name="installed_spotify_version">SPOTIFY VERSIONS</string>
     <string name="app_update_failed">App update has failed</string>
+    <string name="update">Update</string>
 </resources>
