@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/BobbyESP/Spowlo/master/assets/Spowlo_Icon.svg" alt="spotify" width="100" height="100"/>
+<img src="assets/Spowlo_Icon.svg" alt="spotify" width="100" height="100"/>
 </div>
 
 <h1 align="center">Spowlo</h1>
