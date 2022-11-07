@@ -27,6 +27,9 @@ A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose a
 Get the latest release in [here](https://github.com/BobbyESP/Spowlo/releases)
 
 ## 📖Credits
+
+[xManager](https://github.com/xManager-v2) for it's incredible API.
+
 Thanks to [Seal](https://github.com/JunkFood02/Seal) and [JunkFood02](https://github.com/JunkFood02) for some of the code of the app and UI ideas. (Without you, this app would not have existed). I learnt a lot about architectures, corroutines, Jetpack Compose...
 
 [Philipp Lackner](https://www.youtube.com/c/PhilippLackner). Infinite thanks to you, Philipp. You made me learn infite things with just a few videos. This guys explains literally everything about what is he coding, make apps just to make the community learn and give us some amazing utilities. Without he, probably i wouldn't started to code for Android. 
