@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/github-keystore.jks
+/githubpasskey.jks
