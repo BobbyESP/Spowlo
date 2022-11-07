@@ -10,6 +10,12 @@ A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose a
 
 </div>
 
+# 📣 NOTICE
+I'm aware of an issue with Play Protect. This is marking my app as milicious when it isn't (you have the source code).
+This is because the app is not in the Whitelist of Play Protect. I've already sent a form for fixing this to Google
+ 
+Thanks for you comprehension.
+
 # 📸Screenshots
 
 <div>
