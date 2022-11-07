@@ -24,7 +24,7 @@ A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose a
 - [ ] Add music downloading
 - [ ] Add in-app packages downloading
 - [ ] Put more settings
-- [ ] Optimize packages lists
+- [x] Optimize packages lists (fixed in release [v.0.1.1](https://github.com/BobbyESP/Spowlo/releases/tag/v0.1.1)) 
 - [ ] Setup Hosted Weblate for app translations
 
 ## ⬇️Download
