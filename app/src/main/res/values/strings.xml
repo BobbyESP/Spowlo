@@ -28,7 +28,7 @@
     <string name="regular">Regular Mod</string>
     <string name="regular_description">A Spotify-like mod with unlimited skips, play on-demand, ad-free and newer features.</string>
     <string name="regular_cloned">Cloned Spotify Mod</string>
-    <string name="regular_cloned_description">A Spotify-like mod with unlimited skips, play on-demand, ad-free and newer features but cloned.</string>
+    <string name="regular_cloned_description">A Spotify-like mod with unlimited skips, play on-demand, ad-free and newer features but cloned. This means a separated package from original.</string>
     <string name="amoled">Spotify Amoled Mod</string>
     <string name="amoled_description">"Same features as regular mod but this one has AMOLED theme. "</string>
     <string name="amoled_cloned">Cloned Spotify Amoled Mod</string>

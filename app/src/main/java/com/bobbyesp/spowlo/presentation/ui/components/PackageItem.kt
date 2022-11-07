@@ -34,7 +34,7 @@ fun PackageItem(
     version: String = "8.7.78.373",
     onLongClick: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.clickable(onClick = onClick).padding(4.dp)) {
+    Surface(modifier = modifier.clickable(onClick = onClick).padding(6.dp)) {
         Row(
             modifier = modifier
                 .fillMaxWidth(),

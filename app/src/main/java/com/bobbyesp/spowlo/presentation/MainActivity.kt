@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.presentation
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -71,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+
     companion object {
         private const val TAG = "MainActivity"
 

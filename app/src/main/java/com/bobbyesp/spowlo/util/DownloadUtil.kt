@@ -1,6 +1,8 @@
 package com.bobbyesp.spowlo.util
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import com.bobbyesp.spowlo.Spowlo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -17,15 +19,6 @@ object DownloadUtil {
     private var apkUrl: String = ""
 
     private val client = OkHttpClient()
-    private val requestApk =
-        Request.Builder().url(apkUrl)
-            .build()
-
-    private val jsonFormat = Json { ignoreUnknownKeys = true }
-
-    fun provideUrl(url: String) {
-        apkUrl = url
-    }
 
     private fun Context.getLatestApk() =
         File(getExternalFilesDir("apk"), "latest.apk")
@@ -82,6 +75,15 @@ object DownloadUtil {
             }
         }
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
+
+    fun openLinkInBrowser(link: String) {
+        //open a browser with the link
+        println("--------------------------------------------------------------------------")
+        println(link)
+        //add flag FLAG_ACTIVITY_NEW_TASK to open the browser in a new task
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        Spowlo.context.startActivity(intent)
+    }
 
     sealed class DownloadStatus {
         object NotYet : DownloadStatus()

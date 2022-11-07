@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
+import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.util.DownloadUtil
 
@@ -135,8 +136,8 @@ fun PackagesListItem(
                             type = if (isArm64) ArchType.Arm64 else ArchType.Arm,
                             version = versionName,
                             link = packages[packages.indexOf(version)].Link,
-                            //on click, download the package from link
-                        onClick = {DownloadUtil.provideUrl(packages[packages.indexOf(version)].Link)}
+                            //on click open the link in browser
+                            onClick = { DownloadUtil.openLinkInBrowser(packages[packages.indexOf(version)].Link) }
                         )
 
                         if (packages.indexOf(version) != packages.lastIndex) {
