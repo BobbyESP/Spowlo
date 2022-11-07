@@ -2,5 +2,14 @@ package com.bobbyesp.spowlo.domain.spotify.model
 
 data class APICallState(
     val isLoading: Boolean = false,
-    val APIResponse: APIResponse? = null
+    val APIResponse: APIResponse = APIResponse(
+        Regular_Latest = "",
+        Amoled_Latest = "",
+        RC_Latest = "",
+        ABC_Latest = "",
+        Regular = emptyList(),
+        Amoled = emptyList(),
+        Regular_Cloned = emptyList(),
+        Amoled_Cloned = emptyList()
+    )
 )

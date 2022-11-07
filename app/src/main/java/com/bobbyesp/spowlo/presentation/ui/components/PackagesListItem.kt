@@ -17,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
+import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
+import com.bobbyesp.spowlo.util.DownloadUtil
 
 enum class PackagesListItemType(
     val type: Int,
@@ -47,9 +49,10 @@ fun PackagesListItem(
     type: PackagesListItemType = PackagesListItemType.Regular,
     expanded: Boolean = false,
     packages: List<PackagesObject>,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     var isExpanded by remember { mutableStateOf(expanded) }
+
 
     ElevatedCard(
         modifier = modifier,
@@ -114,27 +117,35 @@ fun PackagesListItem(
             }
         }
         AnimatedVisibility(visible = isExpanded) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-            ) {
-                packages.forEach { version ->
-                    //for every object of the list, create a new PackageItem with the data
-                    PackageItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        version = packages[packages.indexOf(version)].Title,
-                        link = packages[packages.indexOf(version)].Link,
-                        onClick = onClick
-                    )
-
-                    if (packages.indexOf(version) != packages.lastIndex) {
-                        Divider(
+            Box{
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp)
+                ) {
+                    packages.forEach { version ->
+                        //if the package title has ARM64-V8A, the type is Arm64
+                        val isArm64: Boolean = packages[packages.indexOf(version)].Title.contains("ARM64-V8A")
+                        val containsArch: Boolean = packages[packages.indexOf(version)].Title.contains("(ARM64-V8A)") || packages[packages.indexOf(version)].Title.contains("ARMEABI-V7A")
+                        //get just the version name without the architecture
+                        val versionName = if (containsArch) packages[packages.indexOf(version)].Title.substringBefore("(").trim() else packages[packages.indexOf(version)].Title
+                        PackageItem(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
+                                .fillMaxWidth(),
+                            //if its Arm64, ArchType is Arm64, else ArchType is Arm
+                            type = if (isArm64) ArchType.Arm64 else ArchType.Arm,
+                            version = versionName,
+                            link = packages[packages.indexOf(version)].Link,
+                            //on click, download the package from link
+                        onClick = {DownloadUtil.provideUrl(packages[packages.indexOf(version)].Link)}
                         )
+
+                        if (packages.indexOf(version) != packages.lastIndex) {
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp)
+                            )
+                        }
                     }
                 }
             }

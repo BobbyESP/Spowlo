@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.domain.spotify.model.APICallState
 import com.bobbyesp.spowlo.domain.spotify.model.APIResponse
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
 import com.bobbyesp.spowlo.domain.spotify.repository.APIRepository
 import com.bobbyesp.spowlo.domain.spotify.use_case.GetAPIResponse
 import com.bobbyesp.spowlo.util.CPUInfoUtil
+import com.bobbyesp.spowlo.util.DownloadUtil
 import com.bobbyesp.spowlo.util.VersionsUtil
 import com.bobbyesp.spowlo.util.api.Resource
 import com.bobbyesp.spowlo.util.api.Resource_2
@@ -48,16 +50,27 @@ class HomeViewModel @Inject constructor(
 
     fun setup(){
         currentJob?.cancel()
-        currentJob = viewModelScope.launch(Dispatchers.IO){
+        currentJob = viewModelScope.launch{
             infoCard()
         }
         mutableStateFlow.update {
             it.copy(loaded = true)
         }
-        callAPI()
+        if(mutableStateFlow.value.loaded){
+            currentJob = viewModelScope.launch{
+                callAPI()
+            }
+        }
     }
 
-   fun callAPI(){
+    fun downloadApkFromLink(link: String){
+        currentJob?.cancel()
+        currentJob = viewModelScope.launch{
+            DownloadUtil.downloadSpotify(link, Spowlo.context)
+        }
+    }
+
+   private fun callAPI(){
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
             getApiResponse()
@@ -65,23 +78,59 @@ class HomeViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data,
+                            APIResponse = result.data ?: APIResponse(
+                                Regular_Latest = "",
+                                Amoled_Latest = "",
+                                RC_Latest = "",
+                                ABC_Latest = "",
+                                Regular = emptyList(),
+                                Amoled = emptyList(),
+                                Regular_Cloned = emptyList(),
+                                Amoled_Cloned = emptyList()
+                            ),
                             isLoading = false
                         )
                         println(state.value.APIResponse)
-                        var localAPIResponse = state.value.APIResponse
-                        //TODO: Filter the API response to get the correct versions
-                        //Put every object to the correct list
+
+                        val localAPIResponse = state.value.APIResponse
+
+                        mutableStateFlow.update {
+                            it.copy(
+                                regular_versions = localAPIResponse.Regular,
+                                regular_cloned_versions = localAPIResponse.Regular_Cloned,
+                                amoled_versions = localAPIResponse.Amoled,
+                                amoled_cloned_versions = localAPIResponse.Amoled_Cloned,
+                                regular_latest_version = localAPIResponse.Regular_Latest,
+                            )
+                        }
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data,
+                            APIResponse = result.data ?: APIResponse(
+                                Regular_Latest = "",
+                                Amoled_Latest = "",
+                                RC_Latest = "",
+                                ABC_Latest = "",
+                                Regular = emptyList(),
+                                Amoled = emptyList(),
+                                Regular_Cloned = emptyList(),
+                                Amoled_Cloned = emptyList()
+                            ),
                             isLoading = false
                         )
                     }
                     is Resource.Loading -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data,
+                            APIResponse = result.data ?: APIResponse(
+                                Regular_Latest = "",
+                                Amoled_Latest = "",
+                                RC_Latest = "",
+                                ABC_Latest = "",
+                                Regular = emptyList(),
+                                Amoled = emptyList(),
+                                Regular_Cloned = emptyList(),
+                                Amoled_Cloned = emptyList()
+                            ),
                             isLoading = true
                         )
                     }

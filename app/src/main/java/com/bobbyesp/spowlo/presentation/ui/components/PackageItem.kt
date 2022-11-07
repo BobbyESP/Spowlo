@@ -34,16 +34,15 @@ fun PackageItem(
     version: String = "8.7.78.373",
     onLongClick: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.clickable(onClick = onClick).padding(top = 4.dp, bottom = 4.dp)) {
+    Surface(modifier = modifier.clickable(onClick = onClick).padding(4.dp)) {
         Row(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ArchTag(arch = type)
+            ArchTag(modifier = Modifier.height(IntrinsicSize.Max).width(IntrinsicSize.Max) ,arch = type)
             Text(
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 8.dp).height(IntrinsicSize.Max).width(IntrinsicSize.Min),
                 text = version,
                 style = MaterialTheme.typography.bodySmall,
             )

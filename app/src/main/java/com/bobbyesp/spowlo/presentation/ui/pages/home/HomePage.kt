@@ -41,29 +41,13 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val scope = rememberCoroutineScope()
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+   // val keyboardController = LocalSoftwareKeyboardController.current
     val viewState = homeViewModel.stateFlow.collectAsState()
 
-    val regularVersions by remember {
-        mutableStateOf(
-            viewState.value.regular_versions
-        )
-    }
-    val regularClonedVersions by remember {
-        mutableStateOf(
-            viewState.value.regular_cloned_versions
-        )
-    }
-    val amoledVersions by remember {
-        mutableStateOf(
-            viewState.value.amoled_versions
-        )
-    }
-    val amoledClonedVersions by remember {
-        mutableStateOf(
-            viewState.value.amoled_cloned_versions
-        )
-    }
+    val regularVersions = viewState.value.regular_versions
+    val regularClonedVersions = viewState.value.regular_cloned_versions
+    val amoledVersions = viewState.value.amoled_versions
+    val amoledClonedVersions = viewState.value.amoled_cloned_versions
 
     val archs by remember{
         mutableStateOf(
@@ -113,14 +97,11 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                                 text = stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.displaySmall
                             )
-                            Text(modifier = Modifier,
-                            text = viewState.value.regular_latest_version,
-                            style = MaterialTheme.typography.titleSmall)
                         }
-                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions)
-                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions)
-                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions)
-                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions)
+                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions.sortedByDescending { it.Title })
                         Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
                         AnimatedVisibility(visible = loaded) {
                             when(loaded){

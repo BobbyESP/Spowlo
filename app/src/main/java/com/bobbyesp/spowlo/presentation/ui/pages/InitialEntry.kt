@@ -19,6 +19,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.placeholders.PagePlaceholder
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.AppearancePreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.DarkThemePreferences
@@ -66,7 +67,6 @@ fun InitialEntry(homeViewModel: HomeViewModel) {
             }
 
             animatedComposable(Route.ABOUT){
-                //TODO Add About Page
             }
 
             animatedComposable(Route.DISPLAY_SETTINGS){
