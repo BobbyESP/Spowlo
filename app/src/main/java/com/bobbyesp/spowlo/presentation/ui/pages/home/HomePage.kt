@@ -113,6 +113,9 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                                 text = stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.displaySmall
                             )
+                            Text(modifier = Modifier,
+                            text = viewState.value.regular_latest_version,
+                            style = MaterialTheme.typography.titleSmall)
                         }
                         PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions)
                         PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions)

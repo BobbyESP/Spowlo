@@ -1,27 +1,29 @@
 package com.bobbyesp.spowlo.presentation.ui.pages.home
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bobbyesp.spowlo.data.remote.APIHelper
-import com.bobbyesp.spowlo.data.remote.ApiHelperImpl
+import com.bobbyesp.spowlo.domain.spotify.model.APICallState
 import com.bobbyesp.spowlo.domain.spotify.model.APIResponse
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
+import com.bobbyesp.spowlo.domain.spotify.repository.APIRepository
+import com.bobbyesp.spowlo.domain.spotify.use_case.GetAPIResponse
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import com.bobbyesp.spowlo.util.VersionsUtil
 import com.bobbyesp.spowlo.util.api.Resource
+import com.bobbyesp.spowlo.util.api.Resource_2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val apiHelper: APIHelper
+    private val getApiResponse: GetAPIResponse
     ): ViewModel() {
 
     private val mutableStateFlow = MutableStateFlow(HomeViewState())
@@ -36,13 +38,15 @@ class HomeViewModel @Inject constructor(
         val cpuArch: String = "",
         val originalSpotifyVersion: String = "",
         val clonedSpotifyVersion: String = "",
-        val loaded: Boolean = false
+        val loaded: Boolean = false,
+        val regular_latest_version: String = "",
         )
 
-    private val apiResponse = MutableLiveData<Resource<APIResponse>>()
+    private val _state = mutableStateOf(APICallState())
+    val state: State<APICallState> = _state
+
 
     fun setup(){
-        //execute infoCard function, and when it finished, update the loaded value to boolean true
         currentJob?.cancel()
         currentJob = viewModelScope.launch(Dispatchers.IO){
             infoCard()
@@ -51,72 +55,39 @@ class HomeViewModel @Inject constructor(
             it.copy(loaded = true)
         }
         callAPI()
-        getAPIResponse()
-        //call apiResponseToPackagesList function and pass parameters
-        apiResponse.value?.data?.let { apiResponseToPackagesList(it) }
-
-
     }
 
-    private fun callAPI(){
-        //fetch the packages from the API
-        viewModelScope.launch {
-            apiResponse.postValue(Resource.loading(null))
-            try {
-                val response = apiHelper.getAPIInfo()
-                apiResponse.postValue(Resource.success(response))
-            } catch (e: Exception) {
-                apiResponse.postValue(Resource.error("An error occurred", null))
-            }
+   fun callAPI(){
+        currentJob?.cancel()
+        currentJob = viewModelScope.launch {
+            getApiResponse()
+                .onEach { result ->
+                when(result){
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            APIResponse = result.data,
+                            isLoading = false
+                        )
+                        println(state.value.APIResponse)
+                        var localAPIResponse = state.value.APIResponse
+                        //TODO: Filter the API response to get the correct versions
+                        //Put every object to the correct list
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            APIResponse = result.data,
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(
+                            APIResponse = result.data,
+                            isLoading = true
+                        )
+                    }
+                }
+            }.launchIn(this)
         }
-    }
-
-    private fun getAPIResponse(): MutableLiveData<Resource<APIResponse>> {
-        return apiResponse
-    }
-
-    private fun apiResponseToPackagesList(apiResponse: APIResponse): List<PackagesObject> {
-        //convert the API response to a list of packages
-        val packagesList = mutableListOf<PackagesObject>()
-        apiResponse.Regular.forEach { (key, value) ->
-            packagesList.add(PackagesObject(key, value))
-        }
-        //pass the package list to the regular_versions list
-        mutableStateFlow.update {
-            it.copy(regular_versions = packagesList)
-        }
-
-        //create other list for amoled
-        val amoledPackagesList = mutableListOf<PackagesObject>()
-        apiResponse.Amoled.forEach { (key, value) ->
-            amoledPackagesList.add(PackagesObject(key, value))
-        }
-        //pass the package list to the amoled_versions list
-        mutableStateFlow.update {
-            it.copy(amoled_versions = amoledPackagesList)
-        }
-
-        //create other list for regular cloned
-        val regularClonedPackagesList = mutableListOf<PackagesObject>()
-        apiResponse.Regular_Cloned.forEach { (key, value) ->
-            regularClonedPackagesList.add(PackagesObject(key, value))
-        }
-        //pass the package list to the regular_cloned_versions list
-        mutableStateFlow.update {
-            it.copy(regular_cloned_versions = regularClonedPackagesList)
-        }
-
-        //create other list for amoled cloned
-        val amoledClonedPackagesList = mutableListOf<PackagesObject>()
-        apiResponse.Amoled_Cloned.forEach { (key, value) ->
-            amoledClonedPackagesList.add(PackagesObject(key, value))
-        }
-
-        //pass the package list to the amoled_cloned_versions list
-        mutableStateFlow.update {
-            it.copy(amoled_cloned_versions = amoledClonedPackagesList)
-        }
-        return packagesList
     }
 
     private fun infoCard(){

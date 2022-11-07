@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.domain.spotify.model
 
+import com.bobbyesp.spowlo.util.api.Status
 import com.google.gson.annotations.SerializedName
 
 data class APIResponse(
@@ -19,4 +20,7 @@ data class APIResponse(
     val Regular_Cloned: List<PackagesObject>,
     @SerializedName("Amoled_Cloned")
     val Amoled_Cloned: List<PackagesObject>
-)
+) {
+    var status: Status = Status.SUCCESS
+    var message: String? = null
+}
