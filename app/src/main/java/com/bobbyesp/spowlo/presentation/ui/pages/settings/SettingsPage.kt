@@ -44,7 +44,7 @@ fun SettingsPage(navController: NavController) {
             )
             LazyColumn(modifier = Modifier
                 .padding(top = 24.dp)) {
-                item{
+                /*item{
                     SettingItem(
                         title = stringResource(R.string.general),
                         description = stringResource(id = R.string.general_description),
@@ -54,7 +54,7 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     }
-                }
+                }*/
                 item { 
                     SettingItem(title = stringResource(id = R.string.display), description = stringResource(
                         id = R.string.display_description),
@@ -64,7 +64,7 @@ fun SettingsPage(navController: NavController) {
                         }
                     }
                 }
-                item {
+             /*   item {
                     SettingItem(title = stringResource(id = R.string.about), description = stringResource(
                         id = R.string.about_description),
                         icon = Icons.Outlined.Info) {
@@ -72,7 +72,7 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     }
-                }
+                }*/
             }
            Box(modifier = Modifier.fillMaxSize().padding(bottom = 8.dp)){
                 Text(text = "CPU Arch: $cpuArch",

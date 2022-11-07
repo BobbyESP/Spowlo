@@ -56,13 +56,13 @@ fun LanguagesPreferences(onBackPressed: () -> Unit) {
             )
         }, content = {
             LazyColumn(modifier = Modifier.padding(it)) {
-                item {
+                /*item {
                     PreferencesHint(
                         title = stringResource(R.string.translate),
                         description = stringResource(R.string.translate_desc),
                         icon = Icons.Outlined.Translate,
                     ) { uriHandler.openUri(weblate) }
-                }
+                }*/
                 item {
                     PreferenceSingleChoiceItem(
                         text = stringResource(R.string.follow_system),
