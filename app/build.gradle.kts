@@ -14,7 +14,7 @@ val versionMajor = 1
 val versionMinor = 0
 val versionPatch = 0
 val versionBuild = 0
-val isStable = false
+val isStable = true
 
 val composeVersion: String by rootProject.extra
 val lifecycleVersion: String by rootProject.extra

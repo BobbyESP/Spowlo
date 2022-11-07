@@ -1,7 +1,6 @@
 package com.bobbyesp.spowlo.data.remote
 
 import com.bobbyesp.spowlo.domain.spotify.model.APIResponse
-import com.bobbyesp.spowlo.util.api.Resource_2
 import retrofit2.Response
 import retrofit2.http.GET
 

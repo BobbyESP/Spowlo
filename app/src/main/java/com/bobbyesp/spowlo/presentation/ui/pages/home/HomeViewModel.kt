@@ -2,22 +2,18 @@ package com.bobbyesp.spowlo.presentation.ui.pages.home
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.domain.spotify.model.APICallState
 import com.bobbyesp.spowlo.domain.spotify.model.APIResponse
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
-import com.bobbyesp.spowlo.domain.spotify.repository.APIRepository
 import com.bobbyesp.spowlo.domain.spotify.use_case.GetAPIResponse
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import com.bobbyesp.spowlo.util.DownloadUtil
 import com.bobbyesp.spowlo.util.VersionsUtil
 import com.bobbyesp.spowlo.util.api.Resource
-import com.bobbyesp.spowlo.util.api.Resource_2
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
