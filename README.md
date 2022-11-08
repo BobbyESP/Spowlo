@@ -46,6 +46,10 @@ Thanks to [Seal](https://github.com/JunkFood02/Seal) and [JunkFood02](https://gi
 
 [Material color utilities](https://github.com/material-foundation/material-color-utilities) for having Material You coloring in any device (not automatic).
 
+KatokaChan, for the app name. (Thank you!)
+
 [MoureDev by Brais Moure](https://www.youtube.com/c/MouredevApps)
 
 [Programación Android by AristiDevs](https://www.youtube.com/c/AristiDevs)
+
+
