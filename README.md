@@ -10,6 +10,12 @@ A Spotify Mod (by the moment) downloader and manager using the xManager API made
 
 </div>
 
+<div align="center">
+
+[![codebeat badge](https://codebeat.co/badges/a5629b9c-8767-45ad-b1f2-01be913f38ff)](https://codebeat.co/projects/github-com-bobbyesp-spowlo-master)
+
+</div>
+
 # 📣 NOTICE
 I'm aware of an issue with Play Protect. This is marking my app as milicious when it isn't (you have the source code).
 This is because the app is not in the Whitelist of Play Protect. I've already sent a form for fixing this to Google
