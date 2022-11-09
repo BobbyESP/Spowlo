@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.util
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import com.bobbyesp.spowlo.Spowlo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -77,12 +78,15 @@ object DownloadUtil {
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
 
     fun openLinkInBrowser(link: String) {
-        //open a browser with the link
-        println("--------------------------------------------------------------------------")
-        println(link)
         //add flag FLAG_ACTIVITY_NEW_TASK to open the browser in a new task
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         Spowlo.context.startActivity(intent)
+    }
+
+    fun copyLinkToClipboard(link: String) {
+        val clipboard = Spowlo.context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        val clip = android.content.ClipData.newPlainText("Spotify APK Link", link)
+        clipboard.setPrimaryClip(clip)
     }
 
     sealed class DownloadStatus {

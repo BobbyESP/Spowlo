@@ -43,7 +43,6 @@ class HomeViewModel @Inject constructor(
     private val _state = mutableStateOf(APICallState())
     val state: State<APICallState> = _state
 
-
     fun setup(){
         currentJob?.cancel()
         currentJob = viewModelScope.launch{
@@ -57,12 +56,13 @@ class HomeViewModel @Inject constructor(
                 callAPI()
             }
         }
+        sortAllPackages()
     }
 
     fun downloadApkFromLink(link: String){
         currentJob?.cancel()
         currentJob = viewModelScope.launch{
-            DownloadUtil.downloadSpotify(link, Spowlo.context)
+            DownloadUtil.openLinkInBrowser(link)
         }
     }
 
@@ -132,6 +132,21 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }.launchIn(this)
+        }
+    }
+
+    private fun sortPackagesObjectList(list: List<PackagesObject>): List<PackagesObject>{
+        return list.sortedWith(compareByDescending { it.Title })
+    }
+
+    private fun sortAllPackages(){
+        mutableStateFlow.update {
+            it.copy(
+                regular_versions = sortPackagesObjectList(it.regular_versions),
+                regular_cloned_versions = sortPackagesObjectList(it.regular_cloned_versions),
+                amoled_versions = sortPackagesObjectList(it.amoled_versions),
+                amoled_cloned_versions = sortPackagesObjectList(it.amoled_cloned_versions),
+            )
         }
     }
 

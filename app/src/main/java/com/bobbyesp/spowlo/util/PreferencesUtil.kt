@@ -37,6 +37,7 @@ object PreferencesUtil {
     const val THEME_COLOR = "theme_color"
     const val DYNAMIC_COLOR = "dynamic_color"
     const val LANGUAGE = "language"
+    const val SPOTIFY_URL = "spotify_url"
 
     private val mutableAppSettingsStateFlow = MutableStateFlow(
         AppSettings(

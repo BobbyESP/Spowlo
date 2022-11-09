@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.presentation.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material3.*
@@ -11,7 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +24,8 @@ import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
 import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.util.DownloadUtil
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
 
 enum class PackagesListItemType(
     val type: Int,
@@ -53,8 +59,9 @@ fun PackagesListItem(
     onClick: () -> Unit = {},
 ) {
     var isExpanded by remember { mutableStateOf(expanded) }
-
-
+    var show by remember {
+        mutableStateOf(false)
+    }
     ElevatedCard(
         modifier = modifier,
         onClick = { isExpanded = !isExpanded },
@@ -124,20 +131,24 @@ fun PackagesListItem(
                     .padding(horizontal = 6.dp)
                 ) {
                     packages.forEach { version ->
+                        val title = packages[packages.indexOf(version)].Title
+                        val link = packages[packages.indexOf(version)].Link
                         //if the package title has ARM64-V8A, the type is Arm64
-                        val isArm64: Boolean = packages[packages.indexOf(version)].Title.contains("ARM64-V8A")
-                        val containsArch: Boolean = packages[packages.indexOf(version)].Title.contains("(ARM64-V8A)") || packages[packages.indexOf(version)].Title.contains("ARMEABI-V7A")
+                        val isArm64: Boolean = title.contains("ARM64-V8A")
+                        val containsArch: Boolean = title.contains("(ARM64-V8A)") || title.contains("ARMEABI-V7A")
                         //get just the version name without the architecture
-                        val versionName = if (containsArch) packages[packages.indexOf(version)].Title.substringBefore("(").trim() else packages[packages.indexOf(version)].Title
+                        val versionName = if (containsArch) title.substringBefore("(").trim() else title
                         PackageItem(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             //if its Arm64, ArchType is Arm64, else ArchType is Arm
                             type = if (isArm64) ArchType.Arm64 else ArchType.Arm,
                             version = versionName,
-                            link = packages[packages.indexOf(version)].Link,
+                            link = link,
                             //on click open the link in browser
-                            onClick = { DownloadUtil.openLinkInBrowser(packages[packages.indexOf(version)].Link) }
+                            onClick = { DownloadUtil.openLinkInBrowser(link) },
+                            onArchClick = {show = !show},
+                            onCopyClick = {DownloadUtil.copyLinkToClipboard(link)}
                         )
 
                         if (packages.indexOf(version) != packages.lastIndex) {
@@ -148,6 +159,62 @@ fun PackagesListItem(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+    if (show) {
+        BottomSheetDialog(
+            onDismissRequest = {
+                show = false
+            },
+            properties = BottomSheetDialogProperties(
+
+            ),
+        ) {
+            // content
+            Surface(modifier = Modifier, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.architectures),
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(text = stringResource(id = R.string.archs_desc),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall)
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                            .width(1f.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.archs_provided),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.different_archs),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    ArchExplanationComponent(type = ArchExplType.Arm64)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ArchExplanationComponent(type = ArchExplType.Arm)
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(id = R.string.check_arch),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+
                 }
             }
         }

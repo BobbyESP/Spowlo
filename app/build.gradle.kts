@@ -6,7 +6,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.20"
 }
 apply(plugin = "dagger.hilt.android.plugin")
 
@@ -156,10 +156,12 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
     implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("com.holix.android:bottomsheetdialog-compose:1.0.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.browser:browser:1.4.0")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")

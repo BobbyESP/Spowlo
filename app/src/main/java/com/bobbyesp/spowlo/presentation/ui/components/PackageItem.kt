@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Memory
-import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material.icons.outlined.MoreHoriz
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,8 +29,10 @@ fun PackageItem(
     type: ArchType = ArchType.Arm64,
     link: String,
     onClick: () -> Unit = {},
+    onArchClick: () -> Unit = {},
     version: String = "8.7.78.373",
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit = {},
+    onCopyClick: () -> Unit = {},
 ) {
     Surface(modifier = modifier.clickable(onClick = onClick).padding(6.dp)) {
         Row(
@@ -40,7 +40,7 @@ fun PackageItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ArchTag(modifier = Modifier.height(IntrinsicSize.Max).width(IntrinsicSize.Max) ,arch = type)
+            ArchTag(modifier = Modifier.height(IntrinsicSize.Max).width(IntrinsicSize.Max) ,arch = type, onClick = onArchClick)
             Text(
                 modifier = Modifier.padding(start = 8.dp).height(IntrinsicSize.Max).width(IntrinsicSize.Min),
                 text = version,
@@ -60,7 +60,7 @@ fun PackageItem(
                             .padding(end = 12.dp)
                             .align(Alignment.Bottom)
                             .size(24.dp),
-                        onClick = {}
+                        onClick = onClick
                     ) {
                         Icon(
                             Icons.Filled.Download,
@@ -75,13 +75,14 @@ fun PackageItem(
                             .padding()
                             .align(Alignment.Bottom)
                             .size(24.dp),
-                        onClick = {}
+                        onClick = onCopyClick
                     ) {
                         Icon(
-                            Icons.Outlined.MoreHoriz,
+                            Icons.Outlined.ContentCopy,
+                            //Icons.Outlined.MoreHoriz,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
