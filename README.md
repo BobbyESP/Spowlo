@@ -28,10 +28,12 @@ Thanks for you comprehension.
 
 ## 🔮Upcoming features
 - [ ] Add music downloading
+- [ ] Download the song that you are actually playing and also searching (that info will be provided by [spotify-web-api-kotlin](https://github.com/adamint/spotify-web-api-kotlin) library)
 - [ ] Add in-app packages downloading
 - [ ] Put more settings
 - [x] Optimize packages lists (fixed in release [v.0.1.1](https://github.com/BobbyESP/Spowlo/releases/tag/v0.1.1)) 
 - [ ] Setup Hosted Weblate for app translations
+
 
 ## ⬇️Download
 Get the latest release in [here](https://github.com/BobbyESP/Spowlo/releases)
