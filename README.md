@@ -10,6 +10,12 @@ A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose a
 
 </div>
 
+# 📣 NOTICE
+I'm aware of an issue with Play Protect. This is marking my app as milicious when it isn't (you have the source code).
+This is because the app is not in the Whitelist of Play Protect. I've already sent a form for fixing this to Google
+ 
+Thanks for you comprehension.
+
 # 📸Screenshots
 
 <div>
@@ -22,10 +28,12 @@ A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose a
 
 ## 🔮Upcoming features
 - [ ] Add music downloading
+- [ ] Download the song that you are actually playing and also searching (that info will be provided by [spotify-web-api-kotlin](https://github.com/adamint/spotify-web-api-kotlin) library)
 - [ ] Add in-app packages downloading
 - [ ] Put more settings
-- [ ] Optimize packages lists
+- [x] Optimize packages lists (fixed in release [v.0.1.1](https://github.com/BobbyESP/Spowlo/releases/tag/v0.1.1)) 
 - [ ] Setup Hosted Weblate for app translations
+
 
 ## ⬇️Download
 Get the latest release in [here](https://github.com/BobbyESP/Spowlo/releases)
@@ -40,6 +48,10 @@ Thanks to [Seal](https://github.com/JunkFood02/Seal) and [JunkFood02](https://gi
 
 [Material color utilities](https://github.com/material-foundation/material-color-utilities) for having Material You coloring in any device (not automatic).
 
+KatokaChan, for the app name. (Thank you!)
+
 [MoureDev by Brais Moure](https://www.youtube.com/c/MouredevApps)
 
 [Programación Android by AristiDevs](https://www.youtube.com/c/AristiDevs)
+
+
