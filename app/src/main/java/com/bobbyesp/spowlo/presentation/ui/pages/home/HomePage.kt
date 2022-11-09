@@ -98,10 +98,10 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                                 style = MaterialTheme.typography.displaySmall
                             )
                         }
-                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions)
-                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions)
-                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions)
-                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions)
+                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions.sortedByDescending { it.Title })
+                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions.sortedByDescending { it.Title })
                         Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
                         AnimatedVisibility(visible = loaded) {
                             when(loaded){

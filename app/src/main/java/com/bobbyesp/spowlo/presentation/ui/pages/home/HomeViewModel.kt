@@ -56,7 +56,6 @@ class HomeViewModel @Inject constructor(
                 callAPI()
             }
         }
-        sortAllPackages()
     }
 
     fun downloadApkFromLink(link: String){
@@ -139,6 +138,7 @@ class HomeViewModel @Inject constructor(
         return list.sortedWith(compareByDescending { it.Title })
     }
 
+    //TODO: Move this to a util class and take a look to it because it's listing reversed
     private fun sortAllPackages(){
         mutableStateFlow.update {
             it.copy(
