@@ -6,7 +6,7 @@
 
 <div align="center">
   
-A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose and Material You
+A Spotify Mod (by the moment) downloader and manager using the xManager API made with Jetpack Compose and Material You
 
 </div>
 
