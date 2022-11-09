@@ -6,7 +6,7 @@
 
 <div align="center">
   
-A Spotify Mod (by the moment) downloader and manager made with Jetpack Compose and Material You
+A Spotify Mod (by the moment) downloader and manager using the xManager API made with Jetpack Compose and Material You
 
 </div>
 
@@ -27,9 +27,9 @@ Thanks for you comprehension.
 </div>
 
 ## 🔮Upcoming features
-- [ ] Add music downloading
+- [ ] Add music downloading with yt-dlp and an API to bridge Spotify links to YouTube ones (at least by the moment, i'll try to implement the python library SpotDL)
 - [ ] Download the song that you are actually playing and also searching (that info will be provided by [spotify-web-api-kotlin](https://github.com/adamint/spotify-web-api-kotlin) library)
-- [ ] Add in-app packages downloading
+- [ ] Add in-app packages downloading (not browser redirection)
 - [ ] Put more settings
 - [x] Optimize packages lists (fixed in release [v.0.1.1](https://github.com/BobbyESP/Spowlo/releases/tag/v0.1.1)) 
 - [ ] Setup Hosted Weblate for app translations
