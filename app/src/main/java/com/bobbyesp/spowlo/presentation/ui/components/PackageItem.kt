@@ -27,7 +27,7 @@ enum class ArchType(
 fun PackageItem(
     modifier: Modifier = Modifier,
     type: ArchType = ArchType.Arm64,
-    link: String,
+    link: String = "",
     onClick: () -> Unit = {},
     onArchClick: () -> Unit = {},
     version: String = "8.7.78.373",
@@ -94,5 +94,5 @@ fun PackageItem(
 @Composable
 @Preview
 fun PackageItemPreview() {
-   // PackageItem()
+   PackageItem()
 }

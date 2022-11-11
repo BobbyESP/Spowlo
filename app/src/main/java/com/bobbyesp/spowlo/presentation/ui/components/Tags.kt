@@ -21,14 +21,17 @@ fun ArchTag(
     shape: CornerBasedShape = MaterialTheme.shapes.extraSmall,
     isClickable: Boolean = false
 ) {
-    Surface(modifier = modifier.clickable(onClick = onClick), shape = shape, color = MaterialTheme.colorScheme.secondaryContainer) {
+    Surface(modifier = modifier
+        .clickable(onClick = onClick),
+        shape = shape,
+        color = MaterialTheme.colorScheme.secondaryContainer) {
+
         Row(modifier = modifier
             .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         )
         {
-
             Icon(
                 modifier = Modifier.size(16.dp),
                 imageVector = Icons.Filled.Memory,
