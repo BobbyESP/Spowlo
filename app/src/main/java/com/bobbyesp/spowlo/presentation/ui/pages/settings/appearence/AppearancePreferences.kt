@@ -118,6 +118,7 @@ fun AppearancePreferences(
                     icon = Icons.Outlined.DarkMode,
                     enabled = true
                 ) { navController.navigate(Route.DARK_THEME_SELECTOR) }
+
                 if (Build.VERSION.SDK_INT >= 24)
                     PreferenceItem(
                         title = stringResource(R.string.language),

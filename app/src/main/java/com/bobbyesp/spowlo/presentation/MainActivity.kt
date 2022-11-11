@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.presentation
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -78,12 +77,17 @@ class MainActivity : ComponentActivity() {
     companion object {
         private const val TAG = "MainActivity"
 
+        //set the language of the app depending on lacale that is passed
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
-            Log.d(TAG, "LOCALE EMPTY?: ${locale.isEmpty()}")
             val localeListCompat =
-                if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
-                else LocaleListCompat.forLanguageTags(locale)
+                if (locale.isEmpty())
+                {
+                    LocaleListCompat.getEmptyLocaleList()
+                }
+                else {
+                    LocaleListCompat.forLanguageTags(locale)
+                }
             applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }

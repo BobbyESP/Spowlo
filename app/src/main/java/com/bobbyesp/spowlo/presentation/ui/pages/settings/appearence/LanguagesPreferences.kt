@@ -3,8 +3,6 @@ package com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.*
 import com.bobbyesp.spowlo.R
 import androidx.compose.runtime.*
@@ -16,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.components.BackButton
 import com.bobbyesp.spowlo.presentation.ui.components.PreferenceSingleChoiceItem
-import com.bobbyesp.spowlo.presentation.ui.components.PreferencesHint
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.LANGUAGE
 import com.bobbyesp.spowlo.util.PreferencesUtil.SYSTEM_DEFAULT

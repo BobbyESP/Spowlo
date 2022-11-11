@@ -48,7 +48,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 33
         versionCode = 10000
         versionName = StringBuilder("${versionMajor}.${versionMinor}.${versionPatch}").apply {
@@ -132,7 +132,7 @@ android {
 dependencies {
     implementation(project(":color"))
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.7.0-alpha01")
+    implementation("androidx.appcompat:appcompat:1.6.0-rc01")
     implementation("com.google.android.material:material:1.8.0-alpha02")
     implementation("androidx.activity:activity-compose:1.6.1")
     //Lifecycle

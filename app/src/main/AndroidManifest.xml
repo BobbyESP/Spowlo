@@ -26,9 +26,7 @@
     <application
         android:name=".Spowlo"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         android:extractNativeLibs="true"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/spowlo_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/spowlo_icon"
