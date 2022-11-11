@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="on">Activado</string>
+    <string name="off">Desactivado</string>
+    <string name="follow_system">Coincidir con el sistema</string>
+    <string name="back">Atrás</string>
+    <string name="settings">Ajustes</string>
+    <string name="general">General</string>
+    <string name="general_description">Ajustes generales de la aplicación</string>
+    <string name="display">Aspecto</string>
+    <string name="display_description">Cambia el tema la app, colores dinámicos, idioma…</string>
+    <string name="about_description">Versión de la app, créditos, reportes de bugs…</string>
+    <string name="about">Acerca de</string>
+    <string name="dynamic_color">Colores dinámicos</string>
+    <string name="dynamic_color_desc">Aplica los colores de tu fondo de pantalla a la aplicación.</string>
+    <string name="dark_theme">Modo oscuro</string>
+    <string name="language">Idioma</string>
+    <string name="checked">Marcado</string>
+    <string name="confirm">Confirmar</string>
+    <string name="dismiss">Descartar</string>
+    <string name="system_default">Predeterminado del sistema</string>
+    <string name="additional_settings">Ajustes adicionales</string>
+    <string name="high_contrast">Alto contraste | AMOLED</string>
+    <string name="translate">Traduce la app</string>
+    <string name="translate_desc">Ayuda a traducir la aplicación a tu idioma en Hosted Weblate</string>
+    <string name="regular">Mod Original</string>
+    <string name="regular_description">Un mod de Spotify normal con saltos ilimitados, escucha en demanda, libre de anuncios y con las últimas funciones. Esto sustituye la versión original de Spotify (la que descargas desde la Play Store).</string>
+    <string name="regular_cloned">Mod Original Clonado</string>
+    <string name="regular_cloned_description">Un mod de Spotify normal con saltos ilimitados, escucha en demanda, libre de anuncios y con las últimas funciones pero clonado. Esto significa que se instalará como una aplicación aparte de la original, podiendo tener ambas instaladas a la vez.</string>
+    <string name="amoled">Mod AMOLED</string>
+    <string name="amoled_description">Las mismas funciones que el mod original pero con tema AMOLED</string>
+    <string name="amoled_cloned">Mod AMOLED Clonado</string>
+    <string name="amoled_cloned_description">Las mismas funciones que el mod AMOLED, pero clonado.</string>
+    <string name="installed_spotify_version">VERSIONES DE SPOTIFY</string>
+    <string name="app_update_failed">La actualización de la aplicación ha fallado</string>
+    <string name="update">Actualizar</string>
+    <string name="architectures">Arquitecturas</string>
+    <string name="archs_desc">Existen dos tipos principales de arquitecturas de procesador en los dispositivos de hoy en día, la de 32 bits y la de 64</string>
+    <string name="archs_provided">Spotify nos da a elegir entre estos dos tipos de arquitecturas, pero tienes que saber cuál elegir.</string>
+    <string name="different_archs">Las arquitecturas de procesadores para teléfono son las siguientes:</string>
+    <string name="arm64_desc">Este tipo de arquitectura está basada en 64 bits. Esta puede correr cualquier tipo de app de Spotify (las de 32 bits son emuladas)</string>
+    <string name="arm32_desc">Este tipo de arquitectura está basada en 32 bits. SOLO puede correr aplicaciones ARMEABI (32 bits)</string>
+    <string name="check_arch">Para conocer la arquitectura de tu procesador, vé a la página principal de la app y desliza hasta abajo del todo.</string>
+</resources>

@@ -39,6 +39,12 @@ object PreferencesUtil {
     const val LANGUAGE = "language"
     const val SPOTIFY_URL = "spotify_url"
 
+    const val SYSTEM_DEFAULT = 0
+    //Language
+    private const val ENGLISH = 1
+    private const val SPANISH = 2
+
+
     private val mutableAppSettingsStateFlow = MutableStateFlow(
         AppSettings(
             DarkThemePreference(
@@ -95,15 +101,9 @@ object PreferencesUtil {
         }
     }
 
-
-    const val SYSTEM_DEFAULT = 0
-    //Languages
-    private const val ENGLISH = 1
-    private const val SPANISH = 2
-
     val languageMap: Map<Int, String> = mapOf(
         Pair(ENGLISH, "en-US"),
-        Pair(SPANISH, "es-ES")
+        Pair(SPANISH, "es")
     )
 
     fun getLanguageConfiguration(languageNumber: Int = kv.decodeInt(LANGUAGE)): String {

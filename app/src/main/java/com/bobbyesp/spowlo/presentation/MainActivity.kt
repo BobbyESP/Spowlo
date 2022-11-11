@@ -23,6 +23,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bobbyesp.spowlo.Spowlo
+import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.presentation.ui.common.LocalDynamicColorSwitch
@@ -79,10 +80,11 @@ class MainActivity : ComponentActivity() {
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
+            Log.d(TAG, "LOCALE EMPTY?: ${locale.isEmpty()}")
             val localeListCompat =
                 if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
                 else LocaleListCompat.forLanguageTags(locale)
-            Spowlo.applicationScope.launch(Dispatchers.Main) {
+            applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }
         }

@@ -33,13 +33,13 @@
     <string name="amoled_description">"Same features as regular mod but this one has AMOLED theme. "</string>
     <string name="amoled_cloned">Cloned Amoled Mod</string>
     <string name="amoled_cloned_description">Same features as Amoled mod but it\'s cloned.</string>
-    <string name="cpu_arch">CPU/ARCH</string>
+    <string name="cpu_arch" translatable="false">CPU/ARCH</string>
     <string name="installed_spotify_version">SPOTIFY VERSIONS</string>
     <string name="app_update_failed">App update has failed</string>
     <string name="update">Update</string>
     <string name="architectures">Architectures</string>
     <string name="archs_desc">There are two principal types of processor architecture in the majority of devices, 32 and 64 bit.</string>
-    <string name="archs_provided">Spotify provides both types of architectures to us, but you need to know what to choose.</string>
+    <string name="archs_provided">Spotify provides both types of architectures to us, but you need to know which one to choose.</string>
     <string name="different_archs">The mobile architectures are the next :</string>
     <string name="arm64_desc">This type of architecture is based on 64 bit. It can run any Spotify package (32 bit ones are emulated)</string>
     <string name="arm32_desc">This type of architecture is based on 32 bit. It can JUST run ARMEABI packages.</string>

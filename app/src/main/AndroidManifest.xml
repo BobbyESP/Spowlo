@@ -27,26 +27,26 @@
         android:name=".Spowlo"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/spowlo_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/spowlo_icon"
+        android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.Spowlo"
         tools:targetApi="tiramisu">
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="unspecified"
             android:theme="@style/Theme.Spowlo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
 
         </activity>
         <provider
@@ -58,6 +58,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
 </manifest>
