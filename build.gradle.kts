@@ -6,6 +6,7 @@ buildscript {
     val accompanistVersion by extra("0.25.1")
     val composeMd3Version by extra("1.0.0-beta03")
     val coilVersion by extra("2.2.1")
+    val youtubedlAndroidVersion by extra("17d16d78f6")
     val okhttpVersion by extra("5.0.0-alpha.10")
     val kotlinVersion by extra("1.7.10")
     val hiltVersion by extra("2.44")

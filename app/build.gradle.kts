@@ -22,6 +22,7 @@ val navigationVersion: String by rootProject.extra
 val roomVersion: String by rootProject.extra
 val accompanistVersion: String by rootProject.extra
 val composeMd3Version: String by rootProject.extra
+val youtubedlAndroidVersion: String by rootProject.extra
 val coilVersion: String by rootProject.extra
 val okhttpVersion: String by rootProject.extra
 val hiltVersion: String by rootProject.extra
@@ -165,11 +166,11 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    //Room (Databases)
 
-    /*implementation("androidx.room:room-runtime:$roomVersion")
+    //Room (Databases)
+    implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")*/
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     // Retrofit and okhttp
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -183,6 +184,11 @@ dependencies {
 
     //SimpleStorage (SAF Simplifier)
     implementation("com.anggrayudi:storage:1.5.0")
+
+    //Yt-dlp
+    implementation("com.github.xibr.youtubedl-android:library:$youtubedlAndroidVersion")
+    implementation("com.github.xibr.youtubedl-android:ffmpeg:$youtubedlAndroidVersion")
+    implementation("com.github.xibr.youtubedl-android:aria2c:$youtubedlAndroidVersion")
 
     //Unit testing
     testImplementation("junit:junit:4.13.2")

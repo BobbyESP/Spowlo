@@ -11,5 +11,7 @@ class Route {
         const val DISPLAY_SETTINGS = "display_settings"
         const val ABOUT_SETTINGS = "about_settings"
         const val DARK_THEME_SELECTOR = "dark_theme_selector"
+        const val DOWNLOADER = "downloader"
+        const val TEMPLATE = "template"
     }
 }
