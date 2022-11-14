@@ -12,7 +12,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
@@ -40,13 +49,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.BottomNavBar
+import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.NavBarItem
 
 private const val TAG = "InitialEntry"
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun InitialEntry(homeViewModel: HomeViewModel) {
-    val navController = rememberAnimatedNavController()
+fun InitialEntry(homeViewModel: HomeViewModel, modifier: Modifier = Modifier, navController: NavHostController) {
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var updateJob: Job? = null
@@ -77,57 +88,62 @@ fun InitialEntry(homeViewModel: HomeViewModel) {
             }
         }
     }
+
     val viewState = homeViewModel.stateFlow.collectAsState()
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
-    ){
-        AnimatedNavHost(
+
+    Box(modifier = modifier){
+        Box(
             modifier = Modifier
-                .fillMaxWidth(
-                    when (LocalWindowWidthState.current) {
-                        WindowWidthSizeClass.Compact -> 1f
-                        WindowWidthSizeClass.Expanded -> 0.5f
-                        else -> 0.8f
+                .fillMaxSize()
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
+        ){
+            AnimatedNavHost(
+                modifier = Modifier
+                    .fillMaxWidth(
+                        when (LocalWindowWidthState.current) {
+                            WindowWidthSizeClass.Compact -> 1f
+                            WindowWidthSizeClass.Expanded -> 0.5f
+                            else -> 0.8f
+                        }
+                    )
+                    .align(Alignment.Center),
+                navController = navController,
+                startDestination = Route.HOME)  {
+
+                animatedComposable(Route.HOME){
+                    HomePage(navController = navController, homeViewModel = homeViewModel)
+                    if (!viewState.value.loaded){
+                        homeViewModel.setup()
                     }
-                )
-                .align(Alignment.Center),
-            navController = navController,
-            startDestination = Route.HOME)  {
-
-            animatedComposable(Route.HOME){
-                HomePage(navController = navController, homeViewModel = homeViewModel)
-                if (!viewState.value.loaded){
-                    homeViewModel.setup()
                 }
-            }
 
-            animatedComposable(Route.SETTINGS){
-                SettingsPage(navController)
-            }
-
-            animatedComposable(Route.ABOUT){
-            }
-
-            animatedComposable(Route.DISPLAY_SETTINGS){
-                AppearancePreferences(navController)
-            }
-
-            animatedComposable(Route.LANGUAGES){
-                LanguagesPreferences{
-                    onBackPressed()
+                animatedComposable(Route.SETTINGS){
+                    SettingsPage(navController)
                 }
-            }
 
-            animatedComposable(Route.DARK_THEME_SELECTOR){
-                DarkThemePreferences {
-                    onBackPressed()
+                animatedComposable(Route.ABOUT){
                 }
-            }
 
+                animatedComposable(Route.DISPLAY_SETTINGS){
+                    AppearancePreferences(navController)
+                }
+
+                animatedComposable(Route.LANGUAGES){
+                    LanguagesPreferences{
+                        onBackPressed()
+                    }
+                }
+
+                animatedComposable(Route.DARK_THEME_SELECTOR){
+                    DarkThemePreferences {
+                        onBackPressed()
+                    }
+                }
+
+            }
         }
     }
+
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             kotlin.runCatching {

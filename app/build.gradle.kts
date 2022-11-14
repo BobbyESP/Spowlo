@@ -186,9 +186,6 @@ dependencies {
     implementation("com.anggrayudi:storage:1.5.0")
 
     //Yt-dlp
-    implementation("com.github.xibr.youtubedl-android:library:$youtubedlAndroidVersion")
-    implementation("com.github.xibr.youtubedl-android:ffmpeg:$youtubedlAndroidVersion")
-    implementation("com.github.xibr.youtubedl-android:aria2c:$youtubedlAndroidVersion")
 
     //Unit testing
     testImplementation("junit:junit:4.13.2")

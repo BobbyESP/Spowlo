@@ -10,6 +10,28 @@ import java.io.File
 
 object DownloadUtil {
 
+    enum class ResultCode {
+        SUCCESS, EXCEPTION
+    }
+
+    data class PlaylistInfo(
+        val url: String = "",
+        val size: Int = 0,
+        val title: String = ""
+    )
+
+    class Result(val resultCode: ResultCode, val filePath: List<String>?) {
+        companion object {
+            fun failure(): Result {
+                return Result(ResultCode.EXCEPTION, null)
+            }
+
+            fun success(filePaths: List<String>?): Result {
+                return Result(ResultCode.SUCCESS, filePaths)
+            }
+        }
+    }
+
     private const val TAG = "DownloadUtil"
     private var apkUrl: String = ""
 

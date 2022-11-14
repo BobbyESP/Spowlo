@@ -44,4 +44,6 @@
     <string name="arm64_desc">This type of architecture is based on 64 bit. It can run any Spotify package (32 bit ones are emulated)</string>
     <string name="arm32_desc">This type of architecture is based on 32 bit. It can JUST run ARMEABI packages.</string>
     <string name="check_arch">To check your processor architecture, scroll down till the end of the main page.</string>
+    <string name="custom_command_template">Command template</string>
+    <string name="template_example">--no-mtime -f \"bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] /         bv*+ba/b\"</string>
 </resources>
