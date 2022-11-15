@@ -5,15 +5,18 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner.current
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -21,10 +24,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavGraph
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.presentation.ui.common.*
@@ -66,6 +72,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberAnimatedNavController()
             val windowSizeClass = calculateWindowSizeClass(this)
+            //if the current route is not in the list of routes, then hide the nav bar modifying the visible var
+            val visible = remember { mutableStateOf(true) }
+            //if current route is not home or settings, change the visible var to false
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                visible.value = destination.route in listOf(Route.HOME, Route.SETTINGS)
+            }
+
             SettingsProvider(windowSizeClass.widthSizeClass){
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
@@ -73,35 +86,40 @@ class MainActivity : ComponentActivity() {
                     seedColor = LocalSeedColor.current,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    Scaffold(
-                        bottomBar = {
-                            BottomNavBar(items = listOf(
-                                NavBarItem(
-                                    name = "Home",
-                                    icon = Icons.Filled.Home,
-                                    route = Route.HOME
-                                ),
-                                NavBarItem(
-                                    name = "Settings",
-                                    icon = Icons.Filled.Settings,
-                                    route = Route.SETTINGS,
-                                ),
-                            ), navController = navController, onItemClicked = {
-                                //if the current route is the same as the one we are trying to navigate to, do nothing
-                                if (navController.currentDestination?.route != it.route) {
-                                    navController.navigate(it.route)
-                                }
-                            })
-                        }){
-
-                        InitialEntry(homeViewModel, modifier = Modifier.padding(paddingValues = it), navController = navController)
-
+                        Scaffold(
+                            bottomBar = {
+                                BottomNavBar(
+                                    items = listOf(
+                                        NavBarItem(
+                                            name = "Home",
+                                            icon = Icons.Filled.Home,
+                                            route = Route.HOME
+                                        ),
+                                        NavBarItem(
+                                            name = "Settings",
+                                            icon = Icons.Filled.Settings,
+                                            route = Route.SETTINGS,
+                                        ),
+                                    ), navController = navController,
+                                    onItemClicked = {
+                                        //if the current route is the same as the one we are trying to navigate to, do nothing
+                                        if (navController.currentDestination?.route != it.route) {
+                                            navController.navigate(it.route)
+                                        }
+                                    },
+                                visible = visible.value
+                                )
+                            }){
+                            //If the user is at a route different from home or settings, hide the bottom nav bar
+                            InitialEntry(homeViewModel,
+                                modifier = Modifier.padding(paddingValues = it),
+                                navController = navController)
+                        }
                     }
                 }
             }
 
         }
-    }
 
     companion object {
         private const val TAG = "MainActivity"

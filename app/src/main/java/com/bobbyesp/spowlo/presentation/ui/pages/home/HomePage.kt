@@ -56,13 +56,13 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                 .background(MaterialTheme.colorScheme.background)
         ){
             Scaffold(modifier = Modifier
-                .align(Alignment.Center)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
                 topBar = {
                     TopAppBar(
                         title = {},
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                            .fillMaxWidth(),
                         navigationIcon = {
                             IconButton(onClick = {
                                 navController.navigate(Route.SETTINGS)

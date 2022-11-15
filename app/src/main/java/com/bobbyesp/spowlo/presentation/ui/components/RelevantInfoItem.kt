@@ -48,6 +48,7 @@ fun RelevantInfoItem(
                         )
                     }
                 }
+
                 Divider()
 
                 Row(
@@ -62,8 +63,10 @@ fun RelevantInfoItem(
                     )
                     Box(modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentSize(Alignment.CenterEnd)){
-                        Row(modifier = Modifier) {
+                        .wrapContentSize(Alignment.CenterEnd),
+                        contentAlignment = Alignment.Center)
+                    {
+                        Row(modifier = Modifier.padding(start = 4.dp, end = 4.dp)) {
                             Text(
                                 text = originalSpotifyVersion,
                                 style = MaterialTheme.typography.bodyMedium,

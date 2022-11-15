@@ -85,8 +85,6 @@ class HomeViewModel @Inject constructor(
                             ),
                             isLoading = false
                         )
-                        println(state.value.APIResponse)
-
                         val localAPIResponse = state.value.APIResponse
 
                         mutableStateFlow.update {
