@@ -1,8 +1,14 @@
 package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
+import android.app.Activity
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.lifecycle.ViewModel
+import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
+import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
+import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
+import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +21,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(DownloaderViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     private var currentJob: Job? = null
+
 
     data class DownloaderViewState(
         val spotUrl: String = "",
@@ -35,6 +42,14 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
             isSkipHalfExpanded = true
         ),*/
     )
+
+    fun spotifyImplicitLogin(activity: Activity? = null){
+        activity?.startSpotifyImplicitLoginActivity<SpotifyImplicitLoginActivityImpl>()
+    }
+
+    fun spotifyPkceLogin(activity: Activity? = null){
+        activity?.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
+    }
 
     fun updateUrl(url: String, isUrlSharingTriggered: Boolean = false) =
         mutableStateFlow.update {

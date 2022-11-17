@@ -12,22 +12,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
@@ -35,28 +26,30 @@ import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
 import com.bobbyesp.spowlo.presentation.ui.components.UpdateDialog
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
-import com.bobbyesp.spowlo.presentation.ui.pages.placeholders.PagePlaceholder
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.AppearancePreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.DarkThemePreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.LanguagesPreferences
-import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.UpdateUtil
 import com.bobbyesp.spowlo.util.Utils
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.BottomNavBar
-import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.NavBarItem
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderPage
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderViewModel
 
 private const val TAG = "InitialEntry"
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun InitialEntry(homeViewModel: HomeViewModel, modifier: Modifier = Modifier, navController: NavHostController) {
+fun InitialEntry(homeViewModel: HomeViewModel,
+                 modifier: Modifier = Modifier,
+                 navController: NavHostController,
+                 downloaderViewModel: DownloaderViewModel,
+                 activity: androidx.activity.ComponentActivity? = null)
+{
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -138,6 +131,11 @@ fun InitialEntry(homeViewModel: HomeViewModel, modifier: Modifier = Modifier, na
                     DarkThemePreferences {
                         onBackPressed()
                     }
+                }
+                animatedComposable(Route.DOWNLOADER){
+                    DownloaderPage(navController = navController,
+                        downloadViewModel = downloaderViewModel,
+                        activity = activity)
                 }
 
             }

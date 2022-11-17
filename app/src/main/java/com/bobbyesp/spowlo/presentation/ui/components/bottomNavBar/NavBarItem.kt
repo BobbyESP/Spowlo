@@ -1,7 +1,6 @@
-package com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar
+package com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.bobbyesp.spowlo.presentation.ui.common.Route
 
 data class NavBarItem(
     val name: String,

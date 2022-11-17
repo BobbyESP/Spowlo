@@ -5,19 +5,13 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivityResultRegistryOwner.current
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,16 +21,19 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavGraph
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
+import com.bobbyesp.spowlo.data.auth.AuthModel
 import com.bobbyesp.spowlo.presentation.ui.common.*
-import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.BottomNavBar
-import com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar.NavBarItem
+import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
+import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
@@ -48,8 +45,8 @@ import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val homeViewModel: HomeViewModel by viewModels()
+    private val downloaderViewModel: DownloaderViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
@@ -76,7 +73,7 @@ class MainActivity : ComponentActivity() {
             val visible = remember { mutableStateOf(true) }
             //if current route is not home or settings, change the visible var to false
             navController.addOnDestinationChangedListener { _, destination, _ ->
-                visible.value = destination.route in listOf(Route.HOME, Route.SETTINGS)
+                visible.value = destination.route in listOf(Route.HOME, Route.SETTINGS, Route.DOWNLOADER)
             }
 
             SettingsProvider(windowSizeClass.widthSizeClass){
@@ -91,14 +88,19 @@ class MainActivity : ComponentActivity() {
                                 BottomNavBar(
                                     items = listOf(
                                         NavBarItem(
-                                            name = "Home",
+                                            name = stringResource(id = R.string.home),
                                             icon = Icons.Filled.Home,
                                             route = Route.HOME
                                         ),
                                         NavBarItem(
-                                            name = "Settings",
+                                            name = stringResource(id = R.string.settings),
                                             icon = Icons.Filled.Settings,
                                             route = Route.SETTINGS,
+                                        ),
+                                        NavBarItem(
+                                            name = stringResource(id = R.string.downloader),
+                                            icon = Icons.Filled.Download,
+                                            route = Route.DOWNLOADER,
                                         ),
                                     ), navController = navController,
                                     onItemClicked = {
@@ -113,7 +115,7 @@ class MainActivity : ComponentActivity() {
                             //If the user is at a route different from home or settings, hide the bottom nav bar
                             InitialEntry(homeViewModel,
                                 modifier = Modifier.padding(paddingValues = it),
-                                navController = navController)
+                                navController = navController, downloaderViewModel = downloaderViewModel, activity = this@MainActivity)
                         }
                     }
                 }

@@ -41,4 +41,7 @@
     <string name="arm64_desc">Este tipo de arquitectura está basada en 64 bits. Esta puede correr cualquier tipo de app de Spotify (las de 32 bits son emuladas)</string>
     <string name="arm32_desc">Este tipo de arquitectura está basada en 32 bits. SOLO puede correr aplicaciones ARMEABI (32 bits)</string>
     <string name="check_arch">Para conocer la arquitectura de tu procesador, vé a la página principal de la app y desliza hasta abajo del todo.</string>
+    <string name="custom_command_template">Plantilla de comando</string>
+    <string name="home">Inicio</string>
+    <string name="downloader">Descargador</string>
 </resources>

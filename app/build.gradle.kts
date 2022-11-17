@@ -26,6 +26,7 @@ val youtubedlAndroidVersion: String by rootProject.extra
 val coilVersion: String by rootProject.extra
 val okhttpVersion: String by rootProject.extra
 val hiltVersion: String by rootProject.extra
+val spotifyLibrary: String by rootProject.extra
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 
@@ -87,10 +88,32 @@ android {
             )
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String",
+                "SPOTIFY_CLIENT_ID",
+                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
+            buildConfigField("String",
+                "SPOTIFY_REDIRECT_URI",
+                "\"spowlo://spotify-auth\"")
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
+            )
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String",
+                "SPOTIFY_CLIENT_ID",
+                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
+            buildConfigField("String",
+                "SPOTIFY_REDIRECT_URI_AUTH",
+                "\"spowlo://spotify-auth\"")
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
+            )
         }
     }
     compileOptions {
@@ -186,6 +209,9 @@ dependencies {
     implementation("com.anggrayudi:storage:1.5.0")
 
     //Yt-dlp
+
+    //Spotify SDK Integration library
+    implementation("com.adamratzman:spotify-api-kotlin-core:$spotifyLibrary")
 
     //Unit testing
     testImplementation("junit:junit:4.13.2")

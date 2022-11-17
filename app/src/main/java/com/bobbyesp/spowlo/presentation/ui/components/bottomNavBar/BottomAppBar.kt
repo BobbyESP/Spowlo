@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.components.BottomNavBar
+package com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -8,13 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.bobbyesp.spowlo.presentation.ui.common.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
