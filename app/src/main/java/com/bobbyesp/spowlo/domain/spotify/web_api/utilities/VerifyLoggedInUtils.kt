@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.domain.spotify.web_api.utilities
 
 import android.app.Activity
+import android.util.Log
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.SpotifyDefaultCredentialStore
@@ -19,18 +20,10 @@ fun <T> Activity.guardValidSpotifyApi(
 ): T? {
     return runBlocking {
         try {
-            val token = AuthModel.credentialStore.spotifyToken
-                ?: throw SpotifyException.ReAuthenticationNeededException()
-            val usesPkceAuth = token.refreshToken != null
-            val api = (if (usesPkceAuth) AuthModel.credentialStore.getSpotifyClientPkceApi()
-            else AuthModel.credentialStore.getSpotifyImplicitGrantApi())
-                ?: throw SpotifyException.ReAuthenticationNeededException()
-
+            val api = AuthModel.credentialStore.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
             block(api)
         } catch (e: SpotifyException) {
             e.printStackTrace()
-            val usesPkceAuth = AuthModel.credentialStore.spotifyToken?.refreshToken != null
-            if (usesPkceAuth) {
                 val api = AuthModel.credentialStore.getSpotifyClientPkceApi()!!
                 if (!alreadyTriedToReauthenticate) {
                     try {
@@ -57,11 +50,6 @@ fun <T> Activity.guardValidSpotifyApi(
                     startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
                     null
                 }
-            } else {
-                SpotifyDefaultCredentialStore.activityBackOnImplicitAuth = classBackTo
-                startSpotifyImplicitLoginActivity(SpotifyImplicitLoginActivityImpl::class.java)
-                null
             }
         }
     }
-}

@@ -99,21 +99,32 @@ android {
                 "SPOTIFY_REDIRECT_URI_PKCE",
                 "\"spowlo://spotify-pkce\""
             )
+            packagingOptions {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-            buildConfigField("String",
+            buildConfigField(
+                "String",
                 "SPOTIFY_CLIENT_ID",
                 "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
-            buildConfigField("String",
+
+            buildConfigField(
+                "String",
                 "SPOTIFY_REDIRECT_URI_AUTH",
                 "\"spowlo://spotify-auth\"")
+
             buildConfigField(
                 "String",
                 "SPOTIFY_REDIRECT_URI_PKCE",
                 "\"spowlo://spotify-pkce\""
             )
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
     }
     compileOptions {

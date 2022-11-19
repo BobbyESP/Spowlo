@@ -48,4 +48,6 @@
     <string name="template_example" translatable="false">--no-mtime -f \"bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] /         bv*+ba/b\"</string>
     <string name="home">Home</string>
     <string name="downloader">Downloader</string>
+    <string name="login">Log in into Spotify</string>
+    <string name="enter_without_login">Enter without login</string>
 </resources>

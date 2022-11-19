@@ -25,10 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.adamratzman.spotify.SpotifyException
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
@@ -66,23 +68,26 @@ class MainActivity : ComponentActivity() {
                 )
         }
         context = this.baseContext
-        setContent {
-            val navController = rememberAnimatedNavController()
-            val windowSizeClass = calculateWindowSizeClass(this)
-            //if the current route is not in the list of routes, then hide the nav bar modifying the visible var
-            val visible = remember { mutableStateOf(true) }
-            //if current route is not home or settings, change the visible var to false
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                visible.value = destination.route in listOf(Route.HOME, Route.SETTINGS, Route.DOWNLOADER)
-            }
-
-            SettingsProvider(windowSizeClass.widthSizeClass){
-                SpowloTheme(
-                    darkTheme = LocalDarkTheme.current.isDarkTheme(),
-                    isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
-                    seedColor = LocalSeedColor.current,
-                    isDynamicColorEnabled = LocalDynamicColorSwitch.current,
-                ) {
+        guardValidSpotifyApi(MainActivity::class.java) { api ->
+            if (!api.isTokenValid(true).isValid)
+                throw SpotifyException.ReAuthenticationNeededException()
+            setContent {
+                val navController = rememberAnimatedNavController()
+                val windowSizeClass = calculateWindowSizeClass(this)
+                //if the current route is not in the list of routes, then hide the nav bar modifying the visible var
+                val visible = remember { mutableStateOf(true) }
+                //if current route is not home or settings, change the visible var to false
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    visible.value =
+                        destination.route in listOf(Route.HOME, Route.SETTINGS, Route.DOWNLOADER)
+                }
+                SettingsProvider(windowSizeClass.widthSizeClass) {
+                    SpowloTheme(
+                        darkTheme = LocalDarkTheme.current.isDarkTheme(),
+                        isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
+                        seedColor = LocalSeedColor.current,
+                        isDynamicColorEnabled = LocalDynamicColorSwitch.current,
+                    ) {
                         Scaffold(
                             bottomBar = {
                                 BottomNavBar(
@@ -109,19 +114,23 @@ class MainActivity : ComponentActivity() {
                                             navController.navigate(it.route)
                                         }
                                     },
-                                visible = visible.value
+                                    visible = visible.value
                                 )
-                            }){
+                            }) {
                             //If the user is at a route different from home or settings, hide the bottom nav bar
-                            InitialEntry(homeViewModel,
+                            InitialEntry(
+                                homeViewModel,
                                 modifier = Modifier.padding(paddingValues = it),
-                                navController = navController, downloaderViewModel = downloaderViewModel, activity = this@MainActivity)
+                                navController = navController,
+                                downloaderViewModel = downloaderViewModel,
+                                activity = this@MainActivity
+                            )
                         }
                     }
                 }
             }
-
         }
+    }
 
     companion object {
         private const val TAG = "MainActivity"

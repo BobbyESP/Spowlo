@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
 import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,19 +51,22 @@ fun DownloaderPage(
                     .background(MaterialTheme.colorScheme.background),
                 color = MaterialTheme.colorScheme.background
             ){
-                Column(modifier = Modifier.align(Alignment.Center)) {
-                    Button(onClick = {
-                        downloadViewModel.spotifyImplicitLogin(activity)
-                    }) {
-                        Text("Connect to Spotify (spotify-auth integration, Implicit Grant)")
+                if(!logged) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Button(onClick = {
+                            downloadViewModel.spotifyPkceLogin(activity)
+                        }) {
+                            Text("Connect to Spotify (spotify-web-api-kotlin integration, PKCE auth)")
+                        }
                     }
-                    Button(onClick = {
-                        downloadViewModel.spotifyPkceLogin(activity)
-                    }) {
-                        Text("Connect to Spotify (spotify-web-api-kotlin integration, PKCE auth)")
+                } else{
+                    Column(modifier = Modifier.fillMaxSize().align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center) {
+                        Text(text = "Logged",
+                            modifier = Modifier.align(Alignment.CenterHorizontally))
                     }
                 }
-
             }
         }
     }

@@ -12,6 +12,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
@@ -19,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
@@ -37,8 +40,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderPage
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
+import com.bobbyesp.spowlo.util.PreferencesUtil
+import com.bobbyesp.spowlo.util.PreferencesUtil.IS_LOGGED
 
 private const val TAG = "InitialEntry"
 
@@ -58,6 +65,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     var latestRelease by remember { mutableStateOf(UpdateUtil.LatestRelease()) }
+    val downloaderPageLoaded by remember { mutableStateOf(downloaderViewModel.stateFlow.value.loaded) }
     val settings =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             UpdateUtil.installLatestApk()
@@ -82,7 +90,9 @@ fun InitialEntry(homeViewModel: HomeViewModel,
         }
     }
 
-    val viewState = homeViewModel.stateFlow.collectAsState()
+    val homeviewState = homeViewModel.stateFlow.collectAsState()
+    val downloaderViewState = downloaderViewModel.stateFlow.collectAsState()
+
 
     Box(modifier = modifier){
         Box(
@@ -101,11 +111,11 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     )
                     .align(Alignment.Center),
                 navController = navController,
-                startDestination = Route.HOME)  {
+                startDestination = routeIfLogged())  {
 
                 animatedComposable(Route.HOME){
                     HomePage(navController = navController, homeViewModel = homeViewModel)
-                    if (!viewState.value.loaded){
+                    if (!homeviewState.value.loaded){
                         homeViewModel.setup()
                     }
                 }
@@ -132,12 +142,18 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                         onBackPressed()
                     }
                 }
+                animatedComposable(Route.WELCOME_PAGE){
+                    WelcomePage(navController = navController, activity = activity)
+                }
                 animatedComposable(Route.DOWNLOADER){
                     DownloaderPage(navController = navController,
                         downloadViewModel = downloaderViewModel,
                         activity = activity)
-                }
 
+                    if(!downloaderPageLoaded){
+                        downloaderViewModel.setup()
+                    }
+                }
             }
         }
     }
@@ -184,5 +200,13 @@ fun InitialEntry(homeViewModel: HomeViewModel,
             releaseNote = latestRelease.body.toString(),
             downloadStatus = currentDownloadStatus
         )
+    }
+}
+
+fun routeIfLogged(): String{
+    return if (PreferencesUtil.getValue(IS_LOGGED)){
+        Route.HOME
+    } else {
+        Route.WELCOME_PAGE
     }
 }

@@ -13,5 +13,6 @@ class Route {
         const val DARK_THEME_SELECTOR = "dark_theme_selector"
         const val DOWNLOADER = "downloader"
         const val TEMPLATE = "template"
+        const val WELCOME_PAGE = "welcome_page"
     }
 }

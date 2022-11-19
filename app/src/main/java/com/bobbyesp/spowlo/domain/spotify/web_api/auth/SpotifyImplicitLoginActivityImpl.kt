@@ -9,6 +9,24 @@ import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.util.Utils.makeToast
 
+/*class SpotifyImplicitLoginActivityImpl: AbstractSpotifyAppImplicitLoginActivity() {
+    override val state: Int = 1338
+    override val clientId: String = BuildConfig.SPOTIFY_CLIENT_ID
+    override val redirectUri: String = BuildConfig.SPOTIFY_REDIRECT_URI_AUTH
+    override val useDefaultRedirectHandler: Boolean = false
+    override fun getRequestingScopes(): List<SpotifyScope> = SpotifyScope.values().toList()
+
+    override fun onSuccess(spotifyApi: SpotifyImplicitGrantApi) {
+        val model = (application as Spowlo).model
+        model.credentialStore.setSpotifyApi(spotifyApi)
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
+    override fun onFailure(errorMessage: String) {
+        makeToast("Auth failed: $errorMessage")
+    }
+}*/
+
 class SpotifyImplicitLoginActivityImpl: AbstractSpotifyAppImplicitLoginActivity() {
     override val state: Int = 1337
     override val clientId: String = BuildConfig.SPOTIFY_CLIENT_ID
@@ -23,7 +41,7 @@ class SpotifyImplicitLoginActivityImpl: AbstractSpotifyAppImplicitLoginActivity(
     override fun onSuccess(spotifyApi: SpotifyImplicitGrantApi) {
         val model = (application as Spowlo).model
         model.credentialStore.setSpotifyApi(spotifyApi)
+        makeToast("Authentication via spotify-auth has completed. Launching MainActivity..")
         startActivity(Intent(this, MainActivity::class.java))
     }
-
 }
