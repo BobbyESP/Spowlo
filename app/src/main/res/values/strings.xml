@@ -44,4 +44,15 @@
     <string name="arm64_desc">This type of architecture is based on 64 bit. It can run any Spotify package (32 bit ones are emulated)</string>
     <string name="arm32_desc">This type of architecture is based on 32 bit. It can JUST run ARMEABI packages.</string>
     <string name="check_arch">To check your processor architecture, scroll down till the end of the main page.</string>
+    <string name="custom_command_template">Command template</string>
+    <string name="template_example" translatable="false">--no-mtime -f \"bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] /         bv*+ba/b\"</string>
+    <string name="home">Home</string>
+    <string name="downloader">Downloader</string>
+    <string name="login">Log in into Spotify</string>
+    <string name="enter_without_login">Enter without login</string>
+    <string name="searcher">Searcher</string>
+    <string name="search_song">Search a song</string>
+    <string name="SPOTIFY_REDIRECT_URI_AUTH" translatable="false">\"spowlo://spotify-auth\"</string>
+    <string name="SPOTIFY_REDIRECT_URI_PKCE" translatable="false">\"spowlo://spotify-pkce\"</string>
+    <string name="SPOTIFY_CLIENT_ID" translatable="false">\"abcad8ba647d4b0ebae797a8f444ac9b\"</string>
 </resources>

@@ -6,12 +6,16 @@ buildscript {
     val accompanistVersion by extra("0.25.1")
     val composeMd3Version by extra("1.0.0-beta03")
     val coilVersion by extra("2.2.1")
+    val youtubedlAndroidVersion by extra("0.14.0")
     val okhttpVersion by extra("5.0.0-alpha.10")
     val kotlinVersion by extra("1.7.10")
     val hiltVersion by extra("2.44")
+    val spotifyLibrary by extra("3.8.8")
 
     repositories {
         mavenCentral()
+        //add jitpack repository
+        maven("https://jitpack.io")
     }
     dependencies {
 

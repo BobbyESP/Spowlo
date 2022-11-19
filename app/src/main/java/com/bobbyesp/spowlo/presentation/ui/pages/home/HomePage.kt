@@ -49,14 +49,6 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val amoledVersions = viewState.value.amoled_versions
     val amoledClonedVersions = viewState.value.amoled_cloned_versions
 
-    val archs by remember{
-        mutableStateOf(
-            listOf(
-                ArchType.Arm64,
-                ArchType.Arm
-            ).random()
-        )
-    }
     with(viewState.value){
         Box(
             modifier = Modifier
@@ -64,14 +56,17 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                 .background(MaterialTheme.colorScheme.background)
         ){
             Scaffold(modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
                 topBar = {
                     TopAppBar(
                         title = {},
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                            .fillMaxWidth(),
                         navigationIcon = {
-                            IconButton(onClick = {navController.navigate(Route.SETTINGS) }) {
+                            IconButton(onClick = {
+                                navController.navigate(Route.SETTINGS)
+                            }) {
                                 Icon(
                                     imageVector = Icons.Outlined.Settings,
                                     contentDescription = stringResource(id = R.string.settings)
@@ -90,7 +85,7 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                         Row(modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.Start)
-                            .padding(start = 8.dp, top = 12.dp, bottom = 12.dp))
+                            .padding(start = 8.dp, top = 12.dp, bottom = 12.dp, end = 8.dp))
                         {
                             Text(
                                 modifier = Modifier,

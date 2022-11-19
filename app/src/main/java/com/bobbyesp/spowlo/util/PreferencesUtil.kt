@@ -39,6 +39,10 @@ object PreferencesUtil {
     const val DYNAMIC_COLOR = "dynamic_color"
     const val LANGUAGE = "language"
     const val SPOTIFY_URL = "spotify_url"
+    const val AUDIO_DIRECTORY = "audio_directory"
+    const val TEMPLATE_INDEX = "template_index"
+    const val TEMPLATE = "template"
+    const val IS_LOGGED = "isLogged"
 
     const val SYSTEM_DEFAULT = 0
 
