@@ -68,9 +68,7 @@ class MainActivity : ComponentActivity() {
                 )
         }
         context = this.baseContext
-        guardValidSpotifyApi(MainActivity::class.java) { api ->
-            if (!api.isTokenValid(true).isValid)
-                throw SpotifyException.ReAuthenticationNeededException()
+
             setContent {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
@@ -130,7 +128,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
 
     companion object {
         private const val TAG = "MainActivity"
