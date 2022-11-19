@@ -14,7 +14,7 @@ import com.bobbyesp.spowlo.domain.spotify.web_api.auth.pkceClassBackTo
 import kotlinx.coroutines.runBlocking
 
 fun <T> Activity.guardValidSpotifyApi(
-    classBackTo: Class<out Activity>,
+    classBackTo: Class<out Activity>? = null,
     alreadyTriedToReauthenticate: Boolean = false,
     block: suspend (api: SpotifyClientApi) -> T
 ): T? {

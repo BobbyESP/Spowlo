@@ -4,16 +4,23 @@ import android.app.Activity
 import android.util.Log
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
+import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
 import com.bobbyesp.spowlo.data.auth.AuthModel
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
+import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.util.Utils.makeToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,6 +31,10 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(DownloaderViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     private var currentJob: Job? = null
+
+    private val _searchQuery = mutableStateOf("")
+    val searchQuery: State<String> = _searchQuery
+
 
     data class DownloaderViewState(
         val spotUrl: String = "",
@@ -41,24 +52,25 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
         val drawerState: Boolean = false,
         val logged: Boolean = false,
         val loaded: Boolean = false,
-        val recentBroadcasts: List<SpotifyBroadcastEventData> = mutableListOf()
+        val recentBroadcasts: List<SpotifyBroadcastEventData> = mutableListOf(),
+        val listOfTracks: List<Track> = mutableListOf(),
+        val activity: Activity? = MainActivity(),
         /*val drawerState: ModalBottomSheetState = ModalBottomSheetState(
             ModalBottomSheetValue.Hidden,
             isSkipHalfExpanded = true
         ),*/
     )
 
-    fun setup(){
+    fun setup() {
         currentJob = CoroutineScope(Job()).launch {
             mutableStateFlow.update {
-                if(AuthModel.credentialStore.spotifyToken != null){
+                if (AuthModel.credentialStore.spotifyToken != null) {
                     it.copy(logged = true)
                 } else {
                     it.copy(logged = false)
                 }
             }
-            if(AuthModel.credentialStore.spotifyToken == null)
-            {
+            if (AuthModel.credentialStore.spotifyToken == null) {
                 spotifyPkceLogin()
                 Log.d("DownloaderViewModel", "Spotify token is null, relogging")
             }
@@ -68,11 +80,38 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun spotifyImplicitLogin(activity: Activity? = null){
+    fun onSearch(query: String, activity: Activity? = DownloaderViewState().activity) {
+        Log.d("DownloaderViewModel", "onSearch: $activity")
+        _searchQuery.value = query
+        currentJob?.cancel()
+        currentJob = viewModelScope.launch {
+            delay(500L)
+            try {
+                val tracks =
+                    activity?.guardValidSpotifyApi(classBackTo = MainActivity::class.java) { api ->
+                        //if query is not empty, search for it
+                        if (query.isNotEmpty()) {
+                            api.search.searchTrack(query).items
+                        } else {
+                            //if query is empty, make the tracks list empty
+                            listOf()
+                        }
+                    }
+                mutableStateFlow.update {
+                    it.copy(listOfTracks = tracks ?: listOf())
+                }
+                Log.d("DownloaderViewModel", "Search query: $tracks")
+            } catch (e: Exception) {
+                Log.d("DownloaderViewModel", "Error: $e")
+            }
+        }
+    }
+
+    fun spotifyImplicitLogin(activity: Activity? = null) {
         activity?.startSpotifyImplicitLoginActivity<SpotifyImplicitLoginActivityImpl>()
     }
 
-    fun spotifyPkceLogin(activity: Activity? = null){
+    fun spotifyPkceLogin(activity: Activity? = null) {
         activity?.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
     }
 
@@ -83,6 +122,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
                 isUrlSharingTriggered = isUrlSharingTriggered
             )
         }
+
     fun hideDialog(scope: CoroutineScope, isDialog: Boolean) {
         scope.launch {
             if (isDialog)

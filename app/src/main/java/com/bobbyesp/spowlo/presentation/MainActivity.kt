@@ -61,14 +61,13 @@ class MainActivity : ComponentActivity() {
             v.setPadding(0, 0, 0, 0)
             insets
         }
-       runBlocking {
+        context = this.baseContext
+        runBlocking {
             if (Build.VERSION.SDK_INT < 33)
                 AppCompatDelegate.setApplicationLocales(
                     LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
                 )
         }
-        context = this.baseContext
-
             setContent {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
