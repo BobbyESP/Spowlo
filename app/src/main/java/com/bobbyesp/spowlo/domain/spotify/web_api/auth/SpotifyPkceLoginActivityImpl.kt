@@ -5,6 +5,7 @@ import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyScope
 import com.adamratzman.spotify.auth.pkce.AbstractSpotifyPkceLoginActivity
 import com.bobbyesp.spowlo.BuildConfig
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.util.Utils.makeToast
@@ -12,8 +13,8 @@ import com.bobbyesp.spowlo.util.Utils.makeToast
 internal var pkceClassBackTo: Class<out Activity>? = null
 
 class SpotifyPkceLoginActivityImpl: AbstractSpotifyPkceLoginActivity() {
-    override val clientId = BuildConfig.SPOTIFY_CLIENT_ID
-    override val redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE
+    override val clientId = R.string.SPOTIFY_CLIENT_ID.toString()
+    override val redirectUri = R.string.SPOTIFY_REDIRECT_URI_PKCE.toString()
     override val scopes = SpotifyScope.values().toList()
 
     override fun onFailure(exception: Exception) {

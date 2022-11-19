@@ -1,14 +1,10 @@
 package com.bobbyesp.spowlo.domain.spotify.web_api.utilities
 
 import android.app.Activity
-import android.util.Log
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
-import com.adamratzman.spotify.auth.SpotifyDefaultCredentialStore
-import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.pkceClassBackTo
 import kotlinx.coroutines.runBlocking

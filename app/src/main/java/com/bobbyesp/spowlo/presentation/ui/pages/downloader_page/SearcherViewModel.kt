@@ -11,7 +11,6 @@ import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
 import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.MainActivity
@@ -102,10 +101,6 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
                 Log.d("DownloaderViewModel", "Error: $e")
             }
         }
-    }
-
-    fun spotifyImplicitLogin(activity: Activity? = null) {
-        activity?.startSpotifyImplicitLoginActivity<SpotifyImplicitLoginActivityImpl>()
     }
 
     fun spotifyPkceLogin(activity: Activity? = null) {
