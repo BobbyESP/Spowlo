@@ -44,4 +44,8 @@
     <string name="custom_command_template">Plantilla de comando</string>
     <string name="home">Inicio</string>
     <string name="downloader">Descargador</string>
+    <string name="login">Inicia sesión en Spotify</string>
+    <string name="enter_without_login">Entra sin iniciar sesión</string>
+    <string name="searcher">Buscador</string>
+    <string name="search_song">Busca una canción</string>
 </resources>

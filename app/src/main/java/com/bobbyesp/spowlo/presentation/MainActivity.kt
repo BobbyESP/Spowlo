@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,17 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.adamratzman.spotify.SpotifyException
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
-import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.PreferencesUtil
@@ -48,7 +46,7 @@ import kotlinx.coroutines.runBlocking
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
-    private val downloaderViewModel: DownloaderViewModel by viewModels()
+    private val searcherViewModel: SearcherViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
@@ -73,10 +71,13 @@ class MainActivity : ComponentActivity() {
                 val windowSizeClass = calculateWindowSizeClass(this)
                 //if the current route is not in the list of routes, then hide the nav bar modifying the visible var
                 val visible = remember { mutableStateOf(true) }
-                //if current route is not home or settings, change the visible var to false
+
+                /*if current route is not home or settings, change the visible var to false
+                * INFO: Hide the navbar when the user is in a page that is not the ones that are in the navbar
+                 */
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     visible.value =
-                        destination.route in listOf(Route.HOME, Route.SETTINGS, Route.DOWNLOADER)
+                        destination.route in listOf(Route.HOME, Route.SETTINGS, Route.SEARCHER_PAGE)
                 }
                 SettingsProvider(windowSizeClass.widthSizeClass) {
                     SpowloTheme(
@@ -100,9 +101,9 @@ class MainActivity : ComponentActivity() {
                                             route = Route.SETTINGS,
                                         ),
                                         NavBarItem(
-                                            name = stringResource(id = R.string.downloader),
-                                            icon = Icons.Filled.Download,
-                                            route = Route.DOWNLOADER,
+                                            name = stringResource(id = R.string.searcher),
+                                            icon = Icons.Filled.Search,
+                                            route = Route.SEARCHER_PAGE,
                                         ),
                                     ), navController = navController,
                                     onItemClicked = {
@@ -119,7 +120,7 @@ class MainActivity : ComponentActivity() {
                                 homeViewModel,
                                 modifier = Modifier.padding(paddingValues = it),
                                 navController = navController,
-                                downloaderViewModel = downloaderViewModel,
+                                searcherViewModel = searcherViewModel,
                                 activity = this@MainActivity
                             )
                         }

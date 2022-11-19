@@ -2,8 +2,6 @@ package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
 import android.app.Activity
 import android.util.Log
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,7 +15,6 @@ import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActiv
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.MainActivity
-import com.bobbyesp.spowlo.util.Utils.makeToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DownloaderViewModel @Inject constructor() : ViewModel() {
+class SearcherViewModel @Inject constructor() : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(DownloaderViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     private var currentJob: Job? = null

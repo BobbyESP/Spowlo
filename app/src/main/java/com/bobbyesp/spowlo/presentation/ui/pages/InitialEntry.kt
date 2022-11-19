@@ -12,8 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
@@ -21,7 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
@@ -40,9 +37,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.presentation.MainActivity
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderPage
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.DownloaderViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.IS_LOGGED
@@ -54,7 +50,7 @@ private const val TAG = "InitialEntry"
 fun InitialEntry(homeViewModel: HomeViewModel,
                  modifier: Modifier = Modifier,
                  navController: NavHostController,
-                 downloaderViewModel: DownloaderViewModel,
+                 searcherViewModel: SearcherViewModel,
                  activity: androidx.activity.ComponentActivity? = null)
 {
 
@@ -65,7 +61,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     var latestRelease by remember { mutableStateOf(UpdateUtil.LatestRelease()) }
-    val downloaderPageLoaded by remember { mutableStateOf(downloaderViewModel.stateFlow.value.loaded) }
+    val searcherPageLoaded by remember { mutableStateOf(searcherViewModel.stateFlow.value.loaded) }
     val settings =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             UpdateUtil.installLatestApk()
@@ -91,7 +87,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     }
 
     val homeviewState = homeViewModel.stateFlow.collectAsState()
-    val downloaderViewState = downloaderViewModel.stateFlow.collectAsState()
+    val searcherViewState = searcherViewModel.stateFlow.collectAsState()
 
 
     Box(modifier = modifier){
@@ -145,13 +141,13 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                 animatedComposable(Route.WELCOME_PAGE){
                     WelcomePage(navController = navController, activity = activity)
                 }
-                animatedComposable(Route.DOWNLOADER){
-                    DownloaderPage(navController = navController,
-                        downloadViewModel = downloaderViewModel,
+                animatedComposable(Route.SEARCHER_PAGE){
+                    SearcherPage(navController = navController,
+                        searcherViewModel = searcherViewModel,
                         activity = activity)
 
-                    if(!downloaderPageLoaded){
-                        downloaderViewModel.setup()
+                    if(!searcherPageLoaded){
+                        searcherViewModel.setup()
                     }
                 }
             }

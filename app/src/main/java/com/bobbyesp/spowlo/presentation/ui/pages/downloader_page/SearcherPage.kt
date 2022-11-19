@@ -20,11 +20,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 
 import com.bobbyesp.spowlo.data.auth.AuthModel
@@ -36,13 +38,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
     ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class
 )
 @Composable
-fun DownloaderPage(
+fun SearcherPage(
     navController: NavController,
-    downloadViewModel: DownloaderViewModel = hiltViewModel(),
+    searcherViewModel: SearcherViewModel = hiltViewModel(),
     activity: Activity? = null
 ) {
     lateinit var model: AuthModel
-    val viewState = downloadViewModel.stateFlow.collectAsState()
+    val viewState = searcherViewModel.stateFlow.collectAsState()
 
     with(viewState.value) {
         Box(
@@ -59,7 +61,7 @@ fun DownloaderPage(
                 if (!logged) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Button(onClick = {
-                            downloadViewModel.spotifyPkceLogin(activity)
+                            searcherViewModel.spotifyPkceLogin(activity)
                         }) {
                             Text("Connect to Spotify (spotify-web-api-kotlin integration, PKCE auth)")
                         }
@@ -79,8 +81,8 @@ fun DownloaderPage(
                             verticalArrangement = Arrangement.Top
                         ) {
                             SearchSongTextBox(
-                                songName = downloadViewModel.searchQuery.value,
-                                onValueChange = downloadViewModel::onSearch
+                                songName = searcherViewModel.searchQuery.value,
+                                onValueChange = searcherViewModel::onSearch,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             LazyColumn {
@@ -119,9 +121,11 @@ fun SearchSongTextBox(
     OutlinedTextField(
         value = songName,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
         placeholder = {
-            Text("Search song")
+            Text(stringResource(id = R.string.search_song))
         },
         leadingIcon = {
             Icon(imageVector = Icons.Rounded.Search, contentDescription = null)

@@ -50,4 +50,6 @@
     <string name="downloader">Downloader</string>
     <string name="login">Log in into Spotify</string>
     <string name="enter_without_login">Enter without login</string>
+    <string name="searcher">Searcher</string>
+    <string name="search_song">Search a song</string>
 </resources>
