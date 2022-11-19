@@ -1,8 +1,12 @@
 package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
@@ -16,14 +20,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusTarget
+
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
-import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
+import com.bobbyesp.spowlo.Spowlo.Companion.context
+
 import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
+import com.bobbyesp.spowlo.presentation.ui.components.songs.TrackItem
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @OptIn(
@@ -39,19 +44,19 @@ fun DownloaderPage(
     lateinit var model: AuthModel
     val viewState = downloadViewModel.stateFlow.collectAsState()
 
-    with(viewState.value){
+    with(viewState.value) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-        ){
+        ) {
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                color = MaterialTheme.colorScheme.background
-            ){
-                if(!logged) {
+                color = MaterialTheme.colorScheme.background,
+            ) {
+                if (!logged) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Button(onClick = {
                             downloadViewModel.spotifyPkceLogin(activity)
@@ -59,17 +64,43 @@ fun DownloaderPage(
                             Text("Connect to Spotify (spotify-web-api-kotlin integration, PKCE auth)")
                         }
                     }
-                } else{
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center),
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.Top
+                        ) {
                             SearchSongTextBox(
                                 songName = downloadViewModel.searchQuery.value,
                                 onValueChange = downloadViewModel::onSearch
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LazyColumn {
+                                items(
+                                    items = listOfTracks, itemContent = { track ->
+                                        TrackItem(track = track, onClick = {
+                                            val browserIntent =
+                                                Intent(
+                                                    Intent.ACTION_VIEW,
+                                                    Uri.parse(track.externalUrls.first { it.name == "spotify" }.url)
+                                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            ContextCompat.startActivity(
+                                                context,
+                                                browserIntent,
+                                                null
+                                            )
+                                        })
+                                        Divider()
+                                    })
+                            }
                         }
                     }
                 }
@@ -78,12 +109,13 @@ fun DownloaderPage(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchSongTextBox(
     songName: String,
     onValueChange: (String) -> Unit
-){
+) {
     OutlinedTextField(
         value = songName,
         onValueChange = onValueChange,
@@ -95,7 +127,7 @@ fun SearchSongTextBox(
             Icon(imageVector = Icons.Rounded.Search, contentDescription = null)
         },
         trailingIcon = {
-            if(songName.isNotEmpty()){
+            if (songName.isNotEmpty()) {
                 IconButton(onClick = {
                     onValueChange("")
                 }) {
@@ -122,7 +154,7 @@ fun SearchSongTextBox(
             errorCursorColor = MaterialTheme.colorScheme.primary,
             errorLeadingIconColor = MaterialTheme.colorScheme.primary,
             errorTrailingIconColor = MaterialTheme.colorScheme.primary,
-            backgroundColor = MaterialTheme.colorScheme.background,
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
         )
     )
 }
