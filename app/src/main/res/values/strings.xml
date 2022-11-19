@@ -52,7 +52,7 @@
     <string name="enter_without_login">Enter without login</string>
     <string name="searcher">Searcher</string>
     <string name="search_song">Search a song</string>
-    <string name="SPOTIFY_REDIRECT_URI_AUTH" translatable="false">spowlo://spotify-auth</string>
-    <string name="SPOTIFY_REDIRECT_URI_PKCE" translatable="false">spowlo://spotify-pkce</string>
-    <string name="SPOTIFY_CLIENT_ID" translatable="false">abcad8ba647d4b0ebae797a8f444ac9b</string>
+    <string name="SPOTIFY_REDIRECT_URI_AUTH" translatable="false">\"spowlo://spotify-auth\"</string>
+    <string name="SPOTIFY_REDIRECT_URI_PKCE" translatable="false">\"spowlo://spotify-pkce\"</string>
+    <string name="SPOTIFY_CLIENT_ID" translatable="false">\"abcad8ba647d4b0ebae797a8f444ac9b\"</string>
 </resources>
