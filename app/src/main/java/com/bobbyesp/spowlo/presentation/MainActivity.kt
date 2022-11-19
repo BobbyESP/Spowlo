@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                  */
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     visible.value =
-                        destination.route in listOf(Route.HOME, Route.SETTINGS, Route.SEARCHER_PAGE)
+                        destination.route in listOf(Route.HOME, /*Route.SETTINGS,*/ Route.SEARCHER_PAGE)
                 }
                 SettingsProvider(windowSizeClass.widthSizeClass) {
                     SpowloTheme(
@@ -95,11 +95,11 @@ class MainActivity : ComponentActivity() {
                                             icon = Icons.Filled.Home,
                                             route = Route.HOME
                                         ),
-                                        NavBarItem(
+                                        /*NavBarItem(
                                             name = stringResource(id = R.string.settings),
                                             icon = Icons.Filled.Settings,
                                             route = Route.SETTINGS,
-                                        ),
+                                        ),*/
                                         NavBarItem(
                                             name = stringResource(id = R.string.searcher),
                                             icon = Icons.Filled.Search,
