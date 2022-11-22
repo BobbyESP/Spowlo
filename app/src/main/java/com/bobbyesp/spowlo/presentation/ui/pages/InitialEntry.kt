@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -37,9 +38,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
+import com.bobbyesp.spowlo.util.FileUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.IS_LOGGED
 
@@ -61,7 +65,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     var latestRelease by remember { mutableStateOf(UpdateUtil.LatestRelease()) }
-    val searcherPageLoaded by remember { mutableStateOf(searcherViewModel.stateFlow.value.loaded) }
+    val searcherPageLoaded by remember { mutableStateOf(searcherViewModel.stateFlow.value.pageLoaded) }
     val settings =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             UpdateUtil.installLatestApk()
@@ -148,6 +152,11 @@ fun InitialEntry(homeViewModel: HomeViewModel,
 
                     if(!searcherPageLoaded){
                         searcherViewModel.setup()
+                    }
+                }
+                animatedComposable(Route.DOWNLOAD_DIRECTORY){
+                    DownloadDirectoryPreferences {
+                        onBackPressed()
                     }
                 }
             }

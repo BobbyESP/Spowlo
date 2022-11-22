@@ -11,6 +11,7 @@ import com.bobbyesp.spowlo.util.DatabaseUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.util.PreferencesUtil.TEMPLATE_INDEX
+import com.bobbyesp.spowlo.util.PreferencesUtil.VIDEO_DIRECTORY
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -55,12 +56,18 @@ class Spowlo : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
+        lateinit var videoDownloadDir: String
         var ytdlpVersion = ""
         lateinit var connectivityManager: ConnectivityManager
 
-        fun updateDownloadDir(path: String) {
-            audioDownloadDir = path
-            PreferencesUtil.updateString(AUDIO_DIRECTORY, path)
+        fun updateDownloadDir(path: String, isAudio: Boolean = false) {
+            if (isAudio) {
+                audioDownloadDir = path
+                PreferencesUtil.updateString(AUDIO_DIRECTORY, path)
+            } else {
+                videoDownloadDir = path
+                PreferencesUtil.updateString(VIDEO_DIRECTORY, path)
+            }
         }
 
         @SuppressLint("StaticFieldLeak")

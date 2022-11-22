@@ -41,7 +41,7 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val scope = rememberCoroutineScope()
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
-   // val keyboardController = LocalSoftwareKeyboardController.current
+    // val keyboardController = LocalSoftwareKeyboardController.current
     val viewState = homeViewModel.stateFlow.collectAsState()
 
     val regularVersions = viewState.value.regular_versions
@@ -49,19 +49,22 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val amoledVersions = viewState.value.amoled_versions
     val amoledClonedVersions = viewState.value.amoled_cloned_versions
 
-    with(viewState.value){
+    with(viewState.value) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-        ){
-            Scaffold(modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+        ) {
+            Scaffold(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 topBar = {
                     TopAppBar(
-                        title = {},
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        title = {
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
                             .fillMaxWidth(),
                         navigationIcon = {
                             IconButton(onClick = {
@@ -74,18 +77,24 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                             }
                         })
                 }) {
-                Column(modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()))
+                Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                )
                 {
-                    Column(modifier = Modifier
-                        .padding(16.dp))
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                    )
                     {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Start)
-                            .padding(start = 8.dp, top = 12.dp, bottom = 12.dp, end = 8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Start)
+                                .padding(start = 8.dp, top = 12.dp, bottom = 12.dp, end = 8.dp)
+                        )
                         {
                             Text(
                                 modifier = Modifier,
@@ -93,18 +102,36 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                                 style = MaterialTheme.typography.displaySmall
                             )
                         }
-                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions.sortedByDescending { it.Title })
+                        PackagesListItem(
+                            type = PackagesListItemType.Regular,
+                            expanded = false,
+                            onClick = {},
+                            packages = regularVersions.sortedByDescending { it.Title })
+                        PackagesListItem(
+                            type = PackagesListItemType.RegularCloned,
+                            expanded = false,
+                            onClick = {},
+                            packages = regularClonedVersions.sortedByDescending { it.Title })
+                        PackagesListItem(
+                            type = PackagesListItemType.Amoled,
+                            expanded = false,
+                            onClick = {},
+                            packages = amoledVersions.sortedByDescending { it.Title })
+                        PackagesListItem(
+                            type = PackagesListItemType.AmoledCloned,
+                            expanded = false,
+                            onClick = {},
+                            packages = amoledClonedVersions.sortedByDescending { it.Title })
                         Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
                         AnimatedVisibility(visible = loaded) {
-                            when(loaded){
+                            when (loaded) {
                                 false -> {
                                     Box(modifier = Modifier.fillMaxWidth()) {
-                                        CircularProgressIndicator(modifier = Modifier
-                                            .align(Alignment.Center)
-                                            .size(24.dp))
+                                        CircularProgressIndicator(
+                                            modifier = Modifier
+                                                .align(Alignment.Center)
+                                                .size(24.dp)
+                                        )
                                     }
                                 }
                                 true -> {

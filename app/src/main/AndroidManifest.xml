@@ -3,35 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
         android:minSdkVersion="33" />
+
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- Add this permission if your app requires full disk access -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
     <queries>
-        <package android:name="com.spotify.music"/>
-        <package android:name="com.spotify.musix"/>
+        <package android:name="com.spotify.music" />
+        <package android:name="com.spotify.musix" />
     </queries>
 
     <application
         android:name=".Spowlo"
         android:allowBackup="true"
         android:extractNativeLibs="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@drawable/spowlo_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/spowlo_icon"
         android:localeConfig="@xml/locales_config"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@drawable/spowlo_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Spowlo"
         tools:targetApi="tiramisu">
@@ -48,14 +57,15 @@
             </intent-filter>
 
         </activity>
+
         <provider
-            android:authorities="com.bobbyesp.spowlo.provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
@@ -65,24 +75,31 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
+
         <activity
             android:name="com.spotify.sdk.android.auth.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
-                <data android:scheme="spowlo" android:host="spotify-auth" />
+                <data
+                    android:host="spotify-auth"
+                    android:scheme="spowlo" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl"
-            android:launchMode="singleTop" android:exported="true">
+        <activity
+            android:name=".domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl"
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="spowlo" android:host="spotify-pkce" />
+                <data
+                    android:host="spotify-pkce"
+                    android:scheme="spowlo" />
             </intent-filter>
         </activity>
 
