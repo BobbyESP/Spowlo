@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
+package com.bobbyesp.spowlo.presentation.ui.pages.searcher_page
 
 import android.app.Activity
 import android.content.Intent
@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -26,12 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.adamratzman.spotify.SpotifyException
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 
 import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
+import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.components.songs.TrackItem
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class,
@@ -63,7 +69,7 @@ fun SearcherPage(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center) {
                         Button(onClick = {
-                            searcherViewModel.spotifyPkceLogin(activity)
+                            searcherViewModel.spotifyPkceLogin()
                         }) {
                             Text(stringResource(id = R.string.login))
                         }
@@ -121,6 +127,11 @@ fun SearcherPage(
                     }
                 }
             }
+        }
+    }
+    LaunchedEffect(navController){
+        launch {
+            searcherViewModel.setup()
         }
     }
 }

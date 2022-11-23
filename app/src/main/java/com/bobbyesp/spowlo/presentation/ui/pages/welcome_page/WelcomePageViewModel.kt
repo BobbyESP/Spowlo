@@ -27,8 +27,5 @@ class WelcomePageViewModel@Inject constructor() : ViewModel() {
         activity?.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
         PreferencesUtil.updateValue(IS_LOGGED, true)
         navController.navigate(Route.HOME)
-
     }
-
-
 }

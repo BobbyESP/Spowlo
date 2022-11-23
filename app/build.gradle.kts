@@ -88,13 +88,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
             if (keystorePropertiesFile.exists())
-                signingConfig = signingConfigs.getByName("debug")
+                signingConfig = signingConfigs.getByName("release")
             buildConfigField("String",
                 "SPOTIFY_CLIENT_ID",
                 "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
+
             buildConfigField("String",
                 "SPOTIFY_REDIRECT_URI",
                 "\"spowlo://spotify-auth\"")
+
             buildConfigField(
                 "String",
                 "SPOTIFY_REDIRECT_URI_PKCE",

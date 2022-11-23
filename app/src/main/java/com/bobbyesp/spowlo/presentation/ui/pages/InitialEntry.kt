@@ -1,11 +1,11 @@
 package com.bobbyesp.spowlo.presentation.ui.pages
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.adamratzman.spotify.SpotifyException
 import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
@@ -38,12 +39,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.Spowlo
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
+import com.bobbyesp.spowlo.presentation.MainActivity
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherPage
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
-import com.bobbyesp.spowlo.util.FileUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.IS_LOGGED
 
@@ -51,12 +52,13 @@ private const val TAG = "InitialEntry"
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun InitialEntry(homeViewModel: HomeViewModel,
-                 modifier: Modifier = Modifier,
-                 navController: NavHostController,
-                 searcherViewModel: SearcherViewModel,
-                 activity: androidx.activity.ComponentActivity? = null)
-{
+fun InitialEntry(
+    homeViewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    searcherViewModel: SearcherViewModel,
+    activity: androidx.activity.ComponentActivity? = null
+) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -94,12 +96,12 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     val searcherViewState = searcherViewModel.stateFlow.collectAsState()
 
 
-    Box(modifier = modifier){
+    Box(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
-        ){
+        ) {
             AnimatedNavHost(
                 modifier = Modifier
                     .fillMaxWidth(
@@ -111,50 +113,45 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     )
                     .align(Alignment.Center),
                 navController = navController,
-                startDestination = routeIfLogged())  {
+                startDestination = routeIfLogged()
+            ) {
 
-                animatedComposable(Route.HOME){
+                animatedComposable(Route.HOME) {
                     HomePage(navController = navController, homeViewModel = homeViewModel)
-                    if (!homeviewState.value.loaded){
-                        homeViewModel.setup()
-                    }
                 }
 
-                animatedComposable(Route.SETTINGS){
+                animatedComposable(Route.SETTINGS) {
                     SettingsPage(navController)
                 }
 
-                animatedComposable(Route.ABOUT){
+                animatedComposable(Route.ABOUT) {
                 }
 
-                animatedComposable(Route.DISPLAY_SETTINGS){
+                animatedComposable(Route.DISPLAY_SETTINGS) {
                     AppearancePreferences(navController)
                 }
 
-                animatedComposable(Route.LANGUAGES){
-                    LanguagesPreferences{
+                animatedComposable(Route.LANGUAGES) {
+                    LanguagesPreferences {
                         onBackPressed()
                     }
                 }
 
-                animatedComposable(Route.DARK_THEME_SELECTOR){
+                animatedComposable(Route.DARK_THEME_SELECTOR) {
                     DarkThemePreferences {
                         onBackPressed()
                     }
                 }
-                animatedComposable(Route.WELCOME_PAGE){
+                animatedComposable(Route.WELCOME_PAGE) {
                     WelcomePage(navController = navController, activity = activity)
                 }
-                animatedComposable(Route.SEARCHER_PAGE){
-                    SearcherPage(navController = navController,
-                        searcherViewModel = searcherViewModel,
-                        activity = activity)
-
-                    if(!searcherPageLoaded){
-                        searcherViewModel.setup()
-                    }
+                animatedComposable(Route.SEARCHER_PAGE) {
+                    SearcherPage(
+                        navController = navController,
+                        searcherViewModel = searcherViewModel
+                    )
                 }
-                animatedComposable(Route.DOWNLOAD_DIRECTORY){
+                animatedComposable(Route.DOWNLOAD_DIRECTORY) {
                     DownloadDirectoryPreferences {
                         onBackPressed()
                     }
@@ -208,8 +205,8 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     }
 }
 
-fun routeIfLogged(): String{
-    return if (PreferencesUtil.getValue(IS_LOGGED)){
+fun routeIfLogged(): String {
+    return if (PreferencesUtil.getValue(IS_LOGGED)) {
         Route.HOME
     } else {
         Route.WELCOME_PAGE

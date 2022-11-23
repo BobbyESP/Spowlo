@@ -15,15 +15,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,6 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.adamratzman.spotify.SpotifyException
+import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.anggrayudi.storage.SimpleStorageHelper
 import com.anggrayudi.storage.permission.ActivityPermissionRequest
 import com.anggrayudi.storage.permission.PermissionCallback
@@ -40,11 +39,14 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
+import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.util.FileUtil
@@ -57,6 +59,8 @@ import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    lateinit var model: AuthModel
 
     private val permissionRequest = ActivityPermissionRequest.Builder(this)
         .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -77,6 +81,7 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val searcherViewModel: SearcherViewModel by viewModels()
     private val storageHelper = SimpleStorageHelper(this)
+    private val activity = this
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
@@ -105,6 +110,14 @@ class MainActivity : ComponentActivity() {
         runBlocking {
             permissionRequest.check()
         }
+
+        //model = (application as Spowlo).model
+
+
+
+      /*  activity.guardValidSpotifyApi(MainActivity::class.java) { api ->
+            if (!api.isTokenValid(true).isValid)
+                throw SpotifyException.ReAuthenticationNeededException() */
             setContent {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
@@ -116,7 +129,10 @@ class MainActivity : ComponentActivity() {
                  */
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     visible.value =
-                        destination.route in listOf(Route.HOME, /*Route.SETTINGS,*/ Route.SEARCHER_PAGE)
+                        destination.route in listOf(
+                            Route.HOME, /*Route.SETTINGS,*/
+                            Route.SEARCHER_PAGE
+                        )
                 }
 
                 SettingsProvider(windowSizeClass.widthSizeClass) {
@@ -163,6 +179,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+//    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -170,6 +187,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        lateinit var context: Context
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")

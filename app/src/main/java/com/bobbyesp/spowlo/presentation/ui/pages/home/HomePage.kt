@@ -31,6 +31,7 @@ import com.bobbyesp.spowlo.presentation.ui.components.PackagesListItemType
 import com.bobbyesp.spowlo.presentation.ui.components.RelevantInfoItem
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import com.bobbyesp.spowlo.util.VersionsUtil
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class,
@@ -126,13 +127,11 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                         AnimatedVisibility(visible = loaded) {
                             when (loaded) {
                                 false -> {
-                                    Box(modifier = Modifier.fillMaxWidth()) {
                                         CircularProgressIndicator(
                                             modifier = Modifier
-                                                .align(Alignment.Center)
                                                 .size(24.dp)
                                         )
-                                    }
+
                                 }
                                 true -> {
                                     RelevantInfoItem(
@@ -147,6 +146,11 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
 
                 }
             }
+        }
+    }
+    LaunchedEffect(navController){
+        launch {
+            homeViewModel.setup()
         }
     }
 }
