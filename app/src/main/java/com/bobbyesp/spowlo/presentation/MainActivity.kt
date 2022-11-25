@@ -70,7 +70,6 @@ class MainActivity : ComponentActivity() {
             override fun onShouldRedirectToSystemSettings(blockedPermissions: List<PermissionReport>) {
                 SimpleStorageHelper.redirectToSystemSettings(this@MainActivity)
             }
-
         })
         .build()
 
@@ -109,7 +108,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
                 //if the current route is not in the list of routes, then hide the nav bar modifying the visible var
-                val visible = remember { mutableStateOf(true) }
+                val visible = remember { mutableStateOf(false) }
 
                 /*if current route is not home or settings, change the visible var to false
                 * INFO: Hide the navbar when the user is in a page that is not the ones that are in the navbar
