@@ -55,6 +55,9 @@
     <string name="SPOTIFY_REDIRECT_URI_AUTH" translatable="false">\"spowlo://spotify-auth\"</string>
     <string name="SPOTIFY_REDIRECT_URI_PKCE" translatable="false">\"spowlo://spotify-pkce\"</string>
     <string name="SPOTIFY_CLIENT_ID" translatable="false">\"abcad8ba647d4b0ebae797a8f444ac9b\"</string>
+    <string name="lite">Spotify Lite</string>
+    <string name="lite_description">"A lightweight version of Spotify with no ads and unlimited skips. "</string>
+    <string name="latest_version">Latest version</string>
     <string name="download_directory">Download directory</string>
     <string name="download_directory_description">Choose where you want to save the files</string>
 </resources>

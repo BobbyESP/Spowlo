@@ -12,6 +12,8 @@ data class APIResponse(
     val RC_Latest: String,
     @SerializedName("ABC_Latest")
     val ABC_Latest: String,
+    @SerializedName("Lite_Latest")
+    val Lite_Latest: String,
     @SerializedName("Regular")
     val Regular: List<PackagesObject>,
     @SerializedName("Amoled")
@@ -19,7 +21,9 @@ data class APIResponse(
     @SerializedName("Regular_Cloned")
     val Regular_Cloned: List<PackagesObject>,
     @SerializedName("Amoled_Cloned")
-    val Amoled_Cloned: List<PackagesObject>
+    val Amoled_Cloned: List<PackagesObject>,
+    @SerializedName("Lite")
+    val Lite: List<PackagesObject>
 ) {
     var status: Status = Status.SUCCESS
     var message: String? = null

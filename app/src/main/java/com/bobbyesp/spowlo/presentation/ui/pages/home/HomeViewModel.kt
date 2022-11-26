@@ -27,17 +27,25 @@ class HomeViewModel @Inject constructor(
     private val mutableStateFlow = MutableStateFlow(HomeViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     private var currentJob: Job? = null
+    private val emptyAPIList: APIResponse = APIResponse("", "", "", "", "", emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
 
     data class HomeViewState(
         val regular_versions: List<PackagesObject> = mutableListOf(),
         val regular_cloned_versions: List<PackagesObject> = mutableListOf(),
         val amoled_versions: List<PackagesObject> = mutableListOf(),
         val amoled_cloned_versions: List<PackagesObject> = mutableListOf(),
+        val liteVersions: List<PackagesObject> = mutableListOf(),
         val cpuArch: String = "",
         val originalSpotifyVersion: String = "",
+        val regularSpotifyVersion: String = "",
         val clonedSpotifyVersion: String = "",
+        val amoledSpotifyVersion: String = "",
+        val amoledClonedSpotifyVersion: String = "",
+        val liteSpotifyVersion: String = "",
         val loaded: Boolean = false,
         val regular_latest_version: String = "",
+        val isError: Boolean = false,
+        val isLoading: Boolean = true,
         )
 
     private val _state = mutableStateOf(APICallState())
@@ -65,6 +73,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun sortPackagesByVersion(list: List<PackagesObject>): List<PackagesObject>{
+        return list.sortedByDescending { it.Title }
+    }
+
    private fun callAPI(){
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
@@ -73,16 +85,7 @@ class HomeViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data ?: APIResponse(
-                                Regular_Latest = "",
-                                Amoled_Latest = "",
-                                RC_Latest = "",
-                                ABC_Latest = "",
-                                Regular = emptyList(),
-                                Amoled = emptyList(),
-                                Regular_Cloned = emptyList(),
-                                Amoled_Cloned = emptyList()
-                            ),
+                            APIResponse = result.data ?: emptyAPIList,
                             isLoading = false
                         )
                         val localAPIResponse = state.value.APIResponse
@@ -94,38 +97,40 @@ class HomeViewModel @Inject constructor(
                                 amoled_versions = localAPIResponse.Amoled,
                                 amoled_cloned_versions = localAPIResponse.Amoled_Cloned,
                                 regular_latest_version = localAPIResponse.Regular_Latest,
+                                liteSpotifyVersion = localAPIResponse.Lite_Latest,
+                                liteVersions = localAPIResponse.Lite,
+                                regularSpotifyVersion = localAPIResponse.Regular_Latest,
+                                amoledSpotifyVersion = localAPIResponse.Amoled_Latest,
+                                amoledClonedSpotifyVersion = localAPIResponse.ABC_Latest,
+                                clonedSpotifyVersion = localAPIResponse.RC_Latest,
+                                //UI stuff
+                                isError = false,
+                                isLoading = false,
                             )
                         }
                     }
                     is Resource.Error -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data ?: APIResponse(
-                                Regular_Latest = "",
-                                Amoled_Latest = "",
-                                RC_Latest = "",
-                                ABC_Latest = "",
-                                Regular = emptyList(),
-                                Amoled = emptyList(),
-                                Regular_Cloned = emptyList(),
-                                Amoled_Cloned = emptyList()
-                            ),
+                            APIResponse = result.data ?: emptyAPIList,
                             isLoading = false
                         )
+                        mutableStateFlow.update {
+                            it.copy(
+                                isError = true,
+                                isLoading = false,
+                            )
+                        }
                     }
                     is Resource.Loading -> {
                         _state.value = state.value.copy(
-                            APIResponse = result.data ?: APIResponse(
-                                Regular_Latest = "",
-                                Amoled_Latest = "",
-                                RC_Latest = "",
-                                ABC_Latest = "",
-                                Regular = emptyList(),
-                                Amoled = emptyList(),
-                                Regular_Cloned = emptyList(),
-                                Amoled_Cloned = emptyList()
-                            ),
+                            APIResponse = result.data ?: emptyAPIList,
                             isLoading = true
                         )
+                        mutableStateFlow.update {
+                            it.copy(
+                                isLoading = true,
+                            )
+                        }
                     }
                 }
             }.launchIn(this)
