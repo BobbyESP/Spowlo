@@ -41,27 +41,35 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
     val scope = rememberCoroutineScope()
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
-   // val keyboardController = LocalSoftwareKeyboardController.current
+    // val keyboardController = LocalSoftwareKeyboardController.current
     val viewState = homeViewModel.stateFlow.collectAsState()
 
     val regularVersions = viewState.value.regular_versions
     val regularClonedVersions = viewState.value.regular_cloned_versions
     val amoledVersions = viewState.value.amoled_versions
     val amoledClonedVersions = viewState.value.amoled_cloned_versions
+    val liteVersions = viewState.value.liteVersions
+    //Version strings
+    val regularLastVersion = viewState.value.regularSpotifyVersion
+    val regularClonedLastVersion = viewState.value.clonedSpotifyVersion
+    val amoledLastVersion = viewState.value.amoledSpotifyVersion
+    val amoledClonedLastVersion = viewState.value.amoledClonedSpotifyVersion
+    val liteLastVersion = viewState.value.liteSpotifyVersion
 
-    with(viewState.value){
+    with(viewState.value) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-        ){
+        ) {
             Scaffold(modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
                 topBar = {
                     TopAppBar(
                         title = {},
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
                             .fillMaxWidth(),
                         navigationIcon = {
                             IconButton(onClick = {
@@ -74,50 +82,102 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                             }
                         })
                 }) {
-                Column(modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()))
+                Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                )
                 {
-                    Column(modifier = Modifier
-                        .padding(16.dp))
-                    {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Start)
-                            .padding(start = 8.dp, top = 12.dp, bottom = 12.dp, end = 8.dp))
-                        {
-                            Text(
-                                modifier = Modifier,
-                                text = stringResource(R.string.app_name),
-                                style = MaterialTheme.typography.displaySmall
+                    if (isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(48.dp)
                             )
                         }
-                        PackagesListItem( type = PackagesListItemType.Regular, expanded = false, onClick = {}, packages = regularVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.RegularCloned, expanded = false, onClick = {}, packages = regularClonedVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.Amoled, expanded = false, onClick = {}, packages = amoledVersions.sortedByDescending { it.Title })
-                        PackagesListItem( type = PackagesListItemType.AmoledCloned, expanded = false, onClick = {}, packages = amoledClonedVersions.sortedByDescending { it.Title })
-                        Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
-                        AnimatedVisibility(visible = loaded) {
-                            when(loaded){
-                                false -> {
-                                    Box(modifier = Modifier.fillMaxWidth()) {
-                                        CircularProgressIndicator(modifier = Modifier
-                                            .align(Alignment.Center)
-                                            .size(24.dp))
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.Start)
+                                    .padding(start = 8.dp, top = 12.dp, bottom = 12.dp, end = 8.dp)
+                            )
+                            {
+                                Text(
+                                    modifier = Modifier,
+                                    text = stringResource(R.string.app_name),
+                                    style = MaterialTheme.typography.displaySmall
+                                )
+                            }
+                            PackagesListItem(
+                                type = PackagesListItemType.Regular,
+                                expanded = false,
+                                onClick = {},
+                                packages = homeViewModel.sortPackagesByVersion(regularVersions), //regularVersions.sortedByDescending { it.Title },
+                                latestVersion = regularLastVersion
+                            )
+                            PackagesListItem(
+                                type = PackagesListItemType.RegularCloned,
+                                expanded = false,
+                                onClick = {},
+                                packages = homeViewModel.sortPackagesByVersion(regularClonedVersions),
+                                latestVersion = regularClonedLastVersion
+                            )
+                            PackagesListItem(
+                                type = PackagesListItemType.Amoled,
+                                expanded = false,
+                                onClick = {},
+                                packages = homeViewModel.sortPackagesByVersion(amoledVersions),
+                                latestVersion = amoledLastVersion
+                            )
+                            PackagesListItem(
+                                type = PackagesListItemType.AmoledCloned,
+                                expanded = false,
+                                onClick = {},
+                                packages = homeViewModel.sortPackagesByVersion(amoledClonedVersions),
+                                latestVersion = amoledClonedLastVersion
+                            )
+                            PackagesListItem(
+                                type = PackagesListItemType.Lite,
+                                expanded = false,
+                                onClick = {},
+                                packages = homeViewModel.sortPackagesByVersion(liteVersions),
+                                latestVersion = liteLastVersion
+                            )
+                            Divider(modifier = Modifier.padding(top = 16.dp, bottom = 14.dp))
+                            AnimatedVisibility(visible = loaded) {
+                                when (loaded) {
+                                    false -> {
+                                        Box(modifier = Modifier.fillMaxWidth()) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier
+                                                    .align(Alignment.Center)
+                                                    .size(24.dp)
+                                            )
+                                        }
                                     }
-                                }
-                                true -> {
-                                    RelevantInfoItem(
-                                        cpuArch = cpuArch,
-                                        originalSpotifyVersion = originalSpotifyVersion,
-                                        clonedSpotifyVersion = clonedSpotifyVersion,
-                                    )
+                                    true -> {
+                                        RelevantInfoItem(
+                                            cpuArch = cpuArch,
+                                            originalSpotifyVersion = originalSpotifyVersion,
+                                            clonedSpotifyVersion = clonedSpotifyVersion,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -86,7 +87,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
         }
     }
 
-    val homeviewState = homeViewModel.stateFlow.collectAsState()
+    val homeViewState = homeViewModel.stateFlow.collectAsState()
     val searcherViewState = searcherViewModel.stateFlow.collectAsState()
 
 
@@ -94,7 +95,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background)
         ){
             AnimatedNavHost(
                 modifier = Modifier
@@ -111,7 +112,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
 
                 animatedComposable(Route.HOME){
                     HomePage(navController = navController, homeViewModel = homeViewModel)
-                    if (!homeviewState.value.loaded){
+                    if (!homeViewState.value.loaded){
                         homeViewModel.setup()
                     }
                 }

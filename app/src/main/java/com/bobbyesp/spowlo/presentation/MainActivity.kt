@@ -95,11 +95,6 @@ class MainActivity : ComponentActivity() {
                                             icon = Icons.Filled.Home,
                                             route = Route.HOME
                                         ),
-                                        /*NavBarItem(
-                                            name = stringResource(id = R.string.settings),
-                                            icon = Icons.Filled.Settings,
-                                            route = Route.SETTINGS,
-                                        ),*/
                                         NavBarItem(
                                             name = stringResource(id = R.string.searcher),
                                             icon = Icons.Filled.Search,
