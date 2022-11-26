@@ -40,8 +40,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherPage
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
 import com.bobbyesp.spowlo.util.FileUtil
