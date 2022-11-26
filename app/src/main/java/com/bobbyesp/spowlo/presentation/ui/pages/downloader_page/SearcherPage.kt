@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -59,9 +60,11 @@ fun SearcherPage(
                 color = MaterialTheme.colorScheme.background,
             ) {
                 if (!logged) {
-                    Column(modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Button(onClick = {
                             searcherViewModel.spotifyPkceLogin(activity)
                         }) {
@@ -87,7 +90,7 @@ fun SearcherPage(
                                 onValueChange = searcherViewModel::onSearch,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            if(isSearching){
+                            if (isSearching) {
                                 //circular progress indicator in the middle of the screen
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -97,7 +100,7 @@ fun SearcherPage(
                                     color = MaterialTheme.colorScheme.primary
                                 )
 
-                            }else{
+                            } else {
                                 LazyColumn {
                                     items(
                                         items = listOfTracks, itemContent = { track ->
@@ -121,6 +124,10 @@ fun SearcherPage(
                     }
                 }
             }
+        }
+        //when navigated launch effect
+        LaunchedEffect(key1 = navController.currentBackStackEntry) {
+            searcherViewModel.setup()
         }
     }
 }

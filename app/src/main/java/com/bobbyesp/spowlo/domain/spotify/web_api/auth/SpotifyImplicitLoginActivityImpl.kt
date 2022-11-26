@@ -19,8 +19,11 @@ class SpotifyImplicitLoginActivityImpl : AbstractSpotifyAppImplicitLoginActivity
     override fun onSuccess(spotifyApi: SpotifyImplicitGrantApi) {
         val model = (application as Spowlo).model
         model.credentialStore.setSpotifyApi(spotifyApi)
-        makeToast("Authentication via spotify-auth has completed. Launching TrackViewActivity..")
-        startActivity(Intent(this, MainActivity::class.java))
+        makeToast("Authentication via spotify-auth has completed. Launching app...")
+        //show a dialog saying that the user has been authenticated and the app has to be restarted
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onFailure(errorMessage: String) {

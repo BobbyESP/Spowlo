@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -41,6 +42,7 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
@@ -61,12 +63,19 @@ import java.util.*
 class MainActivity : ComponentActivity() {
 
     private val permissionRequest = ActivityPermissionRequest.Builder(this)
-        .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        .withPermissions(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
         .withCallback(object : PermissionCallback {
 
             override fun onPermissionsChecked(result: PermissionResult, fromSystemDialog: Boolean) {
                 val grantStatus = if (result.areAllPermissionsGranted) "granted" else "denied"
-                Toast.makeText(baseContext, "Storage permissions are $grantStatus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    baseContext,
+                    "Storage permissions are $grantStatus",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             override fun onShouldRedirectToSystemSettings(blockedPermissions: List<PermissionReport>) {
@@ -80,13 +89,14 @@ class MainActivity : ComponentActivity() {
     private val storageHelper = SimpleStorageHelper(this)
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
+    @OptIn(
+        ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
         ExperimentalAnimationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         runBlocking {
-            if (Build.VERSION.SDK_INT < 33){
+            if (Build.VERSION.SDK_INT < 33) {
                 applicationScope.launch(Dispatchers.Main) {
                     updateLanguage(context, PreferencesUtil.getLanguageConfiguration())
                 }
@@ -104,6 +114,9 @@ class MainActivity : ComponentActivity() {
         runBlocking {
             permissionRequest.check()
         }
+        val activity: Activity = this
+
+        activity.guardValidSpotifyApi(this::class.java) {
             setContent {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
@@ -115,7 +128,10 @@ class MainActivity : ComponentActivity() {
                  */
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     visible.value =
-                        destination.route in listOf(Route.HOME, /*Route.SETTINGS,*/ Route.SEARCHER_PAGE)
+                        destination.route in listOf(
+                            Route.HOME,
+                            Route.SEARCHER_PAGE
+                        )
                 }
 
                 SettingsProvider(windowSizeClass.widthSizeClass) {
@@ -162,6 +178,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -175,7 +192,7 @@ class MainActivity : ComponentActivity() {
             val locale = Locale(language)
             Locale.setDefault(locale)
             val config = Configuration()
-            if(language.isEmpty()){
+            if (language.isEmpty()) {
                 val emptyLocaleList = LocaleListCompat.getEmptyLocaleList()
                 config.setLocale(emptyLocaleList[0])
             } else {

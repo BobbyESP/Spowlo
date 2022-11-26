@@ -59,7 +59,7 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
         ),*/
     )
 
-    fun setup(activity: Activity? = SearcherViewState().activity) {
+    fun setup() {
         currentJob = CoroutineScope(Job()).launch {
             mutableStateFlow.update {
                 if (AuthModel.credentialStore.spotifyToken != null) {
@@ -68,12 +68,9 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
                     it.copy(logged = false)
                 }
             }
-            activity?.guardValidSpotifyApi(MainActivity::class.java) { api ->
-                if(!api.isTokenValid(true).isValid)
-                    throw SpotifyException.ReAuthenticationNeededException()
-                mutableStateFlow.update {
-                    it.copy(logged = true)
-                }
+            if (AuthModel.credentialStore.spotifyToken == null) {
+                spotifyPkceLogin()
+                Log.d("DownloaderViewModel", "Spotify token is null, relogging")
             }
             mutableStateFlow.update {
                 it.copy(pageLoaded = true)
