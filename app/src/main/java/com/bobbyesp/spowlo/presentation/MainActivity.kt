@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -54,6 +55,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -85,10 +87,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         runBlocking {
             if (Build.VERSION.SDK_INT < 33){
-                applicationScope.launch(Dispatchers.IO) {
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
-                    )
+                applicationScope.launch(Dispatchers.Main) {
+                    updateLanguage(context, PreferencesUtil.getLanguageConfiguration())
                 }
             }
         }
@@ -170,7 +170,22 @@ class MainActivity : ComponentActivity() {
     companion object {
         private const val TAG = "MainActivity"
 
-        fun setLanguage(locale: String) {
+        //update language
+        fun updateLanguage(context: Context = Spowlo.context, language: String) {
+            val locale = Locale(language)
+            Locale.setDefault(locale)
+            val config = Configuration()
+            if(language.isEmpty()){
+                val emptyLocaleList = LocaleListCompat.getEmptyLocaleList()
+                config.setLocale(emptyLocaleList[0])
+            } else {
+                config.setLocale(locale)
+            }
+
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        }
+
+        /*fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
             val localeListCompat =
                 if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
@@ -178,6 +193,6 @@ class MainActivity : ComponentActivity() {
             applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }
-        }
+        }*/
     }
 }

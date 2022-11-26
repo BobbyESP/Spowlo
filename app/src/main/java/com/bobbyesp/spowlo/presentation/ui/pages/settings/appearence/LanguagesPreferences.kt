@@ -11,6 +11,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.components.BackButton
 import com.bobbyesp.spowlo.presentation.ui.components.PreferenceSingleChoiceItem
@@ -32,7 +33,7 @@ fun LanguagesPreferences(onBackPressed: () -> Unit) {
     fun setLanguage(selectedLanguage: Int) {
         language = selectedLanguage
         PreferencesUtil.updateInt(LANGUAGE, language)
-        MainActivity.setLanguage(getLanguageConfiguration())
+        MainActivity.updateLanguage(context = Spowlo.context, getLanguageConfiguration())
     }
     Scaffold(
         modifier = Modifier
