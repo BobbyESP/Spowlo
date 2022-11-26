@@ -15,5 +15,6 @@ class Route {
         const val SEARCHER_PAGE = "searcher_page"
         const val TEMPLATE = "template"
         const val WELCOME_PAGE = "welcome_page"
+        const val DOWNLOAD_DIRECTORY = "download_directory"
     }
 }

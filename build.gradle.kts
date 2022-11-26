@@ -11,12 +11,12 @@ buildscript {
     val kotlinVersion by extra("1.7.10")
     val hiltVersion by extra("2.44")
     val spotifyLibrary by extra("3.8.8")
+    val youtubeDLVersion by extra("master-SNAPSHOT")
 
     repositories {
         mavenCentral()
-        //add jitpack repository
-        maven("https://jitpack.io")
     }
+
     dependencies {
 
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.extra["kotlinVersion"]}")

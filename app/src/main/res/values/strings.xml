@@ -58,4 +58,6 @@
     <string name="lite">Spotify Lite</string>
     <string name="lite_description">"A lightweight version of Spotify with no ads and unlimited skips. "</string>
     <string name="latest_version">Latest version</string>
+    <string name="download_directory">Download directory</string>
+    <string name="download_directory_description">Choose where you want to save the files</string>
 </resources>

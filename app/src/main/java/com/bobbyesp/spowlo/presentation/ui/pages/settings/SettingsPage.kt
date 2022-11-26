@@ -23,6 +23,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.components.SettingItem
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import android.os.Build;
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
 import java.util.*
 
@@ -34,16 +35,18 @@ fun SettingsPage(navController: NavController) {
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier) {
-            TopAppBar(title= {},
-            modifier = Modifier.padding(start = 8.dp),
-            navigationIcon = { BackButton { navController.popBackStack() } })
+            TopAppBar(title = {},
+                modifier = Modifier.padding(start = 8.dp),
+                navigationIcon = { BackButton { navController.popBackStack() } })
             Text(
                 modifier = Modifier.padding(start = 24.dp, top = 48.dp),
                 text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.headlineLarge
             )
-            LazyColumn(modifier = Modifier
-                .padding(top = 24.dp)) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 24.dp)
+            ) {
                 /*item{
                     SettingItem(
                         title = stringResource(R.string.general),
@@ -55,29 +58,49 @@ fun SettingsPage(navController: NavController) {
                         }
                     }
                 }*/
-                item { 
-                    SettingItem(title = stringResource(id = R.string.display), description = stringResource(
-                        id = R.string.display_description),
-                        icon = Icons.Outlined.DisplaySettings) {
-                        navController.navigate(Route.DISPLAY_SETTINGS){
+                item {
+                    SettingItem(
+                        title = stringResource(id = R.string.display), description = stringResource(
+                            id = R.string.display_description
+                        ),
+                        icon = Icons.Outlined.DisplaySettings
+                    ) {
+                        navController.navigate(Route.DISPLAY_SETTINGS) {
                             launchSingleTop = true
                         }
                     }
                 }
-             /*   item {
-                    SettingItem(title = stringResource(id = R.string.about), description = stringResource(
-                        id = R.string.about_description),
-                        icon = Icons.Outlined.Info) {
-                        navController.navigate(Route.ABOUT_SETTINGS){
+                item {
+                    SettingItem(
+                        title = stringResource(id = R.string.download_directory), description = stringResource(
+                            id = R.string.download_directory_description
+                        ),
+                        icon = Icons.Outlined.Folder
+                    )
+                    {
+                        navController.navigate(Route.DOWNLOAD_DIRECTORY) {
                             launchSingleTop = true
                         }
                     }
-                }*/
+                }
+                /*   item {
+                       SettingItem(title = stringResource(id = R.string.about), description = stringResource(
+                           id = R.string.about_description),
+                           icon = Icons.Outlined.Info) {
+                           navController.navigate(Route.ABOUT_SETTINGS){
+                               launchSingleTop = true
+                           }
+                       }
+                   }*/
             }
-           Box(modifier = Modifier.fillMaxSize().padding(bottom = 8.dp)){
-                Text(text = "CPU Arch: $cpuArch",
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 8.dp)) {
+                Text(
+                    text = "CPU Arch: $cpuArch",
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    style = MaterialTheme.typography.bodySmall)
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }

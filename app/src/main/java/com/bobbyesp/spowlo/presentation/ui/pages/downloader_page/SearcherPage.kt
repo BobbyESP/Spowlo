@@ -59,11 +59,13 @@ fun SearcherPage(
                 color = MaterialTheme.colorScheme.background,
             ) {
                 if (!logged) {
-                    Column(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
                         Button(onClick = {
                             searcherViewModel.spotifyPkceLogin(activity)
                         }) {
-                            Text("Connect to Spotify (spotify-web-api-kotlin integration, PKCE auth)")
+                            Text(stringResource(id = R.string.login))
                         }
                     }
                 } else {
@@ -85,23 +87,35 @@ fun SearcherPage(
                                 onValueChange = searcherViewModel::onSearch,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            LazyColumn {
-                                items(
-                                    items = listOfTracks, itemContent = { track ->
-                                        TrackItem(track = track, onClick = {
-                                            val browserIntent =
-                                                Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    Uri.parse(track.externalUrls.first { it.name == "spotify" }.url)
-                                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            ContextCompat.startActivity(
-                                                context,
-                                                browserIntent,
-                                                null
-                                            )
+                            if(isSearching){
+                                //circular progress indicator in the middle of the screen
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(8.dp)
+                                        .size(32.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+
+                            }else{
+                                LazyColumn {
+                                    items(
+                                        items = listOfTracks, itemContent = { track ->
+                                            TrackItem(track = track, onClick = {
+                                                val browserIntent =
+                                                    Intent(
+                                                        Intent.ACTION_VIEW,
+                                                        Uri.parse(track.externalUrls.first { it.name == "spotify" }.url)
+                                                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                ContextCompat.startActivity(
+                                                    context,
+                                                    browserIntent,
+                                                    null
+                                                )
+                                            })
+                                            Divider()
                                         })
-                                        Divider()
-                                    })
+                                }
                             }
                         }
                     }

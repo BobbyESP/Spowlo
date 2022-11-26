@@ -6,7 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
+import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearcherViewModel @Inject constructor() : ViewModel() {
-    private val mutableStateFlow = MutableStateFlow(DownloaderViewState())
+    private val mutableStateFlow = MutableStateFlow(SearcherViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     private var currentJob: Job? = null
 
@@ -32,7 +32,7 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
     val searchQuery: State<String> = _searchQuery
 
 
-    data class DownloaderViewState(
+    data class SearcherViewState(
         val spotUrl: String = "",
         val ytUrl: String = "",
         val progress: Float = 0f,
@@ -47,9 +47,11 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
         val isUrlSharingTriggered: Boolean = false,
         val drawerState: Boolean = false,
         val logged: Boolean = false,
-        val loaded: Boolean = false,
+        val pageLoaded: Boolean = false,
         val recentBroadcasts: List<SpotifyBroadcastEventData> = mutableListOf(),
         val listOfTracks: List<Track> = mutableListOf(),
+        val isSearching: Boolean = false,
+        val isSearchError: Boolean = false,
         val activity: Activity? = MainActivity(),
         /*val drawerState: ModalBottomSheetState = ModalBottomSheetState(
             ModalBottomSheetValue.Hidden,
@@ -57,7 +59,7 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
         ),*/
     )
 
-    fun setup() {
+    fun setup(activity: Activity? = SearcherViewState().activity) {
         currentJob = CoroutineScope(Job()).launch {
             mutableStateFlow.update {
                 if (AuthModel.credentialStore.spotifyToken != null) {
@@ -66,18 +68,24 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
                     it.copy(logged = false)
                 }
             }
-            if (AuthModel.credentialStore.spotifyToken == null) {
-                spotifyPkceLogin()
-                Log.d("DownloaderViewModel", "Spotify token is null, relogging")
+            activity?.guardValidSpotifyApi(MainActivity::class.java) { api ->
+                if(!api.isTokenValid(true).isValid)
+                    throw SpotifyException.ReAuthenticationNeededException()
+                mutableStateFlow.update {
+                    it.copy(logged = true)
+                }
             }
             mutableStateFlow.update {
-                it.copy(loaded = true)
+                it.copy(pageLoaded = true)
             }
         }
     }
 
-    fun onSearch(query: String, activity: Activity? = DownloaderViewState().activity) {
+    fun onSearch(query: String, activity: Activity? = SearcherViewState().activity) {
         Log.d("DownloaderViewModel", "onSearch: $activity")
+        mutableStateFlow.update {
+            it.copy(isSearching = true)
+        }
         _searchQuery.value = query
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
@@ -94,11 +102,14 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
                         }
                     }
                 mutableStateFlow.update {
-                    it.copy(listOfTracks = tracks ?: listOf())
+                    it.copy(listOfTracks = tracks ?: listOf(), isSearching = false)
                 }
                 Log.d("DownloaderViewModel", "Search query: $tracks")
             } catch (e: Exception) {
                 Log.d("DownloaderViewModel", "Error: $e")
+                mutableStateFlow.update {
+                    it.copy(isSearchError = true, isSearching = false)
+                }
             }
         }
     }

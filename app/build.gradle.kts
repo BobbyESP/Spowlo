@@ -27,6 +27,7 @@ val coilVersion: String by rootProject.extra
 val okhttpVersion: String by rootProject.extra
 val hiltVersion: String by rootProject.extra
 val spotifyLibrary: String by rootProject.extra
+val youtubeDLVersion: String by rootProject.extra
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 
@@ -167,7 +168,7 @@ android {
 dependencies {
     implementation(project(":color"))
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.0-rc01")
+    implementation("androidx.appcompat:appcompat:1.7.0-alpha01")
     implementation("com.google.android.material:material:1.8.0-alpha02")
     implementation("androidx.activity:activity-compose:1.6.1")
     //Lifecycle
@@ -220,6 +221,9 @@ dependencies {
     implementation("com.anggrayudi:storage:1.5.0")
 
     //Yt-dlp
+    implementation("com.github.yausername.youtubedl-android:library:$youtubeDLVersion")
+    implementation("com.github.yausername.youtubedl-android:ffmpeg:$youtubeDLVersion")
+    implementation("com.github.yausername.youtubedl-android:aria2c:$youtubeDLVersion")
 
     //Spotify SDK Integration library
     implementation("com.adamratzman:spotify-api-kotlin-core:$spotifyLibrary")

@@ -1,9 +1,13 @@
 package com.bobbyesp.spowlo.presentation
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -19,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,7 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.anggrayudi.storage.SimpleStorageHelper
+import com.anggrayudi.storage.permission.ActivityPermissionRequest
+import com.anggrayudi.storage.permission.PermissionCallback
+import com.anggrayudi.storage.permission.PermissionReport
+import com.anggrayudi.storage.permission.PermissionResult
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 import com.bobbyesp.spowlo.presentation.ui.common.*
@@ -36,6 +47,7 @@ import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.util.FileUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,8 +57,26 @@ import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val permissionRequest = ActivityPermissionRequest.Builder(this)
+        .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        .withCallback(object : PermissionCallback {
+
+            override fun onPermissionsChecked(result: PermissionResult, fromSystemDialog: Boolean) {
+                val grantStatus = if (result.areAllPermissionsGranted) "granted" else "denied"
+                Toast.makeText(baseContext, "Storage permissions are $grantStatus", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onShouldRedirectToSystemSettings(blockedPermissions: List<PermissionReport>) {
+                SimpleStorageHelper.redirectToSystemSettings(this@MainActivity)
+            }
+
+        })
+        .build()
+
     private val homeViewModel: HomeViewModel by viewModels()
     private val searcherViewModel: SearcherViewModel by viewModels()
+    private val storageHelper = SimpleStorageHelper(this)
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
@@ -54,17 +84,26 @@ class MainActivity : ComponentActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        runBlocking {
+            if (Build.VERSION.SDK_INT < 33){
+                applicationScope.launch(Dispatchers.IO) {
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
+                    )
+                }
+            }
+        }
+        FileUtil.setupSimpleStorage(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
             v.setPadding(0, 0, 0, 0)
             insets
         }
+
         context = this.baseContext
+
         runBlocking {
-            if (Build.VERSION.SDK_INT < 33)
-                AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
-                )
+            permissionRequest.check()
         }
             setContent {
                 val navController = rememberAnimatedNavController()
@@ -79,6 +118,7 @@ class MainActivity : ComponentActivity() {
                     visible.value =
                         destination.route in listOf(Route.HOME, /*Route.SETTINGS,*/ Route.SEARCHER_PAGE)
                 }
+
                 SettingsProvider(windowSizeClass.widthSizeClass) {
                     SpowloTheme(
                         darkTheme = LocalDarkTheme.current.isDarkTheme(),
@@ -124,19 +164,18 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+    }
+
     companion object {
         private const val TAG = "MainActivity"
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
             val localeListCompat =
-                if (locale.isEmpty())
-                {
-                    LocaleListCompat.getEmptyLocaleList()
-                }
-                else {
-                    LocaleListCompat.forLanguageTags(locale)
-                }
+                if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
+                else LocaleListCompat.forLanguageTags(locale)
             applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }

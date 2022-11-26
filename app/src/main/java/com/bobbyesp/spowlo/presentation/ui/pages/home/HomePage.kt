@@ -62,12 +62,14 @@ fun HomePage(navController: NavController, homeViewModel: HomeViewModel = hiltVi
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            Scaffold(modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+            Scaffold(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 topBar = {
                     TopAppBar(
-                        title = {},
+                        title = {
+                        },
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .fillMaxWidth(),
