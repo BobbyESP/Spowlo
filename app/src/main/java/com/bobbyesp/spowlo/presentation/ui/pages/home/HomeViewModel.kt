@@ -5,15 +5,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
-import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.domain.spotify.model.APICallState
 import com.bobbyesp.spowlo.domain.spotify.model.APIResponse
 import com.bobbyesp.spowlo.domain.spotify.model.PackagesObject
 import com.bobbyesp.spowlo.domain.spotify.use_case.GetAPIResponse
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
-import com.bobbyesp.spowlo.presentation.MainActivity
-import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import com.bobbyesp.spowlo.util.DownloadUtil
 import com.bobbyesp.spowlo.util.VersionsUtil

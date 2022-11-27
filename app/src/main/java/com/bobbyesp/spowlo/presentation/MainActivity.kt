@@ -48,6 +48,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.NavBarItem
 import com.bobbyesp.spowlo.presentation.ui.pages.InitialEntry
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.theme.SpowloTheme
@@ -69,7 +70,6 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
         .withCallback(object : PermissionCallback {
-
             override fun onPermissionsChecked(result: PermissionResult, fromSystemDialog: Boolean) {
                 val grantStatus = if (result.areAllPermissionsGranted) "granted" else "denied"
                 Toast.makeText(
@@ -82,12 +82,12 @@ class MainActivity : ComponentActivity() {
             override fun onShouldRedirectToSystemSettings(blockedPermissions: List<PermissionReport>) {
                 SimpleStorageHelper.redirectToSystemSettings(this@MainActivity)
             }
-
         })
         .build()
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val searcherViewModel: SearcherViewModel by viewModels()
+    private val downloaderViewModel: DownloaderViewModel by viewModels()
     private val storageHelper = SimpleStorageHelper(this)
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -132,7 +132,8 @@ class MainActivity : ComponentActivity() {
                     visible.value =
                         destination.route in listOf(
                             Route.HOME,
-                            Route.SEARCHER_PAGE
+                            Route.SEARCHER_PAGE,
+                            Route.DOWNLOADER
                         )
                 }
 
@@ -157,6 +158,11 @@ class MainActivity : ComponentActivity() {
                                             icon = Icons.Filled.Search,
                                             route = Route.SEARCHER_PAGE,
                                         ),
+                                        NavBarItem(
+                                            name = stringResource(id = R.string.downloader),
+                                            icon = Icons.Filled.Download,
+                                            route = Route.DOWNLOADER,
+                                        ),
                                     ), navController = navController,
                                     onItemClicked = {
                                         //if the current route is the same as the one we are trying to navigate to, do nothing
@@ -173,6 +179,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(paddingValues = it),
                                 navController = navController,
                                 searcherViewModel = searcherViewModel,
+                                downloaderViewModel = downloaderViewModel,
                                 activity = this@MainActivity
                             )
                         }

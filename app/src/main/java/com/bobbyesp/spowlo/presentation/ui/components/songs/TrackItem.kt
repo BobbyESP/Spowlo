@@ -53,7 +53,8 @@ fun TrackItem(
                 )
                 Text(
                     text = track.artists.joinToString(", ") { it.name },
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
             }

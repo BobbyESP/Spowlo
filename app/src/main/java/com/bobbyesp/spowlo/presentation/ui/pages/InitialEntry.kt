@@ -45,6 +45,8 @@ import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.bobbyesp.spowlo.data.auth.AuthModel
 import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.MainActivity
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderPage
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
 import com.bobbyesp.spowlo.util.FileUtil
@@ -59,6 +61,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                  modifier: Modifier = Modifier,
                  navController: NavHostController,
                  searcherViewModel: SearcherViewModel,
+                 downloaderViewModel: DownloaderViewModel,
                  activity: androidx.activity.ComponentActivity? = null)
 {
 
@@ -158,6 +161,10 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     DownloadDirectoryPreferences {
                         onBackPressed()
                     }
+                }
+                animatedComposable(Route.DOWNLOADER){
+                    DownloaderPage(navController = navController,
+                        downloaderViewModel = downloaderViewModel)
                 }
             }
         }

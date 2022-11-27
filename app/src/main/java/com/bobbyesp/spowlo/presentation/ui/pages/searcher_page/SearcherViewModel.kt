@@ -33,19 +33,7 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
 
 
     data class SearcherViewState(
-        val spotUrl: String = "",
-        val ytUrl: String = "",
-        val progress: Float = 0f,
-        val isDownloading: Boolean = false,
-        val isCancelled: Boolean = false,
-        val songTitle: String = "",
-        val songArtist: String = "",
-        val isDownloadError: Boolean = false,
-        val debugMode: Boolean = false,
-        val showDownloadSettingDialog: Boolean = false,
-        val downloadingTaskId: String = "",
-        val isUrlSharingTriggered: Boolean = false,
-        val drawerState: Boolean = false,
+
         val logged: Boolean = false,
         val pageLoaded: Boolean = false,
         val recentBroadcasts: List<SpotifyBroadcastEventData> = mutableListOf(),
@@ -90,6 +78,15 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
             try {
                 val tracks =
                     activity?.guardValidSpotifyApi(classBackTo = MainActivity::class.java) { api ->
+                        //if reauthentication is needed, reauthenticate and retry
+                        if(!api.isTokenValid().isValid){
+                            try {
+                                api.refreshToken()
+                            } catch (e: SpotifyException) {
+                                Log.d("DownloaderViewModel", "Check token error: ${e.message}")
+                            }
+                        }
+
                         //if query is not empty, search for it
                         if (query.isNotEmpty()) {
                             api.search.searchTrack(query).items
@@ -114,32 +111,6 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
     fun spotifyPkceLogin(activity: Activity? = null) {
         Log.d("DownloaderViewModel", "spotifyPkceLogin: called")
         activity?.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
-    }
-
-    fun updateUrl(url: String, isUrlSharingTriggered: Boolean = false) =
-        mutableStateFlow.update {
-            it.copy(
-                ytUrl = url,
-                isUrlSharingTriggered = isUrlSharingTriggered
-            )
-        }
-
-    fun hideDialog(scope: CoroutineScope, isDialog: Boolean) {
-        scope.launch {
-            if (isDialog)
-                mutableStateFlow.update { it.copy(showDownloadSettingDialog = false) }
-            else
-                stateFlow.value.drawerState//.hide()
-        }
-    }
-
-    fun showDialog(scope: CoroutineScope, isDialog: Boolean) {
-        scope.launch {
-            if (isDialog)
-                mutableStateFlow.update { it.copy(showDownloadSettingDialog = true) }
-            else
-                stateFlow.value.drawerState//.show()
-        }
     }
 
 }
