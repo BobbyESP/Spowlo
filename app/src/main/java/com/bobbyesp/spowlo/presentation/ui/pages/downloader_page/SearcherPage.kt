@@ -59,7 +59,7 @@ fun SearcherPage(
                     .background(MaterialTheme.colorScheme.background),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                if (!logged) {
+                /*if (!logged) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,7 +71,7 @@ fun SearcherPage(
                             Text(stringResource(id = R.string.login))
                         }
                     }
-                } else {
+                } else {*/
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -130,7 +130,7 @@ fun SearcherPage(
             searcherViewModel.setup()
         }
     }
-}
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -41,6 +41,8 @@ import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
+import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
@@ -91,7 +93,6 @@ fun InitialEntry(homeViewModel: HomeViewModel,
             }
         }
     }
-
     val homeViewState = homeViewModel.stateFlow.collectAsState()
     val searcherViewState = searcherViewModel.stateFlow.collectAsState()
 
