@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
+package com.bobbyesp.spowlo.presentation.ui.pages.searcher_page
 
 import android.app.Activity
 import android.content.Intent
@@ -32,6 +32,7 @@ import com.bobbyesp.spowlo.Spowlo.Companion.context
 
 import com.bobbyesp.spowlo.data.auth.AuthModel
 import com.bobbyesp.spowlo.presentation.ui.components.songs.TrackItem
+import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @OptIn(

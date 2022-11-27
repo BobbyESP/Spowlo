@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
+package com.bobbyesp.spowlo.presentation.ui.pages.searcher_page
 
 import android.app.Activity
 import android.util.Log
