@@ -77,6 +77,19 @@
         </service>
 
         <activity
+            android:name=".domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="spowlo" android:host="spotify-auth"/>
+            </intent-filter>
+        </activity>
+
+
+        <activity
             android:name="com.spotify.sdk.android.auth.LoginActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
