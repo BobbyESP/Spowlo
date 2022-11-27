@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.pages.searcher_page
+package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
 import android.app.Activity
 import android.util.Log
@@ -7,12 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.SpotifyException
-import com.adamratzman.spotify.auth.implicit.startSpotifyImplicitLoginActivity
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
 import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyImplicitLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.MainActivity
@@ -70,10 +68,9 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
                     it.copy(logged = false)
                 }
             }
-            if(AuthModel.credentialStore.spotifyToken == null){
-                activity?.guardValidSpotifyApi(MainActivity::class.java){
-
-                }
+            if (AuthModel.credentialStore.spotifyToken == null) {
+                spotifyPkceLogin()
+                Log.d("DownloaderViewModel", "Spotify token is null, relogging")
             }
             mutableStateFlow.update {
                 it.copy(pageLoaded = true)

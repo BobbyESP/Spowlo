@@ -12,6 +12,7 @@ import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityI
 import com.bobbyesp.spowlo.domain.spotify.web_api.auth.pkceClassBackTo
 import kotlinx.coroutines.runBlocking
 
+
 fun <T> Activity.guardValidSpotifyApi(
     classBackTo: Class<out Activity>,
     alreadyTriedToReauthenticate: Boolean = false,
@@ -65,43 +66,44 @@ fun <T> Activity.guardValidSpotifyApi(
     }
 }
 
-/*fun <T> Activity.guardValidSpotifyApi(
-    classBackTo: Class<out Activity>? = null,
-    alreadyTriedToReauthenticate: Boolean = false,
-    block: suspend (api: SpotifyClientApi) -> T
-): T? {
-    return runBlocking {
-        try {
-            val api = AuthModel.credentialStore.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
-            block(api)
-        } catch (e: SpotifyException) {
-            e.printStackTrace()
-                val api = AuthModel.credentialStore.getSpotifyClientPkceApi()!!
-                if (!alreadyTriedToReauthenticate) {
-                    try {
-                        api.refreshToken()
-                        AuthModel.credentialStore.spotifyToken = api.token
-                        block(api)
-                    } catch (e: SpotifyException.ReAuthenticationNeededException) {
-                        e.printStackTrace()
-                        return@runBlocking guardValidSpotifyApi(
-                            classBackTo = classBackTo,
-                            alreadyTriedToReauthenticate = true,
-                            block = block
-                        )
-                    } catch (e: IllegalArgumentException) {
-                        e.printStackTrace()
-                        return@runBlocking guardValidSpotifyApi(
-                            classBackTo = classBackTo,
-                            alreadyTriedToReauthenticate = true,
-                            block = block
-                        )
-                    }
-                } else {
-                    pkceClassBackTo = classBackTo
-                    startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
-                    null
-                }
-            }
-        }
-    }*/
+
+//fun <T> Activity.guardValidSpotifyApi(
+//    classBackTo: Class<out Activity>? = null,
+//    alreadyTriedToReauthenticate: Boolean = false,
+//    block: suspend (api: SpotifyClientApi) -> T
+//): T? {
+//    return runBlocking {
+//        try {
+//            val api = AuthAuthModel.credentialStore.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
+//            block(api)
+//        } catch (e: SpotifyException) {
+//            e.printStackTrace()
+//                val api = AuthAuthModel.credentialStore.getSpotifyClientPkceApi()!!
+//                if (!alreadyTriedToReauthenticate) {
+//                    try {
+//                        api.refreshToken()
+//                        AuthAuthModel.credentialStore.spotifyToken = api.token
+//                        block(api)
+//                    } catch (e: SpotifyException.ReAuthenticationNeededException) {
+//                        e.printStackTrace()
+//                        return@runBlocking guardValidSpotifyApi(
+//                            classBackTo = classBackTo,
+//                            alreadyTriedToReauthenticate = true,
+//                            block = block
+//                        )
+//                    } catch (e: IllegalArgumentException) {
+//                        e.printStackTrace()
+//                        return@runBlocking guardValidSpotifyApi(
+//                            classBackTo = classBackTo,
+//                            alreadyTriedToReauthenticate = true,
+//                            block = block
+//                        )
+//                    }
+//                } else {
+//                    pkceClassBackTo = classBackTo
+//                    startSpotifyClientPkceLoginActivity(SpotifyPkceLoginActivityImpl::class.java)
+//                    null
+//                }
+//            }
+//        }
+//    }

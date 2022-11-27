@@ -15,8 +15,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -39,8 +41,6 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.Spowlo.Companion.applicationScope
 import com.bobbyesp.spowlo.Spowlo.Companion.context
-import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.auth.SpotifyPkceLoginActivityImpl
 import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
 import com.bobbyesp.spowlo.presentation.ui.common.*
 import com.bobbyesp.spowlo.presentation.ui.components.bottomNavBar.BottomNavBar
@@ -56,19 +56,25 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    lateinit var model: AuthModel
-
     private val permissionRequest = ActivityPermissionRequest.Builder(this)
-        .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        .withPermissions(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
         .withCallback(object : PermissionCallback {
 
             override fun onPermissionsChecked(result: PermissionResult, fromSystemDialog: Boolean) {
                 val grantStatus = if (result.areAllPermissionsGranted) "granted" else "denied"
-                Toast.makeText(baseContext, "Storage permissions are $grantStatus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    baseContext,
+                    "Storage permissions are $grantStatus",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             override fun onShouldRedirectToSystemSettings(blockedPermissions: List<PermissionReport>) {
@@ -81,20 +87,18 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val searcherViewModel: SearcherViewModel by viewModels()
     private val storageHelper = SimpleStorageHelper(this)
-    private val activity = this
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
+    @OptIn(
+        ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class,
         ExperimentalAnimationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         runBlocking {
-            if (Build.VERSION.SDK_INT < 33){
-                applicationScope.launch(Dispatchers.IO) {
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
-                    )
+            if (Build.VERSION.SDK_INT < 33) {
+                applicationScope.launch(Dispatchers.Main) {
+                    updateLanguage(context, PreferencesUtil.getLanguageConfiguration())
                 }
             }
         }
@@ -110,14 +114,9 @@ class MainActivity : ComponentActivity() {
         runBlocking {
             permissionRequest.check()
         }
+        val activity: Activity = this
 
-        //model = (application as Spowlo).model
-
-
-
-      /*  activity.guardValidSpotifyApi(MainActivity::class.java) { api ->
-            if (!api.isTokenValid(true).isValid)
-                throw SpotifyException.ReAuthenticationNeededException() */
+        activity.guardValidSpotifyApi(this::class.java) {
             setContent {
                 val navController = rememberAnimatedNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
@@ -130,7 +129,7 @@ class MainActivity : ComponentActivity() {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     visible.value =
                         destination.route in listOf(
-                            Route.HOME, /*Route.SETTINGS,*/
+                            Route.HOME,
                             Route.SEARCHER_PAGE
                         )
                 }
@@ -179,7 +178,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-//    }
+    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -187,9 +186,23 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        lateinit var context: Context
 
-        fun setLanguage(locale: String) {
+        //update language
+        fun updateLanguage(context: Context = Spowlo.context, language: String) {
+            val locale = Locale(language)
+            Locale.setDefault(locale)
+            val config = Configuration()
+            if (language.isEmpty()) {
+                val emptyLocaleList = LocaleListCompat.getEmptyLocaleList()
+                config.setLocale(emptyLocaleList[0])
+            } else {
+                config.setLocale(locale)
+            }
+
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        }
+
+        /*fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
             val localeListCompat =
                 if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
@@ -197,6 +210,6 @@ class MainActivity : ComponentActivity() {
             applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }
-        }
+        }*/
     }
 }

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.ui.pages.searcher_page
+package com.bobbyesp.spowlo.presentation.ui.pages.downloader_page
 
 import android.app.Activity
 import android.content.Intent
@@ -27,17 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.adamratzman.spotify.SpotifyException
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo.Companion.context
 
 import com.bobbyesp.spowlo.data.auth.AuthModel
-import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
-import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.components.songs.TrackItem
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class,
@@ -64,17 +59,19 @@ fun SearcherPage(
                     .background(MaterialTheme.colorScheme.background),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                if (!logged) {
-                    Column(modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center) {
+                /*if (!logged) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Button(onClick = {
-                            searcherViewModel.spotifyPkceLogin()
+                            searcherViewModel.spotifyPkceLogin(activity)
                         }) {
                             Text(stringResource(id = R.string.login))
                         }
                     }
-                } else {
+                } else {*/
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -93,7 +90,7 @@ fun SearcherPage(
                                 onValueChange = searcherViewModel::onSearch,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            if(isSearching){
+                            if (isSearching) {
                                 //circular progress indicator in the middle of the screen
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -103,7 +100,7 @@ fun SearcherPage(
                                     color = MaterialTheme.colorScheme.primary
                                 )
 
-                            }else{
+                            } else {
                                 LazyColumn {
                                     items(
                                         items = listOfTracks, itemContent = { track ->
@@ -128,13 +125,12 @@ fun SearcherPage(
                 }
             }
         }
-    }
-    LaunchedEffect(navController){
-        launch {
+        //when navigated launch effect
+        LaunchedEffect(key1 = navController.currentBackStackEntry) {
             searcherViewModel.setup()
         }
     }
-}
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

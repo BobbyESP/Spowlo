@@ -42,6 +42,11 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherPage
 import com.bobbyesp.spowlo.presentation.ui.pages.searcher_page.SearcherViewModel
+import com.bobbyesp.spowlo.data.auth.AuthModel
+import com.bobbyesp.spowlo.domain.spotify.web_api.utilities.guardValidSpotifyApi
+import com.bobbyesp.spowlo.presentation.MainActivity
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
 import com.bobbyesp.spowlo.util.FileUtil
@@ -150,10 +155,6 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     SearcherPage(navController = navController,
                         searcherViewModel = searcherViewModel,
                         activity = activity)
-
-                    if(!searcherPageLoaded){
-                        searcherViewModel.setup()
-                    }
                 }
                 animatedComposable(Route.DOWNLOAD_DIRECTORY){
                     DownloadDirectoryPreferences {
@@ -210,6 +211,9 @@ fun InitialEntry(homeViewModel: HomeViewModel,
 }
 
 fun routeIfLogged(): String{
+    if(AuthModel.credentialStore.spotifyToken != null){
+        PreferencesUtil.updateValue(IS_LOGGED, true)
+    }
     return if (PreferencesUtil.getValue(IS_LOGGED)){
         Route.HOME
     } else {

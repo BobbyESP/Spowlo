@@ -146,8 +146,6 @@ object PreferencesUtil {
         else getInt(LANGUAGE, 0)
     }
 
-
-
     data class DarkThemePreference(
         val darkThemeValue: Int = FOLLOW_SYSTEM,
         val isHighContrastModeEnabled: Boolean = false
