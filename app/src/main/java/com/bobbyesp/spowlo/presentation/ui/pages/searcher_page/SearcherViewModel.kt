@@ -59,7 +59,7 @@ class SearcherViewModel @Inject constructor() : ViewModel() {
         ),*/
     )
 
-    fun setup(activity: Activity? = SearcherViewState().activity) {
+    fun setup() {
         currentJob = CoroutineScope(Job()).launch {
             mutableStateFlow.update {
                 if (AuthModel.credentialStore.spotifyToken != null) {
