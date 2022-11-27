@@ -142,18 +142,6 @@ class HomeViewModel @Inject constructor(
         return list.sortedWith(compareByDescending { it.Title })
     }
 
-    //TODO: Move this to a util class and take a look to it because it's listing reversed
-    private fun sortAllPackages(){
-        mutableStateFlow.update {
-            it.copy(
-                regular_versions = sortPackagesObjectList(it.regular_versions),
-                regular_cloned_versions = sortPackagesObjectList(it.regular_cloned_versions),
-                amoled_versions = sortPackagesObjectList(it.amoled_versions),
-                amoled_cloned_versions = sortPackagesObjectList(it.amoled_cloned_versions),
-            )
-        }
-    }
-
     private fun infoCard(){
         mutableStateFlow.update {
             it.copy(

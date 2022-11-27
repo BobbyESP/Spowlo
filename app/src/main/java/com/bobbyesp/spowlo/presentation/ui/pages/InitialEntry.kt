@@ -48,6 +48,7 @@ import com.bobbyesp.spowlo.presentation.MainActivity
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.DownloadDirectoryPreferences
+import com.bobbyesp.spowlo.presentation.ui.pages.settings.downloader.TemplatesPage
 import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
 import com.bobbyesp.spowlo.util.FileUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
@@ -124,6 +125,11 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     HomePage(navController = navController, homeViewModel = homeViewModel)
                     if (!homeViewState.value.loaded){
                         homeViewModel.setup()
+                    }
+                }
+                animatedComposable(Route.TEMPLATE){
+                    TemplatesPage {
+                        onBackPressed()
                     }
                 }
 

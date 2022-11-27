@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DisplaySettings
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,8 +21,7 @@ import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.components.SettingItem
 import com.bobbyesp.spowlo.util.CPUInfoUtil
 import android.os.Build;
-import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.*
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +76,17 @@ fun SettingsPage(navController: NavController) {
                     )
                     {
                         navController.navigate(Route.DOWNLOAD_DIRECTORY) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+                item{
+                    SettingItem(
+                        title = stringResource(R.string.custom_commands),
+                        description = stringResource(id = R.string.custom_commands_description),
+                        icon = Icons.Outlined.Terminal,
+                    ) {
+                        navController.navigate(Route.TEMPLATE) {
                             launchSingleTop = true
                         }
                     }

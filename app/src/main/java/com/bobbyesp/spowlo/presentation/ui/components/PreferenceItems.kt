@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.presentation.ui.theme.applyOpacity
 
 @Composable
@@ -436,4 +437,65 @@ fun PreferenceSubtitle(
         color = color,
         style = MaterialTheme.typography.labelLarge
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+@Preview
+fun TemplateItem(
+    label: String = "",
+    template: String? = null,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
+    onSelect: () -> Unit = {},
+    onLongClick: () -> Unit = {}
+) {
+    Surface(
+        modifier = Modifier.combinedClickable(
+            onClick = onClick,
+            onClickLabel = stringResource(R.string.edit_custom_command_template),
+            onLongClick = onLongClick,
+            onLongClickLabel = stringResource(R.string.remove_template)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 10.dp)
+            ) {
+                with(MaterialTheme) {
+                    Text(
+                        text = label,
+                        maxLines = 1,
+                        style = typography.titleMedium,
+                        color = colorScheme.onSurface
+                    )
+                    Text(
+                        text = template.toString(),
+                        color = colorScheme.onSurfaceVariant,
+                        maxLines = 2, overflow = TextOverflow.Ellipsis,
+                        style = typography.bodyMedium,
+                    )
+                }
+            }
+            Divider(
+                modifier = Modifier
+                    .height(32.dp)
+                    .padding(horizontal = 12.dp)
+                    .width(1f.dp)
+                    .align(Alignment.CenterVertically),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            )
+            RadioButton(selected = selected, onClick = onSelect)
+        }
+
+
+    }
+
 }

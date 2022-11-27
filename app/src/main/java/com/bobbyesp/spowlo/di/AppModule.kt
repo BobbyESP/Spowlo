@@ -38,28 +38,4 @@ object AppModule {
     fun provideAPIHelperImpl(api: xManagerAPI): APIRepository {
         return APIRepositoryImpl(api)
     }
-
-    //Spotify bridge API
-    @Provides
-    @Singleton
-    fun provideGetBridgeApiResponseUseCase(repository: com.bobbyesp.spowlo.domain.spotify_bridge.repository.APIRepository): com.bobbyesp.spowlo.domain.spotify_bridge.use_case.GetAPIResponse {
-        return com.bobbyesp.spowlo.domain.spotify_bridge.use_case.GetAPIResponse(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideBridgeAPI(): com.bobbyesp.spowlo.data.remote.spotify_bridge.SpotifyBridgeAPI {
-        return Retrofit.Builder()
-            .baseUrl(com.bobbyesp.spowlo.data.remote.spotify_bridge.SpotifyBridgeAPI.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(com.bobbyesp.spowlo.data.remote.spotify_bridge.SpotifyBridgeAPI::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideBridgeAPIHelperImpl(api: com.bobbyesp.spowlo.data.remote.spotify_bridge.SpotifyBridgeAPI): com.bobbyesp.spowlo.domain.spotify_bridge.repository.APIRepository {
-        return com.bobbyesp.spowlo.data.respository.spotify_bridge.APIRepositoryImpl(api)
-    }
-
 }
