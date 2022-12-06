@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.util
 
 import android.content.pm.PackageManager
 import android.util.Log
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.Spowlo
 
 object VersionsUtil {
@@ -27,7 +28,7 @@ object VersionsUtil {
             versionName
         } catch (e: Exception) {
             Log.e("VersionsUtil", "getSpotifyVersion: ${e.message}")
-            "Not installed"
+            R.string.not_installed.toString()
         }
     }
 }

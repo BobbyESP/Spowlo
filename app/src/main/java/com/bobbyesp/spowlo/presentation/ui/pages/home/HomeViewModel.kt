@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.presentation.ui.pages.home
 import android.app.Activity
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.domain.spotify.model.APICallState
@@ -138,16 +139,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun sortPackagesObjectList(list: List<PackagesObject>): List<PackagesObject>{
-        return list.sortedWith(compareByDescending { it.Title })
-    }
-
     private fun infoCard(){
         mutableStateFlow.update {
             it.copy(
                 originalSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "regular"),
                 clonedSpotifyVersion = VersionsUtil.getSpotifyVersion(type = "cloned"),
-                cpuArch = CPUInfoUtil.getPrincipalCPUArch()
+                cpuArch = CPUInfoUtil.getPrincipalCPUArch().uppercase()
             )
         }
     }
