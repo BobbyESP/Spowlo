@@ -16,12 +16,11 @@ A Spotify Mod (by the moment) downloader and manager using the xManager API made
 
 </div>
 
-# 📣 NOTICE
-~~I'm aware of an issue with Play Protect. This is marking my app as milicious when it isn't (you have the source code).
-This is because the app is not in the Whitelist of Play Protect. I've already sent a form for fixing this to Google
-Thanks for you comprehension.~~ 
+# ANNOUNCEMENT
+I'm making a library to be able to download songs from Spotify, called [spotdl-android](https://github.com/BobbyESP/spotdl-android/). When that library is finished I'll probably remake this app having as principal function download songs, albums, playlists... and the Spotify mods downloading as one more of it's features. I hope you understand it! Thank you!
 
-### The app has been approved by Google!
+# 📣 NOTICE
+### The app has been approved by Google! 
 
 # 📸Screenshots
 
