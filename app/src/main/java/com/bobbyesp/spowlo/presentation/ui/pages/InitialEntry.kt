@@ -25,8 +25,6 @@ import com.bobbyesp.spowlo.presentation.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.ui.common.Route
 import com.bobbyesp.spowlo.presentation.ui.common.animatedComposable
 import com.bobbyesp.spowlo.presentation.ui.components.UpdateDialog
-import com.bobbyesp.spowlo.presentation.ui.pages.home.HomePage
-import com.bobbyesp.spowlo.presentation.ui.pages.home.HomeViewModel
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.AppearancePreferences
 import com.bobbyesp.spowlo.presentation.ui.pages.settings.appearence.DarkThemePreferences
@@ -38,21 +36,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherPage
-import com.bobbyesp.spowlo.presentation.ui.pages.downloader_page.SearcherViewModel
-import com.bobbyesp.spowlo.presentation.ui.pages.welcome_page.WelcomePage
-import com.bobbyesp.spowlo.util.PreferencesUtil
-import com.bobbyesp.spowlo.util.PreferencesUtil.IS_LOGGED
 
 private const val TAG = "InitialEntry"
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun InitialEntry(homeViewModel: HomeViewModel,
-                 modifier: Modifier = Modifier,
-                 navController: NavHostController,
-                 searcherViewModel: SearcherViewModel,
-                 activity: androidx.activity.ComponentActivity? = null)
+fun InitialEntry(modifier: Modifier = Modifier,
+                 navController: NavHostController, )
 {
 
     val context = LocalContext.current
@@ -62,7 +52,6 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     var latestRelease by remember { mutableStateOf(UpdateUtil.LatestRelease()) }
-    val searcherPageLoaded by remember { mutableStateOf(searcherViewModel.stateFlow.value.loaded) }
     val settings =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             UpdateUtil.installLatestApk()
@@ -87,9 +76,6 @@ fun InitialEntry(homeViewModel: HomeViewModel,
         }
     }
 
-    val homeViewState = homeViewModel.stateFlow.collectAsState()
-    val searcherViewState = searcherViewModel.stateFlow.collectAsState()
-
 
     Box(modifier = modifier){
         Box(
@@ -108,14 +94,7 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                     )
                     .align(Alignment.Center),
                 navController = navController,
-                startDestination = routeIfLogged())  {
-
-                animatedComposable(Route.HOME){
-                    HomePage(navController = navController, homeViewModel = homeViewModel)
-                    if (!homeViewState.value.loaded){
-                        homeViewModel.setup()
-                    }
-                }
+                startDestination = Route.SETTINGS)  {
 
                 animatedComposable(Route.SETTINGS){
                     SettingsPage(navController)
@@ -137,18 +116,6 @@ fun InitialEntry(homeViewModel: HomeViewModel,
                 animatedComposable(Route.DARK_THEME_SELECTOR){
                     DarkThemePreferences {
                         onBackPressed()
-                    }
-                }
-                animatedComposable(Route.WELCOME_PAGE){
-                    WelcomePage(navController = navController, activity = activity)
-                }
-                animatedComposable(Route.SEARCHER_PAGE){
-                    SearcherPage(navController = navController,
-                        searcherViewModel = searcherViewModel,
-                        activity = activity)
-
-                    if(!searcherPageLoaded){
-                        searcherViewModel.setup()
                     }
                 }
             }
@@ -200,10 +167,10 @@ fun InitialEntry(homeViewModel: HomeViewModel,
     }
 }
 
-fun routeIfLogged(): String{
+/*fun routeIfLogged(): String{
     return if (PreferencesUtil.getValue(IS_LOGGED)){
         Route.HOME
     } else {
         Route.WELCOME_PAGE
     }
-}
+}*/

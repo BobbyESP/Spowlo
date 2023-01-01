@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.ConnectivityManager
-import com.bobbyesp.spowlo.data.auth.AuthModel
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.util.DatabaseUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil
@@ -21,13 +20,11 @@ import kotlinx.coroutines.launch
 
 @HiltAndroidApp
 class Spowlo : Application() {
-    lateinit var model: AuthModel
 
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
         context = applicationContext
-        this.model = AuthModel
         applicationScope = CoroutineScope(SupervisorJob())
         DynamicColors.applyToActivitiesIfAvailable(this)
 
@@ -55,7 +52,7 @@ class Spowlo : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
-        var ytdlpVersion = ""
+        var SpotDLVersion = ""
         lateinit var connectivityManager: ConnectivityManager
 
         fun updateDownloadDir(path: String) {

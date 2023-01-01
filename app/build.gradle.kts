@@ -216,19 +216,18 @@ dependencies {
     //MMKV (used for Configuration)
     implementation("com.tencent:mmkv:1.2.14")
 
-    //SimpleStorage (SAF Simplifier)
-    implementation("com.anggrayudi:storage:1.5.0")
-
-    //Yt-dlp
+    //spotdl-android
+    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-library:0.1.0")
+    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-ffmpeg:0.1.0")
 
     //Spotify SDK Integration library
-    implementation("com.adamratzman:spotify-api-kotlin-core:$spotifyLibrary")
+    //implementation("com.adamratzman:spotify-api-kotlin-core:$spotifyLibrary")
 
     //Unit testing
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    //testImplementation("junit:junit:4.13.2")
+    //testImplementation("junit:junit:4.13.2")
+    //androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    //androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
 }

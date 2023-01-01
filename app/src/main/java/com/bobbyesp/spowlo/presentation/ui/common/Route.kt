@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.presentation.ui.common
 
 class Route {
+    //Routes that are used in the app
     companion object {
         const val HOME = "home"
         const val SETTINGS = "settings"
