@@ -19,6 +19,8 @@ A Spotify Mod (by the moment) downloader and manager using the xManager API made
 # ANNOUNCEMENT: REMAKE COMING!
 I'm making a library to be able to download songs from Spotify, called [spotdl-android](https://github.com/BobbyESP/spotdl-android/). When that library is finished I'll probably remake this app having as principal function download songs, albums, playlists... and the Spotify mods downloading as one more of it's features. I hope you understand it! Thank you!
 
+Update: I've finished the library, so that means that the rewrite is finally coming!
+
 # 📣 NOTICE
 ### The app has been approved by Google! 
 
