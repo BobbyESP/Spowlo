@@ -26,7 +26,7 @@ val youtubedlAndroidVersion: String by rootProject.extra
 val coilVersion: String by rootProject.extra
 val okhttpVersion: String by rootProject.extra
 val hiltVersion: String by rootProject.extra
-val spotifyLibrary: String by rootProject.extra
+val spotdlandroidVersion: String by rootProject.extra
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 
@@ -108,21 +108,6 @@ android {
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-            buildConfigField(
-                "String",
-                "SPOTIFY_CLIENT_ID",
-                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_AUTH",
-                "\"spowlo://spotify-auth\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_PKCE",
-                "\"spowlo://spotify-pkce\""
-            )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
         }
@@ -167,8 +152,8 @@ android {
 dependencies {
     implementation(project(":color"))
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.0-rc01")
-    implementation("com.google.android.material:material:1.8.0-alpha02")
+    implementation("androidx.appcompat:appcompat:1.7.0-alpha01")
+    implementation("com.google.android.material:material:1.8.0-beta01")
     implementation("androidx.activity:activity-compose:1.6.1")
     //Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
@@ -217,8 +202,8 @@ dependencies {
     implementation("com.tencent:mmkv:1.2.14")
 
     //spotdl-android
-    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-library:0.1.0")
-    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-ffmpeg:0.1.0")
+    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-library:$spotdlandroidVersion")
+    implementation("com.github.BobbyESP.spotdl-android:spotdl-android-ffmpeg:$spotdlandroidVersion")
 
     //Spotify SDK Integration library
     //implementation("com.adamratzman:spotify-api-kotlin-core:$spotifyLibrary")

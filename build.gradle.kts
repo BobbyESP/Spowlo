@@ -1,16 +1,15 @@
 buildscript {
-    val composeVersion by extra("1.3.0")
+    val composeVersion by extra("1.3.1")
     val lifecycleVersion by extra("2.6.0-alpha02")
     val navigationVersion by extra("2.5.2")
     val roomVersion by extra("2.4.3")
     val accompanistVersion by extra("0.25.1")
-    val composeMd3Version by extra("1.0.0-beta03")
+    val composeMd3Version by extra("1.0.1")
     val coilVersion by extra("2.2.1")
-    val youtubedlAndroidVersion by extra("0.14.0")
+    val spotdlandroidVersion by extra("0.1.0")
     val okhttpVersion by extra("5.0.0-alpha.10")
-    val kotlinVersion by extra("1.7.10")
+    val kotlinVersion by extra("1.7.20")
     val hiltVersion by extra("2.44")
-    val spotifyLibrary by extra("3.8.8")
 
     repositories {
         mavenCentral()
@@ -24,8 +23,8 @@ buildscript {
     }
 }
 plugins {
-    id("com.android.application") version "7.3.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.10" apply false
+    id("com.android.application") version "7.3.1" apply false
+    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
 }
 
 tasks.register("clean", Delete::class) {
