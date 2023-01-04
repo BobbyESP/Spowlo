@@ -5,8 +5,12 @@ import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.ConnectivityManager
+import android.os.Environment
+import com.bobbyesp.ffmpeg.FFmpeg
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.util.DatabaseUtil
+import com.bobbyesp.spowlo.util.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.util.PreferencesUtil
 import com.bobbyesp.spowlo.util.PreferencesUtil.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.util.PreferencesUtil.TEMPLATE_INDEX
@@ -44,16 +48,32 @@ class Spowlo : Application() {
                     )
                 )
             }
+            try {
+                SpotDL.getInstance().init(this@Spowlo)
+                FFmpeg.getInstance().init(this@Spowlo)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-    companion object{
+    companion object {
+        private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         private const val TAG = "Spowlo"
         lateinit var applicationScope: CoroutineScope
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
         var SpotDLVersion = ""
         lateinit var connectivityManager: ConnectivityManager
+
+        fun getPrivateDownloadDirectory(): String =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).resolve(
+                PRIVATE_DIRECTORY_SUFFIX
+            ).run {
+                createEmptyFile(".nomedia")
+                absolutePath
+            }
+
 
         fun updateDownloadDir(path: String) {
             audioDownloadDir = path

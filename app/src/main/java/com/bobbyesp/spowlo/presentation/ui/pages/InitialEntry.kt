@@ -36,6 +36,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderPage
+import com.bobbyesp.spowlo.presentation.ui.pages.downloader.DownloaderViewModel
 
 private const val TAG = "InitialEntry"
 
@@ -88,13 +90,22 @@ fun InitialEntry(modifier: Modifier = Modifier,
                     .fillMaxWidth(
                         when (LocalWindowWidthState.current) {
                             WindowWidthSizeClass.Compact -> 1f
-                            WindowWidthSizeClass.Expanded -> 0.5f
+                            //If the phone/window is in landscape mode (or enough width), we change the width of the navHost to 0.9 for a better experience
+                            WindowWidthSizeClass.Expanded -> 0.9f
                             else -> 0.8f
                         }
                     )
                     .align(Alignment.Center),
                 navController = navController,
-                startDestination = Route.SETTINGS)  {
+                startDestination = Route.DOWNLOADER)  {
+
+                animatedComposable(Route.DOWNLOADER){
+                    DownloaderPage(
+                        downloaderViewModel = DownloaderViewModel(),
+                        navigateToDownloads = { navController.navigate(Route.DOWNLOADS) },
+                        navigateToSettings = { navController.navigate(Route.SETTINGS) },
+                    )
+                }
 
                 animatedComposable(Route.SETTINGS){
                     SettingsPage(navController)

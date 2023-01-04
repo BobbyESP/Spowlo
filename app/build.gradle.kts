@@ -50,7 +50,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 33
         versionCode = 10000
         versionName = StringBuilder("${versionMajor}.${versionMinor}.${versionPatch}").apply {
@@ -138,7 +138,7 @@ android {
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
     packagingOptions {
         resources {
@@ -150,6 +150,8 @@ android {
 }
 
 dependencies {
+    //implement a file tree that includes all files in a directory
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(project(":color"))
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.7.0-alpha01")
@@ -169,6 +171,7 @@ dependencies {
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation("androidx.compose.runtime:runtime:1.4.0-alpha03")
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
@@ -182,6 +185,7 @@ dependencies {
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.browser:browser:1.4.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")

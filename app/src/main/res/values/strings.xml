@@ -58,4 +58,7 @@
     <string name="lite">Spotify Lite</string>
     <string name="lite_description">"A lightweight version of Spotify with no ads and unlimited skips. "</string>
     <string name="latest_version">Latest version</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="downloads_history">Downloads history</string>
 </resources>
