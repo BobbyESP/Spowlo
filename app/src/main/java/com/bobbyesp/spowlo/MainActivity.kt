@@ -12,9 +12,15 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.spowlo.App.Companion.context
+import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
+import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
+import com.bobbyesp.spowlo.ui.common.SettingsProvider
+import com.bobbyesp.spowlo.ui.pages.InitialEntry
+import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
@@ -35,28 +41,28 @@ class MainActivity : AppCompatActivity() {
         }
         context = this.baseContext
         setContent {
-            val isUrlSharingTriggered =
-                downloadViewModel.viewStateFlow.collectAsState().value.isUrlSharingTriggered
+            /*val isUrlSharingTriggered =
+                downloadViewModel.viewStateFlow.collectAsState().value.isUrlSharingTriggered*/
             val windowSizeClass = calculateWindowSizeClass(this)
             SettingsProvider(windowSizeClass.widthSizeClass) {
-                SealTheme(
+                SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    HomeEntry(
-                        downloadViewModel,
-                        isUrlSharingTriggered
+                    InitialEntry(
+                        //TODO: Add viewModels
+                        //TODO: isUrlSharingTriggered
+                    false
                     )
                 }
             }
         }
-        handleShareIntent(intent)
+        //handleShareIntent(intent)
     }
     companion object {
         private const val TAG = "MainActivity"
         private var sharedUrl = ""
-
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")

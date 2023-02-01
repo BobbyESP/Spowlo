@@ -1,10 +1,23 @@
 package com.bobbyesp.spowlo.utils
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
+import com.bobbyesp.spowlo.App
+import com.bobbyesp.spowlo.App.Companion.applicationScope
+import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
+import com.google.android.material.color.DynamicColors
+import com.kyant.monet.PaletteStyle
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 const val CUSTOM_COMMAND = "custom_command"
 const val EXTRACT_AUDIO = "extract_audio"
@@ -60,6 +73,12 @@ private val IntPreferenceDefaults = mapOf(
     AUDIO_FORMAT to 0,
 )
 
+val palettesMap = mapOf(
+    0 to PaletteStyle.TonalSpot,
+    1 to PaletteStyle.Spritz,
+    2 to PaletteStyle.FruitSalad,
+    3 to PaletteStyle.Vibrant,
+)
 object PreferencesUtil {
     private val kv = MMKV.defaultMMKV()
 
@@ -86,6 +105,89 @@ object PreferencesUtil {
     fun getOutputPathTemplate(): String = OUTPUT_PATH_TEMPLATE.getString()
 
     fun getAudioFormat(): Int = AUDIO_FORMAT.getInt()
+
+    fun isNetworkAvailableForDownload() =
+        CELLULAR_DOWNLOAD.getBoolean() || !App.connectivityManager.isActiveNetworkMetered
+
+    fun isAutoUpdateEnabled() = AUTO_UPDATE.getBoolean(!isFDroidBuild())
+
+
+    fun getLanguageConfiguration(languageNumber: Int = kv.decodeInt(LANGUAGE)) =
+        languageMap.getOrElse(languageNumber) { "" }
+
+
+    private fun getLanguageNumberByCode(languageCode: String): Int =
+        languageMap.entries.find { it.value == languageCode }?.key ?: SYSTEM_DEFAULT
+
+
+    fun getLanguageNumber(): Int {
+        return if (Build.VERSION.SDK_INT >= 33)
+            getLanguageNumberByCode(
+                LocaleListCompat.getAdjustedDefault()[0]?.toLanguageTag().toString()
+            )
+        else LANGUAGE.getInt()
+    }
+    data class AppSettings(
+        val darkTheme: DarkThemePreference = DarkThemePreference(),
+        val isDynamicColorEnabled: Boolean = false,
+        val seedColor: Int = DEFAULT_SEED_COLOR,
+        val paletteStyleIndex: Int = 0
+    )
+
+    private val mutableAppSettingsStateFlow = MutableStateFlow(
+        AppSettings(
+            DarkThemePreference(
+                darkThemeValue = kv.decodeInt(
+                    DARK_THEME_VALUE,
+                    DarkThemePreference.FOLLOW_SYSTEM
+                ), isHighContrastModeEnabled = kv.decodeBool(HIGH_CONTRAST, false)
+            ),
+            isDynamicColorEnabled = kv.decodeBool(
+                DYNAMIC_COLOR,
+                DynamicColors.isDynamicColorAvailable()
+            ),
+            seedColor = kv.decodeInt(THEME_COLOR, DEFAULT_SEED_COLOR),
+            paletteStyleIndex = kv.decodeInt(PALETTE_STYLE, 0)
+        )
+    )
+    val AppSettingsStateFlow = mutableAppSettingsStateFlow.asStateFlow()
+
+    fun modifyDarkThemePreference(
+        darkThemeValue: Int = AppSettingsStateFlow.value.darkTheme.darkThemeValue,
+        isHighContrastModeEnabled: Boolean = AppSettingsStateFlow.value.darkTheme.isHighContrastModeEnabled
+    ) {
+        applicationScope.launch(Dispatchers.IO) {
+            mutableAppSettingsStateFlow.update {
+                it.copy(
+                    darkTheme = AppSettingsStateFlow.value.darkTheme.copy(
+                        darkThemeValue = darkThemeValue,
+                        isHighContrastModeEnabled = isHighContrastModeEnabled
+                    )
+                )
+            }
+            kv.encode(DARK_THEME_VALUE, darkThemeValue)
+            kv.encode(HIGH_CONTRAST, isHighContrastModeEnabled)
+        }
+    }
+
+    fun modifyThemeSeedColor(colorArgb: Int, paletteStyleIndex: Int) {
+        applicationScope.launch(Dispatchers.IO) {
+            mutableAppSettingsStateFlow.update {
+                it.copy(seedColor = colorArgb, paletteStyleIndex = paletteStyleIndex)
+            }
+            kv.encode(THEME_COLOR, colorArgb)
+            kv.encode(PALETTE_STYLE, paletteStyleIndex)
+        }
+    }
+
+    fun switchDynamicColor(enabled: Boolean = !mutableAppSettingsStateFlow.value.isDynamicColorEnabled) {
+        applicationScope.launch(Dispatchers.IO) {
+            mutableAppSettingsStateFlow.update {
+                it.copy(isDynamicColorEnabled = enabled)
+            }
+            kv.encode(DYNAMIC_COLOR, enabled)
+        }
+    }
 
 }
 

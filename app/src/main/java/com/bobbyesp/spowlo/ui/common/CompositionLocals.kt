@@ -7,10 +7,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.junkfood.seal.ui.theme.DEFAULT_SEED_COLOR
-import com.junkfood.seal.util.DarkThemePreference
-import com.junkfood.seal.util.PreferenceUtil
-import com.junkfood.seal.util.palettesMap
+import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
+import com.bobbyesp.spowlo.utils.DarkThemePreference
+import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.palettesMap
 import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
@@ -23,7 +23,7 @@ val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 
 @Composable
 fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, content: @Composable () -> Unit) {
-    val appSettingsState = PreferenceUtil.AppSettingsStateFlow.collectAsState().value
+    val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
     CompositionLocalProvider(
         LocalDarkTheme provides appSettingsState.darkTheme,
         LocalSeedColor provides appSettingsState.seedColor,

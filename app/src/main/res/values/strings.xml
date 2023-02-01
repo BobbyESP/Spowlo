@@ -9,4 +9,6 @@
     <string name="filesize_mb">%.2f MB</string>
     <string name="filesize_gb">%.2f GB</string>
     <string name="file_unavailable">This file is no longer available</string>
+    <string name="la_en_US">English (United States)</string>
+    <string name="la_es">Español</string>
 </resources>

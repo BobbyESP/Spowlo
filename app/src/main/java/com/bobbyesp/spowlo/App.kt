@@ -10,7 +10,9 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
 import androidx.core.content.getSystemService
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
+import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -35,8 +37,6 @@ class App : Application() {
 
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
-
-
     }
 
     companion object {
@@ -46,6 +46,7 @@ class App : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
+        val SpotDl = SpotDL.getInstance()
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
@@ -110,7 +111,7 @@ class App : Application() {
             return StringBuilder().append("App version: $versionName ($versionCode)\n")
                 .append("Device information: Android $release (API ${Build.VERSION.SDK_INT})\n")
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
-                .append("Yt-dlp version: ${YoutubeDL.version(context.applicationContext)}\n")
+                .append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
         }
 
