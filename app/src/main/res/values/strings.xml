@@ -29,4 +29,5 @@
     <string name="lyrics">Lyrics</string>
     <string name="app_update_failed">An error happened while trying to update the app.</string>
     <string name="update">Update</string>
+    <string name="permission_denied">Permission denied</string>
 </resources>

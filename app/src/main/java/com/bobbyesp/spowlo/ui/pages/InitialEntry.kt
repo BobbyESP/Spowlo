@@ -8,6 +8,12 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,14 +22,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
+import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -73,6 +85,36 @@ fun InitialEntry(
     if (isUrlShared) {
         if (navController.currentDestination?.route != Route.HOME) {
             navController.popBackStack(route = Route.HOME, inclusive = false, saveState = true)
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        AnimatedNavHost(
+            modifier = Modifier
+                .fillMaxWidth(
+                    when (LocalWindowWidthState.current) {
+                        WindowWidthSizeClass.Compact -> 1f
+                        WindowWidthSizeClass.Expanded -> 0.5f
+                        else -> 0.8f
+                    }
+                )
+                .align(Alignment.Center),
+            navController = navController,
+            startDestination = Route.HOME
+        ) {
+            //TODO: Add all routes
+            animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
+                DownloaderPage(
+                    navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
+                    navigateToSettings = { navController.navigate(Route.SETTINGS) },
+                    navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
+                    onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
+                    downloaderViewModel = downloaderViewModel
+                )
+            }
         }
     }
 
