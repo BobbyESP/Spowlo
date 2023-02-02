@@ -69,7 +69,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 10000
 

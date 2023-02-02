@@ -11,4 +11,20 @@
     <string name="file_unavailable">This file is no longer available</string>
     <string name="la_en_US">English (United States)</string>
     <string name="la_es">Español</string>
+    <string name="spotdl_docs">spotDL Documentation</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="checked">Checked</string>
+    <string name="remove">Remove</string>
+    <string name="how_does_it_work">How does it works?</string>
+    <string name="copy_link">Copy link</string>
+    <string name="paste">Paste</string>
+    <string name="add">Add</string>
+    <string name="clear">Clear</string>
+    <string name="back">Go back</string>
+    <string name="open_settings">Open settings</string>
+    <string name="edit">Edit</string>
+    <string name="remove_template">Remove template</string>
+    <string name="custom_command_enabled_hint">Some options are unavailable when using custom commands</string>
+    <string name="lyrics">Lyrics</string>
 </resources>

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.junkfood.seal.App.Companion.userAgentHeader
+import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
 
 

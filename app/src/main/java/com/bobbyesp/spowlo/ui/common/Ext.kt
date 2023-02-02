@@ -3,9 +3,9 @@ package com.bobbyesp.spowlo.ui.common
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.junkfood.seal.util.PreferenceUtil.getBoolean
-import com.junkfood.seal.util.PreferenceUtil.getInt
-import com.junkfood.seal.util.PreferenceUtil.getString
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getInt
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 
 inline val String.booleanState
     @Composable get() =

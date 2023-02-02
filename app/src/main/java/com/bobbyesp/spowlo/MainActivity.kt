@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -16,6 +17,7 @@ import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.ui.pages.InitialEntry
+import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val downloaderViewModel: DownloaderViewModel by viewModels()
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +54,8 @@ class MainActivity : AppCompatActivity() {
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
                     InitialEntry(
-                        //TODO: Add viewModels
-                        //TODO: isUrlSharingTriggered
-                    false
+                        downloaderViewModel = downloaderViewModel,
+                        isUrlShared = false
                     )
                 }
             }

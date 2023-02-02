@@ -14,7 +14,7 @@ android {
         minSdk = 21
         targetSdk = 33
     }
-    namespace = "com.junkfood.seal.color"
+    namespace = "com.bobbyesp.spowlo.color"
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
