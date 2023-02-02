@@ -44,6 +44,7 @@ const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
 const val COOKIES = "cookies"
 const val AUTO_UPDATE = "auto_update"
+const val UPDATE_CHANNEL = "update_channel"
 const val PRIVATE_MODE = "private_mode"
 private const val DYNAMIC_COLOR = "dynamic_color"
 const val CELLULAR_DOWNLOAD = "cellular_download"
@@ -51,6 +52,10 @@ private const val HIGH_CONTRAST = "high_contrast"
 const val FORMAT_SELECTION = "format_selection"
 
 const val SYSTEM_DEFAULT = 0
+
+//UPDATE CHANNELS
+const val STABLE = 0
+const val PRE_RELEASE = 1
 
 private val StringPreferenceDefaults =
     mapOf(
