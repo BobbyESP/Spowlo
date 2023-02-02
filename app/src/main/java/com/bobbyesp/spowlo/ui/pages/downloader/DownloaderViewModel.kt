@@ -52,8 +52,6 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-
-
     fun onShareIntentConsumed() {
         mutableViewStateFlow.update { it.copy(isUrlSharingTriggered = false) }
     }

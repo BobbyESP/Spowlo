@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.collectAsState
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -20,6 +22,7 @@ import com.bobbyesp.spowlo.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.matchUrlFromSharedText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,8 +47,8 @@ class MainActivity : AppCompatActivity() {
         }
         context = this.baseContext
         setContent {
-            /*val isUrlSharingTriggered =
-                downloadViewModel.viewStateFlow.collectAsState().value.isUrlSharingTriggered*/
+            val isUrlSharingTriggered =
+                downloaderViewModel.viewStateFlow.collectAsState().value.isUrlSharingTriggered
             val windowSizeClass = calculateWindowSizeClass(this)
             SettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(
@@ -55,13 +58,40 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     InitialEntry(
                         downloaderViewModel = downloaderViewModel,
-                        isUrlShared = false
+                        isUrlShared = isUrlSharingTriggered
                     )
                 }
             }
         }
-        //handleShareIntent(intent)
+        handleShareIntent(intent)
     }
+    private fun handleShareIntent(intent: Intent) {
+        Log.d(TAG, "handleShareIntent: $intent")
+
+        when (intent.action) {
+            Intent.ACTION_VIEW -> {
+                intent.dataString?.let {
+                    sharedUrl = it
+                    downloaderViewModel.updateUrl(sharedUrl, true)
+                }
+            }
+            Intent.ACTION_SEND -> {
+                intent.getStringExtra(Intent.EXTRA_TEXT)
+                    ?.let { sharedContent ->
+                        intent.removeExtra(Intent.EXTRA_TEXT)
+                        matchUrlFromSharedText(sharedContent)
+                            .let { matchedUrl ->
+                                if (sharedUrl != matchedUrl) {
+                                    sharedUrl = matchedUrl
+                                    downloaderViewModel.updateUrl(sharedUrl, true)
+                                }
+                            }
+                    }
+            }
+        }
+
+    }
+
     companion object {
         private const val TAG = "MainActivity"
         private var sharedUrl = ""
