@@ -63,6 +63,8 @@ const val SYSTEM_DEFAULT = 0
 const val STABLE = 0
 const val PRE_RELEASE = 1
 
+const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results --preserve-original-audio"""
+
 private val StringPreferenceDefaults =
     mapOf(
         OUTPUT_PATH_TEMPLATE to "{artists} - {title}.{output-ext}",

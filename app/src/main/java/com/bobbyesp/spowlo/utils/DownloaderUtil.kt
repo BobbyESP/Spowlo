@@ -5,6 +5,9 @@ import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.library.SpotDLResponse
 import com.bobbyesp.library.dto.Song
+import com.bobbyesp.spowlo.App.Companion.context
+import com.bobbyesp.spowlo.database.DownloadedSongInfo
+import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -41,9 +44,53 @@ object DownloaderUtil {
     }
 
     @CheckResult
-    private fun getVideoInfo(request: SpotDLRequest, id: String = getRandomUUID()): Result<List<Song>> =
+    private fun getSongInfo(
+        request: SpotDLRequest,
+        id: String = getRandomUUID()
+    ): Result<List<Song>> =
         request.addOption("--save-file", "$id.spotdl").runCatching {
             val response: SpotDLResponse = SpotDL.getInstance().execute(request, null, null)
             jsonFormat.decodeFromString(response.output)
         }
+
+    private fun SpotDLRequest.addCookies(): SpotDLRequest = this.apply {
+        PreferencesUtil.getCookies().run {
+            if (isNotEmpty()) {
+                addOption(
+                    "--cookie-file", FilesUtil.writeContentToFile(
+                        this, context.getCookiesFile()
+                    ).absolutePath
+                )
+            }
+        }
+    }
+
+    @CheckResult
+    private fun scanVideoIntoDownloadHistory(
+        songInfo: Song,
+        downloadPath: String,
+    ): List<String> = FilesUtil.scanFileToMediaLibraryPostDownload(
+        title = songInfo.song_id, downloadDir = downloadPath
+    ).apply {
+        insertInfoIntoDownloadHistory(songInfo, this)
+    }
+
+    private fun insertInfoIntoDownloadHistory(
+        songInfo: Song,
+        filePaths: List<String>
+    ){
+        filePaths.forEach { filePath ->
+            DatabaseUtil.insertInfo(
+                DownloadedSongInfo(
+                    id = 0,
+                    songName = songInfo.name,
+                    songAuthor = songInfo.artist,
+                    songUrl = songInfo.url,
+                    thumbnailUrl = songInfo.cover_url,
+                    songPath = filePath,
+                    extractor = "Youtube Music",
+                )
+            )
+        }
+    }
 }

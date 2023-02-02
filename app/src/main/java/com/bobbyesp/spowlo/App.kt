@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageInfo
@@ -10,16 +11,24 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.getSystemService
+import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
+import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
+import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.TEMPLATE_EXAMPLE
+import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @HiltAndroidApp
@@ -40,8 +49,26 @@ class App : Application() {
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
 
-        runBlocking {
-            Log.d("App", "spotDL version: ${SpotDL.getInstance().version(applicationContext)}")
+        applicationScope.launch((Dispatchers.IO)) {
+            try {
+                if (!PreferencesUtil.containsKey(TEMPLATE_ID)) {
+                    PreferencesUtil.encodeInt(
+                        TEMPLATE_ID, DatabaseUtil.insertTemplate(
+                            CommandTemplate(
+                                id = 0,
+                                name = context.getString(R.string.custom_command_template),
+                                template = TEMPLATE_EXAMPLE
+                            )
+                        ).toInt()
+                    )
+                }
+                SpotDl.init(this@App)
+                FFMPEG.init(this@App)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                clipboard.setPrimaryClip(ClipData.newPlainText(null, e.message))
+                Toast.makeText(this@App, e.message, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -53,6 +80,7 @@ class App : Application() {
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
         val SpotDl = SpotDL.getInstance()
+        val FFMPEG = FFmpeg.getInstance()
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
