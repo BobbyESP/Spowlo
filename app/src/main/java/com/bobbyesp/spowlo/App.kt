@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.getSystemService
@@ -22,6 +23,7 @@ import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.TEMPLATE_EXAMPLE
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
+import com.bobbyesp.spowlo.utils.ToastUtil
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -62,12 +64,13 @@ class App : Application() {
                         ).toInt()
                     )
                 }
-                SpotDl.init(this@App)
-                FFMPEG.init(this@App)
+                SpotDL.getInstance().init(this@App)
+                FFmpeg.getInstance().init(this@App)
             } catch (e: Exception) {
+                Looper.prepare()
                 e.printStackTrace()
                 clipboard.setPrimaryClip(ClipData.newPlainText(null, e.message))
-                Toast.makeText(this@App, e.message, Toast.LENGTH_LONG).show()
+                ToastUtil.makeToast(text = e.message ?: "Unknown error")
             }
         }
     }
