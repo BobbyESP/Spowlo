@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import androidx.core.content.getSystemService
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
@@ -19,6 +20,7 @@ import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 
 @HiltAndroidApp
 class App : Application() {
@@ -37,6 +39,10 @@ class App : Application() {
 
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
+
+        runBlocking {
+            Log.d("App", "spotDL version: ${SpotDL.getInstance().version(applicationContext)}")
+        }
     }
 
     companion object {

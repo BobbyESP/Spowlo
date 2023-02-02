@@ -17,7 +17,7 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.4"
 
-spotdlAndroidVersion = "0.1.5"
+spotdlAndroidVersion = "-SNAPSHOT"
 
 coil = "2.2.2"
 hilt = "2.44.2"
