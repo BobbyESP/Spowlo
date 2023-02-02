@@ -17,7 +17,11 @@ A Spotify Mod (by the moment) downloader and manager using the xManager API made
 </div>
 
 # ANNOUNCEMENT: REMAKE COMING!
-I have made a library to be able to download songs from Spotify called [spotdl-android](https://github.com/BobbyESP/spotdl-android/). Now that it's done, I'm remaking Spowlo in a branch of this repo, called [remake-2](https://github.com/BobbyESP/Spowlo/tree/remake-2) ("remake" branch will be deleted because it was a lot easier re-creating the project from zero than deleting things kek). So stay tuned about it!
+I have made a library to be able to download songs from Spotify called [spotdl-android](https://github.com/BobbyESP/spotdl-android/). Now that it's done, I'm remaking Spowlo in a branch of this repo, called [remake-2](https://github.com/BobbyESP/Spowlo/tree/remake-2) ("remake" branch will be deleted because it was a lot easier re-creating the project from zero than deleting things kek).
+
+With this remake, you will be able to downloads Spotify songs thanks to the [spotDL](https://github.com/spotDL/spotify-downloader) library and also Spotify mods like the non-remake app.
+
+So stay tuned about it!
 
 If you want to get more info or just talk/ask me or our community, join our [telegram group](https://t.me/spowlo_chatroom)
 
@@ -35,7 +39,7 @@ If you want to get more info or just talk/ask me or our community, join our [tel
 </div>
 
 ## 🔮Upcoming features
-- [ ] Add music downloading with yt-dlp and an API to bridge Spotify links to YouTube ones (at least by the moment, i'll try to implement the python library SpotDL)
+- [x] Add music downloading with yt-dlp and an API to bridge Spotify links to YouTube ones (at least by the moment, i'll try to implement the python library SpotDL) [UPDATE: Coming in the remake]
 - [ ] Download the song that you are actually playing and also searching (that info will be provided by [spotify-web-api-kotlin](https://github.com/adamint/spotify-web-api-kotlin) library)
 - [ ] Add in-app packages downloading (not browser redirection)
 - [ ] Put more settings
