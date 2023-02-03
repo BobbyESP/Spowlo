@@ -31,4 +31,12 @@
     <string name="update">Update</string>
     <string name="permission_denied">Permission denied</string>
     <string name="custom_command_template">Custom command template</string>
+    <string name="unknown_error">An unknown error ocurred.</string>
+    <string name="error_copied">The error output has been copied to the clipboard.</string>
+    <string name="task_running">A download is currently in progress.</string>
+    <string name="status_completed">Completed</string>
+    <string name="download">Download</string>
+    <string name="downloads_history">Downloads history</string>
+    <string name="running_tasks">Custom tasks running</string>
+    <string name="settings">Settings</string>
 </resources>

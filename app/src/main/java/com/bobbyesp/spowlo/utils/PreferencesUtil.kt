@@ -9,6 +9,7 @@ import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.CookieProfile
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.google.android.material.color.DynamicColors
@@ -214,6 +215,17 @@ object PreferencesUtil {
         }.stateIn(applicationScope, started = SharingStarted.Eagerly, COOKIE_HEADER)
 
     fun getCookies(): String = cookiesStateFlow.value
+
+    val templateStateFlow: StateFlow<List<CommandTemplate>> =
+        DatabaseUtil.getTemplateFlow().distinctUntilChanged().stateIn(
+            applicationScope, started = SharingStarted.Eagerly, emptyList()
+        )
+
+    fun getTemplate(): CommandTemplate {
+        return templateStateFlow.value.run {
+            find { it.id == TEMPLATE_ID.getInt() } ?: first()
+        }
+    }
 
 }
 

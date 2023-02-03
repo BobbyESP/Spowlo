@@ -6,6 +6,7 @@ import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.library.SpotDLResponse
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.context
+import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
@@ -92,5 +93,12 @@ object DownloaderUtil {
                 )
             )
         }
+    }
+
+    suspend fun executeCommandInBackground(
+        url: String,
+        template: CommandTemplate = PreferencesUtil.getTemplate()
+    ){
+        TODO("Not yet implemented")
     }
 }
