@@ -3,10 +3,12 @@ package com.bobbyesp.spowlo
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.SpotDl
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.database.CommandTemplate
+import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -27,6 +29,9 @@ object Downloader {
         object DownloadingVideo : State()
         object FetchingInfo : State()
         object Idle : State()
+    }
+    fun cancelDownload() {
+        TODO("Not yet implemented")
     }
 
     fun makeKey(url: String, templateName: String): String = "${templateName}_$url"
@@ -100,10 +105,13 @@ object Downloader {
     }
 
     data class DownloadTaskItem(
+        val info: List<Song> = listOf(Song()),
         val spotifyUrl: String = "",
         val name: String = "",
         val artist: String = "",
         val duration: Int = 0,
+        val isExplicit: Boolean = false,
+        val hasLyrics: Boolean = false,
         // val fileSizeApprox: Long = 0,
         val progress: Float = 0f,
         val progressText: String = "",

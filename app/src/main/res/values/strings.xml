@@ -39,4 +39,5 @@
     <string name="downloads_history">Downloads history</string>
     <string name="running_tasks">Custom tasks running</string>
     <string name="settings">Settings</string>
+    <string name="url_query_spotify">Spotify URL or query</string>
 </resources>
