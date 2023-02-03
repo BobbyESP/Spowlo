@@ -204,6 +204,7 @@ dependencies {
     implementation(libs.spotdl.android.library)
     implementation(libs.spotdl.android.ffmpeg)
 
+    implementation(libs.spotify.api.android)
 
     // okhttp
     implementation(libs.okhttp)

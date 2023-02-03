@@ -18,6 +18,7 @@ androidxHiltNavigationCompose = "1.0.0"
 androidxTestExt = "1.1.4"
 
 spotdlAndroidVersion = "-SNAPSHOT"
+spotifyApiKotlinVersion = "4.0.0"
 
 coil = "2.2.2"
 hilt = "2.44.2"
@@ -78,7 +79,6 @@ androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.r
 
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
 
-
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -93,6 +93,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlAndroidVersion" }
 spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlAndroidVersion" }
+
+spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotifyApiKotlinVersion" }
 
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
