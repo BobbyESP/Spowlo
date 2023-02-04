@@ -21,6 +21,7 @@ import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.TEMPLATE_EXAMPLE
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -32,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 @HiltAndroidApp
 class App : Application() {
@@ -73,6 +75,12 @@ class App : Application() {
                 ToastUtil.makeToast(text = e.message ?: "Unknown error")
             }
         }
+        audioDownloadDir = AUDIO_DIRECTORY.getString(
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                getString(R.string.app_name)
+            ).absolutePath
+        )
     }
 
     companion object {
@@ -87,36 +95,36 @@ class App : Application() {
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
-       /* var isServiceRunning = false
+        /* var isServiceRunning = false
 
-        private val connection = object : ServiceConnection {
-            override fun onServiceConnected(className: ComponentName, service: IBinder) {
-                val binder = service as DownloadService.DownloadServiceBinder
-                isServiceRunning = true
-            }
+         private val connection = object : ServiceConnection {
+             override fun onServiceConnected(className: ComponentName, service: IBinder) {
+                 val binder = service as DownloadService.DownloadServiceBinder
+                 isServiceRunning = true
+             }
 
-            override fun onServiceDisconnected(arg0: ComponentName) {
-            }
-        }
+             override fun onServiceDisconnected(arg0: ComponentName) {
+             }
+         }
 
-        fun startService() {
-            if (isServiceRunning) return
-            Intent(context.applicationContext, DownloadService::class.java).also { intent ->
-                context.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            }
-        }
+         fun startService() {
+             if (isServiceRunning) return
+             Intent(context.applicationContext, DownloadService::class.java).also { intent ->
+                 context.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+             }
+         }
 
-        fun stopService() {
-            if (!isServiceRunning) return
-            try {
-                isServiceRunning = false
-                context.applicationContext.run {
-                    unbindService(connection)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }*/
+         fun stopService() {
+             if (!isServiceRunning) return
+             try {
+                 isServiceRunning = false
+                 context.applicationContext.run {
+                     unbindService(connection)
+                 }
+             } catch (e: Exception) {
+                 e.printStackTrace()
+             }
+         }*/
 
 
         fun getPrivateDownloadDirectory(): String =
@@ -129,8 +137,8 @@ class App : Application() {
 
 
         fun updateDownloadDir(path: String) {
-                audioDownloadDir = path
-                PreferencesUtil.encodeString(AUDIO_DIRECTORY, path)
+            audioDownloadDir = path
+            PreferencesUtil.encodeString(AUDIO_DIRECTORY, path)
         }
 
         fun getVersionReport(): String {

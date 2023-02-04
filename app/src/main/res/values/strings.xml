@@ -64,4 +64,14 @@
     <string name="task_canceled">The download has been canceled</string>
     <string name="print_details">Detailed console output</string>
     <string name="print_details_desc">Show the console log</string>
+    <string name="permission_issue">Directories not supported</string>
+    <string name="permission_issue_desc">Your Android version or your granted permissions won\'t allow you to make downloads away from the \"Downloads\" or \"Documents\" folders</string>
+    <string name="audio_directory">Audio files directory</string>
+    <string name="sdcard_directory">SD Cards downloads directory</string>
+    <string name="sdcard_not_activable_hint">You won\'t be able to select the option for downloading to an SD until you don\'t select a path by clicking on the button.</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="language">Language</string>
+    <string name="dynamic_color">Dynamic colors (Monet)</string>
+    <string name="dynamic_color_desc">Follow your wallpaper\'s colors</string>
+    <string name="display">Appearance</string>
 </resources>
