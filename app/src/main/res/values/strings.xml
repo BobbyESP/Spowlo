@@ -40,4 +40,20 @@
     <string name="running_tasks">Custom tasks running</string>
     <string name="settings">Settings</string>
     <string name="url_query_spotify">Spotify URL or query</string>
+    <string name="battery_configuration_desc">Activate the usage of the app in background to make sure that all works fine.</string>
+    <string name="battery_configuration">Battery configuration</string>
+    <string name="general_settings">General</string>
+    <string name="appearence">Appearance</string>
+    <string name="custom_command">Custom commands</string>
+    <string name="custom_command_desc">Use custom commands to get the most out  of the library.</string>
+    <string name="appearance_settings">Change how the app looks like</string>
+    <string name="about">About</string>
+    <string name="about_page">Telegram, GitHub, bug reports...</string>
+    <string name="network">Network</string>
+    <string name="network_settings_desc">Change your network configuration</string>
+    <string name="format">Format</string>
+    <string name="format_settings_desc">Change your downloads format</string>
+    <string name="download_directory">Downloads directory</string>
+    <string name="download_directory_desc">Change where your downloads are saved</string>
+    <string name="general_settings_desc">spotDL version, notifications...</string>
 </resources>

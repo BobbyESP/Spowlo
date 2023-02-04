@@ -32,6 +32,7 @@ import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
@@ -113,6 +114,11 @@ fun InitialEntry(
                     navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     downloaderViewModel = downloaderViewModel
+                )
+            }
+            animatedComposable(Route.SETTINGS) {
+                SettingsPage(
+                    navController = navController
                 )
             }
         }
