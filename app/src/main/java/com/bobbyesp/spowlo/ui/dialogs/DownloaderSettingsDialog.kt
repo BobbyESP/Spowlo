@@ -1,20 +1,26 @@
 package com.bobbyesp.spowlo.ui.dialogs
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.DownloadDone
+import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,12 +43,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
+import com.bobbyesp.spowlo.ui.components.ButtonChip
 import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.DrawerSheetSubtitle
 import com.bobbyesp.spowlo.ui.components.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
@@ -63,7 +74,7 @@ fun DownloaderSettingsDialog(
     var customCommand by remember { mutableStateOf(PreferencesUtil.getValue(CUSTOM_COMMAND)) }
     var selectedTemplateId by TEMPLATE_ID.intState
 
-    val showAudioFormatDialog by remember { mutableStateOf(false) }
+    var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
     var showCustomCommandDialog by remember { mutableStateOf(0) }
 
@@ -101,6 +112,26 @@ fun DownloaderSettingsDialog(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             DrawerSheetSubtitle(text = stringResource(id = R.string.general_settings))
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+            ) {
+                ButtonChip(
+                    label = stringResource(id = R.string.audio_format),
+                    icon = Icons.Outlined.AudioFile,
+                    onClick = { showAudioFormatDialog = true },
+                )
+                ButtonChip(
+                    label = stringResource(id = R.string.audio_quality),
+                    icon = Icons.Outlined.HighQuality,
+                    onClick = { showAudioQualityDialog = true },
+                )
+            }
         }
     }
     if (!useDialog) {
@@ -174,6 +205,16 @@ fun DownloaderSettingsDialog(
                     sheetContent()
                 }
             })
+    }
+    if (showAudioFormatDialog) {
+        AudioFormatDialog(
+            onDismissRequest = { showAudioFormatDialog = false },
+        )
+    }
+    if (showAudioQualityDialog) {
+        AudioQualityDialog(
+            onDismissRequest = { showAudioQualityDialog = false },
+        )
     }
 
 }

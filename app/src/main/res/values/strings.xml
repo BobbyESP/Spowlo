@@ -74,4 +74,13 @@
     <string name="dynamic_color">Dynamic colors (Monet)</string>
     <string name="dynamic_color_desc">Follow your wallpaper\'s colors</string>
     <string name="display">Appearance</string>
+    <string name="audio_format">Audio format</string>
+    <string name="audio_format_desc">Choose the audio format in that you want to save your downloads</string>
+    <string name="audio_quality">Audio quality</string>
+    <string name="audio_quality_desc">Choose in what quality you want to download the songs</string>
+    <string name="audio">Audio</string>
+    <string name="url_empty">There\'s no URL to download</string>
+    <string name="fetch_info_error_msg">An error ocurred while trying to fetch the song info</string>
+    <string name="download_error_msg">An error occurred while trying to download the song</string>
+    <string name="download_finish_notification">The download has finished</string>
 </resources>

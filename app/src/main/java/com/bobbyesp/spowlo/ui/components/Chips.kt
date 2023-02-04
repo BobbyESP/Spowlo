@@ -129,7 +129,7 @@ fun FilterChipWithIcons(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VideoFilterChip(
+fun AudioFilterChip(
     modifier: Modifier = Modifier,
     selected: Boolean,
     enabled: Boolean = true,

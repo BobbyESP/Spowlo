@@ -120,7 +120,7 @@ fun DownloaderPage(
         permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
     ) { b: Boolean ->
         if (b) {
-            //downloaderViewModel.startDownloadSong()
+            downloaderViewModel.startDownloadSong()
         } else {
             ToastUtil.makeToast(R.string.permission_denied)
         }
@@ -139,7 +139,7 @@ fun DownloaderPage(
 
     val checkPermissionOrDownload = {
         if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted)
-        //downloaderViewModel.startDownloadSong()
+        downloaderViewModel.startDownloadSong()
         else {
             storagePermission.launchPermissionRequest()
         }
