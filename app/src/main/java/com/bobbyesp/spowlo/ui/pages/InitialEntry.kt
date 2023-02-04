@@ -33,6 +33,7 @@ import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
+import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
@@ -119,6 +120,11 @@ fun InitialEntry(
             animatedComposable(Route.SETTINGS) {
                 SettingsPage(
                     navController = navController
+                )
+            }
+            animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES){
+                GeneralSettingsPage(
+                    onBackPressed = onBackPressed
                 )
             }
         }

@@ -56,4 +56,12 @@
     <string name="download_directory">Downloads directory</string>
     <string name="download_directory_desc">Change where your downloads are saved</string>
     <string name="general_settings_desc">spotDL version, notifications...</string>
+    <string name="spotdl_version">spotDL version</string>
+    <string name="settings_before_download_text">Adjust your download</string>
+    <string name="cancel">Cancel</string>
+    <string name="start_download">Start download</string>
+    <string name="settings_before_download">Configure before downloading</string>
+    <string name="task_canceled">The download has been canceled</string>
+    <string name="print_details">Detailed console output</string>
+    <string name="print_details_desc">Show the console log</string>
 </resources>

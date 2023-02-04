@@ -12,7 +12,9 @@ import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -26,12 +28,9 @@ object Downloader {
             val itemCount: Int = 0,
         ) : State()
 
-        object DownloadingVideo : State()
+        object DownloadingSong : State()
         object FetchingInfo : State()
         object Idle : State()
-    }
-    fun cancelDownload() {
-        TODO("Not yet implemented")
     }
 
     fun makeKey(url: String, templateName: String): String = "${templateName}_$url"
@@ -119,6 +118,9 @@ object Downloader {
         val taskId: String = "",
         // val playlistIndex: Int = 0,
     )
+
+    private var currentJob: Job? = null
+    private var downloadResultTemp: Result<List<String>> = Result.failure(Exception())
 
     //DOWNLOADER STATE FLOW
     private val mutableDownloaderState: MutableStateFlow<State> = MutableStateFlow(State.Idle)
@@ -218,6 +220,44 @@ object Downloader {
                 state = CustomCommandTask.State.Error(
                     errorReport
                 ), currentLine = errorReport, output = oldValue.output + "\n" + errorReport
+            )
+        }
+    fun updateState(state: State) = mutableDownloaderState.update { state }
+
+    fun clearErrorState() {
+        mutableErrorState.update { ErrorState() }
+    }
+
+    fun showErrorMessage(resId: Int) {
+        ToastUtil.makeToastSuspend(context.getString(resId))
+        mutableErrorState.update { ErrorState(errorMessageResId = resId) }
+    }
+
+    private fun clearProgressState(isFinished: Boolean) {
+        mutableTaskState.update {
+            it.copy(
+                progress = if (isFinished) 100f else 0f,
+                progressText = "",
+            )
+        }
+        if (!isFinished)
+            downloadResultTemp = Result.failure(Exception())
+    }
+    fun cancelDownload() {
+        ToastUtil.makeToast(context.getString(R.string.task_canceled))
+        currentJob?.cancel(CancellationException(context.getString(R.string.task_canceled)))
+        updateState(State.Idle)
+        clearProgressState(isFinished = false)
+        taskState.value.taskId.run {
+            SpotDl.destroyProcessById(this)
+            //NotificationUtil.cancelNotification(this.toNotificationId())
+        }
+    }
+
+    fun executeCommandWithUrl(url: String) =
+        applicationScope.launch(Dispatchers.IO) {
+            DownloaderUtil.executeCommandInBackground(
+                url
             )
         }
 

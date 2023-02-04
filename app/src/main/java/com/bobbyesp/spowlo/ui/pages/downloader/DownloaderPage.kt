@@ -39,6 +39,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -92,6 +93,7 @@ import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.ClearButton
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
+import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DEBUG
@@ -112,7 +114,8 @@ fun DownloaderPage(
     navigateToPlaylistPage: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
-){
+) {
+    val scope = rememberCoroutineScope()
     val storagePermission = rememberPermissionState(
         permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
     ) { b: Boolean ->
@@ -136,12 +139,11 @@ fun DownloaderPage(
 
     val checkPermissionOrDownload = {
         if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted)
-            //downloaderViewModel.startDownloadSong()
+        //downloaderViewModel.startDownloadSong()
         else {
             storagePermission.launchPermissionRequest()
         }
     }
-    val scope = rememberCoroutineScope()
 
     val downloadCallback = {
         if (CONFIGURE.getBoolean()) downloaderViewModel.showDialog(
@@ -155,7 +157,8 @@ fun DownloaderPage(
     var showConsoleOutput by remember { mutableStateOf(DEBUG.getBoolean()) }
 
     LaunchedEffect(downloaderState) {
-        showConsoleOutput = PreferencesUtil.getValue(DEBUG) && downloaderState !is Downloader.State.Idle
+        showConsoleOutput =
+            PreferencesUtil.getValue(DEBUG) && downloaderState !is Downloader.State.Idle
     }
 
     if (viewState.isUrlSharingTriggered) {
@@ -177,6 +180,7 @@ fun DownloaderPage(
             taskState = taskState,
             viewState = viewState,
             errorState = errorState,
+            downloadCallback = { downloadCallback() },
             navigateToSettings = navigateToSettings,
             navigateToDownloads = navigateToDownloads,
             onNavigateToTaskList = onNavigateToTaskList,
@@ -193,14 +197,14 @@ fun DownloaderPage(
                 Downloader.cancelDownload()
             },
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
+
         with(viewState) {
-            /*
-            DownloadSettingDialog(useDialog = useDialog,
+            DownloaderSettingsDialog(useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
                 confirm = { checkPermissionOrDownload() }) {
                 downloaderViewModel.hideDialog(scope, useDialog)
-            }*/
+            }
         }
     }
 }
@@ -227,7 +231,7 @@ fun DownloaderPageImplementation(
     onUrlChanged: (String) -> Unit = {},
     isPreview: Boolean = false,
     content: @Composable () -> Unit
-){
+) {
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp), navigationIcon = {
             IconButton(onClick = { navigateToSettings() }) {
@@ -258,7 +262,7 @@ fun DownloaderPageImplementation(
             downloadCallback = downloadCallback,
             pasteCallback = pasteCallback
         )
-    }){
+    }) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -269,13 +273,13 @@ fun DownloaderPageImplementation(
                 Modifier
                     .padding(horizontal = 24.dp)
                     .padding(top = 24.dp)
-            ){
-                with(taskState){
+            ) {
+                with(taskState) {
                     AnimatedVisibility(visible = showSongCard && showDownloadProgress) {
                         SongCard(
                             song = info[0],
                             progress = progress,
-                            modifier = Modifier.padding(top= 16.dp, bottom = 16.dp),
+                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
                             isLyrics = info[0].lyrics?.isNotEmpty()
                                 ?: false,
                             isExplicit = info[0].explicit,
@@ -294,13 +298,25 @@ fun DownloaderPageImplementation(
                         exit = shrinkVertically() + fadeOut(),
                         visible = progressText.isNotEmpty() && showOutput
                     ) {
-                        Text(
-                            modifier = Modifier.padding(bottom = 12.dp),
-                            text = progressText,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        ElevatedCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                            Column {
+                                Text(
+                                    text = "Log",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                                Text(
+                                    modifier = Modifier.padding(bottom = 12.dp),
+                                    text = progressText,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+
+                        }
+
                     }
                     AnimatedVisibility(visible = errorState.isErrorOccurred()) {
                         ErrorMessage(
