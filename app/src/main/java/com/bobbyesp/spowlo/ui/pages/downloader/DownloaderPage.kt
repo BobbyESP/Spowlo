@@ -114,6 +114,7 @@ fun DownloaderPage(
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
     navigateToPlaylistPage: () -> Unit = {},
+    onSongCardClicked: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
@@ -156,6 +157,11 @@ fun DownloaderPage(
         keyboardController?.hide()
     }
 
+    val songCardClicked = {
+        downloaderViewModel.goToMetadataViewer(taskState.info)
+        onSongCardClicked()
+    }
+
     var showConsoleOutput by remember { mutableStateOf(DEBUG.getBoolean()) }
 
     LaunchedEffect(downloaderState) {
@@ -186,6 +192,7 @@ fun DownloaderPage(
             navigateToSettings = navigateToSettings,
             navigateToDownloads = navigateToDownloads,
             onNavigateToTaskList = onNavigateToTaskList,
+            onSongCardClicked = { songCardClicked() },
             showOutput = showConsoleOutput,
             showSongCard = true,
             showDownloadProgress = taskState.taskId.isNotEmpty(),

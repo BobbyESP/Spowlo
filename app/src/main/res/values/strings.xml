@@ -98,4 +98,24 @@
     <string name="spotify">Spotify</string>
     <string name="client_id">Client ID</string>
     <string name="client_secret">Client secret</string>
+    <string name="song_metadata">Song metadata</string>
+    <string name="song_name">Song name</string>
+    <string name="song_artists">Song artists</string>
+    <string name="song_genres">Song genres</string>
+    <string name="song_album">Album</string>
+    <string name="song_album_artist">Album artist</string>
+    <string name="main_artist">Main artist</string>
+    <string name="song_disc_number">Disc number</string>
+    <string name="song_disc_count">Disc count</string>
+    <string name="song_duration">Duration (double)</string>
+    <string name="song_year">Year</string>
+    <string name="song_date">Date</string>
+    <string name="song_track_number">Track number</string>
+    <string name="song_spotify_id">Spotify ID</string>
+    <string name="song_is_explicit">Is Explicit</string>
+    <string name="song_isrc">ISRC</string>
+    <string name="song_publisher">Publisher</string>
+    <string name="song_url">Spotify URL</string>
+    <string name="song_cover_url">Cover URL</string>
+    <string name="song_copyright_text">Copyright text</string>
 </resources>

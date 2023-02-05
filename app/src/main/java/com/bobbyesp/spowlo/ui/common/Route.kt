@@ -9,6 +9,7 @@ object Route {
     const val FORMAT_SELECTION = "format"
     const val TASK_LIST = "task_list"
     const val TASK_LOG = "task_log"
+    const val PLAYLIST_METADATA_PAGE = "playlist_metadata_page"
 
     const val SETTINGS_PAGE = "settings_page"
 

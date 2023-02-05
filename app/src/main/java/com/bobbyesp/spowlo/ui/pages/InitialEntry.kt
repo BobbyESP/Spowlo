@@ -29,9 +29,11 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
+import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
@@ -117,6 +119,9 @@ fun InitialEntry(
                     navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
                     navigateToSettings = { navController.navigate(Route.SETTINGS) },
                     navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
+                    onSongCardClicked = {
+                                        navController.navigate(Route.PLAYLIST_METADATA_PAGE)
+                    },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     downloaderViewModel = downloaderViewModel
                 )
@@ -151,6 +156,12 @@ fun InitialEntry(
                 SpotifySettingsPage {
                     onBackPressed()
                 }
+            }
+            slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
+                PlaylistMetadataPage(
+                    onBackPressed,
+                    downloaderViewModel
+                )
             }
         }
     }

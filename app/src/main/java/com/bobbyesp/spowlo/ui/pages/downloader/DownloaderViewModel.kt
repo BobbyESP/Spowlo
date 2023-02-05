@@ -23,7 +23,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
-    val songInfoFlow = MutableStateFlow(Song())
+    val songInfoFlow = MutableStateFlow(listOf(Song()))
 
     data class ViewState(
         val url: String = "",
@@ -65,6 +65,10 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
             return
         }
         Downloader.getInfoAndDownload(url)
+    }
+
+    fun goToMetadataViewer(songs: List<Song>){
+        songInfoFlow.update { songs }
     }
 
     fun onShareIntentConsumed() {
