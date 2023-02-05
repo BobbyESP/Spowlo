@@ -187,7 +187,11 @@ object Downloader {
         preferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
     ): Result<List<String>> {
 
+        val isDownloadingPlaylist = downloaderState.value is State.DownloadingPlaylist
+
         mutableTaskState.update { songInfo.toTask(preferencesHash = preferences.hashCode()) }
+
+        if (!isDownloadingPlaylist) updateState(State.DownloadingSong)
         return DownloaderUtil.downloadSong(
             songInfo = songInfo,
             playlistUrl = "",
@@ -210,10 +214,10 @@ object Downloader {
                 it,
                 false,
                 //notificationId = notificationId,
-                //isTaskAborted = !isDownloadingPlaylist
+                isTaskAborted = !isDownloadingPlaylist
             )
         }.onSuccess {
-            //if (!isDownloadingPlaylist) finishProcessing()
+            if (!isDownloadingPlaylist) finishProcessing()
             val text =
                 context.getString(if (it.isEmpty()) R.string.status_completed else R.string.download_finish_notification)
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
@@ -229,7 +233,6 @@ object Downloader {
                      ) else null
                  )*/
             }
-            finishProcessing()
         }
     }
 

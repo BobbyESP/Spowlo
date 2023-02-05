@@ -86,4 +86,5 @@
     <string name="preserve_original_audio">Preserve original audio</string>
     <string name="preserve_original_audio_desc">Keep the original downloaded audio file without conversions/compresions.</string>
     <string name="app_description">The best songs downloader for Android powered by spotDL.</string>
+    <string name="console_output">Console output</string>
 </resources>

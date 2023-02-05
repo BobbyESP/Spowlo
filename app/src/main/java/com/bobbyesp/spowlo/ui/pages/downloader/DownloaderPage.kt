@@ -289,7 +289,9 @@ fun DownloaderPageImplementation(
                             style = MaterialTheme.typography.displaySmall
                         )
                         Text(
-                            modifier = Modifier.alpha(ContentAlpha.medium).padding(top = 2.dp),
+                            modifier = Modifier
+                                .alpha(ContentAlpha.medium)
+                                .padding(top = 2.dp),
                             text = stringResource(R.string.app_description),
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -315,7 +317,7 @@ fun DownloaderPageImplementation(
                     }
                     InputUrl(
                         url = viewState.url,
-                        progress = progress,
+                        progress = progress * 100,
                         showDownloadProgress = showDownloadProgress && !showSongCard,
                         error = errorState.isErrorOccurred(),
                         onDone = downloadCallback,
@@ -330,7 +332,7 @@ fun DownloaderPageImplementation(
                             .padding(top = 16.dp)) {
                             Column {
                                 Text(
-                                    text = "Log",
+                                    text = stringResource(id = R.string.console_output),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(16.dp)
