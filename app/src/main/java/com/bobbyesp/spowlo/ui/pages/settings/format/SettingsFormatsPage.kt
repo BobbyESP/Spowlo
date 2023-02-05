@@ -95,7 +95,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         title = stringResource(R.string.audio_format),
                         description = audioFormat,
                         icon = Icons.Outlined.AudioFile,
-                        enabled = !preserveOriginalAudio, //!isCustomCommandEnabled ||
+                        enabled = true, //!isCustomCommandEnabled // !preserveOriginalAudio
                     ) { showAudioFormatDialog = true }
                 }
                 item {

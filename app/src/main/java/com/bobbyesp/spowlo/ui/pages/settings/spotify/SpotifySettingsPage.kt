@@ -23,9 +23,12 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
+import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
+import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.SPOTIFY_CLIENT_ID
 import com.bobbyesp.spowlo.utils.SPOTIFY_CLIENT_SECRET
+import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +54,10 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
         )
     }
 
+    var useSpotifyCredentials by remember {
+        mutableStateOf(PreferencesUtil.getValue(USE_SPOTIFY_CREDENTIALS))
+    }
+
     var showClientIdDialog by remember { mutableStateOf(false) }
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
@@ -74,10 +81,22 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
         }, content = {
             LazyColumn(Modifier.padding(it)) {
                 item {
+                    PreferenceSubtitle(text = stringResource(id = R.string.general_settings))
+                }
+                item {
+                    PreferenceSwitch(
+                        title = stringResource(id = R.string.use_spotify_credentials),
+                        isChecked = useSpotifyCredentials,
+                        onClick = {
+                            useSpotifyCredentials = !useSpotifyCredentials
+                            PreferencesUtil.updateValue(USE_SPOTIFY_CREDENTIALS, useSpotifyCredentials)
+                        }
+                    )
                     PreferenceItem(
                         title = stringResource(id = R.string.spotify_client_id),
                         description = stringResource(id = R.string.spotify_client_id_description),
                         icon = Icons.Outlined.PermIdentity,
+                        enabled = useSpotifyCredentials,
                         onClick = {
                             showClientIdDialog = true
                         }
@@ -86,6 +105,7 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                         title = stringResource(id = R.string.spotify_client_secret),
                         description = stringResource(id = R.string.spotify_client_secret_description),
                         icon = Icons.Outlined.Key,
+                        enabled = useSpotifyCredentials,
                         onClick = {
                             showClientSecretDialog = true
                         }
@@ -94,12 +114,12 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
 
             }
         })
-    if(showClientIdDialog) {
+    if (showClientIdDialog) {
         SpotifyClientIDDialog {
             showClientIdDialog = !showClientIdDialog
         }
     }
-    if(showClientSecretDialog) {
+    if (showClientSecretDialog) {
         SpotifyClientSecretDialog {
             showClientSecretDialog = !showClientSecretDialog
         }

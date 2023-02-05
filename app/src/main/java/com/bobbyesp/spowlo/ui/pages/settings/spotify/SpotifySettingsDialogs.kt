@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PermIdentity
 import androidx.compose.material3.AlertDialog
@@ -56,7 +57,7 @@ fun SpotifyClientIDDialog(onDismissRequest: () -> Unit) {
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
-                LinkButton(link = spotifyDeveloperConsoleUrl)
+                LinkButton(link = spotifyDeveloperConsoleUrl, text = stringResource(id = R.string.spotify_developer_console))
             }
         }, confirmButton = {
             ConfirmButton() {
@@ -79,7 +80,7 @@ fun SpotifyClientSecretDialog(onDismissRequest: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text(stringResource(id = R.string.spotify_client_secret)) },
-        icon = { Icon(Icons.Outlined.PermIdentity, null) },
+        icon = { Icon(Icons.Outlined.Key, null) },
         text = {
             Column() {
                 OutlinedTextField(
@@ -91,11 +92,11 @@ fun SpotifyClientSecretDialog(onDismissRequest: () -> Unit) {
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
-                LinkButton(link = spotifyDeveloperConsoleUrl)
+                LinkButton(link = spotifyDeveloperConsoleUrl, text = stringResource(id = R.string.spotify_developer_console))
             }
         }, confirmButton = {
             ConfirmButton() {
-                SPOTIFY_CLIENT_ID.updateString(clientSecret)
+                SPOTIFY_CLIENT_SECRET.updateString(clientSecret)
                 onDismissRequest()
             }
         }, dismissButton = {

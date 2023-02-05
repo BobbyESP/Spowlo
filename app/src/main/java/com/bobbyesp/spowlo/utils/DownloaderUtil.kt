@@ -39,6 +39,9 @@ object DownloaderUtil {
         val audioFormat: Int = PreferencesUtil.getAudioFormat(),
         val audioQuality: Int = PreferencesUtil.getAudioQuality(),
         val preserveOriginalAudio: Boolean = PreferencesUtil.getValue(ORIGINAL_AUDIO),
+        val useSpotifyPreferences: Boolean = PreferencesUtil.getValue(USE_SPOTIFY_CREDENTIALS),
+        val spotifyClientID: String = SPOTIFY_CLIENT_ID.getString(),
+        val spotifyClientSecret: String = SPOTIFY_CLIENT_SECRET.getString(),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -137,9 +140,15 @@ object DownloaderUtil {
 
                 if(preserveOriginalAudio) {
                     addOption("--preserve-original-audio")
+                    addAudioFormat()
                 } else {
                     addAudioQuality()
                     addAudioFormat()
+                }
+
+                if(useSpotifyPreferences){
+                    addOption("--client-id", spotifyClientID)
+                    addOption("--client-secret", spotifyClientSecret)
                 }
 
                 for (s in request.buildCommand()) Log.d(TAG, s)

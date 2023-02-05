@@ -47,6 +47,7 @@ const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
 const val OUTPUT_PATH_TEMPLATE = "path_template"
 
+const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
@@ -82,6 +83,7 @@ private val BooleanPreferenceDefaults =
         CONFIGURE to true,
         CELLULAR_DOWNLOAD to true,
         ORIGINAL_AUDIO to false,
+        USE_SPOTIFY_CREDENTIALS to false,
     )
 
 private val IntPreferenceDefaults = mapOf(

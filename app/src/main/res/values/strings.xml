@@ -93,4 +93,9 @@
     <string name="spotify_client_secret_description">The client secret key to use in Spotify API calls</string>
     <string name="spotify_settings">Spotify settings</string>
     <string name="spotify_settings_desc">Change settings related to Spotify API...</string>
+    <string name="spotify_developer_console">Spotify developers console</string>
+    <string name="use_spotify_credentials">Use Spotify credentials</string>
+    <string name="spotify">Spotify</string>
+    <string name="client_id">Client ID</string>
+    <string name="client_secret">Client secret</string>
 </resources>
