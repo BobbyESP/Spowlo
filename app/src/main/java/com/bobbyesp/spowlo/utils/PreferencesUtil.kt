@@ -47,6 +47,9 @@ const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
 const val OUTPUT_PATH_TEMPLATE = "path_template"
 
+const val SPOTIFY_CLIENT_ID = "spotify_client_id"
+const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
+
 const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
 const val COOKIES = "cookies"
@@ -69,6 +72,8 @@ const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results --pr
 private val StringPreferenceDefaults =
     mapOf(
         OUTPUT_PATH_TEMPLATE to "{artists} - {title}.{output-ext}",
+        SPOTIFY_CLIENT_ID to "",
+        SPOTIFY_CLIENT_SECRET to "",
     )
 
 private val BooleanPreferenceDefaults =

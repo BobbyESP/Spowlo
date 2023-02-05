@@ -14,6 +14,7 @@ object Route {
 
     const val APPEARANCE = "appearance"
     const val GENERAL_DOWNLOAD_PREFERENCES = "general_download_preferences"
+    const val SPOTIFY_PREFERENCES = "spotify_preferences"
     const val ABOUT = "about"
     const val DOWNLOAD_DIRECTORY = "download_directory"
     const val CREDITS = "credits"

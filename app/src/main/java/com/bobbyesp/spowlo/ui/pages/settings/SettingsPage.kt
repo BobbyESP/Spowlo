@@ -37,8 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -122,6 +124,19 @@ fun SettingsPage(navController: NavController) {
                     icon = Icons.Filled.SettingsApplications
                 ) {
                     navController.navigate(Route.GENERAL_DOWNLOAD_PREFERENCES) {
+                        launchSingleTop = true
+                    }
+                }
+            }
+            item {
+                SettingItem(
+                    title = stringResource(id = R.string.spotify_settings),
+                    description = stringResource(
+                        id = R.string.spotify_settings_desc
+                    ),
+                    icon = ImageVector.vectorResource(id = R.drawable.spotify_logo)
+                ) {
+                    navController.navigate(Route.SPOTIFY_PREFERENCES) {
                         launchSingleTop = true
                     }
                 }

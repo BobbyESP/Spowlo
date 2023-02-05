@@ -37,6 +37,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
+import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
@@ -143,6 +144,11 @@ fun InitialEntry(
             }
             animatedComposable(Route.DOWNLOAD_FORMAT) {
                 SettingsFormatsPage {
+                    onBackPressed()
+                }
+            }
+            animatedComposable(Route.SPOTIFY_PREFERENCES) {
+                SpotifySettingsPage {
                     onBackPressed()
                 }
             }

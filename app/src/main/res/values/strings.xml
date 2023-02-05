@@ -87,4 +87,10 @@
     <string name="preserve_original_audio_desc">Keep the original downloaded audio file without conversions/compresions.</string>
     <string name="app_description">The best songs downloader for Android powered by spotDL.</string>
     <string name="console_output">Console output</string>
+    <string name="spotify_client_id">Spotify client ID</string>
+    <string name="spotify_client_id_description">Use your Spotify client ID for API requests</string>
+    <string name="spotify_client_secret">Spotify client secret</string>
+    <string name="spotify_client_secret_description">The client secret key to use in Spotify API calls</string>
+    <string name="spotify_settings">Spotify settings</string>
+    <string name="spotify_settings_desc">Change settings related to Spotify API...</string>
 </resources>
