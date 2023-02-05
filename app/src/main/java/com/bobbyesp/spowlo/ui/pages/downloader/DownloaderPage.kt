@@ -30,6 +30,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ContentPaste
@@ -62,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
@@ -162,8 +164,8 @@ fun DownloaderPage(
     }
 
     if (viewState.isUrlSharingTriggered) {
-        downloaderViewModel.onShareIntentConsumed()
         downloadCallback()
+        downloaderViewModel.onShareIntentConsumed()
     }
 
     BackHandler(viewState.drawerState.isVisible) {
@@ -185,6 +187,7 @@ fun DownloaderPage(
             navigateToDownloads = navigateToDownloads,
             onNavigateToTaskList = onNavigateToTaskList,
             showOutput = showConsoleOutput,
+            showSongCard = true,
             showDownloadProgress = taskState.taskId.isNotEmpty(),
             pasteCallback = {
                 matchUrlFromClipboard(
@@ -274,6 +277,30 @@ fun DownloaderPageImplementation(
                     .padding(horizontal = 24.dp)
                     .padding(top = 24.dp)
             ) {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 12.dp, bottom = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.displaySmall
+                        )
+                        Text(
+                            modifier = Modifier.alpha(ContentAlpha.medium).padding(top = 2.dp),
+                            text = stringResource(R.string.app_description),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    AnimatedVisibility(visible = downloaderState !is Downloader.State.Idle) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 3.dp,
+                        )
+                    }
+                }
                 with(taskState) {
                     AnimatedVisibility(visible = showSongCard && showDownloadProgress) {
                         SongCard(
@@ -298,7 +325,9 @@ fun DownloaderPageImplementation(
                         exit = shrinkVertically() + fadeOut(),
                         visible = progressText.isNotEmpty() && showOutput
                     ) {
-                        ElevatedCard(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                        ElevatedCard(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)) {
                             Column {
                                 Text(
                                     text = "Log",
@@ -307,7 +336,7 @@ fun DownloaderPageImplementation(
                                     modifier = Modifier.padding(16.dp)
                                 )
                                 Text(
-                                    modifier = Modifier.padding(bottom = 12.dp),
+                                    modifier = Modifier.padding(start = 8.dp,bottom = 12.dp),
                                     text = progressText,
                                     maxLines = 3,
                                     overflow = TextOverflow.Ellipsis,

@@ -35,6 +35,7 @@ const val AUDIO_FORMAT = "audio_format"
 const val AUDIO_QUALITY = "audio_quality"
 const val WELCOME_DIALOG = "welcome_dialog"
 const val AUDIO_DIRECTORY = "audio_dir"
+const val ORIGINAL_AUDIO = "original_audio"
 const val SDCARD_DOWNLOAD = "sdcard_download"
 const val SDCARD_URI = "sd_card_uri"
 const val SUBDIRECTORY = "sub-directory"
@@ -74,7 +75,8 @@ private val BooleanPreferenceDefaults =
     mapOf(
         FORMAT_SELECTION to true,
         CONFIGURE to true,
-        CELLULAR_DOWNLOAD to true
+        CELLULAR_DOWNLOAD to true,
+        ORIGINAL_AUDIO to false,
     )
 
 private val IntPreferenceDefaults = mapOf(

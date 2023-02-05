@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.annotation.CheckResult
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
-import com.bobbyesp.library.SpotDLResponse
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.context
@@ -14,8 +13,8 @@ import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getSdcardTempDir
 import com.bobbyesp.spowlo.utils.FilesUtil.moveFilesToSdcard
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.UUID
 
@@ -27,6 +26,8 @@ object DownloaderUtil {
         ignoreUnknownKeys = true
     }
 
+    val settings = PreferencesUtil
+
     data class DownloadPreferences(
         val downloadPlaylist: Boolean = PreferencesUtil.getValue(PLAYLIST),
         val subdirectory: Boolean = PreferencesUtil.getValue(SUBDIRECTORY),
@@ -36,6 +37,8 @@ object DownloaderUtil {
         val cookies: Boolean = PreferencesUtil.getValue(COOKIES),
         val cookiesContent: String = PreferencesUtil.getCookies(),
         val audioFormat: Int = PreferencesUtil.getAudioFormat(),
+        val audioQuality: Int = PreferencesUtil.getAudioQuality(),
+        val preserveOriginalAudio: Boolean = PreferencesUtil.getValue(ORIGINAL_AUDIO),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -49,23 +52,20 @@ object DownloaderUtil {
 
     @CheckResult
     private fun getSongInfo(
-        request: SpotDLRequest,
+        url: String? = null,
         id: String = getRandomUUID()
     ): Result<List<Song>> =
-        request.addOption("--save-file", "/data/user/0/com.bobbyesp.spowlo/files/spotdl/$id.spotdl").runCatching {
-            val response: SpotDLResponse = SpotDL.getInstance().execute(request, null, null)
-            jsonFormat.decodeFromString(response.output)
+        kotlin.runCatching {
+            val response: List<Song> = SpotDL.getInstance().getSongInfo(url ?: "")
+            response
         }
 
     @CheckResult
-    fun fetchVideoInfoFromUrl(
+    fun fetchSongInfoFromUrl(
         url: String, playlistItem: Int = 0, preferences: DownloadPreferences = DownloadPreferences()
     ): Result<List<Song>> =
-        SpotDLRequest().apply {
-            //TODO: Add options to the request
-            addOption("save", url)
-        }.run {
-            getSongInfo(this)
+        kotlin.run {
+            getSongInfo(url)
         }
 
     private fun SpotDLRequest.addCookies(): SpotDLRequest = this.apply {
@@ -77,6 +77,39 @@ object DownloaderUtil {
                     ).absolutePath
                 )
             }
+        }
+    }
+
+    //get the audio format
+    private fun SpotDLRequest.addAudioFormat(): SpotDLRequest = this.apply {
+        when (PreferencesUtil.getAudioFormat()) {
+            0 -> addOption("--format", "mp3")
+            1 -> addOption("--format", "flac")
+            2 -> addOption("--format", "ogg")
+            3 -> addOption("--format", "opus")
+            4 -> addOption("--format", "m4a")
+        }
+    }
+
+    //get the audio quality
+    private fun SpotDLRequest.addAudioQuality(): SpotDLRequest = this.apply {
+        when (PreferencesUtil.getAudioQuality()) {
+            0 -> addOption("--bitrate", "8k")
+            1 -> addOption("--bitrate", "16k")
+            2 -> addOption("--bitrate", "24k")
+            3 -> addOption("--bitrate", "32k")
+            4 -> addOption("--bitrate", "40k")
+            5 -> addOption("--bitrate", "48k")
+            6 -> addOption("--bitrate", "64k")
+            7 -> addOption("--bitrate", "80k")
+            8 -> addOption("--bitrate", "96k")
+            9 -> addOption("--bitrate", "112k")
+            10 -> addOption("--bitrate", "128k")
+            11 -> addOption("--bitrate", "160k")
+            12 -> addOption("--bitrate", "192k")
+            13 -> addOption("--bitrate", "224k")
+            14 -> addOption("--bitrate", "256k")
+            15 -> addOption("--bitrate", "320k")
         }
     }
 
@@ -101,8 +134,13 @@ object DownloaderUtil {
             request.apply {
                 addOption("download", url)
                 addOption("--output", App.audioDownloadDir)
-                addOption("--bitrate", AUDIO_QUALITY.getString())
-                addOption("--format", AUDIO_FORMAT.getString())
+
+                if(preserveOriginalAudio) {
+                    addOption("--preserve-original-audio")
+                } else {
+                    addAudioQuality()
+                    addAudioFormat()
+                }
 
                 for (s in request.buildCommand()) Log.d(TAG, s)
             }.runCatching {
@@ -166,7 +204,7 @@ object DownloaderUtil {
     private fun insertInfoIntoDownloadHistory(
         songInfo: Song,
         filePaths: List<String>
-    ){
+    ) {
         filePaths.forEach { filePath ->
             DatabaseUtil.insertInfo(
                 DownloadedSongInfo(
@@ -185,7 +223,7 @@ object DownloaderUtil {
     suspend fun executeCommandInBackground(
         url: String,
         template: CommandTemplate = PreferencesUtil.getTemplate()
-    ){
+    ) {
         TODO("Not yet implemented")
     }
 }

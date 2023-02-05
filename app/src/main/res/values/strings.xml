@@ -83,4 +83,7 @@
     <string name="fetch_info_error_msg">An error ocurred while trying to fetch the song info</string>
     <string name="download_error_msg">An error occurred while trying to download the song</string>
     <string name="download_finish_notification">The download has finished</string>
+    <string name="preserve_original_audio">Preserve original audio</string>
+    <string name="preserve_original_audio_desc">Keep the original downloaded audio file without conversions/compresions.</string>
+    <string name="app_description">The best songs downloader for Android powered by spotDL.</string>
 </resources>

@@ -1,18 +1,15 @@
 package com.bobbyesp.spowlo
 
-import android.app.PendingIntent
 import android.util.Log
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.SpotDl
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.database.CommandTemplate
-import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -189,6 +186,7 @@ object Downloader {
         songInfo: Song,
         preferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
     ): Result<List<String>> {
+
         mutableTaskState.update { songInfo.toTask(preferencesHash = preferences.hashCode()) }
         return DownloaderUtil.downloadSong(
             songInfo = songInfo,
@@ -219,28 +217,29 @@ object Downloader {
             val text =
                 context.getString(if (it.isEmpty()) R.string.status_completed else R.string.download_finish_notification)
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
-               /* NotificationUtil.finishNotification(
-                    notificationId,
-                    title = videoInfo.title,
-                    text = text,
-                    intent = if (this != null) PendingIntent.getActivity(
-                        context,
-                        0,
-                        this,
-                        PendingIntent.FLAG_IMMUTABLE
-                    ) else null
-                )*/
+                /* NotificationUtil.finishNotification(
+                     notificationId,
+                     title = videoInfo.title,
+                     text = text,
+                     intent = if (this != null) PendingIntent.getActivity(
+                         context,
+                         0,
+                         this,
+                         PendingIntent.FLAG_IMMUTABLE
+                     ) else null
+                 )*/
             }
+            finishProcessing()
         }
     }
 
     fun getInfoAndDownload(
         url: String,
         downloadPreferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
-    ){
+    ) {
         currentJob = applicationScope.launch(Dispatchers.IO) {
             updateState(State.FetchingInfo)
-            DownloaderUtil.fetchVideoInfoFromUrl(
+            DownloaderUtil.fetchSongInfoFromUrl(
                 url = url,
                 preferences = downloadPreferences
             )
@@ -321,6 +320,7 @@ object Downloader {
                 ), currentLine = errorReport, output = oldValue.output + "\n" + errorReport
             )
         }
+
     fun updateState(state: State) = mutableDownloaderState.update { state }
 
     fun clearErrorState() {
@@ -341,6 +341,16 @@ object Downloader {
         }
         if (!isFinished)
             downloadResultTemp = Result.failure(Exception())
+    }
+
+    private fun finishProcessing() {
+        if (downloaderState.value is State.Idle) return
+        mutableTaskState.update {
+            it.copy(progress = 100f, progressText = "")
+        }
+        clearProgressState(isFinished = true)
+        updateState(State.Idle)
+        clearErrorState()
     }
 
     /**
@@ -375,6 +385,7 @@ object Downloader {
         }
 
     }
+
     fun cancelDownload() {
         ToastUtil.makeToast(context.getString(R.string.task_canceled))
         currentJob?.cancel(CancellationException(context.getString(R.string.task_canceled)))

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
+import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,9 +26,9 @@ import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
-import com.bobbyesp.spowlo.utils.AUDIO_FORMAT
-import com.bobbyesp.spowlo.utils.AUDIO_QUALITY
+import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
+import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +41,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
 
     var audioFormat by remember { mutableStateOf(PreferencesUtil.getAudioFormatDesc()) }
     var audioQuality by remember { mutableStateOf(PreferencesUtil.getAudioQualityDesc()) }
+    var preserveOriginalAudio by remember { mutableStateOf(PreferencesUtil.getValue(ORIGINAL_AUDIO)) }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
@@ -77,11 +79,23 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                     PreferenceSubtitle(text = stringResource(id = R.string.audio))
                 }
                 item {
+                    PreferenceSwitch(
+                        title = stringResource(id = R.string.preserve_original_audio),
+                        description = stringResource(id = R.string.preserve_original_audio_desc),
+                        icon = Icons.Outlined.Audiotrack,
+                        isChecked = preserveOriginalAudio,
+                        onClick = {
+                            preserveOriginalAudio = !preserveOriginalAudio
+                            PreferencesUtil.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
+                        }
+                    )
+                }
+                item {
                     PreferenceItem(
                         title = stringResource(R.string.audio_format),
                         description = audioFormat,
                         icon = Icons.Outlined.AudioFile,
-                        enabled = !isCustomCommandEnabled
+                        enabled = !preserveOriginalAudio, //!isCustomCommandEnabled ||
                     ) { showAudioFormatDialog = true }
                 }
                 item {
@@ -89,19 +103,19 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         title = stringResource(R.string.audio_quality),
                         description = audioQuality,
                         icon = Icons.Outlined.HighQuality,
-                        enabled = !isCustomCommandEnabled
+                        enabled = !preserveOriginalAudio, //!isCustomCommandEnabled ||
                     ) { showAudioQualityDialog = true }
                 }
             }
         })
-    if(showAudioFormatDialog){
+    if (showAudioFormatDialog) {
         AudioFormatDialog(
             onDismissRequest = { showAudioFormatDialog = false }
         ) {
             audioFormat = PreferencesUtil.getAudioFormatDesc()
         }
     }
-    if(showAudioQualityDialog){
+    if (showAudioQualityDialog) {
         AudioQualityDialog(
             onDismissRequest = { showAudioQualityDialog = false }
         ) {

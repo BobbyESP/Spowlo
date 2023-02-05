@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.DoneAll
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material3.AlertDialog
@@ -43,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.ui.common.intState
+import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.ButtonChip
 import com.bobbyesp.spowlo.ui.components.DismissButton
@@ -54,6 +53,7 @@ import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
+import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
@@ -73,6 +73,13 @@ fun DownloaderSettingsDialog(
 
     var customCommand by remember { mutableStateOf(PreferencesUtil.getValue(CUSTOM_COMMAND)) }
     var selectedTemplateId by TEMPLATE_ID.intState
+    var preserveOriginalAudio by remember {
+        mutableStateOf(
+            settings.getValue(
+                ORIGINAL_AUDIO
+            )
+        )
+    }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
@@ -121,14 +128,27 @@ fun DownloaderSettingsDialog(
                         color = MaterialTheme.colorScheme.surfaceVariant
                     ),
             ) {
+                AudioFilterChip(
+                    label = stringResource(id = R.string.preserve_original_audio),
+                    animated = true,
+                    selected = preserveOriginalAudio,
+                    onClick = {
+                        preserveOriginalAudio = !preserveOriginalAudio
+                        scope.launch {
+                            settings.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
+                        }
+                    }
+                )
                 ButtonChip(
                     label = stringResource(id = R.string.audio_format),
                     icon = Icons.Outlined.AudioFile,
+                    enabled = !preserveOriginalAudio,
                     onClick = { showAudioFormatDialog = true },
                 )
                 ButtonChip(
                     label = stringResource(id = R.string.audio_quality),
                     icon = Icons.Outlined.HighQuality,
+                    enabled = !preserveOriginalAudio,
                     onClick = { showAudioQualityDialog = true },
                 )
             }
