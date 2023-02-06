@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.components.songs
 
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
@@ -54,62 +56,107 @@ fun SongMetadataCard(
         stringResource(id = R.string.song_cover_url) to song.cover_url,
         stringResource(id = R.string.song_copyright_text) to song.copyright_text
     )
-
-    /*
-                            MetadataTag(typeOfMetadata = stringResource(id = R.string.song_copyright_text), metadata = song.copyright_text)
-    * */
-
     ElevatedCard(
         modifier = Modifier
-            .fillMaxWidth().size(500.dp),
+            .fillMaxWidth()
+            .size(675.dp),
         shape = MaterialTheme.shapes.small
     ) {
-            Row(
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImageImpl(
+                modifier = Modifier
+                    .size(64.dp)
+                    .aspectRatio(
+                        1f,
+                        matchHeightConstraintsFirst = true
+                    )
+                    .clip(MaterialTheme.shapes.small),
+                model = song.cover_url,
+                contentDescription = "Song cover",
+                contentScale = ContentScale.Crop,
+            )
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(start = 8.dp)
+                    .weight(1f)
             ) {
+                MarqueeText(
+                    text = song.name,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = song.artist,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.alpha(alpha = 0.8f)
+                )
+
+            }
+        }
+        LazyVerticalGrid(columns = GridCells.Adaptive(150.dp),
+            content = {
+                metadataMap.forEach {
+                    item {
+                        MetadataTag(typeOfMetadata = it.key, metadata = it.value)
+                    }
+                }
+            }, userScrollEnabled = false,
+        )
+    }
+}
+
+@Composable
+fun PlaylistHeaderItem(
+    playlist: Song,
+    modifier: Modifier = Modifier
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            playlist.song_list?.cover_url?.let {
                 AsyncImageImpl(
                     modifier = Modifier
-                        .size(64.dp)
+                        .padding(16.dp)
+                        .size(84.dp)
                         .aspectRatio(
                             1f,
                             matchHeightConstraintsFirst = true
                         )
                         .clip(MaterialTheme.shapes.small),
-                    model = song.cover_url,
-                    contentDescription = "Song cover",
+                    model = it,
+                    contentDescription = stringResource(id = R.string.playlist_cover),
                     contentScale = ContentScale.Crop,
                 )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp)
-                ) {
-                    MarqueeText(
-                        text = song.name,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = song.artist,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.alpha(alpha = 0.8f)
-                    )
-
-                }
             }
-                LazyVerticalGrid(columns = GridCells.Adaptive(150.dp),
-                    content = {
-                        metadataMap.forEach {
-                            item {
-                                MetadataTag(typeOfMetadata = it.key, metadata = it.value)
-                            }
-                        }
-                })
+            Column() {
+                Text(
+                    text = playlist.song_list?.name ?: stringResource(id = R.string.unknown),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = playlist.song_list?.author_name
+                        ?: stringResource(id = R.string.unknown),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.alpha(alpha = 0.8f)
+                )
+            }
+        }
     }
 }
 
@@ -117,7 +164,7 @@ fun SongMetadataCard(
 fun MetadataTag(
     typeOfMetadata: String,
     metadata: String
-){
+) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -127,13 +174,13 @@ fun MetadataTag(
         Text(
             text = typeOfMetadata,
             modifier = Modifier.alpha(alpha = 0.8f),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Start
         )
         Text(
             text = metadata,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
+            textAlign = TextAlign.Start
         )
     }
 }

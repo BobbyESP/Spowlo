@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.playlist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,16 +23,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.library.dto.Song
+import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
+import com.bobbyesp.spowlo.ui.components.songs.PlaylistHeaderItem
 import com.bobbyesp.spowlo.ui.components.songs.SongMetadataCard
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.utils.DownloaderUtil
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
-fun PlaylistMetadataPage(onBackPressed: () -> Unit, downloaderViewModel: DownloaderViewModel) {
+fun PlaylistMetadataPage(onBackPressed: () -> Unit) {
 
-    val songs = downloaderViewModel.songInfoFlow.collectAsStateWithLifecycle()
+    //val songs = downloaderViewModel.songInfoFlow.collectAsStateWithLifecycle()
+    val songs = DownloaderUtil.songsState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -43,7 +48,7 @@ fun PlaylistMetadataPage(onBackPressed: () -> Unit, downloaderViewModel: Downloa
             TopAppBar(title = {
                 Text(
                     text = if (songs.value.size == 1) stringResource(id = R.string.song_metadata) else stringResource(
-                        R.string.running_tasks
+                        R.string.playlist_metadata
                     ),
                     style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
                 )
@@ -57,8 +62,14 @@ fun PlaylistMetadataPage(onBackPressed: () -> Unit, downloaderViewModel: Downloa
             modifier = Modifier.padding(paddings), contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item {
+                if(songs.value[0].song_list != null){
+                    PlaylistHeaderItem(playlist = songs.value[0], modifier = Modifier.padding())
+                }
+            }
             items(songs.value.size) { index ->
                 SongMetadataCard(song = songs.value[index])
+                Spacer(modifier = Modifier.padding(10.dp))
             }
 
         }

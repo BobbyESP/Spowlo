@@ -118,4 +118,8 @@
     <string name="song_url">Spotify URL</string>
     <string name="song_cover_url">Cover URL</string>
     <string name="song_copyright_text">Copyright text</string>
+    <string name="playlist_metadata">Playlist metadata</string>
+    <string name="unknown">Unknown</string>
+    <string name="playlist_cover">Playlist cover</string>
+    <string name="request_metadata">Request metadata</string>
 </resources>

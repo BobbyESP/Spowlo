@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.common
 
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -18,11 +19,12 @@ import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
 val LocalDarkTheme = compositionLocalOf { DarkThemePreference() }
 val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR }
 val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Compact }
+val LocalWindowHeightState = staticCompositionLocalOf { WindowHeightSizeClass.Compact }
 val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 
 @Composable
-fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, content: @Composable () -> Unit) {
+fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, localWindowHeightSizeClass: WindowHeightSizeClass, content: @Composable () -> Unit) {
     val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
     CompositionLocalProvider(
         LocalDarkTheme provides appSettingsState.darkTheme,
@@ -32,6 +34,7 @@ fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, content: @Compo
             palettesMap.getOrElse(appSettingsState.paletteStyleIndex) { PaletteStyle.TonalSpot }
         ),
         LocalWindowWidthState provides windowWidthSizeClass,
+        LocalWindowHeightState provides localWindowHeightSizeClass,
         LocalDynamicColorSwitch provides appSettingsState.isDynamicColorEnabled,
         content = content
     )

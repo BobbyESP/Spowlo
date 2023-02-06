@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +18,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.Dataset
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.HighQuality
@@ -72,7 +74,8 @@ fun DownloaderSettingsDialog(
     isShareActivity: Boolean = false,
     drawerState: ModalBottomSheetState,
     confirm: () -> Unit,
-    hide: () -> Unit
+    hide: () -> Unit,
+    onRequestMetadata: () -> Unit,
 ) {
     val settings = PreferencesUtil
 
@@ -122,6 +125,12 @@ fun DownloaderSettingsDialog(
         updatePreferences()
         hide()
         confirm()
+    }
+
+    val requestMetadata = {
+        updatePreferences()
+        hide()
+        onRequestMetadata()
     }
 
     val sheetContent: @Composable () -> Unit = {
@@ -234,6 +243,14 @@ fun DownloaderSettingsDialog(
                         onClick = hide,
                         icon = Icons.Outlined.Cancel,
                         text = stringResource(R.string.cancel)
+                    )
+                }
+                item {
+                    FilledButtonWithIcon(
+                        modifier = Modifier.padding(end = 12.dp),
+                        onClick = requestMetadata,
+                        icon = Icons.Outlined.Dataset,
+                        text = stringResource(R.string.request_metadata)
                     )
                 }
                 item {

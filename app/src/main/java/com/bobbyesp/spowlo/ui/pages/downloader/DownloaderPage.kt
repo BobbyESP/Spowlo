@@ -158,7 +158,6 @@ fun DownloaderPage(
     }
 
     val songCardClicked = {
-        downloaderViewModel.goToMetadataViewer(taskState.info)
         onSongCardClicked()
     }
 
@@ -212,9 +211,10 @@ fun DownloaderPage(
             DownloaderSettingsDialog(useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
-                confirm = { checkPermissionOrDownload() }) {
-                downloaderViewModel.hideDialog(scope, useDialog)
-            }
+                confirm = { checkPermissionOrDownload() },
+                onRequestMetadata = { downloaderViewModel.requestMetadata() },
+                hide = { downloaderViewModel.hideDialog(scope, useDialog) }
+            )
         }
     }
 }
@@ -313,12 +313,12 @@ fun DownloaderPageImplementation(
                 with(taskState) {
                     AnimatedVisibility(visible = showSongCard && showDownloadProgress) {
                         SongCard(
-                            song = info[0],
+                            song = info,
                             progress = progress,
                             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                            isLyrics = info[0].lyrics?.isNotEmpty()
+                            isLyrics = info.lyrics?.isNotEmpty()
                                 ?: false,
-                            isExplicit = info[0].explicit,
+                            isExplicit = info.explicit,
                             onClick = { onSongCardClicked() }
                         )
                     }

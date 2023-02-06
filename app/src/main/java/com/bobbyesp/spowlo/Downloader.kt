@@ -9,6 +9,7 @@ import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.SpotDl
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
+import com.bobbyesp.spowlo.Downloader.toTask
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
@@ -105,7 +106,7 @@ object Downloader {
     }
 
     data class DownloadTaskItem(
-        val info: List<Song> = listOf(Song()),
+        val info: Song = Song(),
         val spotifyUrl: String = "",
         val name: String = "",
         val artist: String = "",
@@ -122,7 +123,7 @@ object Downloader {
 
     private fun Song.toTask(playlistIndex: Int = 0, preferencesHash: Int): DownloadTaskItem =
         DownloadTaskItem(
-            info = listOf(this),
+            info = this,
             spotifyUrl = this.url,
             name = this.name,
             artist = this.artist,
@@ -260,6 +261,31 @@ object Downloader {
                             preferences = downloadPreferences
                         )
                     }
+                }
+        }
+    }
+
+    fun getRequestedMetadata(
+        url: String,
+        downloadPreferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
+    ) {
+        currentJob = applicationScope.launch(Dispatchers.IO) {
+            updateState(State.FetchingInfo)
+            DownloaderUtil.fetchSongInfoFromUrl(
+                url = url,
+                preferences = downloadPreferences
+            )
+                .onFailure {
+                    manageDownloadError(
+                        it,
+                        isFetchingInfo = true,
+                        isTaskAborted = true
+                    )
+                }
+                .onSuccess { info ->
+                    DownloaderUtil.updateSongsState(info)
+                    mutableTaskState.update { DownloaderUtil.songsState.value[0].toTask(preferencesHash = downloadPreferences.hashCode()) }
+                    finishProcessing()
                 }
         }
     }

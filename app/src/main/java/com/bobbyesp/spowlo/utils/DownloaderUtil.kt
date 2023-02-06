@@ -7,6 +7,7 @@ import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.context
+import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
@@ -15,6 +16,9 @@ import com.bobbyesp.spowlo.utils.FilesUtil.getSdcardTempDir
 import com.bobbyesp.spowlo.utils.FilesUtil.moveFilesToSdcard
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import java.util.UUID
 
@@ -27,6 +31,10 @@ object DownloaderUtil {
     }
 
     val settings = PreferencesUtil
+
+    //SONGS FLOW
+    private val mutableSongsState = MutableStateFlow(listOf<Song>())
+    val songsState = mutableSongsState.asStateFlow()
 
     data class DownloadPreferences(
         val downloadPlaylist: Boolean = PreferencesUtil.getValue(PLAYLIST),
@@ -60,6 +68,9 @@ object DownloaderUtil {
     ): Result<List<Song>> =
         kotlin.runCatching {
             val response: List<Song> = SpotDL.getInstance().getSongInfo(url ?: "")
+            mutableSongsState.update {
+                response
+            }
             response
         }
 
@@ -80,6 +91,12 @@ object DownloaderUtil {
                     ).absolutePath
                 )
             }
+        }
+    }
+
+    fun updateSongsState(songs: List<Song>) {
+        mutableSongsState.update {
+            songs
         }
     }
 

@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             val isUrlSharingTriggered =
                 downloaderViewModel.viewStateFlow.collectAsState().value.isUrlSharingTriggered
             val windowSizeClass = calculateWindowSizeClass(this)
-            SettingsProvider(windowSizeClass.widthSizeClass) {
+            SettingsProvider(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass) {
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
