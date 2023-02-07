@@ -1,9 +1,14 @@
 package com.bobbyesp.spowlo.utils
 
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
@@ -28,6 +33,7 @@ object ToastUtil {
 }
 
 object GeneralTextUtils {
+
     fun convertDuration(duration: Double): String {
         val hours = (duration / 3600).toInt()
         val minutes = ((duration % 3600) / 60).toInt()
@@ -37,6 +43,13 @@ object GeneralTextUtils {
         } else {
             String.format("%02d:%02d", minutes, seconds)
         }
+    }
+
+    fun copyToClipboardAndNotify( string: String){
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = android.content.ClipData.newPlainText(context.getString(R.string.copied_to_clipboard), string)
+        clipboard.setPrimaryClip(clip)
+        ToastUtil.makeToast(R.string.copied_to_clipboard)
     }
 }
 

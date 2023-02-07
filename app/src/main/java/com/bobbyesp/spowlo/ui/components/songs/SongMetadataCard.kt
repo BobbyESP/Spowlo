@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.components.songs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +33,7 @@ import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 @Composable
 fun SongMetadataCard(
@@ -56,10 +60,14 @@ fun SongMetadataCard(
         stringResource(id = R.string.song_cover_url) to song.cover_url,
         stringResource(id = R.string.song_copyright_text) to song.copyright_text
     )
+
+    val metadataList = metadataMap.toList()
+    val firstNineElements = metadataList.subList(0, 10)
+    val lastElements = metadataList.subList(10, metadataList.size)
+
     ElevatedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .size(675.dp),
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.small
     ) {
         Row(
@@ -101,6 +109,19 @@ fun SongMetadataCard(
 
             }
         }
+        Row(Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth(0.5f)) {
+                firstNineElements.forEach { (key, value) ->
+                    MetadataTag(key, value)
+                }
+            }
+            Column(Modifier.fillMaxWidth()) {
+                lastElements.forEach { (key, value) ->
+                    MetadataTag(key, value)
+                }
+            }
+        }
+        /*
         LazyVerticalGrid(columns = GridCells.Adaptive(150.dp),
             content = {
                 metadataMap.forEach {
@@ -109,7 +130,7 @@ fun SongMetadataCard(
                     }
                 }
             }, userScrollEnabled = false,
-        )
+        )*/
     }
 }
 
@@ -165,6 +186,8 @@ fun MetadataTag(
     typeOfMetadata: String,
     metadata: String
 ) {
+    val clipboardManager = LocalClipboardManager.current
+
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -178,6 +201,7 @@ fun MetadataTag(
             textAlign = TextAlign.Start
         )
         Text(
+            modifier = Modifier.clickable { GeneralTextUtils.copyToClipboardAndNotify(metadata) },
             text = metadata,
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
             textAlign = TextAlign.Start
