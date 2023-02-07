@@ -33,6 +33,8 @@ import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
+import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
@@ -55,6 +57,7 @@ private const val TAG = "InitialEntry"
 @Composable
 fun InitialEntry(
     downloaderViewModel: DownloaderViewModel,
+    modsDownloaderViewModel: ModsDownloaderViewModel,
     isUrlShared: Boolean
 ) {
     val navController = rememberAnimatedNavController()
@@ -120,7 +123,7 @@ fun InitialEntry(
                     navigateToSettings = { navController.navigate(Route.SETTINGS) },
                     navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
                     onSongCardClicked = {
-                                        navController.navigate(Route.PLAYLIST_METADATA_PAGE)
+                        navController.navigate(Route.PLAYLIST_METADATA_PAGE)
                     },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     downloaderViewModel = downloaderViewModel
@@ -161,6 +164,12 @@ fun InitialEntry(
                 PlaylistMetadataPage(
                     onBackPressed,
                     //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
+                )
+            }
+            animatedComposable(Route.MODS_DOWNLOADER) {
+                ModsDownloaderPage(
+                    onBackPressed,
+                    modsDownloaderViewModel
                 )
             }
         }

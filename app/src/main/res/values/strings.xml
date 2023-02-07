@@ -123,4 +123,15 @@
     <string name="playlist_cover">Playlist cover</string>
     <string name="request_metadata">Request metadata</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="regular_cloned">Regular Mod Cloned</string>
+    <string name="amoled">AMOLED Mod</string>
+    <string name="amoled_cloned">AMOLED Cloned Mod</string>
+    <string name="lite">Spotify Lite Mod</string>
+    <string name="regular_description">A Spotify-like mod with unlimited skips, play on-demand, ad-free and newer features. This replaces original Spotify app (the one that you download from Play Store).</string>
+    <string name="regular">Regular Mod</string>
+    <string name="regular_cloned_description">A Spotify-like mod with unlimited skips, play on-demand, ad-free and newer features but cloned. This means a separated package/app from original, so you can have original Spotify and mod at the same time.</string>
+    <string name="amoled_description">"Same features as regular mod but this one has AMOLED theme. "</string>
+    <string name="amoled_cloned_description">Same features as Amoled mod but it\'s cloned.</string>
+    <string name="lite_description">"A lightweight version of Spotify with no ads and unlimited skips. "</string>
+    <string name="latest_version">Latest version</string>
 </resources>
