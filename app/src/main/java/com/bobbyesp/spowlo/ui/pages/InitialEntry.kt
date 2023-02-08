@@ -25,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
@@ -91,6 +93,15 @@ fun InitialEntry(
         }
     }
 
+    //When the app is opened, call xManagerApi to check for updates
+    LaunchedEffect(Unit) {
+        xManagerAPI.getPackagesResponseDto().onFailure {
+            ToastUtil.makeToastSuspend(App.context.getString(R.string.error_checking_for_updates))
+        }.onSuccess {
+            modsDownloaderViewModel.updateApiResponse(it)
+        }
+    }
+
     val onBackPressed: () -> Unit = { navController.popBackStack() }
 
     if (isUrlShared) {
@@ -126,6 +137,7 @@ fun InitialEntry(
                         navController.navigate(Route.PLAYLIST_METADATA_PAGE)
                     },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
+                    navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
                     downloaderViewModel = downloaderViewModel
                 )
             }

@@ -1,7 +1,9 @@
 package com.bobbyesp.spowlo.features.mod_downloader.domain.model
 
 import com.bobbyesp.spowlo.features.mod_downloader.util.Status
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PackagesResponseDto(
     val Regular_Latest: String = "Unknown",
     val Amoled_Latest: String = "Unknown",
@@ -25,7 +27,7 @@ data class PackagesResponseDto(
     var status: Status = Status.SUCCESS
     var message: String? = null
 }
-
+@Serializable
 data class ModChangelogsDto(
     val Mod_Changelogs: String = ""
 )

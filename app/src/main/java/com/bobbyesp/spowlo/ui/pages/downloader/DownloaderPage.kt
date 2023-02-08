@@ -68,6 +68,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +76,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -91,6 +93,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.ClearButton
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
@@ -116,6 +119,7 @@ fun DownloaderPage(
     navigateToPlaylistPage: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
+    navigateToMods: () -> Unit = {},
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -127,6 +131,10 @@ fun DownloaderPage(
         } else {
             ToastUtil.makeToast(R.string.permission_denied)
         }
+    }
+
+    LaunchedEffect(key1 = true) {
+        xManagerAPI.getPackagesResponseDto()
     }
 
     //STATE FLOWS
@@ -190,6 +198,7 @@ fun DownloaderPage(
             downloadCallback = { downloadCallback() },
             navigateToSettings = navigateToSettings,
             navigateToDownloads = navigateToDownloads,
+            navigateToMods = navigateToMods,
             onNavigateToTaskList = onNavigateToTaskList,
             onSongCardClicked = { songCardClicked() },
             showOutput = showConsoleOutput,
@@ -234,6 +243,7 @@ fun DownloaderPageImplementation(
     downloadCallback: () -> Unit = {},
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
+    navigateToMods: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     pasteCallback: () -> Unit = {},
     cancelCallback: () -> Unit = {},
@@ -252,10 +262,17 @@ fun DownloaderPageImplementation(
             }
         }, actions = {
 
-            IconButton(onClick = { onNavigateToTaskList() }) {
+            /*IconButton(onClick = { onNavigateToTaskList() }) {
                 Icon(
                     imageVector = Icons.Outlined.Terminal,
                     contentDescription = stringResource(id = R.string.running_tasks)
+                )
+            }*/
+
+            IconButton(onClick = { navigateToMods() }) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
+                    contentDescription = stringResource(id = R.string.mods_downloader)
                 )
             }
 

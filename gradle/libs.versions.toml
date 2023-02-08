@@ -30,6 +30,7 @@ kotlinxCoroutines = "1.6.4"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.4.1"
 okhttp = "5.0.0-alpha.10"
+ktor = "1.6.3"
 
 room = "2.5.0-rc01"
 

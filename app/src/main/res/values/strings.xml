@@ -134,4 +134,6 @@
     <string name="amoled_cloned_description">Same features as Amoled mod but it\'s cloned.</string>
     <string name="lite_description">"A lightweight version of Spotify with no ads and unlimited skips. "</string>
     <string name="latest_version">Latest version</string>
+    <string name="error_checking_for_updates">An error occurred while searching for updates</string>
+    <string name="mods_downloader">Spotify Mods Downloader</string>
 </resources>
