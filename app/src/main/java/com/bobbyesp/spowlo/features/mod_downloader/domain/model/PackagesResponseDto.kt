@@ -23,10 +23,7 @@ data class PackagesResponseDto(
     val Amoled_Cloned: List<PackagesObjectDto> = emptyList(),
     val Lite: List<PackagesObjectDto> = emptyList(),
     val Mod_Changelogs: List<ModChangelogsDto> = emptyList(),
-) {
-    var status: Status = Status.SUCCESS
-    var message: String? = null
-}
+)
 @Serializable
 data class ModChangelogsDto(
     val Mod_Changelogs: String = ""

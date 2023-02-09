@@ -124,6 +124,7 @@ object UpdateUtil {
         context: Context = App.context,
         latestRelease: LatestRelease
     ): Flow<DownloadStatus> = withContext(Dispatchers.IO) {
+
         val apkVersion = context.packageManager.getPackageArchiveInfo(
             context.getLatestApk().absolutePath, 0
         )?.versionName.toVersion()
@@ -140,7 +141,9 @@ object UpdateUtil {
         val targetUrl = latestRelease.assets?.find {
             return@find it.name?.contains(preferredArch) ?: false
         }?.browserDownloadUrl ?: return@withContext emptyFlow()
+
         val request = Request.Builder().url(targetUrl).build()
+
         try {
             val response = client.newCall(request).execute()
             val responseBody = response.body
@@ -148,11 +151,12 @@ object UpdateUtil {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
         emptyFlow()
     }
 
 
-    private fun ResponseBody.downloadFileWithProgress(saveFile: File): Flow<DownloadStatus> = flow {
+    fun ResponseBody.downloadFileWithProgress(saveFile: File): Flow<DownloadStatus> = flow {
         emit(DownloadStatus.Progress(0))
 
         var deleteFile = true
