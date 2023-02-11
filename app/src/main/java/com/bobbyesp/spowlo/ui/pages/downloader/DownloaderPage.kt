@@ -303,13 +303,15 @@ fun DownloaderPageImplementation(
                 Modifier
                     .padding(horizontal = 24.dp)
                     .padding(top = 24.dp)
+                    .fillMaxWidth()
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(top = 12.dp, bottom = 3.dp),
+                        .padding(top = 12.dp, bottom = 3.dp)
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
                         Text(
                             modifier = Modifier,
                             text = stringResource(R.string.app_name),
@@ -323,9 +325,13 @@ fun DownloaderPageImplementation(
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
-                    AnimatedVisibility(visible = downloaderState !is Downloader.State.Idle) {
+                    AnimatedVisibility(
+                        visible = downloaderState !is Downloader.State.Idle,
+                        modifier = Modifier
+                    ) {
                         CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier
+                                .size(24.dp),
                             strokeWidth = 3.dp,
                         )
                     }

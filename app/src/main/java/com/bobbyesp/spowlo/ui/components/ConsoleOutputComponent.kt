@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import com.bobbyesp.spowlo.R
 fun ConsoleOutputComponent(
     modifier: Modifier = Modifier,
     consoleOutput: String = "Unknown console output",
+    onClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -40,7 +42,8 @@ fun ConsoleOutputComponent(
                 .fillMaxWidth()
                 .padding(top = 12.dp)
                 .clip(MaterialTheme.shapes.small)
-                .background(Color.Black.copy(alpha = 0.8f)),
+                .background(Color.Black.copy(alpha = 0.8f))
+                .clickable { onClick() },
         ) {
             AutoResizableText(
                 text = consoleOutput,
