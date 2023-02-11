@@ -178,7 +178,7 @@ fun ShowSongCard() {
         SongCard(
             Song(
                 "Save Your Tears",
-                listOf("sangiovanni"),
+                listOf("The Weekend"),
                 "The Weeknd",
                 "url",
                 "",

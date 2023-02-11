@@ -256,36 +256,37 @@ fun DownloaderPageImplementation(
     content: @Composable () -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp), navigationIcon = {
-            IconButton(onClick = { navigateToSettings() }) {
-                Icon(
-                    imageVector = Icons.Outlined.Settings,
-                    contentDescription = stringResource(id = R.string.settings)
-                )
-            }
-        }, actions = {
+        TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp),
+            navigationIcon = {
+                IconButton(onClick = { navigateToSettings() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = stringResource(id = R.string.settings)
+                    )
+                }
+            }, actions = {
 
-            /*IconButton(onClick = { onNavigateToTaskList() }) {
-                Icon(
-                    imageVector = Icons.Outlined.Terminal,
-                    contentDescription = stringResource(id = R.string.running_tasks)
-                )
-            }*/
+                /*IconButton(onClick = { onNavigateToTaskList() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Terminal,
+                        contentDescription = stringResource(id = R.string.running_tasks)
+                    )
+                }*/
 
-            IconButton(onClick = { navigateToMods() }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
-                    contentDescription = stringResource(id = R.string.mods_downloader)
-                )
-            }
+                IconButton(onClick = { navigateToMods() }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
+                        contentDescription = stringResource(id = R.string.mods_downloader)
+                    )
+                }
 
-            IconButton(onClick = { navigateToDownloads() }) {
-                Icon(
-                    imageVector = Icons.Outlined.Subscriptions,
-                    contentDescription = stringResource(id = R.string.downloads_history)
-                )
-            }
-        })
+                IconButton(onClick = { navigateToDownloads() }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Subscriptions,
+                        contentDescription = stringResource(id = R.string.downloads_history)
+                    )
+                }
+            })
     }, floatingActionButton = {
         FABs(
             modifier = with(receiver = Modifier) { if (showDownloadProgress) this else this.imePadding() },
@@ -311,7 +312,11 @@ fun DownloaderPageImplementation(
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
                         Text(
                             modifier = Modifier,
                             text = stringResource(R.string.app_name),

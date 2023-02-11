@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 
 @Composable
@@ -33,9 +34,9 @@ fun ConsoleOutputComponent(
     ) {
         Text(
             text = stringResource(id = R.string.console_output),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 4.dp)
         )
         Box(
             modifier = Modifier
