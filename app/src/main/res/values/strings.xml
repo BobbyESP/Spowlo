@@ -136,4 +136,6 @@
     <string name="latest_version">Latest version</string>
     <string name="error_checking_for_updates">An error occurred while searching for updates</string>
     <string name="mods_downloader">Spotify Mods Downloader</string>
+    <string name="open_file">Open file</string>
+    <string name="show_more_actions">Show more actions</string>
 </resources>

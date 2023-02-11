@@ -68,6 +68,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -95,7 +96,9 @@ import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
+import com.bobbyesp.spowlo.ui.components.AutoResizableText
 import com.bobbyesp.spowlo.ui.components.ClearButton
+import com.bobbyesp.spowlo.ui.components.ConsoleOutputComponent
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
 import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
@@ -150,7 +153,7 @@ fun DownloaderPage(
 
     val checkPermissionOrDownload = {
         if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted)
-        downloaderViewModel.startDownloadSong()
+            downloaderViewModel.startDownloadSong()
         else {
             storagePermission.launchPermissionRequest()
         }
@@ -351,28 +354,12 @@ fun DownloaderPageImplementation(
                         exit = shrinkVertically() + fadeOut(),
                         visible = progressText.isNotEmpty() && showOutput
                     ) {
-                        ElevatedCard(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)) {
-                            Column {
-                                Text(
-                                    text = stringResource(id = R.string.console_output),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 8.dp,bottom = 12.dp),
-                                    text = progressText,
-                                    maxLines = 3,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-
-                        }
-
+                        ConsoleOutputComponent(
+                            consoleOutput = progressText,
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
                     }
+
                     AnimatedVisibility(visible = errorState.isErrorOccurred()) {
                         ErrorMessage(
                             url = viewState.url,

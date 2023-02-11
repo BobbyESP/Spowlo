@@ -10,10 +10,7 @@ import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil.downloadFileWithProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.Call
@@ -21,7 +18,6 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody
 import okio.IOException
 import java.io.File
 import kotlin.coroutines.resume

@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.features.mod_downloader.domain.model
 
-import com.bobbyesp.spowlo.features.mod_downloader.util.Status
 import kotlinx.serialization.Serializable
 
 @Serializable
