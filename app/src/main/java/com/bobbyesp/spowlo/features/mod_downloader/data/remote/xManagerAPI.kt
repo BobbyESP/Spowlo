@@ -51,7 +51,6 @@ object xManagerAPI {
                 override fun onResponse(call: Call, response: Response) {
                     val responseData = response.body.string()
                     val packagesResponseDto = jsonFormat.decodeFromString(PackagesResponseDto.serializer(), responseData)
-                    Log.d(TAG, "onResponse: $packagesResponseDto")
                     response.body.close()
                     it.resume(Result.success(packagesResponseDto))
                 }

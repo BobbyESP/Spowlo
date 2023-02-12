@@ -23,10 +23,11 @@ object DatabaseUtil {
     private val db = Room.databaseBuilder(
         context, AppDatabase::class.java, DATABASE_NAME
     ).build()
+
     private val dao = db.songsInfoDao()
     fun insertInfo(vararg infoList: DownloadedSongInfo) {
         applicationScope.launch(Dispatchers.IO) {
-            infoList.forEach { dao.deleteInfoByPathAndInsert(it) }
+            infoList.forEach { dao.insertInfoDistinctByPath(it) }
         }
     }
 

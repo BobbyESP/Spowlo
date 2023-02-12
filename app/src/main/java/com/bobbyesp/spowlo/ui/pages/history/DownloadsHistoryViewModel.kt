@@ -31,6 +31,9 @@ class DownloadsHistoryViewModel @Inject constructor() : ViewModel() {
 
     val songsListFlow = mediaInfoFlow
 
+    private val mutableStateFlow = MutableStateFlow(SongsListViewState())
+    val stateFlow = mutableStateFlow.asStateFlow()
+
     val filterSetFlow = _mediaInfoFlow.map { infoList ->
         mutableSetOf<String>().apply {
             infoList.forEach {
@@ -61,6 +64,15 @@ class DownloadsHistoryViewModel @Inject constructor() : ViewModel() {
 
     private val _detailViewState = MutableStateFlow(SongDetailViewState())
     val detailViewState = _detailViewState.asStateFlow()
+
+    fun clickAuthorFilter(index: Int) {
+        if (mutableStateFlow.value.activeFilterIndex == index) mutableStateFlow.update {
+            it.copy(
+                activeFilterIndex = -1
+            )
+        }
+        else mutableStateFlow.update { it.copy(activeFilterIndex = index) }
+    }
 
     fun hideDrawer(scope: CoroutineScope): Boolean {
         if (_detailViewState.value.drawerState.isVisible) {

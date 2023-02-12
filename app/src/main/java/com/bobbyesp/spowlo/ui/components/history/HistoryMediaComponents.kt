@@ -3,6 +3,7 @@
 package com.bobbyesp.spowlo.ui.components.history
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +15,19 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,14 +39,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.songs.ExplicitIcon
+import com.bobbyesp.spowlo.ui.components.songs.LyricsIcon
 import com.bobbyesp.spowlo.ui.components.songs.MiniMetadataInfoComponent
+import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import com.bobbyesp.spowlo.utils.toFileSizeText
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryMediaItem(
     modifier: Modifier = Modifier,
@@ -104,7 +116,86 @@ fun HistoryMediaItem(
                     onCheckedChange = null
                 )
             }
-            ArtworkImage(
+            Column(Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically, //This makes all go to the center
+                ) {
+                    AsyncImageImpl(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .size(86.dp)
+                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                            .clip(MaterialTheme.shapes.small),
+                        model = artworkUrl,
+                        contentDescription = "Song cover",
+                        contentScale = ContentScale.Crop,
+                        isPreview = false
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(6.dp).weight(1f), //Weight is to make the time not go away from the screen
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                MarqueeText(
+                                    text = songName, color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            MarqueeText(
+                                text = author,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Surface(
+                                modifier = Modifier,
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.extraSmall
+                            ) {
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                )
+                                {
+                                    Text(
+                                        text = "test",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(6.dp, 4.dp, 6.dp, 4.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            /*ArtworkImage(
                 modifier = Modifier.weight(1f - imageWeight),
                 imageModel = artworkUrl
             )
@@ -157,7 +248,7 @@ fun HistoryMediaItem(
                         )
                     }
                 }
-            }
+            }*/
         }
     }
 }

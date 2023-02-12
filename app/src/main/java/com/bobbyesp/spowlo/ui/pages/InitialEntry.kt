@@ -35,6 +35,7 @@ import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.pages.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
@@ -152,7 +153,9 @@ fun InitialEntry(
                 )
             }
             animatedComposable(Route.DOWNLOADS_HISTORY) {
-
+                DownloadsHistoryPage(
+                    onBackPressed = onBackPressed
+                )
             }
             animatedComposable(Route.DOWNLOAD_DIRECTORY) {
                 DownloadsDirectoriesPage {

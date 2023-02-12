@@ -14,6 +14,7 @@ import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.pages.history.THUMBNAIL_REGEX
 import okhttp3.internal.closeQuietly
 import java.io.File
 
@@ -107,6 +108,7 @@ object FilesUtil {
                     context, this.toList().toTypedArray(),
                     null, null
                 )
+                removeAll { it.contains(Regex(THUMBNAIL_REGEX)) }
             }
 
 

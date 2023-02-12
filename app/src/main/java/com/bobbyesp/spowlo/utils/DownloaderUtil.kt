@@ -6,6 +6,7 @@ import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App
+import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
@@ -153,7 +154,10 @@ object DownloaderUtil {
 
             request.apply {
                 addOption("download", url)
-                addOption("--output", App.audioDownloadDir)
+                addOption("--output", audioDownloadDir)
+
+                pathBuilder.append(audioDownloadDir)
+                Log.d(TAG, "downloadSong: $pathBuilder")
 
                 if(preserveOriginalAudio) {
                     addOption("--preserve-original-audio")
@@ -224,6 +228,8 @@ object DownloaderUtil {
     ): List<String> = FilesUtil.scanFileToMediaLibraryPostDownload(
         title = songInfo.song_id, downloadDir = downloadPath
     ).apply {
+        //TODO: FIX HERE THE DIRECTORY BEING REMOVED
+        Log.d(TAG, "scanVideoIntoDownloadHistory: $downloadPath")
         insertInfoIntoDownloadHistory(songInfo, this)
     }
 

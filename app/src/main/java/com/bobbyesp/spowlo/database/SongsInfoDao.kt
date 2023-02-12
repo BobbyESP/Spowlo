@@ -14,10 +14,10 @@ interface SongsInfoDao {
     @Insert
     suspend fun insertAll(vararg info: DownloadedSongInfo)
 
-    @Query("select * from DownloadedSongInfo")
+    @Query("SELECT * FROM DownloadedSongInfo")
     fun getAllMedia(): Flow<List<DownloadedSongInfo>>
 
-    @Query("select * from DownloadedSongInfo WHERE id=:id")
+    @Query("SELECT * from DownloadedSongInfo WHERE id=:id")
     suspend fun getInfoById(id: Int): DownloadedSongInfo
 
     @Query("DELETE FROM DownloadedSongInfo WHERE id = :id")
@@ -26,6 +26,9 @@ interface SongsInfoDao {
     @Query("DELETE FROM DownloadedSongInfo WHERE songPath = :path")
     suspend fun deleteInfoByPath(path: String)
 
+    @Query("SELECT * FROM DownloadedSongInfo WHERE songPath = :path")
+    suspend fun getInfoByPath(path: String): DownloadedSongInfo?
+
     @Transaction
     suspend fun deleteInfoByPathAndInsert(
         songInfo: DownloadedSongInfo,
@@ -33,6 +36,15 @@ interface SongsInfoDao {
     ) {
         deleteInfoByPath(path)
         insertAll(songInfo)
+    }
+
+    @Transaction
+    suspend fun insertInfoDistinctByPath(
+        songInfo: DownloadedSongInfo,
+        path: String = songInfo.songPath
+    ) {
+        if (getInfoByPath(path) == null)
+            insertAll(songInfo)
     }
 
     @Delete

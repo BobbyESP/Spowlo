@@ -6,7 +6,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [CommandShortcut::class, CommandTemplate::class, CookieProfile::class, DownloadedSongInfo::class],
-    version = 1,
+    version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)]
     //INFO: If changed some entities, add autoMigrations
 )
 abstract class AppDatabase: RoomDatabase() {
