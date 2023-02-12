@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -67,6 +68,7 @@ import com.bobbyesp.spowlo.ui.components.history.HistoryMediaItem
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.getFileSize
+import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 const val AUDIO_REGEX = "(mp3|aac|opus|m4a)$"
 const val THUMBNAIL_REGEX = "\\.(jpg|png)$"
@@ -300,7 +302,9 @@ fun DownloadsHistoryPage(
                                 author = songAuthor,
                                 artworkUrl = thumbnailUrl,
                                 songPath = songPath,
+                                fileType = songPath.substringAfterLast('.').uppercase(),
                                 songFileSize = fileSizeMap[song.id] ?: 0L,
+                                songDuration = GeneralTextUtils.convertDuration(songDuration),
                                 songSpotifyUrl = songUrl,
                                 isSelectEnabled = { isSelectEnabled },
                                 isSelected = { selectedItemIds.contains(id) },

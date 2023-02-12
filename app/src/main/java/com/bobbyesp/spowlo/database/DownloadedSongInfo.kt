@@ -12,6 +12,8 @@ data class DownloadedSongInfo(
     val songUrl: String,
     val thumbnailUrl: String,
     val songPath: String,
+    @ColumnInfo(defaultValue = "0.0")
+    val songDuration: Double = 0.0,
     @ColumnInfo(defaultValue = "Unknown")
     val extractor: String = "Unknown"
 )

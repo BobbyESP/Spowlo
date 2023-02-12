@@ -246,6 +246,7 @@ object DownloaderUtil {
                     songUrl = songInfo.url,
                     thumbnailUrl = songInfo.cover_url,
                     songPath = filePath,
+                    songDuration = songInfo.duration,
                     extractor = "Youtube Music",
                 )
             )
