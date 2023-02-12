@@ -39,6 +39,8 @@ object DatabaseUtil {
 
     fun getShortcuts() = dao.getCommandShortcuts()
 
+    fun clearHistory() = dao.deleteAllMediaFromDb()
+
     suspend fun deleteShortcut(shortcut: CommandShortcut) = dao.deleteShortcut(shortcut)
     suspend fun insertShortcut(shortcut: CommandShortcut) = dao.insertShortcut(shortcut)
 

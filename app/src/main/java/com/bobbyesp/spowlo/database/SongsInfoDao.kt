@@ -17,6 +17,9 @@ interface SongsInfoDao {
     @Query("SELECT * FROM DownloadedSongInfo")
     fun getAllMedia(): Flow<List<DownloadedSongInfo>>
 
+    @Query("DELETE FROM DownloadedSongInfo")
+    fun deleteAllMediaFromDb()
+
     @Query("SELECT * from DownloadedSongInfo WHERE id=:id")
     suspend fun getInfoById(id: Int): DownloadedSongInfo
 

@@ -22,6 +22,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.DeleteSweep
+import androidx.compose.material.icons.outlined.LayersClear
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -195,16 +196,29 @@ fun DownloadsHistoryPage(
                         onBackPressed()
                     }
                 }, actions = {
-                    IconToggleButton(
-                        modifier = Modifier,
-                        onCheckedChange = { isSelectEnabled = !isSelectEnabled },
-                        checked = isSelectEnabled
-                    ) {
-                        Icon(
-                            Icons.Outlined.Checklist,
-                            contentDescription = stringResource(R.string.multiselect_mode)
-                        )
-                    }
+                             Row(){
+                                 IconToggleButton(
+                                     modifier = Modifier,
+                                     onCheckedChange = { isSelectEnabled = !isSelectEnabled },
+                                     checked = isSelectEnabled
+                                 ) {
+                                     Icon(
+                                         Icons.Outlined.Checklist,
+                                         contentDescription = stringResource(R.string.multiselect_mode)
+                                     )
+                                 }
+                                 IconButton(
+                                     modifier = Modifier,
+                                     onClick = {
+
+                                     }
+                                 ) {
+                                     Icon(
+                                         Icons.Outlined.LayersClear,
+                                         contentDescription = stringResource(R.string.clear_database)
+                                     )
+                                 }
+                             }
                 }, scrollBehavior = scrollBehavior
             )
         }, bottomBar = {
@@ -256,7 +270,7 @@ fun DownloadsHistoryPage(
                 }
             }
         }
-    ) {innerPaddings ->
+    ) { innerPaddings ->
         val cellCount = when (LocalWindowWidthState.current) {
             WindowWidthSizeClass.Expanded -> 2
             else -> 1
@@ -302,5 +316,6 @@ fun DownloadsHistoryPage(
             }
         }
     }
+
 
 }

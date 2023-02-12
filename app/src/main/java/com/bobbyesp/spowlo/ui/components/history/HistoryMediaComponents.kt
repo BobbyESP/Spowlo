@@ -167,6 +167,17 @@ fun HistoryMediaItem(
                                 fontSize = 12.sp,
                                 basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
                             )
+                            if(!isFileAvailable) {
+                                Text(
+                                    modifier = Modifier.padding(top = 3.dp),
+                                    text = stringResource(
+                                        R.string.unavailable
+                                    ),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                    maxLines = 1,
+                                )
+                            }
                         }
                         Column(
                             modifier = Modifier
@@ -176,7 +187,8 @@ fun HistoryMediaItem(
                             CustomTag(text = songDuration)
                             Spacer(Modifier.height(6.dp))
                             CustomTag(text = fileType)
-
+                            Spacer(Modifier.height(6.dp))
+                            CustomTag(text = fileSizeText)
                         }
                     }
                 }
