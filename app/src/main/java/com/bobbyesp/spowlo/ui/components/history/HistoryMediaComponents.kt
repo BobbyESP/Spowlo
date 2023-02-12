@@ -44,6 +44,7 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.songs.CustomTag
 import com.bobbyesp.spowlo.ui.components.songs.ExplicitIcon
 import com.bobbyesp.spowlo.ui.components.songs.LyricsIcon
 import com.bobbyesp.spowlo.ui.components.songs.MiniMetadataInfoComponent
@@ -104,7 +105,7 @@ fun HistoryMediaItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(4.dp)
         ) {
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -123,7 +124,7 @@ fun HistoryMediaItem(
                 ) {
                     AsyncImageImpl(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 12.dp)
                             .size(86.dp)
                             .aspectRatio(1f, matchHeightConstraintsFirst = true)
                             .clip(MaterialTheme.shapes.small),
@@ -138,7 +139,9 @@ fun HistoryMediaItem(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
-                            modifier = Modifier.padding(6.dp).weight(1f), //Weight is to make the time not go away from the screen
+                            modifier = Modifier
+                                .padding(6.dp)
+                                .weight(1f), //Weight is to make the time not go away from the screen
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.Start
                         ) {
@@ -170,26 +173,10 @@ fun HistoryMediaItem(
                                 .padding(16.dp),
                             horizontalAlignment = Alignment.End
                         ) {
-                            Surface(
-                                modifier = Modifier,
-                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                shape = MaterialTheme.shapes.extraSmall
-                            ) {
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center,
-                                )
-                                {
-                                    Text(
-                                        text = "test",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(6.dp, 4.dp, 6.dp, 4.dp)
-                                    )
-                                }
-                            }
+                            CustomTag(text = songDuration)
+                            Spacer(Modifier.height(6.dp))
+                            CustomTag(text = fileType)
+
                         }
                     }
                 }

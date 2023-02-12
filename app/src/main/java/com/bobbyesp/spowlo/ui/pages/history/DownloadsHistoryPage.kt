@@ -274,7 +274,6 @@ fun DownloadsHistoryPage(
                 item(
                     key = song.id,
                     contentType = { song.songPath.contains(AUDIO_REGEX) }){
-
                     with(song) {
                         AnimatedVisibility(
                             visible = song.filterSort(viewState),
@@ -282,7 +281,7 @@ fun DownloadsHistoryPage(
                             enter = expandVertically() + fadeIn()
                         ) {
                             HistoryMediaItem(
-                                modifier = Modifier,
+                                modifier = Modifier.padding(4.dp),
                                 songName = songName,
                                 author = songAuthor,
                                 artworkUrl = thumbnailUrl,
@@ -299,7 +298,6 @@ fun DownloadsHistoryPage(
                             ) { downloadsHistoryViewModel.showDrawer(scope, song) }
                         }
                     }
-
                 }
             }
         }

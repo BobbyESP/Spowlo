@@ -226,7 +226,7 @@ object DownloaderUtil {
         songInfo: Song,
         downloadPath: String,
     ): List<String> = FilesUtil.scanFileToMediaLibraryPostDownload(
-        title = songInfo.song_id, downloadDir = downloadPath
+        title = songInfo.name, downloadDir = downloadPath
     ).apply {
         //TODO: FIX HERE THE DIRECTORY BEING REMOVED
         Log.d(TAG, "scanVideoIntoDownloadHistory: $downloadPath")

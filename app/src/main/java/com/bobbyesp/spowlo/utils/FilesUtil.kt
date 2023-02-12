@@ -100,6 +100,7 @@ object FilesUtil {
     fun scanFileToMediaLibraryPostDownload(title: String, downloadDir: String): List<String> =
         File(downloadDir)
             .walkTopDown()
+            //THE TITLE IS THE [xx67238xx] THAT SEAL USES TO IDENTIFY THE FILE.
             .filter { it.isFile && it.path.contains(title) }
             .map { it.absolutePath }
             .toMutableList()

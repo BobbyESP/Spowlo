@@ -63,6 +63,30 @@ fun LyricsIcon(visible: Boolean, modifier : Modifier = Modifier) {
         }
     }
 }
+
+@Composable
+fun CustomTag(text: String){
+    Surface(
+        modifier = Modifier,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        shape = MaterialTheme.shapes.extraSmall
+    ) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        )
+        {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(6.dp, 4.dp, 6.dp, 4.dp)
+            )
+        }
+    }
+}
 @ExperimentalMaterial3Api
 @Preview
 @Composable
