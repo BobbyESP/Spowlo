@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.utils
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -34,7 +35,14 @@ object ToastUtil {
 
 object GeneralTextUtils {
 
-    fun convertDuration(duration: Double): String {
+    fun convertDuration(durationOfSong: Double): String {
+        //First of all the duration comes with this format "146052" but it has to be "146.052"
+        var duration = 0.0
+        if (durationOfSong > 100000.0){
+            duration = durationOfSong / 1000
+        } else {
+            duration = durationOfSong
+        }
         val hours = (duration / 3600).toInt()
         val minutes = ((duration % 3600) / 60).toInt()
         val seconds = (duration % 60).toInt()

@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.dialogs
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -64,6 +67,7 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
+import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
@@ -81,6 +85,7 @@ fun DownloaderSettingsDialog(
 
     var customCommand by remember { mutableStateOf(PreferencesUtil.getValue(CUSTOM_COMMAND)) }
     var selectedTemplateId by TEMPLATE_ID.intState
+
     var preserveOriginalAudio by remember {
         mutableStateOf(
             settings.getValue(
@@ -93,6 +98,14 @@ fun DownloaderSettingsDialog(
         mutableStateOf(
             settings.getValue(
                 USE_SPOTIFY_CREDENTIALS
+            )
+        )
+    }
+
+    var useYtMetadata by remember {
+        mutableStateOf(
+            settings.getValue(
+                USE_YT_METADATA
             )
         )
     }
@@ -142,6 +155,13 @@ fun DownloaderSettingsDialog(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
+            AnimatedVisibility(visible = preserveOriginalAudio) {
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(text = stringResource(R.string.preserve_original_audio_warning), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(6.dp))
+                    }
+                }
+            }
             DrawerSheetSubtitle(text = stringResource(id = R.string.general_settings))
             Row(
                 modifier = Modifier
@@ -152,6 +172,17 @@ fun DownloaderSettingsDialog(
                         color = MaterialTheme.colorScheme.surfaceVariant
                     ),
             ) {
+                AudioFilterChip(
+                    label = stringResource(id = R.string.use_yt_metadata),
+                    animated = true,
+                    selected = useYtMetadata,
+                    onClick = {
+                        useYtMetadata = !useYtMetadata
+                        scope.launch {
+                            settings.updateValue(USE_YT_METADATA, useYtMetadata)
+                        }
+                    }
+                )
                 AudioFilterChip(
                     label = stringResource(id = R.string.preserve_original_audio),
                     animated = true,

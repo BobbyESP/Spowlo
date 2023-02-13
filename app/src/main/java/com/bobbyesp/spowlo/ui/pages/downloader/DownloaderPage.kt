@@ -343,15 +343,24 @@ fun DownloaderPageImplementation(
                 }
                 with(taskState) {
                     AnimatedVisibility(visible = showSongCard && showDownloadProgress) {
-                        SongCard(
-                            song = info,
-                            progress = progress,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                            isLyrics = info.lyrics?.isNotEmpty()
-                                ?: false,
-                            isExplicit = info.explicit,
-                            onClick = { onSongCardClicked() }
-                        )
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            SongCard(
+                                song = info,
+                                progress = progress,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+                                isLyrics = info.lyrics?.isNotEmpty()
+                                    ?: false,
+                                isExplicit = info.explicit,
+                                onClick = { onSongCardClicked() }
+                            )
+                            Text(
+                                text = stringResource(id = R.string.click_card_metadata),
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .alpha(ContentAlpha.medium).padding(bottom = 0.dp),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                     InputUrl(
                         url = viewState.url,

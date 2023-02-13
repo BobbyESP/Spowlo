@@ -143,4 +143,7 @@
     <string name="multiselect_mode">Multiselect mode</string>
     <string name="unavailable">Unavailiable</string>
     <string name="clear_database">Clear database</string>
+    <string name="click_card_metadata">Tap the card for more info.</string>
+    <string name="use_yt_metadata">YT Music metadata</string>
+    <string name="preserve_original_audio_warning">While using the original audio option, is recomendable to use the OPUS or M4A file types.</string>
 </resources>

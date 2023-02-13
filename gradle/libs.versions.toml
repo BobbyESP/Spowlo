@@ -17,7 +17,7 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.4"
 
-spotdlAndroidVersion = "-SNAPSHOT"
+spotdlAndroidVersion = "4.1.0-preview-SNAPSHOT"
 spotifyApiKotlinVersion = "4.0.0"
 
 coil = "2.2.2"
@@ -32,7 +32,7 @@ kotlinxSerializationJson = "1.4.1"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
 
-room = "2.5.0-rc01"
+room = "2.5.0"
 
 mmkv = "1.2.14"
 

@@ -51,6 +51,7 @@ object DownloaderUtil {
         val useSpotifyPreferences: Boolean = PreferencesUtil.getValue(USE_SPOTIFY_CREDENTIALS),
         val spotifyClientID: String = SPOTIFY_CLIENT_ID.getString(),
         val spotifyClientSecret: String = SPOTIFY_CLIENT_SECRET.getString(),
+        val useYtMetadata: Boolean = PreferencesUtil.getValue(USE_YT_METADATA),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -159,8 +160,12 @@ object DownloaderUtil {
                 pathBuilder.append(audioDownloadDir)
                 Log.d(TAG, "downloadSong: $pathBuilder")
 
+                if(useYtMetadata){
+                    addOption("--ytm-data")
+                }
+
                 if(preserveOriginalAudio) {
-                    addOption("--preserve-original-audio")
+                    addOption("--bitrate", "disabled")
                     addAudioFormat()
                 } else {
                     addAudioQuality()

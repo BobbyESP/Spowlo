@@ -297,7 +297,7 @@ fun DownloadsHistoryPage(
                             enter = expandVertically() + fadeIn()
                         ) {
                             HistoryMediaItem(
-                                modifier = Modifier.padding(4.dp),
+                                modifier = Modifier,
                                 songName = songName,
                                 author = songAuthor,
                                 artworkUrl = thumbnailUrl,

@@ -105,7 +105,7 @@ fun HistoryMediaItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp)
+                .padding(2.dp)
         ) {
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.CenterVertically),

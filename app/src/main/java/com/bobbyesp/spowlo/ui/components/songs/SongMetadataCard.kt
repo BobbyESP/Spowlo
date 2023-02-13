@@ -39,6 +39,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 fun SongMetadataCard(
     song: Song
 ) {
+    val isrc = song.isrc ?: "Unknown"
     val metadataMap = mapOf(
         stringResource(id = R.string.song_name) to song.name,
         stringResource(id = R.string.main_artist) to song.artist,
@@ -55,7 +56,7 @@ fun SongMetadataCard(
         stringResource(id = R.string.song_spotify_id) to song.song_id,
         stringResource(id = R.string.song_is_explicit) to song.explicit.toString(),
         stringResource(id = R.string.song_publisher) to song.publisher,
-        stringResource(id = R.string.song_isrc) to song.isrc,
+        stringResource(id = R.string.song_isrc) to isrc,
         stringResource(id = R.string.song_url) to song.url,
         stringResource(id = R.string.song_cover_url) to song.cover_url,
         stringResource(id = R.string.song_copyright_text) to song.copyright_text
@@ -201,7 +202,7 @@ fun MetadataTag(
             textAlign = TextAlign.Start
         )
         Text(
-            modifier = Modifier.clickable { GeneralTextUtils.copyToClipboardAndNotify(metadata) },
+            modifier = Modifier.clickable { GeneralTextUtils.copyToClipboardAndNotify(metadata) }.fillMaxWidth(),
             text = metadata,
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
             textAlign = TextAlign.Start

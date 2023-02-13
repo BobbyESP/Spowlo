@@ -46,6 +46,7 @@ private const val THEME_COLOR = "theme_color"
 const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
 const val OUTPUT_PATH_TEMPLATE = "path_template"
+const val USE_YT_METADATA = "use_yt_metadata"
 
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
@@ -84,6 +85,7 @@ private val BooleanPreferenceDefaults =
         CELLULAR_DOWNLOAD to true,
         ORIGINAL_AUDIO to false,
         USE_SPOTIFY_CREDENTIALS to false,
+        USE_YT_METADATA to false,
     )
 
 private val IntPreferenceDefaults = mapOf(
@@ -93,7 +95,7 @@ private val IntPreferenceDefaults = mapOf(
     DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
     WELCOME_DIALOG to 1,
     AUDIO_FORMAT to 0,
-    AUDIO_QUALITY to 11,
+    AUDIO_QUALITY to 10,
 )
 
 val palettesMap = mapOf(
