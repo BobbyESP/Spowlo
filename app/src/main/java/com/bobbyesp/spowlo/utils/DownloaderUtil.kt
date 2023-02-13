@@ -165,7 +165,7 @@ object DownloaderUtil {
                 }
 
                 if(preserveOriginalAudio) {
-                    addOption("--bitrate", "disabled")
+                    addOption("--bitrate", "disable")
                     addAudioFormat()
                 } else {
                     addAudioQuality()
