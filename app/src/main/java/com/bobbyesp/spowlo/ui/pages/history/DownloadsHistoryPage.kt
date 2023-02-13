@@ -89,7 +89,7 @@ fun DownloadsHistoryPage(
 
     val songsList = songsListFlow.collectAsState(ArrayList()).value
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         Log.d("DownloadsHistoryPage", songsList.toString())
     }
 
@@ -199,29 +199,30 @@ fun DownloadsHistoryPage(
                         onBackPressed()
                     }
                 }, actions = {
-                             Row(){
-                                 IconToggleButton(
-                                     modifier = Modifier,
-                                     onCheckedChange = { isSelectEnabled = !isSelectEnabled },
-                                     checked = isSelectEnabled
-                                 ) {
-                                     Icon(
-                                         Icons.Outlined.Checklist,
-                                         contentDescription = stringResource(R.string.multiselect_mode)
-                                     )
-                                 }
-                                 IconButton(
-                                     modifier = Modifier,
-                                     onClick = {
+                             //TODO: Add multiselect mode
+                    /*Row() {
+                        IconToggleButton(
+                            modifier = Modifier,
+                            onCheckedChange = { isSelectEnabled = !isSelectEnabled },
+                            checked = isSelectEnabled
+                        ) {
+                            Icon(
+                                Icons.Outlined.Checklist,
+                                contentDescription = stringResource(R.string.multiselect_mode)
+                            )
+                        }
+                        IconButton(
+                            modifier = Modifier,
+                            onClick = {
 
-                                     }
-                                 ) {
-                                     Icon(
-                                         Icons.Outlined.LayersClear,
-                                         contentDescription = stringResource(R.string.clear_database)
-                                     )
-                                 }
-                             }
+                            }
+                        ) {
+                            Icon(
+                                Icons.Outlined.LayersClear,
+                                contentDescription = stringResource(R.string.clear_database)
+                            )
+                        }
+                    }*/
                 }, scrollBehavior = scrollBehavior
             )
         }, bottomBar = {
@@ -283,7 +284,7 @@ fun DownloadsHistoryPage(
             modifier = Modifier
                 .padding(innerPaddings), columns = GridCells.Fixed(cellCount)
         ) {
-            if(filterSet.size > 1) {
+            if (filterSet.size > 1) {
                 item {
                     Text(
                         text = stringResource(id = R.string.filter_artist),
@@ -302,7 +303,7 @@ fun DownloadsHistoryPage(
             for (song in songsList) {
                 item(
                     key = song.id,
-                    contentType = { song.songPath.contains(AUDIO_REGEX) }){
+                    contentType = { song.songPath.contains(AUDIO_REGEX) }) {
                     with(song) {
                         AnimatedVisibility(
                             visible = song.filterSort(viewState),
@@ -333,6 +334,4 @@ fun DownloadsHistoryPage(
             }
         }
     }
-
-
 }
