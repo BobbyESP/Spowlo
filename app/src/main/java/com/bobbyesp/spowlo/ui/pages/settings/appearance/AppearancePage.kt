@@ -202,14 +202,15 @@ fun AppearancePage(
                     isChecked = isDarkTheme,
                     description = LocalDarkTheme.current.getDarkThemeDesc(),
                     onChecked = { PreferencesUtil.modifyDarkThemePreference(if (isDarkTheme) OFF else ON) },
-                    onClick = { navController.navigate(Route.DARK_THEME) }
+                    onClick = { navController.navigate(Route.APP_THEME) }
                 )
-                if (Build.VERSION.SDK_INT >= 24)
+                //todo: add the languages page
+                /*if (Build.VERSION.SDK_INT >= 24)
                     PreferenceItem(
                         title = stringResource(R.string.language),
                         icon = Icons.Outlined.Language,
                         description = getLanguageDesc()
-                    ) { navController.navigate(Route.LANGUAGES) }
+                    ) { navController.navigate(Route.LANGUAGES) }*/
             }
         })
     if (showDarkThemeDialog)

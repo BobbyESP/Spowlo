@@ -12,9 +12,8 @@ object Route {
     const val PLAYLIST_METADATA_PAGE = "playlist_metadata_page"
     const val MODS_DOWNLOADER = "mods_downloader"
 
-    const val SETTINGS_PAGE = "settings_page"
-
     const val APPEARANCE = "appearance"
+    const val APP_THEME = "app_theme"
     const val GENERAL_DOWNLOAD_PREFERENCES = "general_download_preferences"
     const val SPOTIFY_PREFERENCES = "spotify_preferences"
     const val ABOUT = "about"

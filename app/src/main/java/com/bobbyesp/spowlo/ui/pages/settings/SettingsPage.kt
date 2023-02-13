@@ -176,7 +176,7 @@ fun SettingsPage(navController: NavController) {
                                 }
                             }
                         }*/
-            item {
+            /*item {
                 SettingItem(
                     title = stringResource(id = R.string.network),
                     description = stringResource(id = R.string.network_settings_desc),
@@ -186,8 +186,8 @@ fun SettingsPage(navController: NavController) {
                         launchSingleTop = true
                     }
                 }
-            }
-            item {
+            }*/
+            /*item {
                 SettingItem(
                     title = stringResource(id = R.string.custom_command),
                     description = stringResource(id = R.string.custom_command_desc),
@@ -197,7 +197,7 @@ fun SettingsPage(navController: NavController) {
                         launchSingleTop = true
                     }
                 }
-            }
+            }*/
             item {
                 SettingItem(
                     title = stringResource(id = R.string.appearence), description = stringResource(
@@ -207,8 +207,8 @@ fun SettingsPage(navController: NavController) {
                     navController.navigate(Route.APPEARANCE) { launchSingleTop = true }
                 }
             }
-            item {
 
+            /*item {
                 SettingItem(
                     title = stringResource(id = R.string.about), description = stringResource(
                         id = R.string.about_page
@@ -216,7 +216,7 @@ fun SettingsPage(navController: NavController) {
                 ) {
                     navController.navigate(Route.ABOUT) { launchSingleTop = true }
                 }
-            }
+            }*/
         }
     }
 }

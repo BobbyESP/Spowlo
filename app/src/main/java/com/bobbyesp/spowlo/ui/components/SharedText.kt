@@ -132,6 +132,10 @@ fun MarqueeText(
         )
     }
     var offset by remember { mutableStateOf(0) }
+    //When the text is changed, the offset is reset to 0
+    LaunchedEffect(text) {
+        offset = 0
+    }
     val textLayoutInfoState = remember { mutableStateOf<TextLayoutInfo?>(null) }
     LaunchedEffect(textLayoutInfoState.value) {
         val textLayoutInfo = textLayoutInfoState.value ?: return@LaunchedEffect

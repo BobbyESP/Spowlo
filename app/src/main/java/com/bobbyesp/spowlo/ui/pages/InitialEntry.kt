@@ -40,6 +40,7 @@ import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
+import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
@@ -164,6 +165,11 @@ fun InitialEntry(
             }
             animatedComposable(Route.APPEARANCE) {
                 AppearancePage(navController = navController)
+            }
+            animatedComposable(Route.APP_THEME){
+                AppThemePreferencesPage {
+                    onBackPressed()
+                }
             }
             animatedComposable(Route.DOWNLOAD_FORMAT) {
                 SettingsFormatsPage {
