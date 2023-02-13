@@ -96,13 +96,14 @@ fun InitialEntry(
     }
 
     //When the app is opened, call xManagerApi to check for updates
-    LaunchedEffect(Unit) {
+    //WARN: DISABLED FOR PETITION OF THE xManager TEAM
+    /*LaunchedEffect(Unit) {
         xManagerAPI.getPackagesResponseDto().onFailure {
             ToastUtil.makeToastSuspend(App.context.getString(R.string.error_checking_for_updates))
         }.onSuccess {
             modsDownloaderViewModel.updateApiResponse(it)
         }
-    }
+    }*/
 
     val onBackPressed: () -> Unit = { navController.popBackStack() }
 

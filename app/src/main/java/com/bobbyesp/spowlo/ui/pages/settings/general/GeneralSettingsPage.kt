@@ -14,6 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -30,15 +32,20 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.bobbyesp.library.SpotDL
+import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun GeneralSettingsPage(
     onBackPressed: () -> Unit,
@@ -58,6 +65,21 @@ fun GeneralSettingsPage(
         )
     }
 
+    val loadingString = App.context.getString(R.string.loading)
+
+    var spotDLVersion by remember { mutableStateOf(
+        loadingString
+    ) }
+
+    //create a non-blocking coroutine to get the version
+    LaunchedEffect(Unit) {
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                spotDLVersion = SpotDL.getInstance().execute(SpotDLRequest().addOption("-v"), null, null).output ?: "Unknown"
+            }
+        }
+    }
+
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -75,9 +97,6 @@ fun GeneralSettingsPage(
                 modifier = Modifier.padding(it)
             ) {
                 item {
-                    val spotDLVersion by remember { mutableStateOf(
-                        SpotDL.getInstance().version(appContext = App.context)
-                    ) }
                     PreferenceItem(
                         title = stringResource(id = R.string.spotdl_version),
                         description = spotDLVersion,

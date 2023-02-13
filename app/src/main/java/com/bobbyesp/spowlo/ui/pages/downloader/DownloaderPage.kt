@@ -136,9 +136,10 @@ fun DownloaderPage(
         }
     }
 
-    LaunchedEffect(key1 = true) {
+    //Disabled as petition of xManager team
+    /*LaunchedEffect(Unit) {
         xManagerAPI.getPackagesResponseDto()
-    }
+    }*/
 
     //STATE FLOWS
     val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -273,12 +274,12 @@ fun DownloaderPageImplementation(
                     )
                 }*/
 
-                IconButton(onClick = { navigateToMods() }) {
+                /*IconButton(onClick = { navigateToMods() }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
                         contentDescription = stringResource(id = R.string.mods_downloader)
                     )
-                }
+                }*/
 
                 IconButton(onClick = { navigateToDownloads() }) {
                     Icon(

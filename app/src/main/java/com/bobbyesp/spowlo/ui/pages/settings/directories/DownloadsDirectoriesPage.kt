@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -201,7 +202,7 @@ fun DownloadsDirectoriesPage(
                         }
                     }
                 item {
-                    PreferenceSubtitle(text = stringResource(R.string.general_settings))
+                    PreferenceSubtitle(text = stringResource(R.string.general_settings), modifier = Modifier.padding(top = (-12).dp))
                 }
                 item{
                     PreferenceItem(

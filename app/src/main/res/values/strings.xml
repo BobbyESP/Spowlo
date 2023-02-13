@@ -148,4 +148,6 @@
     <string name="preserve_original_audio_warning">While using the original audio option, is recomendable to use the OPUS or M4A file types.</string>
     <string name="additional_settings">Additional settings</string>
     <string name="high_contrast">High contrast theme (AMOLED)</string>
+    <string name="filter_artist">Filter by artist</string>
+    <string name="loading">Loading...</string>
 </resources>

@@ -64,6 +64,7 @@ import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
+import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.history.HistoryMediaItem
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
@@ -282,6 +283,18 @@ fun DownloadsHistoryPage(
             modifier = Modifier
                 .padding(innerPaddings), columns = GridCells.Fixed(cellCount)
         ) {
+            if(filterSet.size > 1) {
+                item {
+                    Text(
+                        text = stringResource(id = R.string.filter_artist),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 18.dp, top = 12.dp, bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
             item(span = span) {
                 FilterChipsRow(Modifier.fillMaxWidth())
             }
