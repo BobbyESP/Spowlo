@@ -17,8 +17,10 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.4"
 
-spotdlAndroidVersion = "4.1.0-preview-SNAPSHOT"
+spotdlAndroidVersion = "48245d4dc7"
 spotifyApiKotlinVersion = "4.0.0"
+
+crashHandlerVersion = "2.0.2"
 
 coil = "2.2.2"
 hilt = "2.44.2"
@@ -102,6 +104,8 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+
+crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -210,6 +210,7 @@ dependencies {
     //MMKV
     implementation(libs.mmkv)
 
+    debugImplementation(libs.crash.handler)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.test.ext)
