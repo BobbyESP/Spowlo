@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Dataset
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
@@ -156,9 +158,28 @@ fun DownloaderSettingsDialog(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             AnimatedVisibility(visible = preserveOriginalAudio) {
-                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = stringResource(R.string.preserve_original_audio_warning), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(6.dp))
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = MaterialTheme.colorScheme.surfaceVariant),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Warning,
+                            contentDescription = null,
+                            modifier = Modifier.padding(6.dp),
+                            tint = MaterialTheme.colorScheme.run { onSecondaryContainer }
+                        )
+                        Text(
+                            text = stringResource(R.string.preserve_original_audio_warning),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(6.dp)
+                        )
                     }
                 }
             }
@@ -172,17 +193,6 @@ fun DownloaderSettingsDialog(
                         color = MaterialTheme.colorScheme.surfaceVariant
                     ),
             ) {
-                AudioFilterChip(
-                    label = stringResource(id = R.string.use_yt_metadata),
-                    animated = true,
-                    selected = useYtMetadata,
-                    onClick = {
-                        useYtMetadata = !useYtMetadata
-                        scope.launch {
-                            settings.updateValue(USE_YT_METADATA, useYtMetadata)
-                        }
-                    }
-                )
                 AudioFilterChip(
                     label = stringResource(id = R.string.preserve_original_audio),
                     animated = true,
@@ -230,12 +240,37 @@ fun DownloaderSettingsDialog(
                 ButtonChip(
                     label = stringResource(id = R.string.client_id),
                     icon = Icons.Outlined.Person,
+                    enabled = useSpotifyCredentials,
                     onClick = { showClientIdDialog = true },
                 )
                 ButtonChip(
                     label = stringResource(id = R.string.client_secret),
                     icon = Icons.Outlined.Key,
+                    enabled = useSpotifyCredentials,
                     onClick = { showClientSecretDialog = true },
+                )
+            }
+
+            DrawerSheetSubtitle(text = stringResource(id = R.string.experimental_features))
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+            ) {
+                AudioFilterChip(
+                    label = stringResource(id = R.string.use_yt_metadata),
+                    animated = true,
+                    selected = useYtMetadata,
+                    onClick = {
+                        useYtMetadata = !useYtMetadata
+                        scope.launch {
+                            settings.updateValue(USE_YT_METADATA, useYtMetadata)
+                        }
+                    }
                 )
             }
         }
@@ -297,11 +332,17 @@ fun DownloaderSettingsDialog(
         AlertDialog(
             onDismissRequest = hide,
             confirmButton = {
-                TextButton(onClick = downloadButtonCallback) {
-                    Text(text = stringResource(R.string.start_download))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    DismissButton { hide() }
+                    TextButton(onClick = requestMetadata) {
+                        Text(text = stringResource(R.string.request_metadata))
+                    }
+                    TextButton(onClick = downloadButtonCallback) {
+                        Text(text = stringResource(R.string.start_download))
+                    }
                 }
             },
-            dismissButton = { DismissButton { hide() } },
+            dismissButton = { },
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.DoneAll,

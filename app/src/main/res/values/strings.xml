@@ -150,4 +150,5 @@
     <string name="high_contrast">High contrast theme (AMOLED)</string>
     <string name="filter_artist">Filter by artist</string>
     <string name="loading">Loading...</string>
+    <string name="experimental_features">Experimental features</string>
 </resources>
