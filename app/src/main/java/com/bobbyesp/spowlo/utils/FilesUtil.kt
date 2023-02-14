@@ -178,8 +178,8 @@ object FilesUtil {
     fun Context.getConfigFile(suffix: String = "") =
         File(getConfigDirectory(), "config$suffix.txt")
 
-    fun Context.getCookiesFile(suffix: String = "") =
-        File(getConfigDirectory(), "cookies$suffix.txt")
+    fun Context.getCookiesFile() =
+        File(getConfigDirectory(), "cookies.txt")
 
     fun Context.getTempDir() = File(filesDir, "tmp")
 

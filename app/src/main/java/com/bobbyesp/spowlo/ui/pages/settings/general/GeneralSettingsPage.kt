@@ -74,9 +74,14 @@ fun GeneralSettingsPage(
     //create a non-blocking coroutine to get the version
     LaunchedEffect(Unit) {
         GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                spotDLVersion = SpotDL.getInstance().execute(SpotDLRequest().addOption("-v"), null, null).output ?: "Unknown"
+            try {
+                withContext(Dispatchers.IO) {
+                    spotDLVersion = SpotDL.getInstance().execute(SpotDLRequest().addOption("-v"), null, null).output
+                }
+            }catch (e: Exception) {
+                spotDLVersion = e.message ?: e.toString()
             }
+
         }
     }
 

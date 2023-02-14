@@ -151,4 +151,16 @@
     <string name="filter_artist">Filter by artist</string>
     <string name="loading">Loading...</string>
     <string name="experimental_features">Experimental features</string>
+    <string name="close">Close</string>
+    <string name="done">Done</string>
+    <string name="cookies">Cookies</string>
+    <string name="use_cookies">Use cookies</string>
+    <string name="generate_new_cookies">Generate new cookies</string>
+    <string name="export_to_clipboard">Export cookies to clipboard</string>
+    <string name="clear_all_cookies">Delete all the cookies</string>
+    <string name="cookies_desc">Use Netscape formatted cookies for downloads</string>
+    <string name="cookies_file_name" translatable="false">cookies.txt</string>
+    <string name="cookies_usage_msg">Downloading songs with high quality requires YT Music account authentication information. Click \"Generate new cookies\", enter the URL of the website and then log in with your account in the browser page, the app will generate it for you.</string>
+    <string name="remove_cookie_profile_desc">Remove cookies for \"%1$s\"?</string>
+    <string name="clear_all_cookies_desc">Delete all the cookies stored in the app?</string>
 </resources>

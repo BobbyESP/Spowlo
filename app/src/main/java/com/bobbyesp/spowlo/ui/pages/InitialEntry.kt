@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
@@ -42,6 +43,9 @@ import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
+import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookieProfilePage
+import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
+import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
@@ -105,6 +109,7 @@ fun InitialEntry(
         }
     }*/
 
+    val cookiesViewModel: CookiesSettingsViewModel = viewModel()
     val onBackPressed: () -> Unit = { navController.popBackStack() }
 
     if (isUrlShared) {
@@ -194,6 +199,17 @@ fun InitialEntry(
                     modsDownloaderViewModel
                 )
             }
+            animatedComposable(Route.COOKIE_PROFILE) {
+                CookieProfilePage(
+                    cookiesViewModel = cookiesViewModel,
+                    navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
+                ) { onBackPressed() }
+            }
+            animatedComposable(
+                Route.COOKIE_GENERATOR_WEBVIEW
+            ) {
+                WebViewPage(cookiesViewModel) { onBackPressed() }
+            }
         }
     }
 
@@ -244,3 +260,5 @@ fun InitialEntry(
     }
 
 }
+
+//TODO: Separate the SettingsPage into a different NavGraph (like Seal)

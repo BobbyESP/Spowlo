@@ -63,6 +63,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
+import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -108,6 +109,14 @@ fun DownloaderSettingsDialog(
         mutableStateOf(
             settings.getValue(
                 USE_YT_METADATA
+            )
+        )
+    }
+
+    var useCookies by remember {
+        mutableStateOf(
+            settings.getValue(
+                COOKIES
             )
         )
     }
@@ -269,6 +278,17 @@ fun DownloaderSettingsDialog(
                         useYtMetadata = !useYtMetadata
                         scope.launch {
                             settings.updateValue(USE_YT_METADATA, useYtMetadata)
+                        }
+                    }
+                )
+                AudioFilterChip(
+                    label = stringResource(id = R.string.use_cookies),
+                    animated = true,
+                    selected = useCookies,
+                    onClick = {
+                        useCookies = !useCookies
+                        scope.launch {
+                            settings.updateValue(COOKIES, useCookies)
                         }
                     }
                 )

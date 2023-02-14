@@ -20,7 +20,10 @@ import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DatabaseUtil
+import com.bobbyesp.spowlo.utils.DownloaderUtil
+import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
+import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.TEMPLATE_EXAMPLE
@@ -69,6 +72,9 @@ class App : Application() {
                 }
                 SpotDL.getInstance().init(this@App)
                 FFmpeg.getInstance().init(this@App)
+                DownloaderUtil.getCookiesContentFromDatabase().getOrNull()?.let {
+                    FilesUtil.writeContentToFile(it, getCookiesFile())
+                }
             } catch (e: Exception) {
                 Looper.prepare()
                 e.printStackTrace()

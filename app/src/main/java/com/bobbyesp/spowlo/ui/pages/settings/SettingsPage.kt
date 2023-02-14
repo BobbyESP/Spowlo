@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.SignalCellular4Bar
 import androidx.compose.material.icons.filled.SignalWifi4Bar
+import androidx.compose.material.icons.outlined.Cookie
 import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material.icons.rounded.EnergySavingsLeaf
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -205,6 +206,16 @@ fun SettingsPage(navController: NavController) {
                     ), icon = Icons.Filled.Aod
                 ) {
                     navController.navigate(Route.APPEARANCE) { launchSingleTop = true }
+                }
+            }
+            item {
+                //Cookies page
+                SettingItem(
+                    title = stringResource(id = R.string.cookies), description = stringResource(
+                        id = R.string.cookies_desc
+                    ), icon = Icons.Outlined.Cookie
+                ) {
+                    navController.navigate(Route.COOKIE_PROFILE) { launchSingleTop = true }
                 }
             }
 
