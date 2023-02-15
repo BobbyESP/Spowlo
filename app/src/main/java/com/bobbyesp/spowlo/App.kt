@@ -31,7 +31,6 @@ import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
-import com.thelumierguy.crashwatcher.CrashWatcher
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +59,6 @@ class App : Application() {
 
         applicationScope.launch((Dispatchers.IO)) {
             try {
-                CrashWatcher.initCrashWatcher(context)
                 if (!PreferencesUtil.containsKey(TEMPLATE_ID)) {
                     PreferencesUtil.encodeInt(
                         TEMPLATE_ID, DatabaseUtil.insertTemplate(

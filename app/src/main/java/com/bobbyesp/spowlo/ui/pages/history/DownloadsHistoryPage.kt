@@ -276,7 +276,7 @@ fun DownloadsHistoryPage(
         }
     ) { innerPaddings ->
         val cellCount = when (LocalWindowWidthState.current) {
-            WindowWidthSizeClass.Expanded -> 2
+            WindowWidthSizeClass.Expanded -> 1 //TODO: Add 2 columns. Actually that crashes the app so we'll keep it at 1 for now
             else -> 1
         }
         val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(cellCount) }
