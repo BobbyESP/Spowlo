@@ -58,6 +58,7 @@ object UpdateUtil {
         return suspendCoroutine { continuation ->
             client.newCall(requestForReleases).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
+                    Log.d(TAG, "Requested API info from GitHub")
                     val responseData = response.body.string()
 //                    val latestRelease = jsonFormat.decodeFromString<LatestRelease>(responseData)
                     val releaseList =
@@ -74,6 +75,7 @@ object UpdateUtil {
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
+
                     continuation.resumeWithException(e)
                 }
             })

@@ -46,9 +46,11 @@ private const val THEME_COLOR = "theme_color"
 const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
 const val OUTPUT_PATH_TEMPLATE = "path_template"
-const val USE_YT_METADATA = "use_yt_metadata"
 
+const val USE_YT_METADATA = "use_yt_metadata"
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
+const val SYNCED_LYRICS = "synced_lyrics"
+
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
@@ -86,6 +88,7 @@ private val BooleanPreferenceDefaults =
         ORIGINAL_AUDIO to false,
         USE_SPOTIFY_CREDENTIALS to false,
         USE_YT_METADATA to false,
+        SYNCED_LYRICS to false,
     )
 
 private val IntPreferenceDefaults = mapOf(
@@ -94,8 +97,8 @@ private val IntPreferenceDefaults = mapOf(
     PALETTE_STYLE to 0,
     DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
     WELCOME_DIALOG to 1,
-    AUDIO_FORMAT to 0,
-    AUDIO_QUALITY to 10,
+    AUDIO_FORMAT to 5,
+    AUDIO_QUALITY to 17,
 )
 
 val palettesMap = mapOf(
@@ -140,6 +143,7 @@ object PreferencesUtil {
             2 -> "ogg"
             3 -> "opus"
             4 -> "m4a"
+            5 -> "Default"
             else -> "mp3"
         }
     }
@@ -162,7 +166,9 @@ object PreferencesUtil {
             13 -> "224k"
             14 -> "256k"
             15 -> "320k"
-            else -> "128k"
+            16 -> "disable"
+            17 -> "auto"
+            else -> "auto"
         }
     }
 

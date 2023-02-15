@@ -56,6 +56,7 @@ object DownloaderUtil {
         val spotifyClientSecret: String = SPOTIFY_CLIENT_SECRET.getString(),
         val useYtMetadata: Boolean = PreferencesUtil.getValue(USE_YT_METADATA),
         val useCookies: Boolean = PreferencesUtil.getValue(COOKIES),
+        val useSyncedLyrics: Boolean = PreferencesUtil.getValue(SYNCED_LYRICS),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -170,6 +171,7 @@ object DownloaderUtil {
             2 -> addOption("--format", "ogg")
             3 -> addOption("--format", "opus")
             4 -> addOption("--format", "m4a")
+            5 -> null
         }
     }
 
@@ -192,6 +194,8 @@ object DownloaderUtil {
             13 -> addOption("--bitrate", "224k")
             14 -> addOption("--bitrate", "256k")
             15 -> addOption("--bitrate", "320k")
+            16 -> addOption("--bitrate", "disable")
+            17 -> addOption("--bitrate", "auto")
         }
     }
 
@@ -223,8 +227,13 @@ object DownloaderUtil {
                 if(useCookies){
                     useCookies()
                 }
+
                 if(useYtMetadata){
                     addOption("--ytm-data")
+                }
+
+                if(useSyncedLyrics){
+                    addOption("--lyrics", "synced")
                 }
 
                 if(preserveOriginalAudio) {

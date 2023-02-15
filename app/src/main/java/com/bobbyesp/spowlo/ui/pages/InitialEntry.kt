@@ -213,7 +213,7 @@ fun InitialEntry(
         }
     }
 
-    LaunchedEffect(Unit) {
+   /* LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             runCatching {
                 //TODO: Add check for updates of spotDL
@@ -225,7 +225,7 @@ fun InitialEntry(
                 it.printStackTrace()
             }
         }
-    }
+    }*/
 
     if (showUpdateDialog) {
         UpdateDialogImpl(

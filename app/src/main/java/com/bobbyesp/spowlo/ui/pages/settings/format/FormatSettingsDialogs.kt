@@ -57,7 +57,7 @@ fun AudioFormatDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {}) 
                     text = stringResource(R.string.audio_format_desc),
                     style = MaterialTheme.typography.bodyLarge
                 )
-                for (i in 0..4)
+                for (i in 0..5)
                     SingleChoiceItem(
                         text = PreferencesUtil.getAudioFormatDesc(i),
                         selected = audioFormat == i
@@ -96,7 +96,7 @@ fun AudioQualityDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {})
                     text = stringResource(R.string.audio_quality_desc),
                     style = MaterialTheme.typography.bodyLarge
                 )
-                for (i in 0..15)
+                for (i in 0..17)
                     SingleChoiceItem(
                         text = PreferencesUtil.getAudioQualityDesc(i),
                         selected = audioQuality == i

@@ -163,4 +163,5 @@
     <string name="cookies_usage_msg">Downloading songs with high quality requires YT Music account authentication information. Click \"Generate new cookies\", enter the URL of the website and then log in with your account in the browser page, the app will generate it for you.</string>
     <string name="remove_cookie_profile_desc">Remove cookies for \"%1$s\"?</string>
     <string name="clear_all_cookies_desc">Delete all the cookies stored in the app?</string>
+    <string name="synced_lyrics">Synced Lyrics</string>
 </resources>

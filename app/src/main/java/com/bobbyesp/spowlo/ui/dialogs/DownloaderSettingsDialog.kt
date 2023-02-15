@@ -68,6 +68,7 @@ import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
+import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
@@ -120,6 +121,8 @@ fun DownloaderSettingsDialog(
             )
         )
     }
+
+    var useSyncedLyrics by remember { mutableStateOf(settings.getValue(SYNCED_LYRICS)) }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
@@ -289,6 +292,17 @@ fun DownloaderSettingsDialog(
                         useCookies = !useCookies
                         scope.launch {
                             settings.updateValue(COOKIES, useCookies)
+                        }
+                    }
+                )
+                AudioFilterChip(
+                    label = stringResource(id = R.string.synced_lyrics),
+                    animated = true,
+                    selected = useSyncedLyrics,
+                    onClick = {
+                        useSyncedLyrics = !useSyncedLyrics
+                        scope.launch {
+                            settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
                         }
                     }
                 )
