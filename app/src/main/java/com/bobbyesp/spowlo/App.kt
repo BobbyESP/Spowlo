@@ -18,6 +18,7 @@ import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
+import com.bobbyesp.spowlo.features.spotify_api.data.auth.AuthModel
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.DownloaderUtil
@@ -41,6 +42,7 @@ import java.io.File
 
 @HiltAndroidApp
 class App : Application() {
+    lateinit var model: AuthModel
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
@@ -53,6 +55,7 @@ class App : Application() {
         }
         applicationScope = CoroutineScope(SupervisorJob())
         DynamicColors.applyToActivitiesIfAvailable(this)
+        this.model = AuthModel
 
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!

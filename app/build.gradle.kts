@@ -112,10 +112,42 @@ android {
             )
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_CLIENT_ID",
+                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_AUTH",
+                "\"spowlo://spotify-auth\"")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
+            )
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_CLIENT_ID",
+                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_AUTH",
+                "\"spowlo://spotify-auth\"")
+
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
+            )
         }
     }
     compileOptions {
@@ -149,6 +181,7 @@ android {
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/*.kotlin_module"
         }
         jniLibs.useLegacyPackaging = true
     }
@@ -204,7 +237,7 @@ dependencies {
     implementation(libs.spotdl.android.library)
     implementation(libs.spotdl.android.ffmpeg)
 
-    //implementation(libs.spotify.api.android)
+    implementation(libs.spotify.api.android)
 
     // okhttp
     implementation(libs.okhttp)
@@ -220,6 +253,8 @@ dependencies {
     implementation(libs.exoplayer.dash)
     implementation(libs.exoplayer.smoothstreaming)
     implementation(libs.exoplayer.extension.mediasession)
+
+    implementation(libs.customtabs)
 
     debugImplementation(libs.crash.handler)
 

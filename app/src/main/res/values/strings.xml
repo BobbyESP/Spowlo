@@ -167,4 +167,5 @@
     <string name="downloader">Downloader</string>
     <string name="searcher">Searcher</string>
     <string name="mediaplayer">Media player</string>
+    <string name="spotify_setup_page_title">Spotify setup</string>
 </resources>

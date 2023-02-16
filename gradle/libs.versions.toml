@@ -19,7 +19,7 @@ androidxHiltNavigationCompose = "1.0.0"
 androidxTestExt = "1.1.4"
 
 spotdlAndroidVersion = "17796daeb0"
-spotifyApiKotlinVersion = "4.0.0"
+spotifyApiKotlinVersion = "3.8.8"
 
 crashHandlerVersion = "2.0.2"
 
@@ -40,6 +40,9 @@ exoplayer = "2.16.1"
 room = "2.5.0"
 
 mmkv = "1.2.14"
+
+#chrome custom tabs
+customTabs = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -123,6 +126,9 @@ exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-das
 exoplayer-smoothstreaming = { group = "com.google.android.exoplayer", name = "exoplayer-smoothstreaming", version.ref = "exoplayer" }
 exoplayer-cast = { group = "com.google.android.exoplayer", name = "exoplayer-cast", version.ref = "exoplayer" }
 exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", name = "extension-mediasession", version.ref = "exoplayer" }
+
+#chrome custom tabs
+customtabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

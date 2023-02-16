@@ -108,6 +108,9 @@ fun InitialEntry(
     val currentRootRoute = remember(navBackStackEntry) {
         navController.backQueue.getOrNull(1)?.destination?.route
     }
+    val shouldHideBottomNavBar = remember(navBackStackEntry) {
+        navBackStackEntry?.destination?.hierarchy?.any { it.route == Route.SPOTIFY_SETUP } == true
+    }
 
     val isLandscape = remember { MutableTransitionState(false) }
 
