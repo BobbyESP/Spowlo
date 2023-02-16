@@ -164,4 +164,7 @@
     <string name="remove_cookie_profile_desc">Remove cookies for \"%1$s\"?</string>
     <string name="clear_all_cookies_desc">Delete all the cookies stored in the app?</string>
     <string name="synced_lyrics">Synced Lyrics</string>
+    <string name="downloader">Downloader</string>
+    <string name="searcher">Searcher</string>
+    <string name="mediaplayer">Media player</string>
 </resources>

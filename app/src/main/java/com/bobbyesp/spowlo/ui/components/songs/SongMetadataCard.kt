@@ -40,26 +40,33 @@ fun SongMetadataCard(
     song: Song
 ) {
     val isrc = song.isrc ?: "Unknown"
+    val genres = song.genres ?: listOf("Unknown")
+    val disc_number = song.disc_number ?: 0
+    val disc_count = song.disc_count ?: 0
+    val track_number = song.track_number ?: 0
+    val publisher = song.publisher ?: "Unknown"
+    val copyrightText = song.copyright_text ?: "Unknown"
+
     val metadataMap = mapOf(
         stringResource(id = R.string.song_name) to song.name,
         stringResource(id = R.string.main_artist) to song.artist,
         stringResource(id = R.string.song_artists) to song.artists.toString(),
         stringResource(id = R.string.song_album) to song.album_name,
         stringResource(id = R.string.song_album_artist) to song.album_artist,
-        stringResource(id = R.string.song_genres) to song.genres.toString(),
-        stringResource(id = R.string.song_disc_number) to song.disc_number.toString(),
-        stringResource(id = R.string.song_disc_count) to song.disc_count.toString(),
+        stringResource(id = R.string.song_genres) to genres.toString(),
+        stringResource(id = R.string.song_disc_number) to disc_number.toString(),
+        stringResource(id = R.string.song_disc_count) to disc_count.toString(),
         stringResource(id = R.string.song_duration) to song.duration.toString(),
         stringResource(id = R.string.song_year) to song.year.toString(),
         stringResource(id = R.string.song_date) to song.date,
-        stringResource(id = R.string.song_track_number) to song.track_number.toString(),
+        stringResource(id = R.string.song_track_number) to track_number.toString(),
         stringResource(id = R.string.song_spotify_id) to song.song_id,
         stringResource(id = R.string.song_is_explicit) to song.explicit.toString(),
-        stringResource(id = R.string.song_publisher) to song.publisher,
+        stringResource(id = R.string.song_publisher) to publisher,
         stringResource(id = R.string.song_isrc) to isrc,
         stringResource(id = R.string.song_url) to song.url,
         stringResource(id = R.string.song_cover_url) to song.cover_url,
-        stringResource(id = R.string.song_copyright_text) to song.copyright_text
+        stringResource(id = R.string.song_copyright_text) to copyrightText,
     )
 
     val metadataList = metadataMap.toList()
@@ -185,7 +192,7 @@ fun PlaylistHeaderItem(
 @Composable
 fun MetadataTag(
     typeOfMetadata: String,
-    metadata: String
+    metadata: String = "Unknown",
 ) {
     val clipboardManager = LocalClipboardManager.current
 

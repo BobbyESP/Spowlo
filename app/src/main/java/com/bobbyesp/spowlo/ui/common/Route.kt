@@ -11,6 +11,8 @@ object Route {
     const val TASK_LOG = "task_log"
     const val PLAYLIST_METADATA_PAGE = "playlist_metadata_page"
     const val MODS_DOWNLOADER = "mods_downloader"
+    const val SEARCHER = "searcher"
+    const val MEDIA_PLAYER = "media_player"
 
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"

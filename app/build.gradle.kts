@@ -185,6 +185,7 @@ dependencies {
     implementation(libs.accompanist.pager.layouts)
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.accompanist.flowlayout)
+    implementation(libs.accompanist.material)
 
     implementation(libs.coil.kt.compose)
 
@@ -209,6 +210,16 @@ dependencies {
     implementation(libs.okhttp)
     //MMKV
     implementation(libs.mmkv)
+
+    implementation(libs.soup.anims.core)
+    implementation(libs.soup.anims.navigation)
+
+    //Exoplayer
+    implementation(libs.exoplayer.core)
+    implementation(libs.exoplayer.ui)
+    implementation(libs.exoplayer.dash)
+    implementation(libs.exoplayer.smoothstreaming)
+    implementation(libs.exoplayer.extension.mediasession)
 
     debugImplementation(libs.crash.handler)
 

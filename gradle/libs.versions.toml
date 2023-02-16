@@ -7,6 +7,7 @@ androidxCore = "1.9.0"
 androidMaterial = "1.8.0-beta01"
 androidxAppCompat = "1.7.0-alpha01"
 androidxActivity = "1.6.1"
+navTransitions = "0.11.0-alpha"
 
 androidxLifecycle = "2.6.0-alpha03"
 androidxNavigation = "2.5.3"
@@ -17,7 +18,7 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.4"
 
-spotdlAndroidVersion = "48245d4dc7"
+spotdlAndroidVersion = "17796daeb0"
 spotifyApiKotlinVersion = "4.0.0"
 
 crashHandlerVersion = "2.0.2"
@@ -33,6 +34,8 @@ kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.4.1"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
+
+exoplayer = "2.16.1"
 
 room = "2.5.0"
 
@@ -54,6 +57,9 @@ accompanist-webview = { group = "com.google.accompanist", name = "accompanist-we
 accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+#Accompanist material component
+accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
+
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
@@ -72,7 +78,6 @@ androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-
 
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 
@@ -106,6 +111,18 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
+
+soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
+soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }
+
+#ExoPlayer
+exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version.ref = "exoplayer" }
+exoplayer-ui = { group = "com.google.android.exoplayer", name = "exoplayer-ui", version.ref = "exoplayer" }
+exoplayer-hls = { group = "com.google.android.exoplayer", name = "exoplayer-hls", version.ref = "exoplayer" }
+exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-dash", version.ref = "exoplayer" }
+exoplayer-smoothstreaming = { group = "com.google.android.exoplayer", name = "exoplayer-smoothstreaming", version.ref = "exoplayer" }
+exoplayer-cast = { group = "com.google.android.exoplayer", name = "exoplayer-cast", version.ref = "exoplayer" }
+exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", name = "extension-mediasession", version.ref = "exoplayer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
