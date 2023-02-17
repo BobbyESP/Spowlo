@@ -42,8 +42,8 @@ sealed class Version(
 }
 
 val currentVersion: Version = Version.Stable(
-    versionMajor = 1,
-    versionMinor = 0,
+    versionMajor = 0,
+    versionMinor = 1,
     versionPatch = 0,
 )
 
@@ -112,42 +112,10 @@ android {
             )
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_CLIENT_ID",
-                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_AUTH",
-                "\"spowlo://spotify-auth\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_PKCE",
-                "\"spowlo://spotify-pkce\""
-            )
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_CLIENT_ID",
-                "\"abcad8ba647d4b0ebae797a8f444ac9b\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_AUTH",
-                "\"spowlo://spotify-auth\"")
-
-            buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_PKCE",
-                "\"spowlo://spotify-pkce\""
-            )
         }
     }
     compileOptions {
@@ -244,6 +212,7 @@ dependencies {
     //MMKV
     implementation(libs.mmkv)
 
+    implementation(libs.markdown)
     //Exoplayer
     implementation(libs.exoplayer.core)
     implementation(libs.exoplayer.ui)

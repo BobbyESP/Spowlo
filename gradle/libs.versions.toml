@@ -7,6 +7,7 @@ androidxCore = "1.9.0"
 androidMaterial = "1.8.0-beta01"
 androidxAppCompat = "1.7.0-alpha01"
 androidxActivity = "1.6.1"
+markdownDependency = "0.3.2"
 navTransitions = "0.11.0-alpha"
 
 androidxLifecycle = "2.6.0-alpha03"
@@ -62,6 +63,9 @@ accompanist-pager-indicators = { group = "com.google.accompanist", name = "accom
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 #Accompanist material component
 accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
+
+#Markdown parser
+markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdownDependency" }
 
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
