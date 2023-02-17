@@ -244,9 +244,6 @@ dependencies {
     //MMKV
     implementation(libs.mmkv)
 
-    implementation(libs.soup.anims.core)
-    implementation(libs.soup.anims.navigation)
-
     //Exoplayer
     implementation(libs.exoplayer.core)
     implementation(libs.exoplayer.ui)

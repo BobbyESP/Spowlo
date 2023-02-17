@@ -11,14 +11,10 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
 import android.os.Looper
-import android.util.Log
-import android.widget.Toast
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.database.CommandTemplate
-import com.bobbyesp.spowlo.features.mod_downloader.data.remote.xManagerAPI
-import com.bobbyesp.spowlo.features.spotify_api.data.auth.AuthModel
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.DownloaderUtil
@@ -37,12 +33,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 
 @HiltAndroidApp
 class App : Application() {
-    lateinit var model: AuthModel
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
@@ -55,7 +49,6 @@ class App : Application() {
         }
         applicationScope = CoroutineScope(SupervisorJob())
         DynamicColors.applyToActivitiesIfAvailable(this)
-        this.model = AuthModel
 
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!

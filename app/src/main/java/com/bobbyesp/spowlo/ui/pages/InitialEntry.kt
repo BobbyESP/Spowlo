@@ -85,9 +85,6 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import soup.compose.material.motion.animation.materialSharedAxisXIn
-import soup.compose.material.motion.animation.materialSharedAxisXOut
-import soup.compose.material.motion.animation.rememberSlideDistance
 
 private const val TAG = "InitialEntry"
 
@@ -175,7 +172,7 @@ fun InitialEntry(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Scaffold(
+        /*Scaffold(
             bottomBar = {
                     NavigationBar(
                         modifier = Modifier
@@ -215,161 +212,161 @@ fun InitialEntry(
                                 })
                         }
                     }
-                }, modifier = Modifier.fillMaxSize().align(Alignment.Center)) { paddingValues ->
-                AnimatedNavHost(
-                    modifier = Modifier
-                        .fillMaxWidth(
-                            when (LocalWindowWidthState.current) {
-                                WindowWidthSizeClass.Compact -> 1f
-                                WindowWidthSizeClass.Expanded -> 0.5f
-                                else -> 0.8f
-                            }
-                        )
-                        .align(Alignment.Center)
-                        .padding(bottom = paddingValues.calculateBottomPadding()),
-                    navController = navController,
-                    startDestination = Route.HOME
-                ) {
-                    //TODO: Add all routes
-                    animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
-                        DownloaderPage(
-                            navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
-                            navigateToSettings = { navController.navigate(Route.SETTINGS) },
-                            navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
-                            onSongCardClicked = {
-                                navController.navigate(Route.PLAYLIST_METADATA_PAGE)
-                            },
-                            onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
-                            navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
-                            downloaderViewModel = downloaderViewModel
-                        )
+                }, modifier = Modifier.fillMaxSize().align(Alignment.Center)) { paddingValues ->*/
+        AnimatedNavHost(
+            modifier = Modifier
+                .fillMaxWidth(
+                    when (LocalWindowWidthState.current) {
+                        WindowWidthSizeClass.Compact -> 1f
+                        WindowWidthSizeClass.Expanded -> 0.5f
+                        else -> 0.8f
                     }
-                    animatedComposable(Route.SETTINGS) {
-                        SettingsPage(
-                            navController = navController
-                        )
-                    }
-                    animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
-                        GeneralSettingsPage(
-                            onBackPressed = onBackPressed
-                        )
-                    }
-                    animatedComposable(Route.DOWNLOADS_HISTORY) {
-                        DownloadsHistoryPage(
-                            onBackPressed = onBackPressed
-                        )
-                    }
-                    animatedComposable(Route.DOWNLOAD_DIRECTORY) {
-                        DownloadsDirectoriesPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.APPEARANCE) {
-                        AppearancePage(navController = navController)
-                    }
-                    animatedComposable(Route.APP_THEME) {
-                        AppThemePreferencesPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.DOWNLOAD_FORMAT) {
-                        SettingsFormatsPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.SPOTIFY_PREFERENCES) {
-                        SpotifySettingsPage {
-                            onBackPressed()
-                        }
-                    }
-                    slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
-                        PlaylistMetadataPage(
-                            onBackPressed,
-                            //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
-                        )
-                    }
-                    animatedComposable(Route.MODS_DOWNLOADER) {
-                        ModsDownloaderPage(
-                            onBackPressed,
-                            modsDownloaderViewModel
-                        )
-                    }
-                    animatedComposable(Route.COOKIE_PROFILE) {
-                        CookieProfilePage(
-                            cookiesViewModel = cookiesViewModel,
-                            navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
-                        ) { onBackPressed() }
-                    }
-                    animatedComposable(
-                        Route.COOKIE_GENERATOR_WEBVIEW
-                    ) {
-                        WebViewPage(cookiesViewModel) { onBackPressed() }
-                    }
-                }
-            }
-            }
-
-            /* LaunchedEffect(Unit) {
-                 launch(Dispatchers.IO) {
-                     runCatching {
-                         //TODO: Add check for updates of spotDL
-                         UpdateUtil.checkForUpdate()?.let {
-                             latestRelease = it
-                             showUpdateDialog = true
-                         }
-                     }.onFailure {
-                         it.printStackTrace()
-                     }
-                 }
-             }*/
-
-            if (showUpdateDialog) {
-                UpdateDialogImpl(
-                    onDismissRequest = {
-                        showUpdateDialog = false
-                        updateJob?.cancel()
+                )
+                .align(Alignment.Center)
+                .padding(/*bottom = paddingValues.calculateBottomPadding()*/),
+            navController = navController,
+            startDestination = Route.HOME
+        ) {
+            //TODO: Add all routes
+            animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
+                DownloaderPage(
+                    navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
+                    navigateToSettings = { navController.navigate(Route.SETTINGS) },
+                    navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
+                    onSongCardClicked = {
+                        navController.navigate(Route.PLAYLIST_METADATA_PAGE)
                     },
-                    title = latestRelease.name.toString(),
-                    onConfirmUpdate = {
-                        updateJob = scope.launch(Dispatchers.IO) {
-                            runCatching {
-                                UpdateUtil.downloadApk(latestRelease = latestRelease)
-                                    .collect { downloadStatus ->
-                                        currentDownloadStatus = downloadStatus
-                                        if (downloadStatus is UpdateUtil.DownloadStatus.Finished) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                launcher.launch(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-                                            }
-                                        }
-                                    }
-                            }.onFailure {
-                                it.printStackTrace()
-                                currentDownloadStatus = UpdateUtil.DownloadStatus.NotYet
-                                ToastUtil.makeToastSuspend(context.getString(R.string.app_update_failed))
-                                return@launch
-                            }
-                        }
-                    },
-                    releaseNote = latestRelease.body.toString(),
-                    downloadStatus = currentDownloadStatus
+                    onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
+                    navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
+                    downloaderViewModel = downloaderViewModel
                 )
             }
+            animatedComposable(Route.SETTINGS) {
+                SettingsPage(
+                    navController = navController
+                )
+            }
+            animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
+                GeneralSettingsPage(
+                    onBackPressed = onBackPressed
+                )
+            }
+            animatedComposable(Route.DOWNLOADS_HISTORY) {
+                DownloadsHistoryPage(
+                    onBackPressed = onBackPressed
+                )
+            }
+            animatedComposable(Route.DOWNLOAD_DIRECTORY) {
+                DownloadsDirectoriesPage {
+                    onBackPressed()
+                }
+            }
+            animatedComposable(Route.APPEARANCE) {
+                AppearancePage(navController = navController)
+            }
+            animatedComposable(Route.APP_THEME) {
+                AppThemePreferencesPage {
+                    onBackPressed()
+                }
+            }
+            animatedComposable(Route.DOWNLOAD_FORMAT) {
+                SettingsFormatsPage {
+                    onBackPressed()
+                }
+            }
+            animatedComposable(Route.SPOTIFY_PREFERENCES) {
+                SpotifySettingsPage {
+                    onBackPressed()
+                }
+            }
+            slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
+                PlaylistMetadataPage(
+                    onBackPressed,
+                    //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
+                )
+            }
+            animatedComposable(Route.MODS_DOWNLOADER) {
+                ModsDownloaderPage(
+                    onBackPressed,
+                    modsDownloaderViewModel
+                )
+            }
+            animatedComposable(Route.COOKIE_PROFILE) {
+                CookieProfilePage(
+                    cookiesViewModel = cookiesViewModel,
+                    navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
+                ) { onBackPressed() }
+            }
+            animatedComposable(
+                Route.COOKIE_GENERATOR_WEBVIEW
+            ) {
+                WebViewPage(cookiesViewModel) { onBackPressed() }
+            }
+        }
+    }
+//}
 
+    /* LaunchedEffect(Unit) {
+         launch(Dispatchers.IO) {
+             runCatching {
+                 //TODO: Add check for updates of spotDL
+                 UpdateUtil.checkForUpdate()?.let {
+                     latestRelease = it
+                     showUpdateDialog = true
+                 }
+             }.onFailure {
+                 it.printStackTrace()
+             }
+         }
+     }*/
+
+    if (showUpdateDialog) {
+        UpdateDialogImpl(
+            onDismissRequest = {
+                showUpdateDialog = false
+                updateJob?.cancel()
+            },
+            title = latestRelease.name.toString(),
+            onConfirmUpdate = {
+                updateJob = scope.launch(Dispatchers.IO) {
+                    runCatching {
+                        UpdateUtil.downloadApk(latestRelease = latestRelease)
+                            .collect { downloadStatus ->
+                                currentDownloadStatus = downloadStatus
+                                if (downloadStatus is UpdateUtil.DownloadStatus.Finished) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        launcher.launch(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                                    }
+                                }
+                            }
+                    }.onFailure {
+                        it.printStackTrace()
+                        currentDownloadStatus = UpdateUtil.DownloadStatus.NotYet
+                        ToastUtil.makeToastSuspend(context.getString(R.string.app_update_failed))
+                        return@launch
+                    }
+                }
+            },
+            releaseNote = latestRelease.body.toString(),
+            downloadStatus = currentDownloadStatus
+        )
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
-    private fun buildAnimationForward(scope: AnimatedContentScope<NavBackStackEntry>): Boolean {
-        val isRoute = getStartingRoute(scope.initialState.destination)
-        val tsRoute = getStartingRoute(scope.targetState.destination)
+}
 
-        val isIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == isRoute }
-        val tsIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == tsRoute }
+@OptIn(ExperimentalAnimationApi::class)
+private fun buildAnimationForward(scope: AnimatedContentScope<NavBackStackEntry>): Boolean {
+    val isRoute = getStartingRoute(scope.initialState.destination)
+    val tsRoute = getStartingRoute(scope.targetState.destination)
 
-        return tsIndex == -1 || isRoute == tsRoute || tsIndex > isIndex
-    }
+    val isIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == isRoute }
+    val tsIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == tsRoute }
 
-    private fun getStartingRoute(destination: NavDestination): String {
-        return destination.hierarchy.toList().let { it[it.lastIndex - 1] }.route.orEmpty()
-    }
+    return tsIndex == -1 || isRoute == tsRoute || tsIndex > isIndex
+}
+
+private fun getStartingRoute(destination: NavDestination): String {
+    return destination.hierarchy.toList().let { it[it.lastIndex - 1] }.route.orEmpty()
+}
 
 //TODO: Separate the SettingsPage into a different NavGraph (like Seal)
