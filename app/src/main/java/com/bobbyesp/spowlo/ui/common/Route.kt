@@ -14,6 +14,7 @@ object Route {
     const val SEARCHER = "searcher"
     const val MEDIA_PLAYER = "media_player"
     const val SPOTIFY_SETUP = "spotify_setup"
+    const val UPDATER_PAGE = "updater_page"
 
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"

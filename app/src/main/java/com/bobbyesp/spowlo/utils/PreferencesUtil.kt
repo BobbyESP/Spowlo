@@ -99,6 +99,7 @@ private val IntPreferenceDefaults = mapOf(
     WELCOME_DIALOG to 1,
     AUDIO_FORMAT to 5,
     AUDIO_QUALITY to 17,
+    UPDATE_CHANNEL to STABLE,
 )
 
 val palettesMap = mapOf(

@@ -168,4 +168,14 @@
     <string name="searcher">Searcher</string>
     <string name="mediaplayer">Media player</string>
     <string name="spotify_setup_page_title">Spotify setup</string>
+    <string name="auto_update">Auto update</string>
+    <string name="enable_auto_update">Enable auto updating</string>
+    <string name="update_channel">Updates channel</string>
+    <string name="stable_channel">Stable</string>
+    <string name="pre_release_channel">Beta channel</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="app_up_to_date">The app is already up to date</string>
+    <string name="update_channel_desc">Install pre-release builds to preview new features and changes.\n\nThere will be some instability in these versions, so please don\'t hesitate to give us feedback if you experience any problems to help us improve the app for the future.</string>
+    <string name="updates_channels">Updates channels</string>
+    <string name="updates_channels_desc">Auto app updating, updating channel…</string>
 </resources>

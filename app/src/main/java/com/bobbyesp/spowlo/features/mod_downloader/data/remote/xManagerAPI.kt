@@ -1,7 +1,6 @@
 package com.bobbyesp.spowlo.features.mod_downloader.data.remote
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.CheckResult
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.features.mod_downloader.domain.model.PackagesObjectDto

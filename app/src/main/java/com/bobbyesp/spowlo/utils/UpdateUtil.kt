@@ -44,6 +44,7 @@ object UpdateUtil {
     private const val TAG = "UpdateUtil"
 
     private val client = OkHttpClient()
+
     private val requestForLatestRelease =
         Request.Builder().url("https://api.github.com/repos/${OWNER}/${REPO}/releases/latest")
             .build()
@@ -54,11 +55,11 @@ object UpdateUtil {
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
 
+
     private suspend fun getLatestRelease(): LatestRelease {
         return suspendCoroutine { continuation ->
             client.newCall(requestForReleases).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-                    Log.d(TAG, "Requested API info from GitHub")
                     val responseData = response.body.string()
 //                    val latestRelease = jsonFormat.decodeFromString<LatestRelease>(responseData)
                     val releaseList =
@@ -75,7 +76,6 @@ object UpdateUtil {
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-
                     continuation.resumeWithException(e)
                 }
             })
@@ -126,7 +126,6 @@ object UpdateUtil {
         context: Context = App.context,
         latestRelease: LatestRelease
     ): Flow<DownloadStatus> = withContext(Dispatchers.IO) {
-
         val apkVersion = context.packageManager.getPackageArchiveInfo(
             context.getLatestApk().absolutePath, 0
         )?.versionName.toVersion()
@@ -143,9 +142,7 @@ object UpdateUtil {
         val targetUrl = latestRelease.assets?.find {
             return@find it.name?.contains(preferredArch) ?: false
         }?.browserDownloadUrl ?: return@withContext emptyFlow()
-
         val request = Request.Builder().url(targetUrl).build()
-
         try {
             val response = client.newCall(request).execute()
             val responseBody = response.body
@@ -153,7 +150,6 @@ object UpdateUtil {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         emptyFlow()
     }
 
