@@ -195,4 +195,6 @@
     <string name="remove_song_info">You are going to delete \"%1$s\" of \"%2$s\".</string>
     <string name="delete_file">Delete file from system</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="spotify_link">Spotify link</string>
+    <string name="link_copied">Link copied!</string>
 </resources>

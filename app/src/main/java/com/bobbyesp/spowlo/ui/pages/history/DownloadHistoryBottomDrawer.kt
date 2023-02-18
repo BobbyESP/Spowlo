@@ -22,6 +22,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,8 +45,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,12 +57,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
+import com.bobbyesp.spowlo.ui.components.DrawerSheetSubtitle
 import com.bobbyesp.spowlo.ui.components.FilledTonalButtonWithIcon
+import com.bobbyesp.spowlo.ui.components.LongTapTextButton
 import com.bobbyesp.spowlo.ui.components.MarqueeText
 import com.bobbyesp.spowlo.ui.components.MultiChoiceItem
 import com.bobbyesp.spowlo.ui.components.OpenInSpotifyFilledButton
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.utils.FilesUtil
+import com.bobbyesp.spowlo.utils.ToastUtil
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
@@ -184,6 +190,23 @@ fun DownloadHistoryBottomDrawerImpl(
                         }
                     }
                 }
+                LongTapTextButton(
+                    modifier = Modifier.padding(top = 14.dp),
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(songUrl))
+                        ToastUtil.makeToast(context.getString(R.string.link_copied))
+                    },
+                    onClickLabel = stringResource(id = R.string.copy_link),
+                    onLongClick = { },
+                    onLongClickLabel = stringResource(R.string.open_in_spotify)
+                ) {
+                    Icon(Icons.Outlined.Link, stringResource(R.string.song_url))
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        text = songUrl, maxLines = 1, overflow = TextOverflow.Ellipsis
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -227,7 +250,9 @@ fun DownloadHistoryBottomDrawerImpl(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
                     )
-                    Column(modifier = Modifier.fillMaxWidth().padding(start = 6.dp)) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 6.dp)) {
                         Text(text = stringResource(R.string.remove_song), fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(text = stringResource(R.string.are_you_sure), modifier = Modifier.alpha(alpha = 0.75f), fontSize = 12.sp)
