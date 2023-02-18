@@ -32,6 +32,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
@@ -381,7 +382,7 @@ fun DownloaderPageImplementation(
                     ) {
                         ConsoleOutputComponent(
                             consoleOutput = progressText,
-                            modifier = Modifier.padding(top = 12.dp)
+                            modifier = Modifier.padding(top = 10.dp)
                         )
                     }
 
@@ -431,8 +432,9 @@ fun FABs(
         )
 
         /*AnimatedVisibility(visible = isDownloading) {
-            FloatingActionButton(
-                onClick = cancelCallback, content = {
+            ExtendedFloatingActionButton(
+                text = { Text(stringResource(R.string.cancel)) },
+                onClick = cancelCallback, icon = {
                     Icon(
                         Icons.Outlined.Cancel,
                         contentDescription = stringResource(R.string.cancel_download)
