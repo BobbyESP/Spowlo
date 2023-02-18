@@ -70,13 +70,19 @@ import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BackButton
+import com.bobbyesp.spowlo.ui.components.ConfirmButton
+import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
+import com.bobbyesp.spowlo.ui.components.MultiChoiceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
+import com.bobbyesp.spowlo.ui.components.SpowloDialog
 import com.bobbyesp.spowlo.ui.components.history.HistoryMediaItem
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.getFileSize
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
+import com.bobbyesp.spowlo.utils.toFileSizeText
+import kotlinx.coroutines.launch
 
 const val AUDIO_REGEX = "(mp3|aac|opus|m4a)$"
 const val THUMBNAIL_REGEX = "\\.(jpg|png)$"
@@ -206,30 +212,19 @@ fun DownloadsHistoryPage(
                         onBackPressed()
                     }
                 }, actions = {
-                             //TODO: Add multiselect mode
-                    /*Row() {
+                    Row(){
                         IconToggleButton(
                             modifier = Modifier,
                             onCheckedChange = { isSelectEnabled = !isSelectEnabled },
-                            checked = isSelectEnabled
+                            checked = isSelectEnabled,
+                            enabled = songsList.isNotEmpty()
                         ) {
                             Icon(
                                 Icons.Outlined.Checklist,
                                 contentDescription = stringResource(R.string.multiselect_mode)
                             )
                         }
-                        IconButton(
-                            modifier = Modifier,
-                            onClick = {
-
-                            }
-                        ) {
-                            Icon(
-                                Icons.Outlined.LayersClear,
-                                contentDescription = stringResource(R.string.clear_database)
-                            )
-                        }
-                    }*/
+                    }
                 }, scrollBehavior = scrollBehavior
             )
         }, bottomBar = {
@@ -355,6 +350,43 @@ fun DownloadsHistoryPage(
         }
     }
     DownloadHistoryBottomDrawer()
+    if (showRemoveMultipleItemsDialog) {
+        var deleteFile by remember { mutableStateOf(false) }
+        SpowloDialog(
+            onDismissRequest = { showRemoveMultipleItemsDialog = false },
+            icon = { Icon(Icons.Outlined.DeleteSweep, null) },
+            title = { Text(stringResource(R.string.delete_info)) }, text = {
+                Column {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                        ,
+                        text = stringResource(R.string.delete_multiple_items_msg).format(
+                            selectedFiles.value
+                        )
+                    )
+                    MultiChoiceItem(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = stringResource(R.string.delete_file) + " (${selectedFileSizeSum.toFileSizeText()})",
+                        checked = deleteFile
+                    ) { deleteFile = !deleteFile }
+                }
+            }, confirmButton = {
+                ConfirmButton {
+                    scope.launch {
+                        DatabaseUtil.deleteInfoListByIdList(selectedItemIds, deleteFile)
+                    }
+                    showRemoveMultipleItemsDialog = false
+                    isSelectEnabled = false
+                }
+            }, dismissButton = {
+                DismissButton {
+                    showRemoveMultipleItemsDialog = false
+                }
+            }
+        )
+    }
 }
 
 @Composable
