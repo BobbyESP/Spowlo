@@ -430,7 +430,7 @@ fun FABs(
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
 
-        AnimatedVisibility(visible = isDownloading) {
+        /*AnimatedVisibility(visible = isDownloading) {
             FloatingActionButton(
                 onClick = cancelCallback, content = {
                     Icon(
@@ -439,7 +439,7 @@ fun FABs(
                     )
                 }, modifier = Modifier.padding(vertical = 12.dp)
             )
-        }
+        }*/
     }
 
 }
