@@ -183,4 +183,10 @@
     <string name="open_in_spotify">Open in Spotify</string>
     <string name="share_file">Share file</string>
     <string name="downloads_history_empty_state">The downloads history is empty</string>
+    <string name="cancel_download">Cancel download</string>
+    <string name="documentation">Documentation</string>
+    <string name="index">Index</string>
+    <string name="markdown_viewer">Markdown viewer</string>
+    <string name="documentation_desc">Read the spotDL official documentation</string>
+    <string name="commands">Commands</string>
 </resources>

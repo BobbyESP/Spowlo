@@ -18,6 +18,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.ToggleOn
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material.icons.outlined.Update
@@ -55,6 +56,7 @@ import com.bobbyesp.spowlo.ui.theme.PreviewThemeLight
 import com.bobbyesp.spowlo.ui.theme.applyOpacity
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
 import com.bobbyesp.spowlo.ui.theme.preferenceTitle
+
 private const val horizontal = 8
 private const val vertical = 16
 
@@ -635,6 +637,38 @@ fun PreferenceSwitchWithContainer(
             modifier = Modifier.padding(start = 12.dp, end = 6.dp),
             thumbContent = thumbContent
         )
+    }
+}
+
+@Composable
+fun InlineEnterItem(
+    title: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        with(MaterialTheme) {
+            Text(
+                text = title,
+                maxLines = 1,
+                style = preferenceTitle,
+                color = colorScheme.onSurface,
+                modifier = Modifier.weight(1f).padding(horizontal = 16.dp, vertical = 6.dp)
+            )
+        }
+        Icon(
+            imageVector = Icons.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(start = 8.dp, end = 16.dp)
+                .size(24.dp),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+
     }
 }
 

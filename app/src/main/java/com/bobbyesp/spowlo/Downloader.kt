@@ -5,11 +5,10 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.dto.Song
-import com.bobbyesp.spowlo.App.Companion.SpotDl
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.Downloader.toTask
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
@@ -91,7 +90,7 @@ object Downloader {
 
         fun onCancel() {
             toKey().run {
-                SpotDl.destroyProcessById(this)
+                SpotDL.getInstance().destroyProcessById(this)
                 onProcessCanceled(this)
             }
         }
@@ -211,6 +210,8 @@ object Downloader {
                 title = videoInfo.title
             )*/
         }.onFailure {
+            if (it is SpotDL.CanceledException) return@onFailure
+            Log.d("Downloader", "The download has been canceled (app thread)")
             manageDownloadError(
                 it,
                 false,
@@ -391,7 +392,7 @@ object Downloader {
         isTaskAborted: Boolean = true,
         notificationId: Int? = null,
     ) {
-        //if (th is SpotDL.CanceledException) return
+        if (th is SpotDL.CanceledException) return
         th.printStackTrace()
         val resId =
             if (isFetchingInfo) R.string.fetch_info_error_msg else R.string.download_error_msg
@@ -402,12 +403,12 @@ object Downloader {
                 errorReport = th.message.toString()
             )
         }
-        /*notificationId?.let {
+        notificationId?.let {/*
             NotificationUtil.finishNotification(
                 notificationId = notificationId,
                 text = context.getString(R.string.download_error_msg),
-            )
-        }*/
+            )*/
+        }
         if (isTaskAborted) {
             updateState(State.Idle)
             clearProgressState(isFinished = false)
@@ -421,16 +422,9 @@ object Downloader {
         updateState(State.Idle)
         clearProgressState(isFinished = false)
         taskState.value.taskId.run {
-            SpotDl.destroyProcessById(this)
+            SpotDL.getInstance().destroyProcessById(this)
             //NotificationUtil.cancelNotification(this.toNotificationId())
         }
     }
-
-    fun executeCommandWithUrl(url: String) =
-        applicationScope.launch(Dispatchers.IO) {
-            DownloaderUtil.executeCommandInBackground(
-                url
-            )
-        }
 
 }

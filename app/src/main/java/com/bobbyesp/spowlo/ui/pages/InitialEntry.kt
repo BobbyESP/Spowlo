@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContentScope
@@ -37,7 +38,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
@@ -58,6 +62,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookieProfilePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
+import com.bobbyesp.spowlo.ui.pages.settings.documentation.DocumentationPage
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
@@ -198,6 +203,7 @@ fun InitialEntry(
                         }
                     }
                 }, modifier = Modifier.fillMaxSize().align(Alignment.Center)) { paddingValues ->*/
+
         AnimatedNavHost(
             modifier = Modifier
                 .fillMaxWidth(
@@ -292,23 +298,46 @@ fun InitialEntry(
                     onBackPressed
                 )
             }
+            animatedComposable(Route.DOCUMENTATION) {
+                DocumentationPage(
+                    onBackPressed,
+                    navController
+                )
+            }
+
+            navDeepLink {
+                // Want to go to "markdown_viewer/{markdownFileName}"
+                uriPattern = "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
+            }
+
+            animatedComposable(
+                "markdown_viewer/{markdownFileName}",
+                arguments = listOf(navArgument("markdownFileName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                Log.d("MainActivity", backStackEntry.arguments?.getString("markdownFileName") ?: "")
+                MarkdownViewerPage(
+                    markdownFileName = backStackEntry.arguments?.getString("markdownFileName")
+                        ?: "",
+                    onBackPressed = onBackPressed
+                )
+            }
         }
     }
 //}
 
     LaunchedEffect(Unit) {
-         launch(Dispatchers.IO) {
-             runCatching {
-                 //TODO: Add check for updates of spotDL
-                 UpdateUtil.checkForUpdate()?.let {
-                     latestRelease = it
-                     showUpdateDialog = true
-                 }
-             }.onFailure {
-                 it.printStackTrace()
-             }
-         }
-     }
+        launch(Dispatchers.IO) {
+            runCatching {
+                //TODO: Add check for updates of spotDL
+                UpdateUtil.checkForUpdate()?.let {
+                    latestRelease = it
+                    showUpdateDialog = true
+                }
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
+    }
 
     if (showUpdateDialog) {
         UpdateDialogImpl(

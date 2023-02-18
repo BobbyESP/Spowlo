@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Aod
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.SignalCellular4Bar
@@ -220,6 +221,14 @@ fun SettingsPage(navController: NavController) {
                 }
             }
 
+            item {
+                SettingItem(title = stringResource(id = R.string.documentation), description = stringResource(
+                    id = R.string.documentation_desc
+                ), icon = Icons.Filled.Help ) {
+                    navController.navigate(Route.DOCUMENTATION) { launchSingleTop = true }
+                }
+            }
+
             item{
                 SettingItem(
                     title = stringResource(id = R.string.updates_channels), description = stringResource(
@@ -230,7 +239,7 @@ fun SettingsPage(navController: NavController) {
                 }
             }
 
-            /*item {
+            item {
                 SettingItem(
                     title = stringResource(id = R.string.about), description = stringResource(
                         id = R.string.about_page
@@ -238,7 +247,7 @@ fun SettingsPage(navController: NavController) {
                 ) {
                     navController.navigate(Route.ABOUT) { launchSingleTop = true }
                 }
-            }*/
+            }
         }
     }
 }

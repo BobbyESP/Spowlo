@@ -33,6 +33,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
@@ -292,7 +293,9 @@ fun DownloaderPageImplementation(
         FABs(
             modifier = with(receiver = Modifier) { if (showDownloadProgress) this else this.imePadding() },
             downloadCallback = downloadCallback,
-            pasteCallback = pasteCallback
+            pasteCallback = pasteCallback,
+            cancelCallback = cancelCallback,
+            isDownloading = downloaderState is Downloader.State.DownloadingSong,
         )
     }) {
         Column(
@@ -358,7 +361,8 @@ fun DownloaderPageImplementation(
                                 text = stringResource(id = R.string.click_card_metadata),
                                 modifier = Modifier
                                     .align(Alignment.End)
-                                    .alpha(ContentAlpha.medium).padding(bottom = 0.dp),
+                                    .alpha(ContentAlpha.medium)
+                                    .padding(bottom = 0.dp),
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
@@ -402,6 +406,8 @@ fun FABs(
     modifier: Modifier = Modifier,
     downloadCallback: () -> Unit = {},
     pasteCallback: () -> Unit = {},
+    cancelCallback: () -> Unit = {},
+    isDownloading : Boolean = false
 ) {
     Column(
         modifier = modifier.padding(6.dp), horizontalAlignment = Alignment.End
@@ -423,6 +429,17 @@ fun FABs(
                 )
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
+
+        AnimatedVisibility(visible = isDownloading) {
+            FloatingActionButton(
+                onClick = cancelCallback, content = {
+                    Icon(
+                        Icons.Outlined.Cancel,
+                        contentDescription = stringResource(R.string.cancel_download)
+                    )
+                }, modifier = Modifier.padding(vertical = 12.dp)
+            )
+        }
     }
 
 }

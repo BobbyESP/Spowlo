@@ -89,6 +89,7 @@ private val BooleanPreferenceDefaults =
         USE_SPOTIFY_CREDENTIALS to false,
         USE_YT_METADATA to false,
         SYNCED_LYRICS to false,
+        AUTO_UPDATE to true
     )
 
 private val IntPreferenceDefaults = mapOf(

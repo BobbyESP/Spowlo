@@ -17,6 +17,7 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.pages.history.THUMBNAIL_REGEX
 import okhttp3.internal.closeQuietly
 import java.io.File
+import java.io.InputStream
 
 //////////////////////////////////////////////////////////////
 // THANKS TO THE SEAL APP FOR THE FOLLOWING CODE SNIPPETS :)//
@@ -210,6 +211,12 @@ object FilesUtil {
         }
         val last: String = path.split("primary:").last()
         return "/storage/emulated/0/$last"
+    }
+
+    fun inputStreamToString(inputStream: InputStream): String {
+        val bytes = ByteArray(inputStream.available())
+        inputStream.read(bytes, 0, bytes.size)
+        return String(bytes)
     }
 
     private const val TAG = "FileUtil"
