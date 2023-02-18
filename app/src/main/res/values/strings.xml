@@ -31,7 +31,7 @@
     <string name="update">Update</string>
     <string name="permission_denied">Permission denied</string>
     <string name="custom_command_template">Custom command template</string>
-    <string name="unknown_error">An unknown error ocurred.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
     <string name="error_copied">The error output has been copied to the clipboard.</string>
     <string name="task_running">A download is currently in progress.</string>
     <string name="status_completed">Completed</string>
@@ -48,14 +48,14 @@
     <string name="custom_command_desc">Use custom commands to get the most out  of the library.</string>
     <string name="appearance_settings">Change how the app looks like</string>
     <string name="about">About</string>
-    <string name="about_page">Telegram, GitHub, bug reports...</string>
+    <string name="about_page">Telegram, GitHub, bug reports…</string>
     <string name="network">Network</string>
     <string name="network_settings_desc">Change your network configuration</string>
     <string name="format">Format</string>
     <string name="format_settings_desc">Change your downloads format</string>
     <string name="download_directory">Downloads directory</string>
     <string name="download_directory_desc">Change where your downloads are saved</string>
-    <string name="general_settings_desc">spotDL version, notifications...</string>
+    <string name="general_settings_desc">spotDL version, notifications…</string>
     <string name="spotdl_version">spotDL version</string>
     <string name="settings_before_download_text">Adjust your download</string>
     <string name="cancel">Cancel</string>
@@ -80,11 +80,11 @@
     <string name="audio_quality_desc">Choose in what quality you want to download the songs</string>
     <string name="audio">Audio</string>
     <string name="url_empty">There\'s no URL to download</string>
-    <string name="fetch_info_error_msg">An error ocurred while trying to fetch the song info</string>
+    <string name="fetch_info_error_msg">An error occurred while trying to fetch the song info</string>
     <string name="download_error_msg">An error occurred while trying to download the song</string>
     <string name="download_finish_notification">The download has finished</string>
     <string name="preserve_original_audio">Preserve original audio</string>
-    <string name="preserve_original_audio_desc">Keep the original downloaded audio file without conversions/compresions.</string>
+    <string name="preserve_original_audio_desc">Keep the original downloaded audio file without conversions/compression.</string>
     <string name="app_description">The best songs downloader for Android powered by spotDL.</string>
     <string name="console_output">Console output</string>
     <string name="spotify_client_id">Spotify client ID</string>
@@ -92,7 +92,7 @@
     <string name="spotify_client_secret">Spotify client secret</string>
     <string name="spotify_client_secret_description">The client secret key to use in Spotify API calls</string>
     <string name="spotify_settings">Spotify settings</string>
-    <string name="spotify_settings_desc">Change settings related to Spotify API...</string>
+    <string name="spotify_settings_desc">Change settings related to Spotify API…</string>
     <string name="spotify_developer_console">Spotify developers console</string>
     <string name="use_spotify_credentials">Use Spotify credentials</string>
     <string name="spotify">Spotify</string>
@@ -141,11 +141,11 @@
     <string name="multiselect_item_count">%1$d song(s)</string>
     <string name="select_all">Select all</string>
     <string name="multiselect_mode">Multiselect mode</string>
-    <string name="unavailable">Unavailiable</string>
+    <string name="unavailable">Unavailable</string>
     <string name="clear_database">Clear database</string>
     <string name="click_card_metadata">Tap the card for more info.</string>
     <string name="use_yt_metadata">YT Music metadata</string>
-    <string name="preserve_original_audio_warning">While using the original audio option, is recomendable to use the OPUS or M4A file types.</string>
+    <string name="preserve_original_audio_warning">While using the original audio option, is recommendable to use the OPUS or M4A file types.</string>
     <string name="additional_settings">Additional settings</string>
     <string name="high_contrast">High contrast theme (AMOLED)</string>
     <string name="filter_artist">Filter by artist</string>
@@ -189,4 +189,10 @@
     <string name="markdown_viewer">Markdown viewer</string>
     <string name="documentation_desc">Read the spotDL official documentation</string>
     <string name="commands">Commands</string>
+    <string name="documentation_info">Please, know that this pages will be changed by FAQs and the actual full markdown files will be replaced in a future by the mentioned before.</string>
+    <string name="delete_info">Delete song from the history</string>
+    <string name="remove_song">Do you want to remove this song?</string>
+    <string name="remove_song_info">You are going to delete \"%1$s\" of \"%2$s\".</string>
+    <string name="delete_file">Delete file from system</string>
+    <string name="are_you_sure">Are you sure?</string>
 </resources>
