@@ -178,4 +178,9 @@
     <string name="update_channel_desc">Install pre-release builds to preview new features and changes.\n\nThere will be some instability in these versions, so please don\'t hesitate to give us feedback if you experience any problems to help us improve the app for the future.</string>
     <string name="updates_channels">Updates channels</string>
     <string name="updates_channels_desc">Auto app updating, updating channel…</string>
+    <string name="share">Share</string>
+    <string name="song_cover">Song cover</string>
+    <string name="open_in_spotify">Open in Spotify</string>
+    <string name="share_file">Share file</string>
+    <string name="downloads_history_empty_state">The downloads history is empty</string>
 </resources>

@@ -94,6 +94,12 @@ class MainActivity : AppCompatActivity() {
         handleShareIntent(intent)
     }
 
+    //This function is very important. It handles the intent of opening the app from a shared link and put it in the url field
+    override fun onNewIntent(intent: Intent) {
+        handleShareIntent(intent)
+        super.onNewIntent(intent)
+    }
+
     private fun handleShareIntent(intent: Intent) {
         Log.d(TAG, "handleShareIntent: $intent")
 
@@ -119,7 +125,6 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         }
-
     }
 
     companion object {

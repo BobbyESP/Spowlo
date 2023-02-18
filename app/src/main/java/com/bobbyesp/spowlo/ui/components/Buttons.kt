@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -34,8 +35,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
 
 @Composable
 fun OutlinedButtonWithIcon(
@@ -113,6 +116,33 @@ fun FilledTonalButtonWithIcon(
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = text
+        )
+    }
+}
+
+@Composable
+fun OpenInSpotifyFilledButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    FilledTonalButton(
+        modifier = modifier,
+        onClick = onClick,
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = Color(red = 30, green = 215, blue = 96).harmonizeWithPrimary(),
+        ),
+        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+    )
+    {
+        Icon(
+            modifier = Modifier.size(18.dp),
+            imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = stringResource(id = R.string.open_in_spotify),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
