@@ -68,7 +68,7 @@ fun ContributorComponent(
                     .padding(bottom = 6.dp)
                     .alpha(0.7f),
                 fontSize = 12.sp,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
         }

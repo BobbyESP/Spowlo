@@ -108,14 +108,14 @@ fun AboutPage(onBackPressed: () -> Unit) {
                         description = "The main developer of the Python spotDL library",
                         avatarUrl = "https://avatars.githubusercontent.com/u/42355410",
                         socialUrl = "https://github.com/xnetcat",
-                        socialNetworkImage = ImageVector.vectorResource(id = R.drawable.github_mark)
+                        socialNetworkImage = LocalAsset(id = R.drawable.github_mark)
                     )
                     ContributorComponent(
                         name = "decipher",
                         description = "A nice artist that created our logo!",
                         avatarUrl = "https://i.ibb.co/Y8G4SZg/image.png",
                         socialUrl = "https://t.me/decipher3114",
-                        socialNetworkImage = ImageVector.vectorResource(id = R.drawable.telegram_icon)
+                        socialNetworkImage = LocalAsset(id = R.drawable.telegram_icon)
                     )
                     ContributorComponent(
                         name = "Wolf 🐺",
