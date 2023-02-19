@@ -46,8 +46,7 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 
 For most devices, it is recommended to install the **arm64-v8a** version of the apks
 
-- Download the latest stable version from [GitHub releases](https://github.com/JunkFood02/Seal/releases/latest)
-  - Install the [pre-release](https://github.com/JunkFood02/Seal/releases/) versions to help us test out new features & changes
+- Download the latest stable version from [GitHub releases](https://github.com/BobbyESP/Spowlo/releases/latest)
 
 ## 📖Credits
 Thanks to [xnetcat](https://github.com/xnetcat) for it's help with some spotDL related things!
