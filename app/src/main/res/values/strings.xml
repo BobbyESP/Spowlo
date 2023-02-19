@@ -198,4 +198,11 @@
     <string name="spotify_link">Spotify link</string>
     <string name="link_copied">Link copied!</string>
     <string name="delete_multiple_items_msg">You are about to delete %1$d item(s) from your download history. Do you want to proceed?</string>
+    <string name="github_logo">GitHub logo</string>
+    <string name="github">GitHub</string>
+    <string name="head_developer">Head developer</string>
+    <string name="contributors">Contributors</string>
+    <string name="contributor_avatar">Contributor avatar</string>
+    <string name="social_logo">Social network icon</string>
+    <string name="version">App version</string>
 </resources>

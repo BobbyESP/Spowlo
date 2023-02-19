@@ -56,6 +56,7 @@ import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
+import com.bobbyesp.spowlo.ui.pages.settings.about.AboutPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookieProfilePage
@@ -303,6 +304,12 @@ fun InitialEntry(
                     onBackPressed,
                     navController
                 )
+            }
+
+            animatedComposable(Route.ABOUT) {
+                AboutPage {
+                    onBackPressed()
+                }
             }
 
             navDeepLink {

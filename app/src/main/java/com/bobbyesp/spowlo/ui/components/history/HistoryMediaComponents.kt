@@ -63,6 +63,7 @@ fun HistoryMediaItem(
     songFileSize: Long = 0L,
     songDuration: String = "03:24",
     fileType: String = "OPUS",
+    isTwoColumns: Boolean = false,
     isSelectEnabled: () -> Boolean = { false },
     isSelected: () -> Boolean = { false },
     onSelect: () -> Unit = {},
@@ -145,38 +146,45 @@ fun HistoryMediaItem(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.Start
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
+                            if (!isTwoColumns) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    MarqueeText(
+                                        text = songName,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                            alpha = 0.8f
+                                        ),
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
                                 MarqueeText(
-                                    text = songName, color = MaterialTheme.colorScheme.onSurface,
+                                    text = author,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                                )
-                            }
-                            Spacer(Modifier.height(8.dp))
-                            MarqueeText(
-                                text = author,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                fontSize = 12.sp,
-                                basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                            )
-                            if(!isFileAvailable) {
-                                Text(
-                                    modifier = Modifier.padding(top = 3.dp),
-                                    text = stringResource(
-                                        R.string.unavailable
+                                    fontSize = 12.sp,
+                                    basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.8f
                                     ),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.error,
-                                    maxLines = 1,
                                 )
+                                if (!isFileAvailable) {
+                                    Text(
+                                        modifier = Modifier.padding(top = 3.dp),
+                                        text = stringResource(
+                                            R.string.unavailable
+                                        ),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.error,
+                                        maxLines = 1,
+                                    )
+                                }
                             }
                         }
                         Column(

@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.utils
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
@@ -10,7 +11,9 @@ import android.provider.DocumentsContract
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.annotation.CheckResult
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
@@ -18,6 +21,7 @@ import com.bobbyesp.spowlo.ui.pages.history.THUMBNAIL_REGEX
 import okhttp3.internal.closeQuietly
 import java.io.File
 import java.io.InputStream
+
 
 //////////////////////////////////////////////////////////////
 // THANKS TO THE SEAL APP FOR THE FOLLOWING CODE SNIPPETS :)//
@@ -82,6 +86,19 @@ object FilesUtil {
             arrayOf("*/*"),
             ClipData.Item(data)
         )
+    }
+
+    fun createIntentForShareAudioFile(path: String?): Intent? = createIntentForFile(path)?.apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_STREAM, this.data)
+        type = "audio/*"
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        clipData = ClipData(
+            null,
+            arrayOf("audio/*"),
+            ClipData.Item(data)
+        )
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
     fun String.getFileSize(): Long = this.run {

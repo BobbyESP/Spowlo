@@ -278,7 +278,7 @@ fun DownloadsHistoryPage(
         }
     ) { innerPaddings ->
         val cellCount = when (LocalWindowWidthState.current) {
-            WindowWidthSizeClass.Expanded -> 1 //TODO: Add 2 columns. Actually that crashes the app so we'll keep it at 1 for now
+            WindowWidthSizeClass.Expanded -> 2 //TODO: Add 2 columns. Actually that crashes the app so we'll keep it at 1 for now. The problem is that MarqueeText is not working properly with LazyColumn
             else -> 1
         }
         val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(cellCount) }
@@ -335,6 +335,7 @@ fun DownloadsHistoryPage(
                                 songFileSize = fileSizeMap[song.id] ?: 0L,
                                 songDuration = GeneralTextUtils.convertDuration(songDuration),
                                 songSpotifyUrl = songUrl,
+                                isTwoColumns = cellCount == 2,
                                 isSelectEnabled = { isSelectEnabled },
                                 isSelected = { selectedItemIds.contains(id) },
                                 onSelect = {

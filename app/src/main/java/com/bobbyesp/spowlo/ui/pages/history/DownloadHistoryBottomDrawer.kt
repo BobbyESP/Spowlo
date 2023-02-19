@@ -67,6 +67,7 @@ import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import kotlinx.coroutines.delay
+import java.io.File
 
 @OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -104,7 +105,7 @@ fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewM
                 showDeleteDialog = !showDeleteDialog
             },
             onShareFile = {
-                FilesUtil.createIntentForSharingFile(path)?.runCatching {
+                FilesUtil.createIntentForShareAudioFile(path)?.runCatching {
                     context.startActivity(
                         Intent.createChooser(this, shareStringResource)
                     )

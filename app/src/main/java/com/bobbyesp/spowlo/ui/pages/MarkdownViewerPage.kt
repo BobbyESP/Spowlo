@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages
 
 import android.content.Context
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,7 +62,7 @@ fun MarkdownViewerPage(
                 .padding(6.dp),
             markdown = markdownText,
             textAlign = TextAlign.Justify,
-            color = MaterialTheme.colorScheme.secondary
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
         )
     }
 }

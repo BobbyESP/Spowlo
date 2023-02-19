@@ -11,12 +11,30 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import coil.ImageLoader
 import coil.compose.AsyncImagePainter
+import coil.disk.DiskCache
 import coil.imageLoader
+import coil.memory.MemoryCache
 import coil.request.ImageRequest
+import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
 
+
+val imageLoader = ImageLoader.Builder(context)
+    .memoryCache {
+        MemoryCache.Builder(context)
+            .maxSizePercent(0.25)
+            .build()
+    }
+    .diskCache {
+        DiskCache.Builder()
+            .directory(context.cacheDir.resolve("image_cache"))
+            .maxSizePercent(0.02)
+            .build()
+    }
+    .build()
 
 @Composable
 fun AsyncImageImpl(
@@ -47,7 +65,7 @@ fun AsyncImageImpl(
             .crossfade(true)
             .build(),
         contentDescription = contentDescription,
-        imageLoader = LocalContext.current.imageLoader,
+        imageLoader = imageLoader,
         modifier = modifier,
         transform = transform,
         onState = onState,
