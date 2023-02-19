@@ -119,12 +119,20 @@ fun AboutPage(onBackPressed: () -> Unit) {
                     )
                     ContributorComponent(
                         name = "Wolf 🐺",
-                        description = "A nice tester and helper",
+                        description = "The best app tester and helper! Thanks for your HUGE help!",
                         avatarUrl = "https://i.ibb.co/3zzdbq7/wolf-avatar.png"
                     )
                     ContributorComponent(
+                        name = "JunkFood02",
+                        description = "The Seal's app creator! Without him, this app wouldn't exist!",
+                        avatarUrl = "https://avatars.githubusercontent.com/u/69683722",
+                        socialUrl = "https://github.com/JunkFood02",
+                        socialNetworkImage = LocalAsset(id = R.drawable.github_mark)
+                    )
+                    ContributorComponent(
                         name = "Katoka",
-                        description = "The app name creator! Nice words game haha"
+                        description = "The app name creator! Nice words game hahah",
+                        avatarUrl = "https://i.ibb.co/kMXk6X6/STK-20230214-WA0124.webp"
                     )
                     HorizontalDivider()
                 }
