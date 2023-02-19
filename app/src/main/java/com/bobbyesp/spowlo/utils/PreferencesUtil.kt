@@ -54,6 +54,8 @@ const val SYNCED_LYRICS = "synced_lyrics"
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
+const val USE_CACHING = "use_caching"
+
 const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
 const val COOKIES = "cookies"
@@ -89,7 +91,8 @@ private val BooleanPreferenceDefaults =
         USE_SPOTIFY_CREDENTIALS to false,
         USE_YT_METADATA to false,
         SYNCED_LYRICS to false,
-        AUTO_UPDATE to true
+        AUTO_UPDATE to true,
+        USE_CACHING to true,
     )
 
 private val IntPreferenceDefaults = mapOf(

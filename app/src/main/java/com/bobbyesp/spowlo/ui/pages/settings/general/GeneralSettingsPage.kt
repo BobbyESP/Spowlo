@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cached
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Print
 import androidx.compose.material.icons.outlined.PrintDisabled
@@ -35,10 +36,12 @@ import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
+import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.USE_CACHING
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -59,6 +62,13 @@ fun GeneralSettingsPage(
         canScroll = { true })
 
     var displayErrorReport by DEBUG.booleanState
+
+    var useCache by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(USE_CACHING)
+        )
+    }
+
     val isCustomCommandEnabled by remember {
         mutableStateOf(
             PreferencesUtil.getValue(CUSTOM_COMMAND)
@@ -126,6 +136,24 @@ fun GeneralSettingsPage(
                             PreferencesUtil.updateValue(DEBUG, displayErrorReport)
                         },
                         isChecked = displayErrorReport
+                    )
+                }
+
+                item{
+                    PreferenceSubtitle(text = stringResource(id = R.string.library_settings))
+                }
+                item {
+                    PreferenceSwitch(
+                        title = stringResource(id = R.string.use_cache),
+                        description = stringResource(id = R.string.use_cache_desc),
+                        icon = Icons.Outlined.Cached,
+                        onClick = {
+                            scope.launch {
+                                useCache = !useCache
+                                PreferencesUtil.updateValue(USE_CACHING, useCache)
+                            }
+                        },
+                        isChecked = useCache
                     )
                 }
             }

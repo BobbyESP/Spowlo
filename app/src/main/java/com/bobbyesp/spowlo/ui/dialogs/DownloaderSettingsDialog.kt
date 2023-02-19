@@ -70,6 +70,7 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
 import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
+import com.bobbyesp.spowlo.utils.USE_CACHING
 import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import kotlinx.coroutines.launch
@@ -118,6 +119,14 @@ fun DownloaderSettingsDialog(
         mutableStateOf(
             settings.getValue(
                 COOKIES
+            )
+        )
+    }
+
+    var useCaching by remember {
+        mutableStateOf(
+            settings.getValue(
+                USE_CACHING
             )
         )
     }
@@ -274,13 +283,24 @@ fun DownloaderSettingsDialog(
                     ),
             ) {
                 AudioFilterChip(
-                    label = stringResource(id = R.string.use_yt_metadata),
+                    label = stringResource(id = R.string.synced_lyrics),
                     animated = true,
-                    selected = useYtMetadata,
+                    selected = useSyncedLyrics,
                     onClick = {
-                        useYtMetadata = !useYtMetadata
+                        useSyncedLyrics = !useSyncedLyrics
                         scope.launch {
-                            settings.updateValue(USE_YT_METADATA, useYtMetadata)
+                            settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
+                        }
+                    }
+                )
+                AudioFilterChip(
+                    label = stringResource(id = R.string.use_cache),
+                    animated = true,
+                    selected = useCaching,
+                    onClick = {
+                        useCaching = !useCaching
+                        scope.launch {
+                            settings.updateValue(USE_CACHING, useCaching)
                         }
                     }
                 )
@@ -296,13 +316,13 @@ fun DownloaderSettingsDialog(
                     }
                 )
                 AudioFilterChip(
-                    label = stringResource(id = R.string.synced_lyrics),
+                    label = stringResource(id = R.string.use_yt_metadata),
                     animated = true,
-                    selected = useSyncedLyrics,
+                    selected = useYtMetadata,
                     onClick = {
-                        useSyncedLyrics = !useSyncedLyrics
+                        useYtMetadata = !useYtMetadata
                         scope.launch {
-                            settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
+                            settings.updateValue(USE_YT_METADATA, useYtMetadata)
                         }
                     }
                 )
@@ -310,6 +330,7 @@ fun DownloaderSettingsDialog(
         }
     }
     if (!useDialog) {
+        //TODO: Change this UI
         BottomDrawer(drawerState = drawerState, sheetContent = {
             Icon(
                 modifier = Modifier.align(Alignment.CenterHorizontally),

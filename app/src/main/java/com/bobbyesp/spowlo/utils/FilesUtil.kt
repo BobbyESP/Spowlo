@@ -236,6 +236,8 @@ object FilesUtil {
         return String(bytes)
     }
 
+
+
     private const val TAG = "FileUtil"
 
 }

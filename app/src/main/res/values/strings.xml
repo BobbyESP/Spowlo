@@ -43,7 +43,7 @@
     <string name="battery_configuration_desc">Activate the usage of the app in background to make sure that all works fine.</string>
     <string name="battery_configuration">Battery configuration</string>
     <string name="general_settings">General</string>
-    <string name="appearence">Appearance</string>
+    <string name="appearance">Appearance</string>
     <string name="custom_command">Custom commands</string>
     <string name="custom_command_desc">Use custom commands to get the most out  of the library.</string>
     <string name="appearance_settings">Change how the app looks like</string>
@@ -149,7 +149,7 @@
     <string name="additional_settings">Additional settings</string>
     <string name="high_contrast">High contrast theme (AMOLED)</string>
     <string name="filter_artist">Filter by artist</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="experimental_features">Experimental features</string>
     <string name="close">Close</string>
     <string name="done">Done</string>
@@ -197,7 +197,7 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="spotify_link">Spotify link</string>
     <string name="link_copied">Link copied!</string>
-    <string name="delete_multiple_items_msg">You are about to delete %1$d item(s) from your download history. Do you want to proceed?</string>
+    <string name="delete_multiple_items_msg">You are about to delete %1$d item(s) from your download history. Do you want to proceed ?</string>
     <string name="github_logo">GitHub logo</string>
     <string name="github">GitHub</string>
     <string name="head_developer">Head developer</string>
@@ -205,4 +205,16 @@
     <string name="contributor_avatar">Contributor avatar</string>
     <string name="social_logo">Social network icon</string>
     <string name="version">App version</string>
+    <string name="source_code">Source code</string>
+    <string name="check_source_code">Check the Spowlo source code in GitHub!</string>
+    <string name="telegram_channel">Telegram channel</string>
+    <string name="join_telegram_channel">Join our Telegram chatroom!</string>
+    <string name="report_issue">Report an issue</string>
+    <string name="report_issue_description">Report in GitHub any problem that you have had!</string>
+    <string name="feature_request">Feature request</string>
+    <string name="feature_request_description">Tell us what you want to be in the app!</string>
+    <string name="spotify_credentials_info">This Spotify credentials can be used for getting more precise searching results (and also faster). You can get them in the Spotify Developers dashboard panel.</string>
+    <string name="use_cache">Use caching</string>
+    <string name="use_cache_desc">Use caching for faster previous songs re-downloads</string>
+    <string name="library_settings">SpotDL library settings</string>
 </resources>

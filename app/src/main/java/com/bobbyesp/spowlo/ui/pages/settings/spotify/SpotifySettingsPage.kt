@@ -19,9 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
+import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
+import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
@@ -109,6 +112,14 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                         onClick = {
                             showClientSecretDialog = true
                         }
+                    )
+                }
+                item{
+                    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+                    PreferenceInfo(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp),
+                        text = stringResource(id = R.string.spotify_credentials_info)
                     )
                 }
 

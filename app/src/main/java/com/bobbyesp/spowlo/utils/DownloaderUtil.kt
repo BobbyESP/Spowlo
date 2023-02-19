@@ -57,6 +57,7 @@ object DownloaderUtil {
         val useYtMetadata: Boolean = PreferencesUtil.getValue(USE_YT_METADATA),
         val useCookies: Boolean = PreferencesUtil.getValue(COOKIES),
         val useSyncedLyrics: Boolean = PreferencesUtil.getValue(SYNCED_LYRICS),
+        val useCaching: Boolean = PreferencesUtil.getValue(USE_CACHING),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -226,6 +227,10 @@ object DownloaderUtil {
 
                 if(useCookies){
                     useCookies()
+                }
+
+                if(!useCaching){
+                    addOption("--no-cache")
                 }
 
                 if(useYtMetadata){
