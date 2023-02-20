@@ -25,6 +25,8 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 ## ⚠️ Warning
 The Spotify mods downloader has been deleted by request of the xManager team. This is because having the mod downloader in Spowlo meant an avoid of their ads/earning methods. xManager has to pay servers and they pay those just for making the users have free Spotify, I hope that you all understand.
 
+please, instead use the [xManager app](https://github.com/xManager-App/xManager). Maybe somme day I create an app for them who knows haha
+
 ## 🔮 Features
 
 - Download songs from Spotify thanks to the [spotDL](https://github.com/spotDL/spotify-downloader/) library.
