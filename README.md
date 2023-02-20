@@ -12,11 +12,7 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
  
 </div>
 
-
-
-
-
-## 📱 Screenshots
+## 📸 Screenshots
 
 <div align="center">
 <div>
@@ -26,7 +22,10 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 </div>
 </div>
 
-## 📖 Features
+## ⚠️ Warning
+The Spotify mods downloader has been deleted by request of the xManager team. This is because having the mod downloader in Spowlo meant an avoid of their ads/earning methods. xManager has to pay servers and they pay those just for making the users have free Spotify, I hope that you all understand.
+
+## 🔮 Features
 
 - Download songs from Spotify thanks to the [spotDL](https://github.com/spotDL/spotify-downloader/) library.
 
@@ -40,11 +39,11 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 
 - [Material Design 3](https://m3.material.io/) style UI, with dynamic color theme.
 
-- MAD: UI and logic written with pure Kotlin. Single activity, only composable destinations and deep links.
+- MAD: UI and logic written purely on Kotlin. It's used just an activity and composable destinations and deep links thanks to the navigation library.
 
 ## ⬇️Download
 
-For most devices, it is recommended to install the **arm64-v8a** version of the apks
+For most devices, it is recommended to install the **ARM64-v8a** version of the apks
 
 - Download the latest stable version from [GitHub releases](https://github.com/BobbyESP/Spowlo/releases/latest)
 
@@ -53,7 +52,7 @@ Thanks to [xnetcat](https://github.com/xnetcat) for it's help with some spotDL r
 
 Thanks to [Seal](https://github.com/JunkFood02/Seal) and [JunkFood02](https://github.com/JunkFood02) for some of the code of the app and UI ideas. (Without you, this app would not have existed). I learnt a lot about architectures, corroutines, Jetpack Compose...
 
-[Philipp Lackner](https://www.youtube.com/c/PhilippLackner). Infinite thanks to you, Philipp. You made me learn infite things with just a few videos. This guys explains literally everything about what is he coding, make apps just to make the community learn and give us some amazing utilities. Without he, probably i wouldn't started to code for Android. 
+[Philipp Lackner](https://www.youtube.com/c/PhilippLackner). Infinite thanks to you, Philipp. You made me learn infite things with just a few videos. This guys explains literally everything about what is he coding, make apps just to make the community learn and give us some amazing utilities. Without he, probably I wouldn't started to code for Android. 
 
 [Material color utilities](https://github.com/material-foundation/material-color-utilities) for having Material You coloring support in any device.
 
@@ -64,4 +63,3 @@ KatokaChan, for the app name. (Thank you!)
 [Programación Android by AristiDevs](https://www.youtube.com/c/AristiDevs)
 
 And also thank you all for the internal tests of the app!
-
