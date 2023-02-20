@@ -52,7 +52,7 @@ Thanks to [xnetcat](https://github.com/xnetcat) for it's help with some spotDL r
 
 Thanks to [Seal](https://github.com/JunkFood02/Seal) and [JunkFood02](https://github.com/JunkFood02) for some of the code of the app and UI ideas. (Without you, this app would not have existed). I learnt a lot about architectures, corroutines, Jetpack Compose...
 
-[Philipp Lackner](https://www.youtube.com/c/PhilippLackner). Infinite thanks to you, Philipp. You made me learn infite things with just a few videos. This guys explains literally everything about what is he coding, make apps just to make the community learn and give us some amazing utilities. Without he, probably I wouldn't started to code for Android. 
+[Philipp Lackner](https://www.youtube.com/c/PhilippLackner). Infinite thanks to you, Philipp. You made me learn infinite things with just a few videos. This guy explains literally everything about what is he coding, make apps just to make the community learn, and give us some amazing utilities. Without he, probably I wouldn't started coding for Android. 
 
 [Material color utilities](https://github.com/material-foundation/material-color-utilities) for having Material You coloring support in any device.
 
