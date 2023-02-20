@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Spowlo</string>
+    <string name="app_name" translatable="false">Spowlo</string>
     <string name="follow_system">Follow system</string>
     <string name="on">On</string>
     <string name="off">Off</string>
@@ -9,8 +9,8 @@
     <string name="filesize_mb">%.2f MB</string>
     <string name="filesize_gb">%.2f GB</string>
     <string name="file_unavailable">This file is no longer available</string>
-    <string name="la_en_US">English (United States)</string>
-    <string name="la_es">Español</string>
+    <string name="la_en_US" translatable="false">English (United States)</string>
+    <string name="la_es" translatable="false">Español</string>
     <string name="spotdl_docs">spotDL Documentation</string>
     <string name="confirm">Confirm</string>
     <string name="dismiss">Dismiss</string>
@@ -217,4 +217,6 @@
     <string name="use_cache">Use caching</string>
     <string name="use_cache_desc">Use caching for faster previous songs re-downloads</string>
     <string name="library_settings">SpotDL library settings</string>
+    <string name="translate">Translate the app!</string>
+    <string name="translate_desc">Help translating the app to your language in Hosted Weblate!</string>
 </resources>

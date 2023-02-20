@@ -59,6 +59,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.about.AboutPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
+import com.bobbyesp.spowlo.ui.pages.settings.appearance.LanguagePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookieProfilePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
@@ -308,6 +309,12 @@ fun InitialEntry(
 
             animatedComposable(Route.ABOUT) {
                 AboutPage {
+                    onBackPressed()
+                }
+            }
+
+            animatedComposable(Route.LANGUAGES) {
+                LanguagePage {
                     onBackPressed()
                 }
             }
