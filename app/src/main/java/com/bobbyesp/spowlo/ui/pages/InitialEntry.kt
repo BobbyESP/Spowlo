@@ -328,10 +328,10 @@ fun InitialEntry(
                 "markdown_viewer/{markdownFileName}",
                 arguments = listOf(navArgument("markdownFileName") { type = NavType.StringType })
             ) { backStackEntry ->
-                Log.d("MainActivity", backStackEntry.arguments?.getString("markdownFileName") ?: "")
+                val mdFileName = backStackEntry.arguments?.getString("markdownFileName") ?: ""
+                Log.d("MainActivity", mdFileName)
                 MarkdownViewerPage(
-                    markdownFileName = backStackEntry.arguments?.getString("markdownFileName")
-                        ?: "",
+                    markdownFileName = mdFileName,
                     onBackPressed = onBackPressed
                 )
             }
