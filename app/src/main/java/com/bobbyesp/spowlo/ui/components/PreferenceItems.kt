@@ -819,5 +819,5 @@ fun PreferenceInfo(
 @Composable
 @Preview(showBackground = true)
 fun PreferenceInfoPreview() {
-    PreferenceInfo(text = stringResource(id = R.string.custom_command_enabled_hint))
+    PreferenceInfo(text = stringResource(id = R.string.translate))
 }

@@ -71,10 +71,6 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                 )
             }
             LazyColumn(Modifier.padding(it)) {
-                if (isCustomCommandEnabled)
-                    item {
-                        PreferenceInfo(text = stringResource(id = R.string.custom_command_enabled_hint))
-                    }
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.audio))
                 }
@@ -95,7 +91,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         title = stringResource(R.string.audio_format),
                         description = audioFormat,
                         icon = Icons.Outlined.AudioFile,
-                        enabled = true, //!isCustomCommandEnabled // !preserveOriginalAudio
+                        enabled = true,
                     ) { showAudioFormatDialog = true }
                 }
                 item {
@@ -103,7 +99,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         title = stringResource(R.string.audio_quality),
                         description = audioQuality,
                         icon = Icons.Outlined.HighQuality,
-                        enabled = !preserveOriginalAudio, //!isCustomCommandEnabled ||
+                        enabled = !preserveOriginalAudio,
                     ) { showAudioQualityDialog = true }
                 }
             }

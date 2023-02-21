@@ -176,11 +176,6 @@ fun DownloadsDirectoriesPage(
             )
         }, content = {
             LazyColumn(modifier = Modifier.padding(it)) {
-
-                if (isCustomCommandEnabled)
-                    item {
-                        PreferenceInfo(text = stringResource(id = R.string.custom_command_enabled_hint))
-                    }
                 if(sdcardUri.isEmpty())
                     item {
                         PreferenceInfo(text = stringResource(id = R.string.sdcard_not_activable_hint))

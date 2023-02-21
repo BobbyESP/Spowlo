@@ -131,11 +131,14 @@ fun DownloaderSettingsDialog(
         )
     }
 
-    var useSyncedLyrics by remember { mutableStateOf(settings.getValue(SYNCED_LYRICS)) }
+    var useSyncedLyrics by remember {
+        mutableStateOf(
+            settings.getValue(SYNCED_LYRICS)
+        )
+    }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
-    var showCustomCommandDialog by remember { mutableStateOf(0) }
     var showClientIdDialog by remember { mutableStateOf(false) }
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
