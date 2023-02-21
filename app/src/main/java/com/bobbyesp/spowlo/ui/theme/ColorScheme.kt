@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.theme
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,5 +39,9 @@ fun BlurEffect(
         content()
     }
 }
-
 const val DEFAULT_SEED_COLOR = 0xFF415f76.toInt()
+
+@Composable
+fun contraryColor(): Color {
+    return if (isSystemInDarkTheme()) Color.White else Color.Black
+}

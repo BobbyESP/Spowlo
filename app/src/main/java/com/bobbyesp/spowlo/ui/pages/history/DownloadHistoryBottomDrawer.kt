@@ -88,7 +88,7 @@ fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewM
         downloadsHistoryViewModel.hideDrawer(scope)
     }
 
-    LaunchedEffect(viewState.drawerState.targetValue){
+    LaunchedEffect(viewState.drawerState.targetValue) {
         delay(100)
         showDeleteDialog = false
         deleteFile = false
@@ -138,11 +138,11 @@ fun DownloadHistoryBottomDrawerImpl(
     songUrl: String,
     artworkUrl: String,
     onShowDeleteDialog: () -> Unit,
-    onDeleteCallback : () -> Unit,
+    onDeleteCallback: () -> Unit,
     onOpenLink: () -> Unit,
     onShareFile: () -> Unit,
     deleteFile: Boolean = false,
-    onClickDeleteFile : () -> Unit,
+    onClickDeleteFile: () -> Unit,
     showDeleteInfo: Boolean = false
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -251,12 +251,21 @@ fun DownloadHistoryBottomDrawerImpl(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
                     )
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 6.dp)) {
-                        Text(text = stringResource(R.string.remove_song), fontWeight = FontWeight.Bold)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 6.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.remove_song),
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(3.dp))
-                        Text(text = stringResource(R.string.are_you_sure), modifier = Modifier.alpha(alpha = 0.75f), fontSize = 12.sp)
+                        Text(
+                            text = stringResource(R.string.are_you_sure),
+                            modifier = Modifier.alpha(alpha = 0.75f),
+                            fontSize = 12.sp
+                        )
                     }
                 }
                 Text(
@@ -280,7 +289,7 @@ fun DownloadHistoryBottomDrawerImpl(
                             .padding(horizontal = 12.dp)
                             .weight(1f),
                         onClick = {
-                                  onShowDeleteDialog()
+                            onShowDeleteDialog()
                         },
                         icon = Icons.Outlined.Cancel,
                         text = stringResource(R.string.cancel)
