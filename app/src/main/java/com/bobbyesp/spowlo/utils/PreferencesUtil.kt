@@ -55,6 +55,7 @@ const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
 const val USE_CACHING = "use_caching"
+const val DONT_FILTER_RESULTS = "dont_filter_results"
 
 const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
@@ -73,7 +74,7 @@ const val SYSTEM_DEFAULT = 0
 const val STABLE = 0
 const val PRE_RELEASE = 1
 
-const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results --preserve-original-audio"""
+const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results"""
 
 private val StringPreferenceDefaults =
     mapOf(
@@ -93,6 +94,7 @@ private val BooleanPreferenceDefaults =
         SYNCED_LYRICS to false,
         AUTO_UPDATE to true,
         USE_CACHING to true,
+        DONT_FILTER_RESULTS to false,
     )
 
 private val IntPreferenceDefaults = mapOf(

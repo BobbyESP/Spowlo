@@ -63,6 +63,7 @@ import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.HelpDialog
+import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.PasteFromClipBoardButton
 import com.bobbyesp.spowlo.ui.components.PreferenceItemVariant
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitchWithContainer
@@ -158,6 +159,7 @@ fun CookieProfilePage(
             }
 
             item {
+                HorizontalDivider()
                 PreferenceItemVariant(
                     title = stringResource(id = R.string.generate_new_cookies),
                     icon = Icons.Outlined.Add

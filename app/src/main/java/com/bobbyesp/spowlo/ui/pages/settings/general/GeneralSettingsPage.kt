@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cached
+import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Print
 import androidx.compose.material.icons.outlined.PrintDisabled
@@ -40,6 +41,7 @@ import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DEBUG
+import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.USE_CACHING
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -69,9 +71,9 @@ fun GeneralSettingsPage(
         )
     }
 
-    val isCustomCommandEnabled by remember {
+    var dontFilter by remember {
         mutableStateOf(
-            PreferencesUtil.getValue(CUSTOM_COMMAND)
+            PreferencesUtil.getValue(DONT_FILTER_RESULTS)
         )
     }
 
@@ -130,7 +132,7 @@ fun GeneralSettingsPage(
                         title = stringResource(R.string.print_details),
                         description = stringResource(R.string.print_details_desc),
                         icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
-                        enabled = !isCustomCommandEnabled,
+                        enabled = true,
                         onClick = {
                             displayErrorReport = !displayErrorReport
                             PreferencesUtil.updateValue(DEBUG, displayErrorReport)
@@ -154,6 +156,20 @@ fun GeneralSettingsPage(
                             }
                         },
                         isChecked = useCache
+                    )
+                }
+                item {
+                    PreferenceSwitch(
+                        title = stringResource(id = R.string.dont_filter_results),
+                        description = stringResource(id = R.string.dont_filter_results_desc),
+                        icon = Icons.Outlined.Filter,
+                        onClick = {
+                            scope.launch {
+                                dontFilter = !dontFilter
+                                PreferencesUtil.updateValue(DONT_FILTER_RESULTS, dontFilter)
+                            }
+                        },
+                        isChecked = dontFilter
                     )
                 }
             }
