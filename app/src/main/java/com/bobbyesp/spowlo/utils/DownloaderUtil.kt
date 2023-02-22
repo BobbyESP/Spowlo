@@ -260,8 +260,6 @@ object DownloaderUtil {
                     addOption("--client-secret", spotifyClientSecret)
                 }
 
-                addOption("--audio", "youtube")
-
                 for (s in request.buildCommand()) Log.d(TAG, s)
             }.runCatching {
                 SpotDL.getInstance().execute(this, taskId, callback = progressCallback)
