@@ -10,6 +10,8 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 ![GitHub all releases](https://img.shields.io/github/downloads/BobbyESP/Spowlo/total?label=Downloads&logo=github)
 ![GitHub Repo stars](https://img.shields.io/github/stars/BobbyESP/Spowlo?color=informational&label=Stars)
  
+   ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BobbyESP/Spowlo?logo=github&logoColor=%23fff&style=for-the-badge)
+  ![GitHub top language](https://img.shields.io/github/languages/top/BobbyESP/Spowlo?style=for-the-badge)
 </div>
 
 ## 📸 Screenshots
