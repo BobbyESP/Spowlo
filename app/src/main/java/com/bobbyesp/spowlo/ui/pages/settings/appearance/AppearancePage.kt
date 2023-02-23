@@ -205,12 +205,12 @@ fun AppearancePage(
                     onClick = { navController.navigate(Route.APP_THEME) }
                 )
                 //todo: add the languages page
-                /*if (Build.VERSION.SDK_INT >= 24)
+                if (Build.VERSION.SDK_INT >= 24)
                     PreferenceItem(
                         title = stringResource(R.string.language),
                         icon = Icons.Outlined.Language,
                         description = getLanguageDesc()
-                    ) { navController.navigate(Route.LANGUAGES) }*/
+                    ) { navController.navigate(Route.LANGUAGES) }
             }
         })
     if (showDarkThemeDialog)

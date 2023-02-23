@@ -65,6 +65,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
+import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
@@ -131,11 +132,22 @@ fun DownloaderSettingsDialog(
         )
     }
 
-    var useSyncedLyrics by remember { mutableStateOf(settings.getValue(SYNCED_LYRICS)) }
+    var dontFilter by remember {
+        mutableStateOf(
+            settings.getValue(
+                DONT_FILTER_RESULTS
+            )
+        )
+    }
+
+    var useSyncedLyrics by remember {
+        mutableStateOf(
+            settings.getValue(SYNCED_LYRICS)
+        )
+    }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
-    var showCustomCommandDialog by remember { mutableStateOf(0) }
     var showClientIdDialog by remember { mutableStateOf(false) }
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
@@ -301,6 +313,18 @@ fun DownloaderSettingsDialog(
                         useCaching = !useCaching
                         scope.launch {
                             settings.updateValue(USE_CACHING, useCaching)
+                        }
+                    }
+                )
+
+                AudioFilterChip(
+                    label = stringResource(id = R.string.dont_filter_results),
+                    selected = dontFilter,
+                    animated = true,
+                    onClick = {
+                        dontFilter = !dontFilter
+                        scope.launch {
+                            settings.updateValue(DONT_FILTER_RESULTS, dontFilter)
                         }
                     }
                 )

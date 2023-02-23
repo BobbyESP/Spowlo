@@ -49,6 +49,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdateDialogImpl
+import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
@@ -59,6 +60,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.about.AboutPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppearancePage
+import com.bobbyesp.spowlo.ui.pages.settings.appearance.LanguagePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookieProfilePage
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
@@ -312,6 +314,12 @@ fun InitialEntry(
                 }
             }
 
+            animatedComposable(Route.LANGUAGES) {
+                LanguagePage {
+                    onBackPressed()
+                }
+            }
+
             navDeepLink {
                 // Want to go to "markdown_viewer/{markdownFileName}"
                 uriPattern = "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
@@ -321,10 +329,10 @@ fun InitialEntry(
                 "markdown_viewer/{markdownFileName}",
                 arguments = listOf(navArgument("markdownFileName") { type = NavType.StringType })
             ) { backStackEntry ->
-                Log.d("MainActivity", backStackEntry.arguments?.getString("markdownFileName") ?: "")
+                val mdFileName = backStackEntry.arguments?.getString("markdownFileName") ?: ""
+                Log.d("MainActivity", mdFileName)
                 MarkdownViewerPage(
-                    markdownFileName = backStackEntry.arguments?.getString("markdownFileName")
-                        ?: "",
+                    markdownFileName = mdFileName,
                     onBackPressed = onBackPressed
                 )
             }
@@ -340,6 +348,9 @@ fun InitialEntry(
                     latestRelease = it
                     showUpdateDialog = true
                 }
+                if(showUpdateDialog){
+                    UpdateUtil.showUpdateDrawer()
+                }
             }.onFailure {
                 it.printStackTrace()
             }
@@ -347,35 +358,36 @@ fun InitialEntry(
     }
 
     if (showUpdateDialog) {
-        UpdateDialogImpl(
-            onDismissRequest = {
-                showUpdateDialog = false
-                updateJob?.cancel()
-            },
-            title = latestRelease.name.toString(),
-            onConfirmUpdate = {
-                updateJob = scope.launch(Dispatchers.IO) {
-                    runCatching {
-                        UpdateUtil.downloadApk(latestRelease = latestRelease)
-                            .collect { downloadStatus ->
-                                currentDownloadStatus = downloadStatus
-                                if (downloadStatus is UpdateUtil.DownloadStatus.Finished) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        launcher.launch(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-                                    }
-                                }
-                            }
-                    }.onFailure {
-                        it.printStackTrace()
-                        currentDownloadStatus = UpdateUtil.DownloadStatus.NotYet
-                        ToastUtil.makeToastSuspend(context.getString(R.string.app_update_failed))
-                        return@launch
-                    }
-                }
-            },
-            releaseNote = latestRelease.body.toString(),
-            downloadStatus = currentDownloadStatus
-        )
+         /*UpdateDialogImpl(
+             onDismissRequest = {
+                 showUpdateDialog = false
+                 updateJob?.cancel()
+             },
+             title = latestRelease.name.toString(),
+             onConfirmUpdate = {
+                 updateJob = scope.launch(Dispatchers.IO) {
+                     runCatching {
+                         UpdateUtil.downloadApk(latestRelease = latestRelease)
+                             .collect { downloadStatus ->
+                                 currentDownloadStatus = downloadStatus
+                                 if (downloadStatus is UpdateUtil.DownloadStatus.Finished) {
+                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                         launcher.launch(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                                     }
+                                 }
+                             }
+                     }.onFailure {
+                         it.printStackTrace()
+                         currentDownloadStatus = UpdateUtil.DownloadStatus.NotYet
+                         ToastUtil.makeToastSuspend(context.getString(R.string.app_update_failed))
+                         return@launch
+                     }
+                 }
+             },
+             releaseNote = latestRelease.body.toString(),
+             downloadStatus = currentDownloadStatus
+         )*/
+        UpdaterBottomDrawer(latestRelease = latestRelease)
     }
 
 }

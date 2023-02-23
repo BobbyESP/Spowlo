@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DeveloperMode
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PermIdentity
@@ -29,6 +30,8 @@ import com.bobbyesp.spowlo.ui.common.stringState
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.LinkButton
+import com.bobbyesp.spowlo.ui.components.OutlinedButtonChip
+import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.updateString
 import com.bobbyesp.spowlo.utils.SPOTIFY_CLIENT_ID
@@ -57,7 +60,14 @@ fun SpotifyClientIDDialog(onDismissRequest: () -> Unit) {
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
-                LinkButton(link = spotifyDeveloperConsoleUrl, text = stringResource(id = R.string.spotify_developer_console))
+                OutlinedButtonChip(
+                    onClick = {
+                        ChromeCustomTabsUtil.openUrl(
+                            spotifyDeveloperConsoleUrl
+                        )
+                    }, label = stringResource(id = R.string.spotify_developer_console),
+                    icon = Icons.Outlined.DeveloperMode
+                )
             }
         }, confirmButton = {
             ConfirmButton() {
@@ -92,7 +102,14 @@ fun SpotifyClientSecretDialog(onDismissRequest: () -> Unit) {
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
-                LinkButton(link = spotifyDeveloperConsoleUrl, text = stringResource(id = R.string.spotify_developer_console))
+                OutlinedButtonChip(
+                    onClick = {
+                        ChromeCustomTabsUtil.openUrl(
+                            spotifyDeveloperConsoleUrl
+                        )
+                    }, label = stringResource(id = R.string.spotify_developer_console),
+                    icon = Icons.Outlined.DeveloperMode
+                )
             }
         }, confirmButton = {
             ConfirmButton() {

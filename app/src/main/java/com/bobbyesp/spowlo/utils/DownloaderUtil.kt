@@ -6,6 +6,7 @@ import android.webkit.CookieManager
 import androidx.annotation.CheckResult
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
+import com.bobbyesp.library.SpotDLResponse
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
@@ -58,6 +59,7 @@ object DownloaderUtil {
         val useCookies: Boolean = PreferencesUtil.getValue(COOKIES),
         val useSyncedLyrics: Boolean = PreferencesUtil.getValue(SYNCED_LYRICS),
         val useCaching: Boolean = PreferencesUtil.getValue(USE_CACHING),
+        val dontFilter: Boolean = PreferencesUtil.getValue(DONT_FILTER_RESULTS),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -225,23 +227,27 @@ object DownloaderUtil {
                 pathBuilder.append(audioDownloadDir)
                 Log.d(TAG, "downloadSong: $pathBuilder")
 
-                if(useCookies){
+                if (useCookies) {
                     useCookies()
                 }
 
-                if(!useCaching){
+                if (!useCaching) {
                     addOption("--no-cache")
                 }
 
-                if(useYtMetadata){
+                if (useYtMetadata) {
                     addOption("--ytm-data")
                 }
 
-                if(useSyncedLyrics){
+                if (dontFilter) {
+                    addOption("--dont-filter-results")
+                }
+
+                if (useSyncedLyrics) {
                     addOption("--lyrics", "synced")
                 }
 
-                if(preserveOriginalAudio) {
+                if (preserveOriginalAudio) {
                     addOption("--bitrate", "disable")
                     addAudioFormat()
                 } else {
@@ -249,7 +255,9 @@ object DownloaderUtil {
                     addAudioFormat()
                 }
 
-                if(useSpotifyPreferences){
+                addOption("--audio", PreferencesUtil.getAudioProviderDesc())
+
+                if (useSpotifyPreferences) {
                     addOption("--client-id", spotifyClientID)
                     addOption("--client-secret", spotifyClientSecret)
                 }
@@ -266,7 +274,21 @@ object DownloaderUtil {
                         downloadPath = pathBuilder.toString(),
                         sdcardUri = sdcardUri
                     )
-                } else Result.failure(th)
+                } else {
+                    return Result.failure(th)
+                }
+            }.onSuccess { response ->
+                return when{
+                    response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found."))
+                    response.output.contains("YT-DLP") -> Result.failure(Throwable("An error occurred to yt-dlp while downloading the song. Please, report this issue in GitHub."))
+                    else -> onFinishDownloading(
+                        this,
+                        songInfo = songInfo,
+                        downloadPath = pathBuilder.toString(),
+                        sdcardUri = sdcardUri
+                    )
+
+                }
             }
             return onFinishDownloading(
                 this,

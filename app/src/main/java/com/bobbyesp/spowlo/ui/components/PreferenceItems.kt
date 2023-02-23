@@ -526,7 +526,7 @@ fun PreferencesHintCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
-            .clip(MaterialTheme.shapes.extraLarge)
+            .clip(MaterialTheme.shapes.small)
             .background(backgroundColor)
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 16.dp),
@@ -819,5 +819,5 @@ fun PreferenceInfo(
 @Composable
 @Preview(showBackground = true)
 fun PreferenceInfoPreview() {
-    PreferenceInfo(text = stringResource(id = R.string.custom_command_enabled_hint))
+    PreferenceInfo(text = stringResource(id = R.string.translate))
 }

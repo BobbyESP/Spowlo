@@ -55,17 +55,6 @@ class App : Application() {
 
         applicationScope.launch((Dispatchers.IO)) {
             try {
-                if (!PreferencesUtil.containsKey(TEMPLATE_ID)) {
-                    PreferencesUtil.encodeInt(
-                        TEMPLATE_ID, DatabaseUtil.insertTemplate(
-                            CommandTemplate(
-                                id = 0,
-                                name = context.getString(R.string.custom_command_template),
-                                template = TEMPLATE_EXAMPLE
-                            )
-                        ).toInt()
-                    )
-                }
                 SpotDL.getInstance().init(this@App)
                 FFmpeg.getInstance().init(this@App)
                 DownloaderUtil.getCookiesContentFromDatabase().getOrNull()?.let {

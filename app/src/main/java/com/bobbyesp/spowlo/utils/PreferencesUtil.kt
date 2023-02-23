@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.utils
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.App
@@ -11,6 +12,7 @@ import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.CookieProfile
+import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.google.android.material.color.DynamicColors
 import com.kyant.monet.PaletteStyle
@@ -55,6 +57,9 @@ const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
 const val USE_CACHING = "use_caching"
+const val DONT_FILTER_RESULTS = "dont_filter_results"
+
+const val AUDIO_PROVIDER = "audio_provider"
 
 const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
@@ -73,7 +78,7 @@ const val SYSTEM_DEFAULT = 0
 const val STABLE = 0
 const val PRE_RELEASE = 1
 
-const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results --preserve-original-audio"""
+const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results"""
 
 private val StringPreferenceDefaults =
     mapOf(
@@ -93,6 +98,7 @@ private val BooleanPreferenceDefaults =
         SYNCED_LYRICS to false,
         AUTO_UPDATE to true,
         USE_CACHING to true,
+        DONT_FILTER_RESULTS to false,
     )
 
 private val IntPreferenceDefaults = mapOf(
@@ -103,6 +109,7 @@ private val IntPreferenceDefaults = mapOf(
     WELCOME_DIALOG to 1,
     AUDIO_FORMAT to 5,
     AUDIO_QUALITY to 17,
+    AUDIO_PROVIDER to 0,
     UPDATE_CHANNEL to STABLE,
 )
 
@@ -139,6 +146,8 @@ object PreferencesUtil {
 
     fun getAudioFormat(): Int = AUDIO_FORMAT.getInt()
 
+    fun getAudioProvider(): Int = AUDIO_PROVIDER.getInt()
+
     fun getAudioQuality(): Int = AUDIO_QUALITY.getInt()
 
     fun getAudioFormatDesc(audioQualityStr: Int = getAudioFormat()): String {
@@ -150,6 +159,23 @@ object PreferencesUtil {
             4 -> "m4a"
             5 -> "Default"
             else -> "mp3"
+        }
+    }
+
+    fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
+        return when (audioProviderInt){
+            0 -> "youtube-music"
+            1 -> "youtube"
+            else -> "youtube-music"
+        }
+    }
+
+    @Composable
+    fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
+        return when (audioProviderInt){
+            0 -> LocalAsset(id = R.drawable.youtube_music_icons8)
+            1 -> LocalAsset(id = R.drawable.icons8_youtube)
+            else -> LocalAsset(id = R.drawable.youtube_music_icons8)
         }
     }
 

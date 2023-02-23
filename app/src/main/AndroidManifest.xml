@@ -38,6 +38,7 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         tools:targetApi="tiramisu">
+        <!--        android:largeHeap="true" -->
 
         <activity
             android:name=".MainActivity"
@@ -100,27 +101,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <activity
-            android:name="com.spotify.sdk.android.auth.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:exported="true">
-            <intent-filter>
-                <data android:scheme="spowlo" android:host="spotify-auth" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".features.spotify_api.auth.SpotifyPkceLoginActivityImpl"
-            android:launchMode="singleTop" android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="spowlo" android:host="spotify-pkce" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

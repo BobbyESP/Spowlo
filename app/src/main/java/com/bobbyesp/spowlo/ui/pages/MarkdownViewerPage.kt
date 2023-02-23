@@ -19,9 +19,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
+import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import dev.jeziellago.compose.markdowntext.MarkdownText
+
+val imageLoader = ImageLoader.Builder(App.context)
+    .memoryCache {
+        MemoryCache.Builder(App.context)
+            .maxSizePercent(0.25)
+            .build()
+    }
+    .diskCache {
+        DiskCache.Builder()
+            .directory(App.context.cacheDir.resolve("image_cache"))
+            .maxSizePercent(0.02)
+            .build()
+    }
+    .build()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +82,10 @@ fun MarkdownViewerPage(
             markdown = markdownText,
             textAlign = TextAlign.Justify,
             color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            onLinkClicked = { url ->
+                ChromeCustomTabsUtil.openUrl(url)
+            },
+            imageLoader = imageLoader
         )
     }
 }

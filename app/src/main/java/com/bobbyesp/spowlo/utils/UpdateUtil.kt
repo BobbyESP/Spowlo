@@ -5,16 +5,23 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.core.content.FileProvider
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryViewModel
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -33,7 +40,30 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+@OptIn(ExperimentalMaterialApi::class)
 object UpdateUtil {
+
+    data class UpdateViewState(
+        val drawerState: ModalBottomSheetState = ModalBottomSheetState(
+            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true
+        ),
+    )
+
+    private val _updateViewState = MutableStateFlow(UpdateViewState())
+    val updateViewState = _updateViewState.asStateFlow()
+
+    fun showUpdateDrawer(){
+        _updateViewState.update {
+            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Expanded))
+        }
+    }
+
+    fun hideUpdateDrawer(){
+        _updateViewState.update {
+            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Hidden))
+        }
+    }
+
 
     private const val OWNER = "BobbyESP"
     private const val REPO = "Spowlo"
