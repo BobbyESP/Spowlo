@@ -45,6 +45,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
+    var showAudioProviderDialog by remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -102,6 +103,14 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         enabled = !preserveOriginalAudio,
                     ) { showAudioQualityDialog = true }
                 }
+                item {
+                    PreferenceItem(
+                        title = stringResource(R.string.audio_provider),
+                        description = stringResource(R.string.audio_provider_desc),
+                        icon = Icons.Outlined.HighQuality,
+                        enabled = !isCustomCommandEnabled,
+                    ) { showAudioProviderDialog = true }
+                }
             }
         })
     if (showAudioFormatDialog) {
@@ -118,4 +127,10 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
             audioQuality = PreferencesUtil.getAudioQualityDesc()
         }
     }
+    if (showAudioProviderDialog) {
+        AudioProviderDialog(
+            onDismissRequest = { showAudioProviderDialog = false }
+        )
+    }
+
 }

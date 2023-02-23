@@ -255,6 +255,8 @@ object DownloaderUtil {
                     addAudioFormat()
                 }
 
+                addOption("--audio", PreferencesUtil.getAudioProviderDesc())
+
                 if (useSpotifyPreferences) {
                     addOption("--client-id", spotifyClientID)
                     addOption("--client-secret", spotifyClientSecret)

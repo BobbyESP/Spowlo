@@ -247,9 +247,10 @@
     <string name="la_az" translatable="false">Azərbaycanca</string>
     <string name="la_nn" translatable="false">Nynorsk</string>
     <string name="la_pa" translatable="false">ਪੰਜਾਬੀ</string>
+
     <string name="update_available">A new update is available!</string>
     <string name="dont_filter_results">Don\'t filter results</string>
-    <string name="dont_filter_results_desc">If your download wasn\'t succesful or the song not found, using this command should work all.</string>
-
-
+    <string name="dont_filter_results_desc">Do not filter searching results in the available platforms.</string>
+    <string name="audio_provider">Audio provider</string>
+    <string name="audio_provider_desc">Choose from where you want to download the songs</string>
 </resources>

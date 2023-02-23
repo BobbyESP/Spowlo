@@ -3,6 +3,8 @@ package com.bobbyesp.spowlo.ui.pages.settings.format
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -88,7 +90,7 @@ fun AudioQualityDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {})
                 Text(text = stringResource(R.string.confirm))
             }
         }, text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(modifier = Modifier) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -96,11 +98,15 @@ fun AudioQualityDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {})
                     text = stringResource(R.string.audio_quality_desc),
                     style = MaterialTheme.typography.bodyLarge
                 )
-                for (i in 0..17)
-                    SingleChoiceItem(
-                        text = PreferencesUtil.getAudioQualityDesc(i),
-                        selected = audioQuality == i
-                    ) { audioQuality = i }
+                LazyColumn(content = {
+                    for (i in 0..17)
+                        item {
+                            SingleChoiceItem(
+                                text = PreferencesUtil.getAudioQualityDesc(i),
+                                selected = audioQuality == i
+                            ) { audioQuality = i }
+                        }
+                }, modifier = Modifier.size(400.dp))
             }
         })
 }
