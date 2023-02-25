@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.domain.model.PackagesObjectDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.ApkResponseDto
 import com.bobbyesp.spowlo.features.mod_downloader.util.ModDownloaderUtils
+import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 enum class PackagesListItemType(
@@ -55,7 +57,7 @@ fun PackagesListItem(
     modifier: Modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
     type: PackagesListItemType = PackagesListItemType.Regular,
     expanded: Boolean = false,
-    packages: List<PackagesObjectDto>,
+    packages: List<ApkResponseDto>,
     latestVersion: String = "Unknown",
     onClick: () -> Unit = {},
 ) {
@@ -114,9 +116,11 @@ fun PackagesListItem(
                             fontWeight = FontWeight.Bold
                         )
 
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(Alignment.CenterEnd)){
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.CenterEnd)
+                        ) {
                             Text(
                                 modifier = Modifier,
                                 text = latestVersion,
@@ -168,54 +172,52 @@ fun PackagesListItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 6.dp)
-                        //adjust the size of the column to the quantity of items
-                        .height(
-                            when {
-                                packages.size <= 2 -> 84.dp
-                                else -> packages.size * 18.dp
-                            }
-                        )
+                    //adjust the size of the column to the quantity of items
                 ) {
-                    LazyColumn {
-                        items(
-                            items = packages,
-                        ) { packageObject ->
-                            val title = packageObject.Title
-                            val link = packageObject.Link
+                    packages.forEach {
+                        val title = it.version
+                        val link = it.link
 
-                            //if the package title has ARM64-V8A, the type is Arm64
-                            val isArm64: Boolean = title.contains("ARM64-V8A")
+                        //if the package title has ARM64-V8A, the type is Arm64
+                        val isArm64: Boolean = title.contains("ARM64-V8A")
 
-                            val containsArch: Boolean =
-                                title.contains("(ARM64-V8A)") || title.contains("ARMEABI-V7A")
+                        val containsArch: Boolean =
+                            title.contains("ARM64-V8A") || title.contains("ARMEABI-V7A")
 
-                            //Get just the version name without the architecture
-                            val versionName =
-                                if (containsArch) title.substringBefore("(").trim() else title
+                        //Get just the version name without the architecture
+                        val versionName =
+                            if (containsArch) title.substringBefore("(").trim() else title
 
-                            PackageItemComponent(
+                        //If the package is not arm64 and also not arm, then it is Merged
+                        val isMerged = !isArm64 && !title.contains("ARMEABI-V7A")
+
+
+                        PackageItemComponent(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            type = when {
+                                isArm64 -> ArchType.Arm64
+                                isMerged -> ArchType.Merged
+                                else -> ArchType.Arm
+                            },
+                            version = versionName,
+                            link = link,
+                            //on click open the link in browser
+                            onClick = { ChromeCustomTabsUtil.openUrl(link) },
+                            onArchClick = { show = !show },
+                            onCopyClick = { GeneralTextUtils.copyToClipboardAndNotify(link) }
+                        )
+
+                        //the last item of the lazy column will not have divider
+                        if (packages.indexOf(it) != packages.lastIndex) {
+                            Divider(
                                 modifier = Modifier
-                                    .fillMaxWidth(),
-                                //if its Arm64, ArchType is Arm64, else ArchType is Arm
-                                type = if (isArm64) ArchType.Arm64 else ArchType.Arm,
-                                version = versionName,
-                                link = link,
-                                //on click open the link in browser
-                                onClick = { ModDownloaderUtils.openLinkInBrowser(link) },
-                                onArchClick = { show = !show },
-                                onCopyClick = { GeneralTextUtils.copyToClipboardAndNotify(link) }
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp)
                             )
-
-                            //the last item of the lazy column will not have divider
-                            if (packageObject != packages.last()) {
-                                Divider(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 8.dp)
-                                )
-                            }
                         }
                     }
+
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages
 
-import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -42,13 +40,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
-import com.bobbyesp.spowlo.ui.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
@@ -75,6 +74,7 @@ import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -140,17 +140,6 @@ fun InitialEntry(
             }
         }
     }
-
-    //When the app is opened, call xManagerApi to check for updates
-    //WARN: DISABLED FOR PETITION OF THE xManager TEAM
-    /*LaunchedEffect(Unit) {
-        xManagerAPI.getPackagesResponseDto().onFailure {
-            ToastUtil.makeToastSuspend(App.context.getString(R.string.error_checking_for_updates))
-        }.onSuccess {
-            modsDownloaderViewModel.updateApiResponse(it)
-        }
-    }*/
-
 
     val cookiesViewModel: CookiesSettingsViewModel = viewModel()
     val onBackPressed: () -> Unit = { navController.popBackStack() }
@@ -354,6 +343,15 @@ fun InitialEntry(
             }.onFailure {
                 it.printStackTrace()
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "InitialEntry: Checking for updates")
+        ModsDownloaderAPI.callModsAPI().onFailure {
+            ToastUtil.makeToastSuspend(App.context.getString(R.string.api_call_failed))
+        }.onSuccess {
+            modsDownloaderViewModel.updateApiResponse(it)
         }
     }
 

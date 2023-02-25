@@ -253,4 +253,6 @@
     <string name="dont_filter_results_desc">Do not filter searching results in the available platforms.</string>
     <string name="audio_provider">Audio provider</string>
     <string name="audio_provider_desc">Choose from where you want to download the songs</string>
+    <string name="api_call_failed">Calling the MODs API wasn\'t successful</string>
+    <string name="mods_advertisement">This mods are hosted by me. If you cannot download them, please, report it in the Telegram channel if possible!</string>
 </resources>

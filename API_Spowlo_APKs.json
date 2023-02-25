@@ -3,7 +3,8 @@
         "Regular": "8.8.4.517",
         "Regular_Cloned": "8.8.4.517",
         "AMOLED": "8.8.4.517",
-        "AMOLED_Cloned": "8.8.4.517"
+        "AMOLED_Cloned": "8.8.4.517",
+        "Lite": "1.9.0.28209"
     },
     "apps": {
         "Regular": [
