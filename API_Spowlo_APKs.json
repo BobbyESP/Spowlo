@@ -1,0 +1,96 @@
+{
+    "Latest_Versions": {
+        "Regular": "8.8.4.517",
+        "Regular_Cloned": "8.8.4.517",
+        "AMOLED": "8.8.4.517",
+        "AMOLED_Cloned": "8.8.4.517"
+    },
+    "apps": {
+        "Regular": [
+            {
+                "version": "8.7.78.373",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.78.373%20%5BxManager%5D%20(Merged).apk?alt=media&token=1ecb0164-7b1f-4daa-a0e2-5c47a764226b"
+            },
+            {
+                "version": "8.7.88.496",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.88.496%20%5BxManager%5D%20(Merged).apk?alt=media&token=d63fe43d-d45e-4094-8de1-87a59becbe3e"
+            },
+            {
+                "version": "8.8.0.347",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.0.347%20%5BxManager%5D%20(Merged).apk?alt=media&token=9a5aaaf1-07de-43da-9885-661ca73ee641"
+            },
+            {
+                "version": "8.8.4.517",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.4.518%20%5BxManager%5D%20(Merged).apk?alt=media&token=7f54ca37-12a6-4838-960b-d1f7ffac2051"
+            }
+        ],
+        "Regular_Cloned": [
+            {
+                "version": "8.7.78.373",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.78.373%20%5BCloned%5D%20(Merged).apk?alt=media&token=c4c97e31-47a6-4d76-bd86-646421f901a0"
+            },
+            {
+                "version": "8.7.88.496",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.88.496%20%5BCloned%5D%20(Merged).apk?alt=media&token=39aa9574-9706-4378-a821-ee1fb14fea34"
+            },
+            {
+                "version": "8.8.0.347",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.0.347%20%5BCloned%5D%20(Merged).apk?alt=media&token=a9cd1dfd-037b-40ea-b9b3-1760c639af51"
+            },
+            {
+                "version": "8.8.4.517",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.4.518%20%5BCloned%5D%20(Merged).apk?alt=media&token=c63fa555-e02f-4a83-aed5-1ad08325f495"
+            }
+        ],
+        "AMOLED": [
+            {
+                "version": "8.7.78.373",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.78.373%20%5BAB%20Sherlock%5D%20(Merged).apk?alt=media&token=35d76891-db22-47a0-ad60-097d0a7f3991"
+            },
+            {
+                "version": "8.7.88.496",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.88.496%20%5BAB%20Sherlock%5D%20(Merged).apk?alt=media&token=bb24ec54-7e82-4ef7-8556-d3aeb2c042a7"
+            },
+            {
+                "version": "8.8.0.347",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.0.347%20%5BAB%20Sherlock%5D%20(Merged).apk?alt=media&token=9e7f03c7-ab5c-4f9d-adfa-eb02e3993c78"
+            },
+            {
+                "version": "8.8.4.517",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.4.518%20%5BAB%20Sherlock%5D%20(Merged).apk?alt=media&token=b0d1cd62-8c91-46eb-90e6-b49d44f8cb40"
+            }
+        ],
+        "AMOLED_Cloned": [
+            {
+                "version": "8.7.78.373",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.78.373%20%5BAB%20Cloned%20-%20Sherlock%5D%20(Merged).apk?alt=media&token=e90eb9e9-3ad1-49de-86e5-61986d0512a9"
+            },
+            {
+                "version": "8.7.88.496",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.7.88.496%20%5BAB%20Cloned%20-%20Sherlock%5D%20(Merged).apk?alt=media&token=1e70119d-7a71-4064-aa21-22f02aee9bcb"
+            },
+            {
+                "version": "8.8.0.347",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.0.347%20%5BAB%20Cloned%20-%20Sherlock%5D%20(Merged).apk?alt=media&token=5e54af4a-0fef-4376-a9d8-b42ce40b6d0d"
+            },
+            {
+                "version": "8.8.4.517",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20v8.8.4.518%20%5BAB%20Cloned%20-%20Sherlock%5D%20(Merged).apk?alt=media&token=1cb71d20-42a5-463e-92f5-b6256d07f331"
+            }
+        ],
+        "Lite": [
+            {
+                "version": "1.9.0.24346",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20Lite%20v1.9.0.24346%20(Merged)%20%5BxC3FFF0E%5D.apk?alt=media&token=98ecc074-ed00-4a46-ba3c-67461a7b410b"
+            },
+            {
+                "version": "1.9.0.25719",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20Lite%20v1.9.0.25719%20(Merged)%20%5BxC3FFF0E%5D.apk?alt=media&token=d22f466b-a461-40a3-b85b-fda2f97a09ee"
+            },
+            {
+                "version": "1.9.0.28209",
+                "link": "https://firebasestorage.googleapis.com/v0/b/spowlo.appspot.com/o/Spotify%20Lite%20v1.9.0.28209%20(Merged)%20%5BxC3FFF0E%5D.apk?alt=media&token=3badb293-fd91-40d7-9b6f-c4e6363cb47a"
+            }
+        ]
+    }
+}
