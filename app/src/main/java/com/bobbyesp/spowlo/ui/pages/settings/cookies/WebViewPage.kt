@@ -21,14 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.utils.connectWithDelimiter
 import com.google.accompanist.web.AccompanistWebChromeClient
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
-import com.bobbyesp.spowlo.R
 
 data class Cookie(
     val domain: String = "",
@@ -72,7 +71,7 @@ private fun makeCookie(url: String, cookieString: String): Cookie {
 }
 
 @SuppressLint("SetJavaScriptEnabled")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebViewPage(
     cookiesViewModel: CookiesSettingsViewModel,

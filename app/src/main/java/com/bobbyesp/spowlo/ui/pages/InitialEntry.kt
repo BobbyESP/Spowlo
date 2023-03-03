@@ -38,6 +38,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.bobbyesp.spowlo.App
@@ -47,7 +48,6 @@ import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
-import com.bobbyesp.spowlo.ui.common.fadeThroughComposable
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
@@ -330,8 +330,8 @@ fun InitialEntry(
             }
 
             //DIALOGS
-
-            fadeThroughComposable(Route.AUDIO_QUALITY_DIALOG) {
+            //TODO: ADD DIALOGS
+            dialog(Route.AUDIO_QUALITY_DIALOG) {
                 AudioQualityDialog(
                     onBackPressed
                 )

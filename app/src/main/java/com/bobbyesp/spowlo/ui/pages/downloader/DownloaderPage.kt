@@ -76,7 +76,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App
@@ -103,8 +102,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class,
-    ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class
+    ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class
 )
 fun DownloaderPage(
     navigateToSettings: () -> Unit = {},

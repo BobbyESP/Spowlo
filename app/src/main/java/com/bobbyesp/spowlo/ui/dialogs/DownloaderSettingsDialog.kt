@@ -45,10 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
@@ -74,7 +74,7 @@ import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DownloaderSettingsDialog(
     useDialog: Boolean = false,
@@ -245,7 +245,7 @@ fun DownloaderSettingsDialog(
                     label = stringResource(id = R.string.audio_quality),
                     icon = Icons.Outlined.HighQuality,
                     enabled = !preserveOriginalAudio,
-                    onClick = { showAudioQualityDialog = true },
+                    onClick = { navController.navigate(Route.AUDIO_QUALITY_DIALOG) },
                 )
             }
             DrawerSheetSubtitle(text = stringResource(id = R.string.spotify))
