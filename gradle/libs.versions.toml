@@ -36,11 +36,11 @@ kotlinxSerializationJson = "1.4.1"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
 
-exoplayer = "2.16.1"
+exoplayer = "2.18.4"
 
 room = "2.5.0"
 
-mmkv = "1.2.14"
+mmkv = "1.2.15"
 
 #chrome custom tabs
 customTabs = "1.5.0"

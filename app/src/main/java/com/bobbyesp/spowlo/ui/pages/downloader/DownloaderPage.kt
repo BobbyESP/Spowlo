@@ -101,7 +101,6 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 @OptIn(
-    ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
     ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class
 )
 fun DownloaderPage(
@@ -252,14 +251,6 @@ fun DownloaderPageImplementation(
                     )
                 }
             }, actions = {
-
-                /*IconButton(onClick = { onNavigateToTaskList() }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Terminal,
-                        contentDescription = stringResource(id = R.string.running_tasks)
-                    )
-                }*/
-
                 IconButton(onClick = { navigateToMods() }) {
                     Icon(
                         imageVector = LocalAsset(id = R.drawable.spotify_logo),
@@ -430,7 +421,7 @@ fun FABs(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InputUrl(
     url: String,

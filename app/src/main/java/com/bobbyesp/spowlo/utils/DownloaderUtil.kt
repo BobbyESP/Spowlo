@@ -10,7 +10,6 @@ import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.Cookie
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
@@ -332,7 +331,6 @@ object DownloaderUtil {
     ): List<String> = FilesUtil.scanFileToMediaLibraryPostDownload(
         title = songInfo.name, downloadDir = downloadPath
     ).apply {
-        //TODO: FIX HERE THE DIRECTORY BEING REMOVED
         Log.d(TAG, "scanVideoIntoDownloadHistory: $downloadPath")
         insertInfoIntoDownloadHistory(songInfo, this)
     }
@@ -355,12 +353,5 @@ object DownloaderUtil {
                 )
             )
         }
-    }
-
-    suspend fun executeCommandInBackground(
-        url: String,
-        template: CommandTemplate = PreferencesUtil.getTemplate()
-    ) {
-        TODO("Not yet implemented")
     }
 }

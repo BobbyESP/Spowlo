@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.components.about
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +20,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
-import com.bobbyesp.spowlo.ui.theme.Shapes
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 
 @Composable
@@ -65,7 +62,7 @@ fun ContributorComponent(
             Text(
                 text = description,
                 modifier = Modifier
-                    .padding(bottom = 6.dp)
+                    .padding(bottom = 6.dp, end = 16.dp)
                     .alpha(0.7f),
                 fontSize = 12.sp,
                 maxLines = 2,
