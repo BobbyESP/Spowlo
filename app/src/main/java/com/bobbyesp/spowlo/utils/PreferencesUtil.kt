@@ -118,6 +118,7 @@ val palettesMap = mapOf(
     1 to PaletteStyle.Spritz,
     2 to PaletteStyle.FruitSalad,
     3 to PaletteStyle.Vibrant,
+    4 to PaletteStyle.Spotify,
 )
 object PreferencesUtil {
     private val kv = MMKV.defaultMMKV()

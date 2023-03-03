@@ -96,7 +96,9 @@ val colorList = listOf(
     Color.Cyan,
     Color.Red,
     Color.Yellow,
-    Color.Magenta
+    Color.Magenta,
+    //RGB(30, 215, 96) in code
+    Color(30, 215, 96)
 )
 
 @OptIn(
@@ -262,7 +264,7 @@ fun RowScope.ColorButtons(color: Color) {
 @Composable
 fun RowScope.ColorButton(
     modifier: Modifier = Modifier,
-    color: Color = Color.Green,
+    color: Color = Color.Red,
     index: Int = 0,
     tonalStyle: PaletteStyle = PaletteStyle.TonalSpot,
 ) {

@@ -6,7 +6,6 @@ import android.webkit.CookieManager
 import androidx.annotation.CheckResult
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
-import com.bobbyesp.library.SpotDLResponse
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
@@ -222,10 +221,11 @@ object DownloaderUtil {
 
             request.apply {
                 addOption("download", url)
-                addOption("--output", audioDownloadDir)
 
                 pathBuilder.append(audioDownloadDir)
                 Log.d(TAG, "downloadSong: $pathBuilder")
+
+                addOption("--output", pathBuilder.toString())
 
                 if (useCookies) {
                     useCookies()

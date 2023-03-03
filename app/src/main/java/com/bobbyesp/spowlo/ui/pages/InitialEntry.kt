@@ -47,6 +47,7 @@ import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
+import com.bobbyesp.spowlo.ui.common.fadeThroughComposable
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
@@ -65,6 +66,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.documentation.DocumentationPage
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
@@ -221,6 +223,7 @@ fun InitialEntry(
                     },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
+                    navController = navController,
                     downloaderViewModel = downloaderViewModel
                 )
             }
@@ -323,6 +326,14 @@ fun InitialEntry(
                 MarkdownViewerPage(
                     markdownFileName = mdFileName,
                     onBackPressed = onBackPressed
+                )
+            }
+
+            //DIALOGS
+
+            fadeThroughComposable(Route.AUDIO_QUALITY_DIALOG) {
+                AudioQualityDialog(
+                    onBackPressed
                 )
             }
         }

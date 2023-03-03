@@ -117,6 +117,7 @@ object Downloader {
         val progressText: String = "",
         val thumbnailUrl: String = "",
         val taskId: String = "",
+        val output: String = "",
         // val playlistIndex: Int = 0,
     )
 

@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,9 +78,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
+import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
@@ -96,6 +96,9 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.matchUrlFromClipboard
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 @OptIn(
@@ -110,6 +113,7 @@ fun DownloaderPage(
     onSongCardClicked: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     navigateToMods: () -> Unit = {},
+    navController: NavController,
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -122,11 +126,6 @@ fun DownloaderPage(
             ToastUtil.makeToast(R.string.permission_denied)
         }
     }
-
-    //Disabled as petition of xManager team
-    /*LaunchedEffect(Unit) {
-        xManagerAPI.getPackagesResponseDto()
-    }*/
 
     //STATE FLOWS
     val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -208,9 +207,11 @@ fun DownloaderPage(
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
         with(viewState) {
-            DownloaderSettingsDialog(useDialog = useDialog,
+            DownloaderSettingsDialog(
+                useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
+                navController = navController,
                 confirm = { checkPermissionOrDownload() },
                 onRequestMetadata = { downloaderViewModel.requestMetadata() },
                 hide = { downloaderViewModel.hideDialog(scope, useDialog) }
@@ -416,7 +417,7 @@ fun FABs(
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
 
-        /*AnimatedVisibility(visible = isDownloading) {
+        AnimatedVisibility(visible = isDownloading) {
             ExtendedFloatingActionButton(
                 text = { Text(stringResource(R.string.cancel)) },
                 onClick = cancelCallback, icon = {
@@ -426,7 +427,7 @@ fun FABs(
                     )
                 }, modifier = Modifier.padding(vertical = 12.dp)
             )
-        }*/
+        }
     }
 
 }
