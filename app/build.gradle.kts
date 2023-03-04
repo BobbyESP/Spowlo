@@ -43,7 +43,7 @@ sealed class Version(
 
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
-    versionMinor = 1,
+    versionMinor = 2,
     versionPatch = 0,
 )
 
@@ -71,7 +71,7 @@ android {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
         targetSdk = 33
-        versionCode = 10000
+        versionCode = 10200
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"

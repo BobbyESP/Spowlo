@@ -61,6 +61,7 @@ const val DONT_FILTER_RESULTS = "dont_filter_results"
 
 const val AUDIO_PROVIDER = "audio_provider"
 
+const val SPOTDL_UPDATE = "spotdl_update"
 const val TEMPLATE_ID = "template_id"
 const val MAX_FILE_SIZE = "max_file_size"
 const val COOKIES = "cookies"
@@ -99,6 +100,7 @@ private val BooleanPreferenceDefaults =
         AUTO_UPDATE to true,
         USE_CACHING to true,
         DONT_FILTER_RESULTS to false,
+        SPOTDL_UPDATE to true,
     )
 
 private val IntPreferenceDefaults = mapOf(

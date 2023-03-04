@@ -255,4 +255,5 @@
     <string name="audio_provider_desc">Choose from where you want to download the songs</string>
     <string name="api_call_failed">Calling the MODs API wasn\'t successful</string>
     <string name="mods_advertisement">This mods are hosted by me. If you cannot download them, please, report it in the Telegram channel if possible!</string>
+    <string name="spotDl_uptodate">SpotDL is up to date</string>
 </resources>

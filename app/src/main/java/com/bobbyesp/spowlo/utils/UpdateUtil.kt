@@ -9,9 +9,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.core.content.FileProvider
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
+import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryViewModel
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -84,6 +85,19 @@ object UpdateUtil {
             .build()
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
+
+    suspend fun updateSpotDL(): SpotDL.UpdateStatus? =
+        withContext(Dispatchers.IO) {
+            SpotDL.getInstance().updateSpotDL(
+                context,
+                "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
+            ).apply {
+                if (this == SpotDL.UpdateStatus.DONE)
+                    SpotDL.getInstance().version(context)?.let {
+                        PreferencesUtil.encodeString(SPOTDL, it)
+                    }
+            }
+        }
 
 
     private suspend fun getLatestRelease(): LatestRelease {

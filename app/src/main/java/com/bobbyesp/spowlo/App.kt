@@ -14,17 +14,13 @@ import android.os.Looper
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
-import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
-import com.bobbyesp.spowlo.utils.DatabaseUtil
 import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import com.bobbyesp.spowlo.utils.TEMPLATE_EXAMPLE
-import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -56,7 +52,7 @@ class App : Application() {
         applicationScope.launch((Dispatchers.IO)) {
             try {
                 SpotDL.getInstance().init(this@App)
-                FFmpeg.getInstance().init(this@App)
+                FFmpeg.init(this@App)
                 DownloaderUtil.getCookiesContentFromDatabase().getOrNull()?.let {
                     FilesUtil.writeContentToFile(it, getCookiesFile())
                 }

@@ -257,6 +257,9 @@ object DownloaderUtil {
                 addOption("--audio", PreferencesUtil.getAudioProviderDesc())
 
                 if (useSpotifyPreferences) {
+                    if (spotifyClientID.isEmpty() || spotifyClientSecret.isEmpty()) return Result.failure(
+                        Throwable("Spotify client ID or secret is empty while you have the custom credentials option enabled! \n Please check your settings.")
+                    )
                     addOption("--client-id", spotifyClientID)
                     addOption("--client-secret", spotifyClientSecret)
                 }
@@ -277,7 +280,7 @@ object DownloaderUtil {
                     return Result.failure(th)
                 }
             }.onSuccess { response ->
-                return when{
+                return when {
                     response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found."))
                     response.output.contains("YT-DLP") -> Result.failure(Throwable("An error occurred to yt-dlp while downloading the song. Please, report this issue in GitHub."))
                     else -> onFinishDownloading(

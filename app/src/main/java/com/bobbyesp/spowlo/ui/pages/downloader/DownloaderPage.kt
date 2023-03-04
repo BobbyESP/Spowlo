@@ -4,7 +4,6 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -31,7 +30,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
@@ -39,7 +37,6 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -406,7 +403,7 @@ fun FABs(
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
 
-        AnimatedVisibility(visible = isDownloading) {
+        /*AnimatedVisibility(visible = isDownloading) {
             ExtendedFloatingActionButton(
                 text = { Text(stringResource(R.string.cancel)) },
                 onClick = cancelCallback, icon = {
@@ -416,7 +413,7 @@ fun FABs(
                     )
                 }, modifier = Modifier.padding(vertical = 12.dp)
             )
-        }
+        }*/
     }
 
 }

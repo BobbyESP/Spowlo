@@ -41,6 +41,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
@@ -71,6 +72,10 @@ import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
+import com.bobbyesp.spowlo.utils.SPOTDL_UPDATE
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -80,6 +85,7 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
@@ -340,6 +346,19 @@ fun InitialEntry(
     }
 //}
 
+    LaunchedEffect(Unit) {
+        if (!SPOTDL_UPDATE.getBoolean()) return@LaunchedEffect
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val res = UpdateUtil.updateSpotDL()
+                if (res == SpotDL.UpdateStatus.DONE) {
+                    ToastUtil.makeToastSuspend(context.getString(R.string.spotDl_uptodate) + " (${SPOTDL.getString()})")
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             runCatching {
