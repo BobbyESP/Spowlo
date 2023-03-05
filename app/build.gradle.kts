@@ -44,7 +44,7 @@ sealed class Version(
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
     versionMinor = 2,
-    versionPatch = 0,
+    versionPatch = 1,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -71,7 +71,7 @@ android {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
         targetSdk = 33
-        versionCode = 10200
+        versionCode = 10201
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
