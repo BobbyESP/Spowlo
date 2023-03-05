@@ -256,4 +256,6 @@
     <string name="api_call_failed">Calling the MODs API wasn\'t successful</string>
     <string name="mods_advertisement">This mods are hosted by me. If you cannot download them, please, report it in the Telegram channel if possible!</string>
     <string name="spotDl_uptodate">SpotDL is up to date</string>
+    <string name="geo_bypass">Geo bypass</string>
+    <string name="use_geobypass_desc">Use a localization bypass to download songs from countries that YT Music is restricted.</string>
 </resources>

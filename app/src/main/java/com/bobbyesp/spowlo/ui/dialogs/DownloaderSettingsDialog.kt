@@ -64,6 +64,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
+import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
@@ -142,6 +143,14 @@ fun DownloaderSettingsDialog(
     var useSyncedLyrics by remember {
         mutableStateOf(
             settings.getValue(SYNCED_LYRICS)
+        )
+    }
+
+    var useGeoBypass by remember {
+        mutableStateOf(
+            settings.getValue(
+                GEO_BYPASS
+            )
         )
     }
 
@@ -304,6 +313,18 @@ fun DownloaderSettingsDialog(
                         }
                     }
                 )
+                AudioFilterChip(
+                    label = stringResource(id = R.string.geo_bypass),
+                    selected = useGeoBypass,
+                    animated = true,
+                    onClick = {
+                        useGeoBypass = !useGeoBypass
+                        scope.launch {
+                            settings.updateValue(GEO_BYPASS, useGeoBypass)
+                        }
+                    }
+                )
+
                 AudioFilterChip(
                     label = stringResource(id = R.string.use_cache),
                     animated = true,

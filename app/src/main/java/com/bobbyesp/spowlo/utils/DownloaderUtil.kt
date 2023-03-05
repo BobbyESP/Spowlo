@@ -58,6 +58,7 @@ object DownloaderUtil {
         val useSyncedLyrics: Boolean = PreferencesUtil.getValue(SYNCED_LYRICS),
         val useCaching: Boolean = PreferencesUtil.getValue(USE_CACHING),
         val dontFilter: Boolean = PreferencesUtil.getValue(DONT_FILTER_RESULTS),
+        val geoBypass : Boolean = PreferencesUtil.getValue(GEO_BYPASS),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -244,6 +245,10 @@ object DownloaderUtil {
 
                 if (useSyncedLyrics) {
                     addOption("--lyrics", "synced")
+                }
+
+                if(geoBypass) {
+                    addOption("--geo-bypass")
                 }
 
                 if (preserveOriginalAudio) {
