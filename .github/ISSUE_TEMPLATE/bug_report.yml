@@ -11,7 +11,7 @@ body:
       description: |
         Carefully read and work through this check list in order to prevent the most common mistakes and misuse of Spowlo/spotDL (note that most of the bugs are caused by the spotDL library and we need to report them in their repo):
       options:
-        - label: I've verified that I'm running the latest [**stable version**](https://github.com/JunkFood02/Seal/releases/latest/) of Seal or any later [**preview versions**](https://github.com/JunkFood02/Seal/releases).
+        - label: I've verified that I'm running the latest [**stable version**](https://github.com/BobbyESP/Spowlo/releases/latest/) of Spowlo or any later [**preview versions**](https://github.com/BobbyESP/Spowlo/releases).
           required: true
         - label: I've checked that the YouTube Music is available in my country.
           required: true
