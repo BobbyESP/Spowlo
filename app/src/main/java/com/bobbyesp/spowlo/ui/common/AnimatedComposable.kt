@@ -201,3 +201,5 @@ fun NavGraphBuilder.slideInVerticallyComposable(
     },
     content = content
 )
+
+//Create a NavGraphBuilder extension function to add a composable route for a popup dialog

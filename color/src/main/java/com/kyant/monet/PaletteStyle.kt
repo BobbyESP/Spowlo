@@ -103,6 +103,14 @@ class PaletteStyle(
             neutral1Spec = ColorSpec({ it / 12 }) { 0.0 },
             neutral2Spec = ColorSpec({ it / 6 }) { 0.0 }
         )
+        //Create an Spotify-like palette
+        val Spotify: PaletteStyle = PaletteStyle(
+            accent1Spec = ColorSpec({ 48.0 }) { 0.0 },
+            accent2Spec = ColorSpec({ 24.0 }) { 0.0 },
+            accent3Spec = ColorSpec({ 32.0 }) { 0.0 },
+            neutral1Spec = ColorSpec({ 10.0 }) { 0.0 },
+            neutral2Spec = ColorSpec({ 12.0 }) { 0.0 }
+        )
 
         private fun Double.hueRotation(list: Array<Pair<Int, Int>>): Double {
             var i = 0

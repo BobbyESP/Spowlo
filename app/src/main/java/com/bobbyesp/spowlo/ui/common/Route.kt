@@ -35,6 +35,10 @@ object Route {
 
     const val TASK_HASHCODE = "task_hashcode"
     const val TEMPLATE_ID = "template_id"
+
+    //DIALOGS
+    const val AUDIO_QUALITY_DIALOG = "audio_quality_dialog"
+    const val AUDIO_FORMAT_DIALOG = "audio_format_dialog"
 }
 
 infix fun String.arg(arg: String) = "$this/{$arg}"

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Dataset
@@ -28,7 +26,6 @@ import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,9 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
@@ -66,6 +64,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
+import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
@@ -76,13 +75,14 @@ import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DownloaderSettingsDialog(
     useDialog: Boolean = false,
     dialogState: Boolean = false,
     isShareActivity: Boolean = false,
     drawerState: ModalBottomSheetState,
+    navController: NavController,
     confirm: () -> Unit,
     hide: () -> Unit,
     onRequestMetadata: () -> Unit,
@@ -143,6 +143,14 @@ fun DownloaderSettingsDialog(
     var useSyncedLyrics by remember {
         mutableStateOf(
             settings.getValue(SYNCED_LYRICS)
+        )
+    }
+
+    var useGeoBypass by remember {
+        mutableStateOf(
+            settings.getValue(
+                GEO_BYPASS
+            )
         )
     }
 
@@ -246,7 +254,7 @@ fun DownloaderSettingsDialog(
                     label = stringResource(id = R.string.audio_quality),
                     icon = Icons.Outlined.HighQuality,
                     enabled = !preserveOriginalAudio,
-                    onClick = { showAudioQualityDialog = true },
+                    onClick = { navController.navigate(Route.AUDIO_QUALITY_DIALOG) },
                 )
             }
             DrawerSheetSubtitle(text = stringResource(id = R.string.spotify))
@@ -305,6 +313,18 @@ fun DownloaderSettingsDialog(
                         }
                     }
                 )
+                AudioFilterChip(
+                    label = stringResource(id = R.string.geo_bypass),
+                    selected = useGeoBypass,
+                    animated = true,
+                    onClick = {
+                        useGeoBypass = !useGeoBypass
+                        scope.launch {
+                            settings.updateValue(GEO_BYPASS, useGeoBypass)
+                        }
+                    }
+                )
+
                 AudioFilterChip(
                     label = stringResource(id = R.string.use_cache),
                     animated = true,

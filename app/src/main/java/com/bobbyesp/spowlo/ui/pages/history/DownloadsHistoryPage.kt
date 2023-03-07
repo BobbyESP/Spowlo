@@ -63,7 +63,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
@@ -91,7 +90,7 @@ fun DownloadedSongInfo.filterByExtractor(author: String?): Boolean {
     return author.isNullOrEmpty() || (this.songAuthor == author)
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DownloadsHistoryPage(
     downloadsHistoryViewModel: DownloadsHistoryViewModel = hiltViewModel(),

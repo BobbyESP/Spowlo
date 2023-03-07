@@ -3,8 +3,8 @@ package com.bobbyesp.spowlo.features.mod_downloader.data.remote
 import android.content.Context
 import androidx.annotation.CheckResult
 import com.bobbyesp.spowlo.App
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.PackagesObjectDto
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.PackagesResponseDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.APIResponseDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.ApkResponseDto
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil.downloadFileWithProgress
 import kotlinx.coroutines.Dispatchers
@@ -22,15 +22,15 @@ import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-object xManagerAPI {
+object ModsDownloaderAPI {
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
 
-    private const val BASE_URL = "https://xmanagerapp.com"
-    private const val ENDPOINT = "/api/public.json"
+    private const val BASE_URL = "https://raw.githubusercontent.com/"
+    private const val ENDPOINT = "BobbyESP/Spowlo/main/API_Spowlo_APKs.json"
 
     private val client = OkHttpClient()
-    const val TAG = "xManagerAPI"
+    const val TAG = "APKsDownloaderAPI"
 
     private val requestAPIResponse =
         Request.Builder()
@@ -39,7 +39,7 @@ object xManagerAPI {
 
 
     @CheckResult
-    private suspend fun getAPIResponse(): Result<PackagesResponseDto>{
+    private suspend fun getAPIResponse(): Result<APIResponseDto>{
         return suspendCoroutine {
             client.newCall(requestAPIResponse).enqueue(object : Callback {
 
@@ -49,15 +49,15 @@ object xManagerAPI {
 
                 override fun onResponse(call: Call, response: Response) {
                     val responseData = response.body.string()
-                    val packagesResponseDto = jsonFormat.decodeFromString(PackagesResponseDto.serializer(), responseData)
+                    val apiResponse = jsonFormat.decodeFromString(APIResponseDto.serializer(), responseData)
                     response.body.close()
-                    it.resume(Result.success(packagesResponseDto))
+                    it.resume(Result.success(apiResponse))
                 }
             })
         }
     }
 
-    suspend fun getPackagesResponseDto(): Result<PackagesResponseDto> {
+    suspend fun callModsAPI(): Result<APIResponseDto> {
         return getAPIResponse()
     }
 
@@ -66,25 +66,25 @@ object xManagerAPI {
 
     suspend fun downloadPackage(
         context: Context = App.context,
-        packagesResponseDto: PackagesResponseDto,
+        apiResponseDto: APIResponseDto,
         listName: String,
         index: Int
         ): Flow<UpdateUtil.DownloadStatus> {
         withContext(Dispatchers.IO){
-            var selectedList = emptyList<PackagesObjectDto>()
+            var selectedList = emptyList<ApkResponseDto>()
 
             when(listName){
-                "Regular" -> selectedList = packagesResponseDto.Regular
-                "Amoled" -> selectedList = packagesResponseDto.Amoled
-                "Regular_Cloned" -> selectedList = packagesResponseDto.Regular_Cloned
-                "Amoled_Cloned" -> selectedList = packagesResponseDto.Amoled_Cloned
-                "Lite" -> selectedList = packagesResponseDto.Lite
+                "Regular" -> selectedList = apiResponseDto.apps.Regular
+                "Amoled" -> selectedList = apiResponseDto.apps.AMOLED
+                "Regular_Cloned" -> selectedList = apiResponseDto.apps.Regular_Cloned
+                "Amoled_Cloned" -> selectedList = apiResponseDto.apps.AMOLED_Cloned
+                "Lite" -> selectedList = apiResponseDto.apps.Lite
             }
 
             val file = context.getSpotifyAPK()
 
             val request = Request.Builder()
-                .url(selectedList[index].Link)
+                .url(selectedList[index].link)
                 .build()
 
             try {

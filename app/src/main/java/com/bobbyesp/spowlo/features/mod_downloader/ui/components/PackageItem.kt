@@ -31,6 +31,7 @@ enum class ArchType(
 ) {
     Arm64("ARM64-v8a", "64-bit ARM"),
     Arm("ARMEABI-v7a", "32-bit ARM"),
+    Merged("Merged", "Merged"),
 }
 
 @Composable

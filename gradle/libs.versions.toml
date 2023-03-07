@@ -1,25 +1,25 @@
 [versions]
 accompanist = "0.28.0"
 androidGradlePlugin = "7.4.0"
-androidxComposeBom = "2022.12.00"
+androidxComposeBom = "2023.01.00"
 androidxComposeCompiler = "1.4.0"
 androidxCore = "1.9.0"
-androidMaterial = "1.8.0-beta01"
-androidxAppCompat = "1.7.0-alpha01"
+androidMaterial = "1.9.0-alpha02"
+androidxAppCompat = "1.7.0-alpha02"
 androidxActivity = "1.6.1"
 markdownDependency = "0.3.2"
 navTransitions = "0.11.0-alpha"
 
-androidxLifecycle = "2.6.0-alpha03"
+androidxLifecycle = "2.6.0-rc01"
 androidxNavigation = "2.5.3"
-androidxComposeMaterial3 = "1.1.0-alpha03"
+androidxComposeMaterial3 = "1.1.0-alpha07"
 
-androidxEspresso = "3.5.0"
+androidxEspresso = "3.5.1"
 androidxHiltNavigationCompose = "1.0.0"
 
-androidxTestExt = "1.1.4"
+androidxTestExt = "1.1.5"
 
-spotdlAndroidVersion = "884fabd1ba"
+spotdlAndroidVersion = "fc391374c9"
 spotifyApiKotlinVersion = "3.8.8"
 
 crashHandlerVersion = "2.0.2"
@@ -36,11 +36,11 @@ kotlinxSerializationJson = "1.4.1"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
 
-exoplayer = "2.16.1"
+exoplayer = "2.18.4"
 
 room = "2.5.0"
 
-mmkv = "1.2.14"
+mmkv = "1.2.15"
 
 #chrome custom tabs
 customTabs = "1.5.0"

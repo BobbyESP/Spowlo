@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages
 
-import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -40,15 +38,18 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.bobbyesp.library.SpotDL
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
-import com.bobbyesp.spowlo.ui.dialogs.UpdateDialogImpl
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
@@ -66,18 +67,25 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.documentation.DocumentationPage
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
+import com.bobbyesp.spowlo.utils.SPOTDL_UPDATE
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
@@ -140,17 +148,6 @@ fun InitialEntry(
             }
         }
     }
-
-    //When the app is opened, call xManagerApi to check for updates
-    //WARN: DISABLED FOR PETITION OF THE xManager TEAM
-    /*LaunchedEffect(Unit) {
-        xManagerAPI.getPackagesResponseDto().onFailure {
-            ToastUtil.makeToastSuspend(App.context.getString(R.string.error_checking_for_updates))
-        }.onSuccess {
-            modsDownloaderViewModel.updateApiResponse(it)
-        }
-    }*/
-
 
     val cookiesViewModel: CookiesSettingsViewModel = viewModel()
     val onBackPressed: () -> Unit = { navController.popBackStack() }
@@ -232,6 +229,7 @@ fun InitialEntry(
                     },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
+                    navController = navController,
                     downloaderViewModel = downloaderViewModel
                 )
             }
@@ -336,10 +334,31 @@ fun InitialEntry(
                     onBackPressed = onBackPressed
                 )
             }
+
+            //DIALOGS
+            //TODO: ADD DIALOGS
+            dialog(Route.AUDIO_QUALITY_DIALOG) {
+                AudioQualityDialog(
+                    onBackPressed
+                )
+            }
         }
     }
 //}
 
+    LaunchedEffect(Unit) {
+        if (!SPOTDL_UPDATE.getBoolean()) return@LaunchedEffect
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val res = UpdateUtil.updateSpotDL()
+                if (res == SpotDL.UpdateStatus.DONE) {
+                    ToastUtil.makeToastSuspend(context.getString(R.string.spotDl_uptodate) + " (${SPOTDL.getString()})")
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             runCatching {
@@ -354,6 +373,15 @@ fun InitialEntry(
             }.onFailure {
                 it.printStackTrace()
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "InitialEntry: Checking for updates")
+        ModsDownloaderAPI.callModsAPI().onFailure {
+            ToastUtil.makeToastSuspend(App.context.getString(R.string.api_call_failed))
+        }.onSuccess {
+            modsDownloaderViewModel.updateApiResponse(it)
         }
     }
 

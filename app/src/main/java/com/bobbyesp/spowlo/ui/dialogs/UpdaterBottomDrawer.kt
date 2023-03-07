@@ -1,15 +1,10 @@
 package com.bobbyesp.spowlo.ui.dialogs
 
 import android.os.Build
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -19,18 +14,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +30,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -48,11 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.FilledTonalButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
@@ -60,7 +48,6 @@ import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.ui.pages.imageLoader
 import com.bobbyesp.spowlo.ui.theme.contraryColor
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
-import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -68,7 +55,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UpdaterBottomDrawer(
     latestRelease: UpdateUtil.LatestRelease,

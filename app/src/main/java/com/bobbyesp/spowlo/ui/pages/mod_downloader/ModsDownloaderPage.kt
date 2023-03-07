@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.mod_downloader
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,23 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.ui.components.PackagesListItem
 import com.bobbyesp.spowlo.features.mod_downloader.ui.components.PackagesListItemType
 import com.bobbyesp.spowlo.ui.components.BackButton
-import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModsDownloaderPage(
     onBackPressed: () -> Unit,
@@ -52,15 +48,23 @@ fun ModsDownloaderPage(
             }, scrollBehavior = scrollBehavior
             )
         }) { paddings ->
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(paddings).padding(16.dp)) {
-            with(apiResponse.value){
-                item{
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddings)
+                .padding(16.dp)
+        ) {
+            with(apiResponse.value) {
+                item {
+                    PreferenceInfo(text = stringResource(id = R.string.mods_advertisement))
+                }
+                item {
                     PackagesListItem(
                         type = PackagesListItemType.Regular,
                         expanded = false,
                         onClick = {},
-                        packages = Regular, //regularVersions.sortedByDescending { it.Title },
-                        latestVersion = Regular_Latest
+                        packages = apps.Regular.sortedByDescending { it.version },
+                        latestVersion = Latest_Versions.Regular
                     )
                 }
                 item {
@@ -68,8 +72,8 @@ fun ModsDownloaderPage(
                         type = PackagesListItemType.RegularCloned,
                         expanded = false,
                         onClick = {},
-                        packages = Regular_Cloned, //betaVersions.sortedByDescending { it.Title },
-                        latestVersion = Regular_Latest
+                        packages = apps.Regular_Cloned.sortedByDescending { it.version },
+                        latestVersion = Latest_Versions.Regular_Cloned
                     )
                 }
                 item {
@@ -77,8 +81,8 @@ fun ModsDownloaderPage(
                         type = PackagesListItemType.Amoled,
                         expanded = false,
                         onClick = {},
-                        packages = Amoled, //betaVersions.sortedByDescending { it.Title },
-                        latestVersion = Amoled_Latest
+                        packages = apps.AMOLED.sortedByDescending { it.version },
+                        latestVersion = Latest_Versions.AMOLED
                     )
                 }
                 item {
@@ -86,8 +90,8 @@ fun ModsDownloaderPage(
                         type = PackagesListItemType.AmoledCloned,
                         expanded = false,
                         onClick = {},
-                        packages = Amoled_Cloned, //betaVersions.sortedByDescending { it.Title },
-                        latestVersion = Amoled_Latest
+                        packages = apps.AMOLED_Cloned.sortedByDescending { it.version },
+                        latestVersion = Latest_Versions.AMOLED_Cloned
                     )
                 }
 
@@ -96,8 +100,8 @@ fun ModsDownloaderPage(
                         type = PackagesListItemType.Lite,
                         expanded = false,
                         onClick = {},
-                        packages = Lite, //betaVersions.sortedByDescending { it.Title },
-                        latestVersion = Lite_Latest
+                        packages = apps.Lite.sortedByDescending { it.version },
+                        latestVersion = Latest_Versions.Lite
                     )
                 }
 
