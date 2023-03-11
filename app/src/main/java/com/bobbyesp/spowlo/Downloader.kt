@@ -30,9 +30,6 @@ object Downloader {
         object Idle : State()
     }
 
-    fun makeKey(url: String, templateName: String): String = "${templateName}_$url"
-
-
     data class ErrorState(
         val errorReport: String = "",
         val errorMessageResId: Int = R.string.unknown_error,

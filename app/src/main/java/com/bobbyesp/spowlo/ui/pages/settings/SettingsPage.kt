@@ -29,17 +29,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
+import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.common.Route
@@ -48,6 +46,7 @@ import com.bobbyesp.spowlo.ui.components.PreferencesHintCard
 import com.bobbyesp.spowlo.ui.components.SettingItem
 import com.bobbyesp.spowlo.ui.components.SettingTitle
 import com.bobbyesp.spowlo.ui.components.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,7 +131,7 @@ fun SettingsPage(navController: NavController) {
                     description = stringResource(
                         id = R.string.spotify_settings_desc
                     ),
-                    icon = ImageVector.vectorResource(id = R.drawable.spotify_logo)
+                    icon = LocalAsset(id = R.drawable.spotify_logo)
                 ) {
                     navController.navigate(Route.SPOTIFY_PREFERENCES) {
                         launchSingleTop = true
@@ -163,17 +162,6 @@ fun SettingsPage(navController: NavController) {
                     }
                 }
             }
-            /*            item {
-                            SettingItem(
-                                title = stringResource(id = R.string.subtitle), description = stringResource(
-                                    id = R.string.subtitle_desc
-                                ), icon = Icons.Outlined.Subtitles
-                            ) {
-                                navController.navigate(Route.SUBTITLE_PREFERENCES) {
-                                    launchSingleTop = true
-                                }
-                            }
-                        }*/
             /*item {
                 SettingItem(
                     title = stringResource(id = R.string.network),
@@ -181,17 +169,6 @@ fun SettingsPage(navController: NavController) {
                     icon = if (App.connectivityManager.isActiveNetworkMetered) Icons.Filled.SignalCellular4Bar else Icons.Filled.SignalWifi4Bar
                 ) {
                     navController.navigate(Route.NETWORK_PREFERENCES) {
-                        launchSingleTop = true
-                    }
-                }
-            }*/
-            /*item {
-                SettingItem(
-                    title = stringResource(id = R.string.custom_command),
-                    description = stringResource(id = R.string.custom_command_desc),
-                    icon = Icons.Outlined.Terminal
-                ) {
-                    navController.navigate(Route.TEMPLATE) {
                         launchSingleTop = true
                     }
                 }
