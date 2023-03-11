@@ -46,9 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
@@ -82,7 +80,6 @@ fun DownloaderSettingsDialog(
     dialogState: Boolean = false,
     isShareActivity: Boolean = false,
     drawerState: ModalBottomSheetState,
-    navController: NavController,
     confirm: () -> Unit,
     hide: () -> Unit,
     onRequestMetadata: () -> Unit,
@@ -254,7 +251,7 @@ fun DownloaderSettingsDialog(
                     label = stringResource(id = R.string.audio_quality),
                     icon = Icons.Outlined.HighQuality,
                     enabled = !preserveOriginalAudio,
-                    onClick = { navController.navigate(Route.AUDIO_QUALITY_DIALOG) },
+                    onClick = { showAudioQualityDialog = true },
                 )
             }
             DrawerSheetSubtitle(text = stringResource(id = R.string.spotify))

@@ -10,9 +10,9 @@ androidxActivity = "1.6.1"
 markdownDependency = "0.3.2"
 navTransitions = "0.11.0-alpha"
 
-androidxLifecycle = "2.6.0-rc01"
+androidxLifecycle = "2.6.0"
 androidxNavigation = "2.5.3"
-androidxComposeMaterial3 = "1.1.0-alpha07"
+androidxComposeMaterial3 = "1.1.0-alpha08"
 
 androidxEspresso = "3.5.1"
 androidxHiltNavigationCompose = "1.0.0"

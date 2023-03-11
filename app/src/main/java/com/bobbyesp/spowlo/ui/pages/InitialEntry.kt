@@ -46,6 +46,7 @@ import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
+import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
@@ -81,7 +82,6 @@ import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -99,8 +99,7 @@ fun InitialEntry(
     modsDownloaderViewModel: ModsDownloaderViewModel,
     isUrlShared: Boolean
 ) {
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val navController = rememberAnimatedNavController(bottomSheetNavigator)
+    val navController = rememberAnimatedNavController()
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRootRoute = remember(navBackStackEntry) {
@@ -229,7 +228,6 @@ fun InitialEntry(
                     },
                     onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
                     navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
-                    navController = navController,
                     downloaderViewModel = downloaderViewModel
                 )
             }
@@ -346,6 +344,14 @@ fun InitialEntry(
     }
 //}
 
+    LaunchedEffect(Unit){
+        runCatching {
+            SpotifyApiRequests().buildApi()
+        }.onFailure {
+            it.printStackTrace()
+            ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
+        }
+    }
     LaunchedEffect(Unit) {
         if (!SPOTDL_UPDATE.getBoolean()) return@LaunchedEffect
         runCatching {

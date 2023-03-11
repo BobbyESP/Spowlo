@@ -112,10 +112,16 @@ android {
             )
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+
+            //add client id and secret to build config
+            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField("String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\"")
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField("String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\"")
         }
     }
     compileOptions {

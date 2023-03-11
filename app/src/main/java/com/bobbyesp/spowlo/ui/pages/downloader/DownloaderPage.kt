@@ -74,7 +74,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
@@ -107,7 +106,6 @@ fun DownloaderPage(
     onSongCardClicked: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     navigateToMods: () -> Unit = {},
-    navController: NavController,
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -205,7 +203,6 @@ fun DownloaderPage(
                 useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
-                navController = navController,
                 confirm = { checkPermissionOrDownload() },
                 onRequestMetadata = { downloaderViewModel.requestMetadata() },
                 hide = { downloaderViewModel.hideDialog(scope, useDialog) }
@@ -459,7 +456,8 @@ fun InputUrl(
         ) {
             val progressAnimationValue by animateFloatAsState(
                 targetValue = progress / 100f,
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                label = ""
             )
             if (progressAnimationValue < 0) LinearProgressIndicator(
                 modifier = Modifier

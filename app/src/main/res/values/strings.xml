@@ -258,4 +258,5 @@
     <string name="spotDl_uptodate">SpotDL is up to date</string>
     <string name="geo_bypass">Geo bypass</string>
     <string name="use_geobypass_desc">Use a localization bypass to download songs from countries that YT Music is restricted.</string>
+    <string name="spotify_api_error">An error ocurred while trying to connect to the Spotify API</string>
 </resources>
