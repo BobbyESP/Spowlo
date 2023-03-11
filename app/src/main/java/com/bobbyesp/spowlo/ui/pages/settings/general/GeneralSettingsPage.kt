@@ -174,7 +174,7 @@ fun GeneralSettingsPage(
                                 PreferencesUtil.updateValue(GEO_BYPASS, useGeobypass)
                             }
                         },
-                        isChecked = useCache
+                        isChecked = useGeobypass
                     )
                 }
                 item {
