@@ -18,6 +18,7 @@ object Route {
     const val MARKDOWN_VIEWER = "markdown_viewer"
     const val DOCUMENTATION = "documentation"
     const val MORE_OPTIONS_HOME = "more_options_home"
+    const val SONG_INFO_HISTORY = "song_info_history"
 
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"
