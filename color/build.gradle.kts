@@ -37,6 +37,4 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.androidx.compose.foundation)
     api(libs.androidx.compose.material3)
-    implementation("androidx.core:core-ktx:1.10.0-rc01")
-
 }

@@ -33,7 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -240,8 +240,8 @@ fun DownloaderPageImplementation(
             navigationIcon = {
                 IconButton(onClick = { navigateToSettings() }) {
                     Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = stringResource(id = R.string.settings)
+                        imageVector = Icons.Outlined.List,
+                        contentDescription = stringResource(id = R.string.show_more_actions)
                     )
                 }
             }, actions = {

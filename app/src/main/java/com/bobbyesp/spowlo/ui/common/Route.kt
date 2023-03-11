@@ -17,6 +17,7 @@ object Route {
     const val UPDATER_PAGE = "updater_page"
     const val MARKDOWN_VIEWER = "markdown_viewer"
     const val DOCUMENTATION = "documentation"
+    const val MORE_OPTIONS_HOME = "more_options_home"
 
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"

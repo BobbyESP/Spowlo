@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.features.spotify_api
 
+import android.util.Log
 import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.SpotifySearchResult
 import com.adamratzman.spotify.spotifyAppApi
@@ -13,17 +14,12 @@ class SpotifyApiRequests {
 
     private var api: SpotifyAppApi? = null
 
-    suspend fun buildApi(): SpotifyAppApi {
-        if (api == null) {
-            api = spotifyAppApi(
-                clientId = clientId,
-                clientSecret = clientSecret
-            ).build()
-        }
-        return api!!
+    suspend fun buildApi() {
+        Log.d("SpotifyApiRequests", "Building API with client ID: $clientId and client secret: $clientSecret")
+        api = spotifyAppApi(clientId, clientSecret).build()
     }
 
     suspend fun searchForTrack(query: String): SpotifySearchResult {
-        return api!!.search.search(query, limit = 50, offset = 1, market = Market.ES)
+        return api!!.search.searchAllTypes(query, limit = 50, offset = 1, market = Market.ES)
     }
 }
