@@ -52,6 +52,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
+import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
@@ -97,7 +98,6 @@ import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -122,14 +122,6 @@ fun InitialEntry(
         mutableStateOf(
             navController.currentBackStack.value.getOrNull(1)?.destination?.route,
         )
-    }
-
-    //every 1 second     print the current root route
-    LaunchedEffect(currentRootRoute) {
-        while (true) {
-            delay(1000)
-            Log.d(TAG, "InitialEntry: ${currentRootRoute.value}")
-        }
     }
 
     //navController.currentBackStack.value.getOrNull(1)?.destination?.route
@@ -400,14 +392,25 @@ fun InitialEntry(
     }
 }
 
-    LaunchedEffect(Unit){
+    if(BuildConfig.DEBUG) LaunchedEffect(Unit){
         runCatching {
-            SpotifyApiRequests().buildApi()
+            SpotifyApiRequests.buildApi()
         }.onFailure {
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
+        }.onSuccess {
+            val req = SpotifyApiRequests.trackSearch("Faded Alan Walker")
+            Log.d("InitialEntry", "Name:" + req.tracks!![0].name)
+            Log.d("InitialEntry", "Artist:" + req.tracks!![0].artists[0].name)
+            Log.d("InitialEntry", "Album:" + req.tracks!![0].album.name)
+            Log.d("InitialEntry", "Album Image:" + req.tracks!![0].album.images[0].url)
+            Log.d("InitialEntry", "Duration:" + req.tracks!![0].durationMs)
+            Log.d("InitialEntry", "Popularity:" + req.tracks!![0].popularity)
+            Log.d("InitialEntry", "-------------------------------------------")
+            Log.d("InitialEntry", "Full response: $req")
         }
     }
+
     LaunchedEffect(Unit) {
         if (!SPOTDL_UPDATE.getBoolean()) return@LaunchedEffect
         runCatching {

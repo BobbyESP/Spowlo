@@ -110,24 +110,42 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            packagingOptions {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-
             //add client id and secret to build config
             buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\"")
+            buildConfigField(
+                "String",
+                "CLIENT_SECRET",
+                "\"${project.properties["CLIENT_SECRET"]}\""
+            )
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            packagingOptions {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
             buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\"")
+            buildConfigField(
+                "String",
+                "CLIENT_SECRET",
+                "\"${project.properties["CLIENT_SECRET"]}\""
+            )
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
