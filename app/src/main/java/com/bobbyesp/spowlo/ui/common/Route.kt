@@ -1,6 +1,8 @@
 package com.bobbyesp.spowlo.ui.common
 
 object Route {
+
+    const val NavGraph = "nav_graph"
     const val HOME = "home"
     const val DOWNLOADER = "downloader"
     const val DOWNLOADS_HISTORY = "download_history"

@@ -62,6 +62,7 @@ import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
+import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.MoreOptionsHomeBottomSheet
@@ -71,6 +72,7 @@ import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
+import com.bobbyesp.spowlo.ui.pages.searcher.SearcherPage
 import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.about.AboutPage
 import com.bobbyesp.spowlo.ui.pages.settings.appearance.AppThemePreferencesPage
@@ -128,7 +130,7 @@ fun InitialEntry(
 
     //navController.currentBackStack.value.getOrNull(1)?.destination?.route
     val shouldHideBottomNavBar = remember(navBackStackEntry) {
-        navBackStackEntry?.destination?.hierarchy?.any { it.route == Route.SPOTIFY_SETUP || it.route == Route.DOWNLOADS_HISTORY } == true
+        navBackStackEntry?.destination?.hierarchy?.any { it.route == Route.SPOTIFY_SETUP } == true
     }
 
     val isLandscape = remember { MutableTransitionState(false) }
@@ -216,10 +218,9 @@ fun InitialEntry(
                                     {
                                         if (!selected) {
                                             navController.navigate(route) {
-                                                popUpTo(navController.graph.id) {
+                                                popUpTo(Route.NavGraph) {
                                                     saveState = true
                                                 }
-
                                                 launchSingleTop = true
                                                 restoreState = true
                                             }
@@ -255,14 +256,15 @@ fun InitialEntry(
                         .fillMaxWidth(
                             when (LocalWindowWidthState.current) {
                                 WindowWidthSizeClass.Compact -> 1f
-                                WindowWidthSizeClass.Expanded -> 0.5f
+                                WindowWidthSizeClass.Expanded -> 1f
                                 else -> 0.8f
                             }
                         )
                         .align(Alignment.Center)
                         .padding(bottom = paddingValues.calculateBottomPadding()),
                     navController = navController,
-                    startDestination = Route.HOME
+                    startDestination = Route.HOME,
+                    route = Route.NavGraph
                 ) {
                     //TODO: Add all routes
                     animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
@@ -363,6 +365,11 @@ fun InitialEntry(
                         }
                     }
 
+                    animatedComposableVariant(Route.SEARCHER) {
+                        SearcherPage(
+                        )
+                    }
+
                     navDeepLink {
                         // Want to go to "markdown_viewer/{markdownFileName}"
                         uriPattern =
@@ -399,6 +406,8 @@ fun InitialEntry(
                             navController
                         )
                     }
+
+                    //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
                 }
             }
         }
