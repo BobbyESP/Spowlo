@@ -3,6 +3,10 @@ package com.bobbyesp.spowlo.ui.common
 object Route {
 
     const val NavGraph = "nav_graph"
+    const val SearcherNavi = "searcher_navi"
+    const val DownloaderNavi = "downloader_navi"
+
+
     const val HOME = "home"
     const val DOWNLOADER = "downloader"
     const val DOWNLOADS_HISTORY = "download_history"

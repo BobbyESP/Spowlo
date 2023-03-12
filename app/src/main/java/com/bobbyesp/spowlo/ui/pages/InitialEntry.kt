@@ -52,6 +52,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import androidx.navigation.navigation
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.BuildConfig
@@ -124,7 +125,7 @@ fun InitialEntry(
 
     val currentRootRoute = remember(navBackStackEntry) {
         mutableStateOf(
-            navController.currentBackStack.value.getOrNull(1)?.destination?.route,
+            navBackStackEntry?.destination?.parent?.route ?: Route.DownloaderNavi
         )
     }
 
@@ -207,8 +208,8 @@ fun InitialEntry(
                         ) {
                             MainActivity.showInBottomNavigation.forEach { (route, icon) ->
                                 val text = when (route) {
-                                    Route.HOME -> App.context.getString(R.string.downloader)
-                                    Route.SEARCHER -> App.context.getString(R.string.searcher)
+                                    Route.DownloaderNavi -> App.context.getString(R.string.downloader)
+                                    Route.SearcherNavi -> App.context.getString(R.string.searcher)
                                     else -> ""
                                 }
 
@@ -263,9 +264,10 @@ fun InitialEntry(
                         .align(Alignment.Center)
                         .padding(bottom = paddingValues.calculateBottomPadding()),
                     navController = navController,
-                    startDestination = Route.HOME,
+                    startDestination = Route.DownloaderNavi,
                     route = Route.NavGraph
                 ) {
+                    navigation(startDestination = Route.HOME, route = Route.DownloaderNavi) {
                     //TODO: Add all routes
                     animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
                         DownloaderPage(
@@ -365,10 +367,6 @@ fun InitialEntry(
                         }
                     }
 
-                    animatedComposableVariant(Route.SEARCHER) {
-                        SearcherPage(
-                        )
-                    }
 
                     navDeepLink {
                         // Want to go to "markdown_viewer/{markdownFileName}"
@@ -406,8 +404,15 @@ fun InitialEntry(
                             navController
                         )
                     }
+                }
 
                     //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
+                    navigation(startDestination = Route.SEARCHER, route = Route.SearcherNavi){
+                        animatedComposableVariant(Route.SEARCHER) {
+                            SearcherPage(
+                            )
+                        }
+                    }
                 }
             }
         }

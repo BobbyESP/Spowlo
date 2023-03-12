@@ -121,8 +121,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         val showInBottomNavigation = mapOf(
-            Route.HOME to Icons.Rounded.Download,
-            Route.SEARCHER to Icons.Rounded.Search,
+            Route.DownloaderNavi to Icons.Rounded.Download,
+            Route.SearcherNavi to Icons.Rounded.Search,
         )
     }
 }
