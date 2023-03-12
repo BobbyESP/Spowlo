@@ -76,15 +76,14 @@ fun SearcherPageImpl(
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         with(viewState) {
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(it)) {
-                item {
-                    Spacer(modifier = Modifier.padding(vertical = 6.dp))
-                }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
                 item {
                     QueryTextBox(
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(),
                         query = query,
                         onValueChange = { query ->
                             onValueChange(query)
@@ -92,17 +91,25 @@ fun SearcherPageImpl(
                     )
                 }
                 item {
-                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
                 if (searchResult.tracks != null) {
                     items(searchResult.tracks!!.size) { track ->
-                        with(searchResult.tracks!![track]){
+                        with(searchResult.tracks!![track]) {
                             var artists: List<String> = this.artists.map { artist -> artist.name }
-                            SearchingSongComponent(artworkUrl = album.images[0].url, songName = this.name, artists = artists.joinToString(", "), spotifyUrl =  this.externalUrls.spotify ?: "")
+                            SearchingSongComponent(
+                                artworkUrl = album.images[0].url,
+                                songName = this.name,
+                                artists = artists.joinToString(", "),
+                                spotifyUrl = this.externalUrls.spotify ?: ""
+                            )
                         }
                         //if it is not the last item, add a horizontal divider
                         if (track != searchResult.tracks!!.size - 1) {
-                            HorizontalDivider(modifier = Modifier.alpha(0.45f), color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary())
+                            HorizontalDivider(
+                                modifier = Modifier.alpha(0.45f),
+                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                            )
                         }
                     }
                 }
@@ -125,8 +132,13 @@ fun QueryTextBox(
     OutlinedTextField(
         value = query,
         onValueChange = onValueChange,
-        label = { Text(text = stringResource(id = R.string.searcher_page_query_text_box_label)) },
+        placeholder = {
+            if (query.isEmpty()) {
+                Text(text = stringResource(id = R.string.searcher_page_query_text_box_label))
+            }
+        },
         modifier = modifier
+            .padding(16.dp)
             .fillMaxWidth()
             .focusRequester(focusRequester),
         keyboardOptions = KeyboardOptions(

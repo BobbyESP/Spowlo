@@ -261,4 +261,5 @@
     <string name="spotify_api_error">An error ocurred while trying to connect to the Spotify API</string>
     <string name="searcher_page_query_text_box_label">What would you like to download?</string>
     <string name="searcher_page_no_results">No results were found</string>
+    <string name="single">Single</string>
 </resources>
