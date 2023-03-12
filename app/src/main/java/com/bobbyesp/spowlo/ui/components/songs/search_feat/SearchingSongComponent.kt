@@ -32,9 +32,14 @@ fun SearchingSongComponent(
     songName: String,
     artists: String,
     spotifyUrl: String,
-    type : String = App.context.getString(R.string.single)
+    type : String = App.context.getString(R.string.single),
+    onClick: () -> Unit = { ChromeCustomTabsUtil.openUrl(spotifyUrl)}
 ) {
-    Column(Modifier.fillMaxWidth().clickable { ChromeCustomTabsUtil.openUrl(spotifyUrl) }.padding(8.dp)) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically, //This makes all go to the center

@@ -37,7 +37,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.songs.search_feat.SearchingSongComponent
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
@@ -45,7 +47,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SearcherPage(
-    searcherPageViewModel: SearcherPageViewModel = hiltViewModel()
+    searcherPageViewModel: SearcherPageViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val viewState by searcherPageViewModel.viewStateFlow.collectAsStateWithLifecycle()
 
@@ -58,7 +61,8 @@ fun SearcherPage(
             viewState = viewState,
             onValueChange = { query ->
                 searcherPageViewModel.updateSearchText(query)
-            }
+            },
+            onItemClick = { navController.navigate(Route.PLAYLIST_PAGE + "/" + "thisisjustatest")}
         )
     }
     LaunchedEffect(viewState.query) {
@@ -72,7 +76,8 @@ fun SearcherPage(
 @Composable
 fun SearcherPageImpl(
     viewState: SearcherPageViewModel.ViewState,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onItemClick : () -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         with(viewState) {
@@ -101,7 +106,8 @@ fun SearcherPageImpl(
                                 artworkUrl = album.images[0].url,
                                 songName = this.name,
                                 artists = artists.joinToString(", "),
-                                spotifyUrl = this.externalUrls.spotify ?: ""
+                                spotifyUrl = this.externalUrls.spotify ?: "",
+                                onClick = onItemClick
                             )
                         }
                         //if it is not the last item, add a horizontal divider

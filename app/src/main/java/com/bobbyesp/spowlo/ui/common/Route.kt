@@ -26,6 +26,8 @@ object Route {
     const val MORE_OPTIONS_HOME = "more_options_home"
     const val SONG_INFO_HISTORY = "song_info_history"
 
+    const val PLAYLIST_PAGE = "playlist_page"
+
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"
     const val GENERAL_DOWNLOAD_PREFERENCES = "general_download_preferences"

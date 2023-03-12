@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.features.spotify_api
 
 import android.util.Log
 import com.adamratzman.spotify.SpotifyAppApi
+import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.SpotifyPublicUser
 import com.adamratzman.spotify.models.SpotifySearchResult
 import com.adamratzman.spotify.models.Token
@@ -23,7 +24,10 @@ object SpotifyApiRequests {
     //Pulls the clientId and clientSecret tokens and builds them into an object
 
     suspend fun buildApi() {
-        Log.d("SpotifyApiRequests", "Building API with client ID: $clientId and client secret: $clientSecret")
+        Log.d(
+            "SpotifyApiRequests",
+            "Building API with client ID: $clientId and client secret: $clientSecret"
+        )
         token = spotifyAppApi(clientId, clientSecret).build().token
         api = spotifyAppApi(clientId, clientSecret, token!!) {
             automaticRefresh = true
@@ -58,5 +62,18 @@ object SpotifyApiRequests {
             return it
         }
         return SpotifySearchResult()
+    }
+
+    //search by id
+    suspend fun searchPlaylistById(id: String): Playlist? {
+        kotlin.runCatching {
+            api!!.playlists.getPlaylist(id, market = Market.ES)
+        }.onFailure {
+            Log.d("SpotifyApiRequests", "Error: ${it.message}")
+            return null
+        }.onSuccess {
+            return it
+        }
+        return null
     }
 }

@@ -70,6 +70,7 @@ import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.MoreOptionsHomeBottomSheet
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
@@ -186,6 +187,7 @@ fun InitialEntry(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        val navRootUrl = "android-app://androidx.navigation/"
         ModalBottomSheetLayout(
             bottomSheetNavigator,
             sheetShape = MaterialTheme.shapes.medium.copy(
@@ -197,7 +199,8 @@ fun InitialEntry(
         ) {
             Scaffold(
                 bottomBar = {
-                    AnimatedVisibility(visible = !shouldHideBottomNavBar,
+                    AnimatedVisibility(
+                        visible = !shouldHideBottomNavBar,
                         enter = expandVertically() + fadeIn(),
                         exit = shrinkVertically() + fadeOut()
                     ) {
@@ -268,150 +271,184 @@ fun InitialEntry(
                     route = Route.NavGraph
                 ) {
                     navigation(startDestination = Route.HOME, route = Route.DownloaderNavi) {
-                    //TODO: Add all routes
-                    animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
-                        DownloaderPage(
-                            navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
-                            navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) },
-                            navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
-                            onSongCardClicked = {
-                                navController.navigate(Route.PLAYLIST_METADATA_PAGE)
-                            },
-                            onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
-                            navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
-                            downloaderViewModel = downloaderViewModel
-                        )
-                    }
-                    animatedComposable(Route.SETTINGS) {
-                        SettingsPage(
-                            navController = navController
-                        )
-                    }
-                    animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
-                        GeneralSettingsPage(
-                            onBackPressed = onBackPressed
-                        )
-                    }
-                    animatedComposable(Route.DOWNLOADS_HISTORY) {
-                        DownloadsHistoryPage(
-                            onBackPressed = onBackPressed,
-                        )
-                    }
-                    animatedComposable(Route.DOWNLOAD_DIRECTORY) {
-                        DownloadsDirectoriesPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.APPEARANCE) {
-                        AppearancePage(navController = navController)
-                    }
-                    animatedComposable(Route.APP_THEME) {
-                        AppThemePreferencesPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.DOWNLOAD_FORMAT) {
-                        SettingsFormatsPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.SPOTIFY_PREFERENCES) {
-                        SpotifySettingsPage {
-                            onBackPressed()
-                        }
-                    }
-                    slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
-                        PlaylistMetadataPage(
-                            onBackPressed,
-                            //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
-                        )
-                    }
-                    animatedComposable(Route.MODS_DOWNLOADER) {
-                        ModsDownloaderPage(
-                            onBackPressed,
-                            modsDownloaderViewModel
-                        )
-                    }
-                    animatedComposable(Route.COOKIE_PROFILE) {
-                        CookieProfilePage(
-                            cookiesViewModel = cookiesViewModel,
-                            navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
-                        ) { onBackPressed() }
-                    }
-                    animatedComposable(
-                        Route.COOKIE_GENERATOR_WEBVIEW
-                    ) {
-                        WebViewPage(cookiesViewModel) { onBackPressed() }
-                    }
-                    animatedComposable(Route.UPDATER_PAGE) {
-                        UpdaterPage(
-                            onBackPressed
-                        )
-                    }
-                    animatedComposable(Route.DOCUMENTATION) {
-                        DocumentationPage(
-                            onBackPressed,
-                            navController
-                        )
-                    }
-
-                    animatedComposable(Route.ABOUT) {
-                        AboutPage {
-                            onBackPressed()
-                        }
-                    }
-
-                    animatedComposable(Route.LANGUAGES) {
-                        LanguagePage {
-                            onBackPressed()
-                        }
-                    }
-
-
-                    navDeepLink {
-                        // Want to go to "markdown_viewer/{markdownFileName}"
-                        uriPattern =
-                            "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
-                    }
-
-                    animatedComposable(
-                        "markdown_viewer/{markdownFileName}",
-                        arguments = listOf(navArgument("markdownFileName") {
-                            type = NavType.StringType
-                        })
-                    ) { backStackEntry ->
-                        val mdFileName =
-                            backStackEntry.arguments?.getString("markdownFileName") ?: ""
-                        Log.d("MainActivity", mdFileName)
-                        MarkdownViewerPage(
-                            markdownFileName = mdFileName,
-                            onBackPressed = onBackPressed
-                        )
-                    }
-
-                    //DIALOGS -------------------------------
-                    //TODO: ADD DIALOGS
-                    dialog(Route.AUDIO_QUALITY_DIALOG) {
-                        AudioQualityDialog(
-                            onBackPressed
-                        )
-                    }
-
-                    //BOTTOM SHEETS --------------------------
-                    bottomSheet(Route.MORE_OPTIONS_HOME) {
-                        MoreOptionsHomeBottomSheet(
-                            onBackPressed,
-                            navController
-                        )
-                    }
-                }
-
-                    //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
-                    navigation(startDestination = Route.SEARCHER, route = Route.SearcherNavi){
-                        animatedComposableVariant(Route.SEARCHER) {
-                            SearcherPage(
+                        //TODO: Add all routes
+                        animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
+                            DownloaderPage(
+                                navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
+                                navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) },
+                                navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
+                                onSongCardClicked = {
+                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE)
+                                },
+                                onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
+                                navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
+                                downloaderViewModel = downloaderViewModel
                             )
                         }
+                        animatedComposable(Route.SETTINGS) {
+                            SettingsPage(
+                                navController = navController
+                            )
+                        }
+                        animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
+                            GeneralSettingsPage(
+                                onBackPressed = onBackPressed
+                            )
+                        }
+                        animatedComposable(Route.DOWNLOADS_HISTORY) {
+                            DownloadsHistoryPage(
+                                onBackPressed = onBackPressed,
+                            )
+                        }
+                        animatedComposable(Route.DOWNLOAD_DIRECTORY) {
+                            DownloadsDirectoriesPage {
+                                onBackPressed()
+                            }
+                        }
+                        animatedComposable(Route.APPEARANCE) {
+                            AppearancePage(navController = navController)
+                        }
+                        animatedComposable(Route.APP_THEME) {
+                            AppThemePreferencesPage {
+                                onBackPressed()
+                            }
+                        }
+                        animatedComposable(Route.DOWNLOAD_FORMAT) {
+                            SettingsFormatsPage {
+                                onBackPressed()
+                            }
+                        }
+                        animatedComposable(Route.SPOTIFY_PREFERENCES) {
+                            SpotifySettingsPage {
+                                onBackPressed()
+                            }
+                        }
+                        slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
+                            PlaylistMetadataPage(
+                                onBackPressed,
+                                //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
+                            )
+                        }
+                        animatedComposable(Route.MODS_DOWNLOADER) {
+                            ModsDownloaderPage(
+                                onBackPressed,
+                                modsDownloaderViewModel
+                            )
+                        }
+                        animatedComposable(Route.COOKIE_PROFILE) {
+                            CookieProfilePage(
+                                cookiesViewModel = cookiesViewModel,
+                                navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
+                            ) { onBackPressed() }
+                        }
+                        animatedComposable(
+                            Route.COOKIE_GENERATOR_WEBVIEW
+                        ) {
+                            WebViewPage(cookiesViewModel) { onBackPressed() }
+                        }
+                        animatedComposable(Route.UPDATER_PAGE) {
+                            UpdaterPage(
+                                onBackPressed
+                            )
+                        }
+                        animatedComposable(Route.DOCUMENTATION) {
+                            DocumentationPage(
+                                onBackPressed,
+                                navController
+                            )
+                        }
+
+                        animatedComposable(Route.ABOUT) {
+                            AboutPage {
+                                onBackPressed()
+                            }
+                        }
+
+                        animatedComposable(Route.LANGUAGES) {
+                            LanguagePage {
+                                onBackPressed()
+                            }
+                        }
+
+
+                        navDeepLink {
+                            // Want to go to "markdown_viewer/{markdownFileName}"
+                            uriPattern =
+                                "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
+                        }
+
+                        animatedComposable(
+                            "markdown_viewer/{markdownFileName}",
+                            arguments = listOf(
+                                navArgument(
+                                    "markdownFileName"
+                                ) {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val mdFileName =
+                                backStackEntry.arguments?.getString("markdownFileName") ?: ""
+                            Log.d("MainActivity", mdFileName)
+                            MarkdownViewerPage(
+                                markdownFileName = mdFileName,
+                                onBackPressed = onBackPressed
+                            )
+                        }
+
+                        //DIALOGS -------------------------------
+                        //TODO: ADD DIALOGS
+                        dialog(Route.AUDIO_QUALITY_DIALOG) {
+                            AudioQualityDialog(
+                                onBackPressed
+                            )
+                        }
+
+                        //BOTTOM SHEETS --------------------------
+                        bottomSheet(Route.MORE_OPTIONS_HOME) {
+                            MoreOptionsHomeBottomSheet(
+                                onBackPressed,
+                                navController
+                            )
+                        }
+                    }
+
+                    //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
+                    navigation(startDestination = Route.SEARCHER, route = Route.SearcherNavi) {
+                        animatedComposableVariant(Route.SEARCHER) {
+                            SearcherPage(
+                                navController = navController
+                            )
+                        }
+
+
+                        //create a deeplink to the playlist page passing the id of the playlist
+                        navDeepLink {
+                            // Want to go to "markdown_viewer/{markdownFileName}"
+                            uriPattern =
+                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE)
+                                    .append("/{id}").toString()
+                            Log.d("TST_NAV", uriPattern!!)
+                        }
+
+                        val navArgument = navArgument("id") {
+                            type = NavType.StringType
+                        }
+                        val routeWithIdPattern: String =
+                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{id}").toString()
+                        animatedComposableVariant(
+                            routeWithIdPattern,
+                            arguments = listOf(navArgument)
+                        ) { backStackEntry ->
+                            val id =
+                                backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
+                            PlaylistPage(
+                                onBackPressed,
+                                id = id
+                            )
+                        }
+
+
                     }
                 }
             }
