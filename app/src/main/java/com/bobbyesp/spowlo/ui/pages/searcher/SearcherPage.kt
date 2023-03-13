@@ -1,17 +1,20 @@
 package com.bobbyesp.spowlo.ui.pages.searcher
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,6 +37,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,7 +67,7 @@ fun SearcherPage(
             onValueChange = { query ->
                 searcherPageViewModel.updateSearchText(query)
             },
-            onItemClick = { navController.navigate(Route.PLAYLIST_PAGE + "/" + "thisisjustatest")}
+            onItemClick = { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + id) }
         )
     }
     LaunchedEffect(viewState.query) {
@@ -77,45 +82,130 @@ fun SearcherPage(
 fun SearcherPageImpl(
     viewState: SearcherPageViewModel.ViewState,
     onValueChange: (String) -> Unit,
-    onItemClick : () -> Unit
+    onItemClick: (String) -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         with(viewState) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                item {
-                    QueryTextBox(
-                        modifier = Modifier.padding(),
-                        query = query,
-                        onValueChange = { query ->
-                            onValueChange(query)
+            Column(modifier = Modifier.fillMaxSize()) {
+                QueryTextBox(
+                    modifier = Modifier.padding(),
+                    query = query,
+                    onValueChange = { query ->
+                        onValueChange(query)
+                    }
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
+                    when (viewState.viewState) {
+                        is ViewSearchState.Idle -> {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.background)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.align(Alignment.Center),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.search),
+                                            modifier = Modifier.align(
+                                                Alignment.CenterHorizontally
+                                            ),
+                                            style = MaterialTheme.typography.displaySmall,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+
+                                }
+                            }
                         }
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
-                }
-                if (searchResult.tracks != null) {
-                    items(searchResult.tracks!!.size) { track ->
-                        with(searchResult.tracks!![track]) {
-                            var artists: List<String> = this.artists.map { artist -> artist.name }
-                            SearchingSongComponent(
-                                artworkUrl = album.images[0].url,
-                                songName = this.name,
-                                artists = artists.joinToString(", "),
-                                spotifyUrl = this.externalUrls.spotify ?: "",
-                                onClick = onItemClick
-                            )
+
+                        is ViewSearchState.Loading -> {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.background)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.align(Alignment.Center),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier
+                                                .size(72.dp)
+                                                .padding(6.dp),
+                                            strokeWidth = 4.dp
+                                        )
+                                        Text(
+                                            text = stringResource(id = R.string.loading),
+                                            modifier = Modifier.align(
+                                                Alignment.CenterHorizontally
+                                            ),
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+
+                                }
+                            }
                         }
-                        //if it is not the last item, add a horizontal divider
-                        if (track != searchResult.tracks!!.size - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.alpha(0.45f),
-                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
-                            )
+
+                        is ViewSearchState.Error -> {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.background)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.align(Alignment.Center),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.error),
+                                            modifier = Modifier.align(
+                                                Alignment.CenterHorizontally
+                                            ),
+                                            style = MaterialTheme.typography.displaySmall,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        is ViewSearchState.Success -> {
+                            if (viewState.viewState.data.tracks != null) {
+                                items(viewState.viewState.data.tracks!!.size) { track ->
+                                    with(viewState.viewState.data.tracks!![track]) {
+                                        val artists: List<String> =
+                                            this.artists.map { artist -> artist.name }
+                                        SearchingSongComponent(
+                                            artworkUrl = album.images[0].url,
+                                            songName = this.name,
+                                            artists = artists.joinToString(", "),
+                                            spotifyUrl = this.externalUrls.spotify ?: "",
+                                            onClick = { onItemClick(this.id) }
+                                        )
+                                    }
+                                    //if it is not the last item, add a horizontal divider
+                                    if (track != viewState.viewState.data.tracks!!.size - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.alpha(0.35f),
+                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -144,7 +234,7 @@ fun QueryTextBox(
             }
         },
         modifier = modifier
-            .padding(16.dp)
+            .padding(top = 16.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
             .fillMaxWidth()
             .focusRequester(focusRequester),
         keyboardOptions = KeyboardOptions(

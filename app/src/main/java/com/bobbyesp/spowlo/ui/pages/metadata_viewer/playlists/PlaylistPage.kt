@@ -35,7 +35,7 @@ fun PlaylistPage(
     val viewState by playlistPageViewModel.viewStateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit){
-        delay(2000)
+        delay(1000)
         playlistPageViewModel.loadData()
     }
 
@@ -65,7 +65,7 @@ fun PlaylistPage(
                         }, scrollBehavior = scrollBehavior
                         )
                     }) { paddings ->
-                    Text(text = this.state.data.toString(), modifier = Modifier.padding(paddings))
+                    Text(text = this.state.data.toString() + id, modifier = Modifier.padding(paddings))
                 }
 
             }

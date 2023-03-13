@@ -7,15 +7,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.HighQuality
+import androidx.compose.material.icons.outlined.ShuffleOn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -23,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
-import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
@@ -107,7 +107,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                     PreferenceItem(
                         title = stringResource(R.string.audio_provider),
                         description = stringResource(R.string.audio_provider_desc),
-                        icon = Icons.Outlined.HighQuality,
+                        icon = Icons.Outlined.ShuffleOn,
                         enabled = !isCustomCommandEnabled,
                     ) { showAudioProviderDialog = true }
                 }

@@ -17,6 +17,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -111,7 +113,7 @@ private const val TAG = "InitialEntry"
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class
 )
 @Composable
 fun InitialEntry(
@@ -265,7 +267,8 @@ fun InitialEntry(
                             }
                         )
                         .align(Alignment.Center)
-                        .padding(bottom = paddingValues.calculateBottomPadding()),
+                        .padding(paddingValues)
+                        .consumeWindowInsets(paddingValues),
                     navController = navController,
                     startDestination = Route.DownloaderNavi,
                     route = Route.NavGraph

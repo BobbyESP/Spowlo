@@ -263,4 +263,11 @@
     <string name="searcher_page_no_results">No results were found</string>
     <string name="single">Single</string>
     <string name="page_loading">Loading the page...</string>
+    <string name="not_specified">Not specified</string>
+    <string name="default_option">Default</string>
+    <string name="not_convert">Don\'t convert</string>
+    <string name="error">An error ocurried while searching</string>
+    <string name="search">Type something on the text box for searching through Spotify!</string>
+    <string name="err_act_reload">Realod the page</string>
+    <string name="error_copy">Copy the error</string>
 </resources>

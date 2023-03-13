@@ -15,9 +15,7 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
 
     data class ViewState(
         val query : String = "",
-        val isSearchError : Boolean = false,
-        val isSearching : Boolean = false,
-        val searchResult : SpotifySearchResult = SpotifySearchResult()
+        val viewState: ViewSearchState = ViewSearchState.Idle,
     )
 
     private val api = SpotifyApiRequests
@@ -30,24 +28,28 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
 
     suspend fun makeSearch() {
         mutableViewStateFlow.update {
-            it.copy(isSearching = true)
+            it.copy(viewState = ViewSearchState.Loading)
         }
         kotlin.runCatching {
             api.searchAllTypes(viewStateFlow.value.query)
         }.onSuccess { result ->
             mutableViewStateFlow.update { viewState ->
-                viewState.copy(searchResult = result)
+                viewState.copy(viewState = ViewSearchState.Success(result))
             }
             Log.d("SearcherPageViewModel", "makeSearch: $result")
         }.onFailure {
             mutableViewStateFlow.update { viewState ->
-                viewState.copy(isSearchError = true)
+                viewState.copy(viewState = ViewSearchState.Error(it.message.toString()))
             }
             it.printStackTrace()
-        }.also {
-            mutableViewStateFlow.update {
-                it.copy(isSearching = false)
-            }
         }
     }
+}
+
+//create the possible states of the view
+sealed class ViewSearchState {
+    object Idle : ViewSearchState()
+    object Loading : ViewSearchState()
+    data class Success(val data: SpotifySearchResult) : ViewSearchState()
+    data class Error(val error: String) : ViewSearchState()
 }

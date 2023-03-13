@@ -261,7 +261,7 @@ fun DownloaderPageImplementation(
             })
     }, floatingActionButton = {
         FABs(
-            modifier = with(receiver = Modifier) { if (showDownloadProgress) this else this.imePadding() },
+            modifier = with(Modifier) { if (showDownloadProgress) this else this.imePadding() },
             downloadCallback = downloadCallback,
             pasteCallback = pasteCallback,
             cancelCallback = cancelCallback,

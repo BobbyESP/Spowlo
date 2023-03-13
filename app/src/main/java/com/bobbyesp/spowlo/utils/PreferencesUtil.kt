@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
+import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.CommandTemplate
@@ -161,16 +162,17 @@ object PreferencesUtil {
             2 -> "ogg"
             3 -> "opus"
             4 -> "m4a"
-            5 -> "Default"
+            5 -> context.getString(R.string.not_specified)
             else -> "mp3"
         }
     }
 
     fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
         return when (audioProviderInt){
-            0 -> "youtube-music"
-            1 -> "youtube"
-            else -> "youtube-music"
+            0 -> context.getString(R.string.default_option)
+            1 -> "Youtube Music"
+            2 -> "Youtube"
+            else -> "Youtube Music"
         }
     }
 
@@ -185,24 +187,24 @@ object PreferencesUtil {
 
     fun getAudioQualityDesc(audioQualityStr: Int = getAudioQuality()): String {
         return when (audioQualityStr) {
-            0 -> "8k"
-            1 -> "16k"
-            2 -> "24k"
-            3 -> "32k"
-            4 -> "40k"
-            5 -> "48k"
-            6 -> "64k"
-            7 -> "80k"
-            8 -> "96k"
-            9 -> "112k"
-            10 -> "128k"
-            11 -> "160k"
-            12 -> "192k"
-            13 -> "224k"
-            14 -> "256k"
-            15 -> "320k"
-            16 -> "disable"
-            17 -> "auto"
+            0 -> context.getString(R.string.not_specified)
+            1 -> "8k"
+            2 -> "16k"
+            3 -> "24k"
+            4 -> "32k"
+            5 -> "40k"
+            6 -> "48k"
+            7 -> "64k"
+            8 -> "80k"
+            9 -> "96k"
+            10 -> "112k"
+            11 -> "128k"
+            12 -> "160k"
+            13 -> "192k"
+            14 -> "224k"
+            15 -> "256k"
+            16 -> "320k"
+            17 -> context.getString(R.string.not_convert)
             else -> "auto"
         }
     }
@@ -307,12 +309,6 @@ object PreferencesUtil {
         DatabaseUtil.getTemplateFlow().distinctUntilChanged().stateIn(
             applicationScope, started = SharingStarted.Eagerly, emptyList()
         )
-
-    fun getTemplate(): CommandTemplate {
-        return templateStateFlow.value.run {
-            find { it.id == TEMPLATE_ID.getInt() } ?: first()
-        }
-    }
 
 }
 

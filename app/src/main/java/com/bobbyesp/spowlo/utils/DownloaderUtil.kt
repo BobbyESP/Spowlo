@@ -180,24 +180,32 @@ object DownloaderUtil {
     //get the audio quality
     private fun SpotDLRequest.addAudioQuality(): SpotDLRequest = this.apply {
         when (PreferencesUtil.getAudioQuality()) {
-            0 -> addOption("--bitrate", "8k")
-            1 -> addOption("--bitrate", "16k")
-            2 -> addOption("--bitrate", "24k")
-            3 -> addOption("--bitrate", "32k")
-            4 -> addOption("--bitrate", "40k")
-            5 -> addOption("--bitrate", "48k")
-            6 -> addOption("--bitrate", "64k")
-            7 -> addOption("--bitrate", "80k")
-            8 -> addOption("--bitrate", "96k")
-            9 -> addOption("--bitrate", "112k")
-            10 -> addOption("--bitrate", "128k")
-            11 -> addOption("--bitrate", "160k")
-            12 -> addOption("--bitrate", "192k")
-            13 -> addOption("--bitrate", "224k")
-            14 -> addOption("--bitrate", "256k")
-            15 -> addOption("--bitrate", "320k")
-            16 -> addOption("--bitrate", "disable")
-            17 -> addOption("--bitrate", "auto")
+            0 -> addOption("--bitrate", "auto")
+            1 -> addOption("--bitrate", "8k")
+            2 -> addOption("--bitrate", "16k")
+            3 -> addOption("--bitrate", "24k")
+            4 -> addOption("--bitrate", "32k")
+            5 -> addOption("--bitrate", "40k")
+            6 -> addOption("--bitrate", "48k")
+            7 -> addOption("--bitrate", "64k")
+            8 -> addOption("--bitrate", "80k")
+            9 -> addOption("--bitrate", "96k")
+            10 -> addOption("--bitrate", "112k")
+            11 -> addOption("--bitrate", "128k")
+            12 -> addOption("--bitrate", "160k")
+            13 -> addOption("--bitrate", "192k")
+            14 -> addOption("--bitrate", "224k")
+            15 -> addOption("--bitrate", "256k")
+            16 -> addOption("--bitrate", "320k")
+            17 -> addOption("--bitrate", "disable")
+        }
+    }
+
+    private fun SpotDLRequest.addAudioProvider(): SpotDLRequest = this.apply {
+        when (PreferencesUtil.getAudioProvider()) {
+            0 -> null
+            1 -> addOption("--provider", "youtube-music")
+            2 -> addOption("--provider", "youtube")
         }
     }
 
@@ -259,7 +267,7 @@ object DownloaderUtil {
                     addAudioFormat()
                 }
 
-                addOption("--audio", PreferencesUtil.getAudioProviderDesc())
+                addAudioProvider()
 
                 if (useSpotifyPreferences) {
                     if (spotifyClientID.isEmpty() || spotifyClientSecret.isEmpty()) return Result.failure(
