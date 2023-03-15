@@ -141,7 +141,6 @@ object DownloaderUtil {
     @CheckResult
     private fun getSongInfo(
         url: String? = null,
-        id: String = getRandomUUID()
     ): Result<List<Song>> =
         kotlin.runCatching {
             val response: List<Song> = SpotDL.getInstance().getSongInfo(url ?: "")
@@ -153,7 +152,7 @@ object DownloaderUtil {
 
     @CheckResult
     fun fetchSongInfoFromUrl(
-        url: String, playlistItem: Int = 0, preferences: DownloadPreferences = DownloadPreferences()
+        url: String
     ): Result<List<Song>> =
         kotlin.run {
             getSongInfo(url)
@@ -222,7 +221,6 @@ object DownloaderUtil {
         with(downloadPreferences) {
             val url = playlistUrl.ifEmpty {
                 songInfo.url
-                    ?: return Result.failure(Throwable(context.getString(R.string.fetch_info_error_msg)))
             }
             val request = SpotDLRequest()
             val pathBuilder = StringBuilder()

@@ -300,7 +300,9 @@ fun DownloadsHistoryPage(
 
             if (songsList.isEmpty()) {
                 item {
-                    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         EmptyState(
                             modifier = Modifier
                                 .fillMaxSize()

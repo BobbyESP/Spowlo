@@ -54,6 +54,8 @@ const val USE_YT_METADATA = "use_yt_metadata"
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
 const val SYNCED_LYRICS = "synced_lyrics"
 
+const val SKIP_INFO_FETCH = "skip_info_fetch"
+
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
@@ -103,6 +105,7 @@ private val BooleanPreferenceDefaults =
         DONT_FILTER_RESULTS to false,
         SPOTDL_UPDATE to true,
         GEO_BYPASS to false,
+        SKIP_INFO_FETCH to false,
     )
 
 private val IntPreferenceDefaults = mapOf(

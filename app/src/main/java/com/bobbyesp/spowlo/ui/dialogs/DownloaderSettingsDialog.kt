@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,6 +67,7 @@ import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
+import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
 import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.TEMPLATE_ID
 import com.bobbyesp.spowlo.utils.USE_CACHING
@@ -151,6 +153,8 @@ fun DownloaderSettingsDialog(
         )
     }
 
+    var skipInfoFetch by remember { mutableStateOf(settings.getValue(SKIP_INFO_FETCH)) }
+
     var showAudioFormatDialog by remember { mutableStateOf(false) }
     var showAudioQualityDialog by remember { mutableStateOf(false) }
     var showClientIdDialog by remember { mutableStateOf(false) }
@@ -190,10 +194,11 @@ fun DownloaderSettingsDialog(
         Column {
             Text(
                 text = stringResource(R.string.settings_before_download_text),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.Start)
             )
             AnimatedVisibility(visible = preserveOriginalAudio) {
                 ElevatedCard(
@@ -373,20 +378,27 @@ fun DownloaderSettingsDialog(
     if (!useDialog) {
         //TODO: Change this UI
         BottomDrawer(drawerState = drawerState, sheetContent = {
-            Icon(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                imageVector = Icons.Outlined.DownloadDone,
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(R.string.settings_before_download),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 16.dp),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.DownloadDone,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = stringResource(R.string.settings_before_download),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             sheetContent()
             val state = rememberLazyListState()
             LaunchedEffect(drawerState.isVisible) {

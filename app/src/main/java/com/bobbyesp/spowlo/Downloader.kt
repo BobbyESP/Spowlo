@@ -104,7 +104,7 @@ object Downloader {
     }
 
     @CheckResult
-    private suspend fun downloadSong(
+    private fun downloadSong(
         songInfo: Song,
         preferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
     ): Result<List<String>> {
@@ -162,29 +162,44 @@ object Downloader {
 
     fun getInfoAndDownload(
         url: String,
-        downloadPreferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
+        downloadPreferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences(),
+        skipInfoFetch: Boolean = false
     ) {
         currentJob = applicationScope.launch(Dispatchers.IO) {
             updateState(State.FetchingInfo)
-            DownloaderUtil.fetchSongInfoFromUrl(
-                url = url,
-                preferences = downloadPreferences
-            )
-                .onFailure {
+            if(skipInfoFetch){
+                downloadResultTemp = downloadSong(
+                    songInfo = Song(url = url),
+                    preferences = downloadPreferences
+                ).onFailure {
                     manageDownloadError(
                         it,
                         isFetchingInfo = true,
                         isTaskAborted = true
                     )
                 }
-                .onSuccess { info ->
-                    for (song in info) {
-                        downloadResultTemp = downloadSong(
-                            songInfo = song,
-                            preferences = downloadPreferences
+                return@launch
+            }
+            else {
+                DownloaderUtil.fetchSongInfoFromUrl(
+                    url = url
+                )
+                    .onFailure {
+                        manageDownloadError(
+                            it,
+                            isFetchingInfo = true,
+                            isTaskAborted = true
                         )
                     }
-                }
+                    .onSuccess { info ->
+                        for (song in info) {
+                            downloadResultTemp = downloadSong(
+                                songInfo = song,
+                                preferences = downloadPreferences
+                            )
+                        }
+                    }
+            }
         }
     }
 
@@ -195,8 +210,7 @@ object Downloader {
         currentJob = applicationScope.launch(Dispatchers.IO) {
             updateState(State.FetchingInfo)
             DownloaderUtil.fetchSongInfoFromUrl(
-                url = url,
-                preferences = downloadPreferences
+                url = url
             )
                 .onFailure {
                     manageDownloadError(
@@ -213,7 +227,7 @@ object Downloader {
         }
     }
 
-    fun updateState(state: State) = mutableDownloaderState.update { state }
+    private fun updateState(state: State) = mutableDownloaderState.update { state }
 
     fun clearErrorState() {
         mutableErrorState.update { ErrorState() }
@@ -248,7 +262,7 @@ object Downloader {
     /**
      * @param isTaskAborted Determines if the download task is aborted due to the given `Exception`
      */
-    fun manageDownloadError(
+    private fun manageDownloadError(
         th: Throwable,
         isFetchingInfo: Boolean,
         isTaskAborted: Boolean = true,

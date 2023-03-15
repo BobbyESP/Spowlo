@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists
 
 import androidx.lifecycle.ViewModel
+import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyData
 import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyDataType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,13 +15,34 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
     data class ViewState(
-        val id : String = "",
-        val state : PlaylistDataState = PlaylistDataState.Loading,
+        val id: String = "",
+        val state: PlaylistDataState = PlaylistDataState.Loading,
     )
 
-    suspend fun loadData(){
-        mutableViewStateFlow.update {
-            it.copy(state = PlaylistDataState.Loaded(SpotifyData("", "Faded", listOf("Alan Walker"), SpotifyDataType.TRACK)))
+    suspend fun loadData(id: String) {
+        kotlin.runCatching {
+            SpotifyApiRequests.searchTrackById(id)
+        }.onSuccess { track ->
+            mutableViewStateFlow.update {
+                it.copy(
+                    state = PlaylistDataState.Loaded(
+                        SpotifyData(
+                            track!!.album.images[0].url,
+                            track.name,
+                            track.artists.map { it.name },
+                            track.album.releaseDate,
+                            SpotifyDataType.TRACK
+                        )
+                    )
+                )
+            }
+        }.onFailure {
+            mutableViewStateFlow.update {
+                it.copy(
+                    state = PlaylistDataState.Error(Exception("Error while loading data"))
+                )
+            }
         }
+
     }
 }

@@ -8,7 +8,6 @@ import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.Downloader.showErrorMessage
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.utils.DownloaderUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +23,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
-    val songInfoFlow = MutableStateFlow(listOf(Song()))
+    private val songInfoFlow = MutableStateFlow(listOf(Song()))
 
     data class ViewState(
         val url: String = "",
@@ -68,7 +67,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
         Downloader.getRequestedMetadata(url)
     }
 
-    fun startDownloadSong() {
+    fun startDownloadSong(skipInfoFetch: Boolean = false) {
         val url = viewStateFlow.value.url
         Downloader.clearErrorState()
         if (!Downloader.isDownloaderAvailable())
@@ -77,7 +76,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
             showErrorMessage(R.string.url_empty)
             return
         }
-        Downloader.getInfoAndDownload(url)
+        Downloader.getInfoAndDownload(url, skipInfoFetch = skipInfoFetch)
     }
 
     fun goToMetadataViewer(songs: List<Song>) {

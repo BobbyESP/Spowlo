@@ -39,6 +39,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -117,7 +119,7 @@ fun SearcherPageImpl(
                                             modifier = Modifier.align(
                                                 Alignment.CenterHorizontally
                                             ),
-                                            style = MaterialTheme.typography.displaySmall,
+                                            style = MaterialTheme.typography.bodyMedium,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
@@ -171,11 +173,11 @@ fun SearcherPageImpl(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = stringResource(id = R.string.error),
-                                            modifier = Modifier.align(
-                                                Alignment.CenterHorizontally
-                                            ),
-                                            style = MaterialTheme.typography.displaySmall,
+                                            text = stringResource(R.string.error),
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            modifier = Modifier,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }

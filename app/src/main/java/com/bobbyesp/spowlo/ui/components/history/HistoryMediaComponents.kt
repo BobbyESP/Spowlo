@@ -3,7 +3,6 @@
 package com.bobbyesp.spowlo.ui.components.history
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,18 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,10 +39,6 @@ import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.CustomTag
-import com.bobbyesp.spowlo.ui.components.songs.ExplicitIcon
-import com.bobbyesp.spowlo.ui.components.songs.LyricsIcon
-import com.bobbyesp.spowlo.ui.components.songs.MiniMetadataInfoComponent
-import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import com.bobbyesp.spowlo.utils.toFileSizeText
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -146,7 +136,7 @@ fun HistoryMediaItem(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.Start
                         ) {
-                            if (!isTwoColumns) {
+
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
@@ -185,7 +175,7 @@ fun HistoryMediaItem(
                                         maxLines = 1,
                                     )
                                 }
-                            }
+
                         }
                         Column(
                             modifier = Modifier

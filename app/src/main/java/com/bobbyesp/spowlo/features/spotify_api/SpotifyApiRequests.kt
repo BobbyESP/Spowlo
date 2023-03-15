@@ -6,6 +6,7 @@ import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.SpotifyPublicUser
 import com.adamratzman.spotify.models.SpotifySearchResult
 import com.adamratzman.spotify.models.Token
+import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.BuildConfig
@@ -68,6 +69,18 @@ object SpotifyApiRequests {
     suspend fun searchPlaylistById(id: String): Playlist? {
         kotlin.runCatching {
             api!!.playlists.getPlaylist(id, market = Market.ES)
+        }.onFailure {
+            Log.d("SpotifyApiRequests", "Error: ${it.message}")
+            return null
+        }.onSuccess {
+            return it
+        }
+        return null
+    }
+
+    suspend fun searchTrackById(id: String): Track? {
+        kotlin.runCatching {
+            api!!.tracks.getTrack(id, market = Market.ES)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return null

@@ -270,4 +270,9 @@
     <string name="search">Type something on the text box for searching through Spotify!</string>
     <string name="err_act_reload">Realod the page</string>
     <string name="error_copy">Copy the error</string>
+    <string name="track_artwork">Track artwork</string>
+    <string name="album">Album</string>
+    <string name="artist">Artist</string>
+    <string name="playlist">Playlist</string>
+    <string name="track">Track</string>
 </resources>
