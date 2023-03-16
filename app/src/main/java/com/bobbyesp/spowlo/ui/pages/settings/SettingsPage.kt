@@ -81,6 +81,7 @@ fun SettingsPage(navController: NavController) {
                 scrollBehavior = scrollBehavior
             )
         }) {
+
         LazyColumn(
             modifier = Modifier.padding(it)
         ) {
