@@ -465,7 +465,7 @@ fun InitialEntry(
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
         }.onSuccess {
-            val req = SpotifyApiRequests.trackSearch("Faded Alan Walker")
+            val req = SpotifyApiRequests.searchAllTypes("Faded Alan Walker")
             Log.d("InitialEntry", "Name:" + req.tracks!![0].name)
             Log.d("InitialEntry", "Artist:" + req.tracks!![0].artists[0].name)
             Log.d("InitialEntry", "Album:" + req.tracks!![0].album.name)

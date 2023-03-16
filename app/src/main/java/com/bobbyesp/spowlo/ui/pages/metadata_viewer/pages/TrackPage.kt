@@ -35,7 +35,7 @@ fun TrackPage(
     val localConfig = LocalConfiguration.current
     Column(modifier = modifier
         .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp)) {
+        .padding(start = 16.dp, end = 16.dp, top = 12.dp)) {
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.extraSmall)
@@ -43,8 +43,8 @@ fun TrackPage(
                 .padding(top = 6.dp, bottom = 6.dp),
             contentAlignment = Alignment.Center
         ) {
-            //calculate the image size based on the screen size and the aspect ratio as 1:1 (square)
-            val size = (localConfig.screenWidthDp / 2) * 1.5
+            //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
+            val size = (localConfig.screenHeightDp / 3)
             AsyncImageImpl(
                 modifier = Modifier
                     .size(size.dp)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyData
 import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyDataType
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +20,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
         val state: PlaylistDataState = PlaylistDataState.Loading,
     )
 
-    suspend fun loadData(id: String) {
+    suspend fun loadData(id: String, type: SpotifyDataType = SpotifyDataType.TRACK) {
         kotlin.runCatching {
             SpotifyApiRequests.searchTrackById(id)
         }.onSuccess { track ->
@@ -31,7 +32,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
                             track.name,
                             track.artists.map { it.name },
                             track.album.releaseDate,
-                            SpotifyDataType.TRACK
+                            typeOfSpotifyDataType(track.type),
                         )
                     )
                 )

@@ -49,6 +49,8 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.songs.search_feat.SearchingSongComponent
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
 import kotlinx.coroutines.delay
 
@@ -90,7 +92,11 @@ fun SearcherPageImpl(
         with(viewState) {
             Column(modifier = Modifier.fillMaxSize()) {
                 QueryTextBox(
-                    modifier = Modifier.padding(),
+                    modifier = Modifier.padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
                     query = query,
                     onValueChange = { query ->
                         onValueChange(query)
@@ -186,25 +192,109 @@ fun SearcherPageImpl(
                         }
 
                         is ViewSearchState.Success -> {
-                            if (viewState.viewState.data.tracks != null) {
-                                items(viewState.viewState.data.tracks!!.size) { track ->
-                                    with(viewState.viewState.data.tracks!![track]) {
-                                        val artists: List<String> =
-                                            this.artists.map { artist -> artist.name }
-                                        SearchingSongComponent(
-                                            artworkUrl = album.images[0].url,
-                                            songName = this.name,
-                                            artists = artists.joinToString(", "),
-                                            spotifyUrl = this.externalUrls.spotify ?: "",
-                                            onClick = { onItemClick(this.id) }
+                            val allItems =
+                                mutableListOf<Any>() //TODO: Add the filters. Pagination should be done in the future
+                            viewState.viewState.data.let { data ->
+                                data.albums?.items?.let { allItems.addAll(it) }
+                                data.artists?.items?.let { allItems.addAll(it) }
+                                data.playlists?.items?.let { allItems.addAll(it) }
+                                data.tracks?.items?.let { allItems.addAll(it) }
+                                data.episodes?.items?.let {
+                                    allItems.addAll(
+                                        listOf(
+                                            it
                                         )
+                                    )
+                                }
+                                data.shows?.items?.let {
+                                    allItems.addAll(
+                                        listOf(
+                                            it
+                                        )
+                                    )
+                                }
+                                if (data != null) { //You may think that this is not necessary, but it is
+                                    item {
+                                        Text(
+                                            text = stringResource(R.string.showing_results).format(
+                                                allItems.size
+                                            ),
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                                .alpha(0.7f),
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
                                     }
-                                    //if it is not the last item, add a horizontal divider
-                                    if (track != viewState.viewState.data.tracks!!.size - 1) {
-                                        HorizontalDivider(
-                                            modifier = Modifier.alpha(0.35f),
-                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
-                                        )
+                                    data.albums?.items?.forEachIndexed { index, album ->
+                                        item {
+                                            // TODO: Display the album item
+                                        }
+                                    }
+                                    data.artists?.items?.forEachIndexed { index, artist ->
+                                        item {
+                                            // TODO: Display the artist item
+                                        }
+                                    }
+
+                                    data.tracks?.items?.forEachIndexed { index, track ->
+                                        item {
+                                            val artists: List<String> =
+                                                track.artists.map { artist -> artist.name }
+                                            SearchingSongComponent(
+                                                artworkUrl = track.album.images[2].url,
+                                                songName = track.name,
+                                                artists = artists.joinToString(", "),
+                                                spotifyUrl = track.externalUrls.spotify ?: "",
+                                                onClick = { onItemClick(track.id) },
+                                                type = typeOfDataToString(
+                                                    type = typeOfSpotifyDataType(
+                                                        track.type
+                                                    )
+                                                )
+                                            )
+                                            HorizontalDivider(
+                                                modifier = Modifier.alpha(0.35f),
+                                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                            )
+                                        }
+                                    }
+
+                                    data.playlists?.items?.forEachIndexed { index, playlist ->
+                                        item {
+                                            SearchingSongComponent(
+                                                artworkUrl = playlist.images[0].url,
+                                                songName = playlist.name,
+                                                artists = playlist.owner.displayName
+                                                    ?: stringResource(R.string.unknown),
+                                                spotifyUrl = playlist.externalUrls.spotify ?: "",
+                                                onClick = { onItemClick(playlist.id) },
+                                                type = typeOfDataToString(
+                                                    type = typeOfSpotifyDataType(
+                                                        playlist.type
+                                                    )
+                                                )
+                                            )
+                                            HorizontalDivider(
+                                                modifier = Modifier.alpha(0.35f),
+                                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                            )
+                                        }
+                                    }
+                                    data.episodes?.items?.forEachIndexed { index, episode ->
+                                        item {
+                                            // TODO: Display the episode item
+                                        }
+                                    }
+                                    data.shows?.items?.forEachIndexed { index, show ->
+                                        item {
+                                            // TODO: Display the show item
+                                        }
                                     }
                                 }
                             }
@@ -236,7 +326,6 @@ fun QueryTextBox(
             }
         },
         modifier = modifier
-            .padding(top = 16.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
             .fillMaxWidth()
             .focusRequester(focusRequester),
         keyboardOptions = KeyboardOptions(
@@ -266,3 +355,22 @@ fun QueryTextBox(
         ),
     )
 }
+
+enum class FilterType {
+    ALL, ALBUMS, ARTISTS, PLAYLISTS, TRACKS, EPISODES, SHOWS
+}
+//TODO: Add filters
+/*
+*                                     val filterState = rememberSaveable { mutableStateOf(FilterType.ALL) }
+
+                                    // Filter the items based on the selected filter type
+                                    val filteredItems = when (filterState.value) {
+                                        FilterType.ALL -> allItems
+                                        FilterType.ALBUMS -> allItems.filterIsInstance<SimpleAlbum>()
+                                        FilterType.ARTISTS -> allItems.filterIsInstance<Artist>()
+                                        FilterType.PLAYLISTS -> allItems.filterIsInstance<SimplePlaylist>()
+                                        FilterType.TRACKS -> allItems.filterIsInstance<Track>()
+                                        FilterType.EPISODES -> allItems.filterIsInstance<SimpleEpisode>()
+                                        FilterType.SHOWS -> allItems.filterIsInstance<SimpleShow>()
+                                    }
+* */
