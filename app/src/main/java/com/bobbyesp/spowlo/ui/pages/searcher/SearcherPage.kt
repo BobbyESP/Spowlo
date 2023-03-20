@@ -66,12 +66,12 @@ fun SearcherPage(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        SearcherPageImpl(
+         SearcherPageImpl(
             viewState = viewState,
             onValueChange = { query ->
                 searcherPageViewModel.updateSearchText(query)
             },
-            onItemClick = { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + id) }
+            onItemClick = { type, id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + type + "/" + id) },
         )
     }
     LaunchedEffect(viewState.query) {
@@ -81,12 +81,11 @@ fun SearcherPage(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearcherPageImpl(
     viewState: SearcherPageViewModel.ViewState,
     onValueChange: (String) -> Unit,
-    onItemClick: (String) -> Unit
+    onItemClick: (String, String) -> Unit,
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         with(viewState) {
@@ -251,7 +250,7 @@ fun SearcherPageImpl(
                                                 songName = track.name,
                                                 artists = artists.joinToString(", "),
                                                 spotifyUrl = track.externalUrls.spotify ?: "",
-                                                onClick = { onItemClick(track.id) },
+                                                onClick = { onItemClick(track.type ,track.id) },
                                                 type = typeOfDataToString(
                                                     type = typeOfSpotifyDataType(
                                                         track.type
@@ -273,7 +272,7 @@ fun SearcherPageImpl(
                                                 artists = playlist.owner.displayName
                                                     ?: stringResource(R.string.unknown),
                                                 spotifyUrl = playlist.externalUrls.spotify ?: "",
-                                                onClick = { onItemClick(playlist.id) },
+                                                onClick = { onItemClick(playlist.type ,playlist.id) },
                                                 type = typeOfDataToString(
                                                     type = typeOfSpotifyDataType(
                                                         playlist.type
@@ -298,6 +297,7 @@ fun SearcherPageImpl(
                                     }
                                 }
                             }
+
                         }
                     }
                 }
@@ -374,3 +374,113 @@ enum class FilterType {
                                         FilterType.SHOWS -> allItems.filterIsInstance<SimpleShow>()
                                     }
 * */
+// --------------------------------------------
+
+/*
+*                             val allItems =
+                                mutableListOf<Any>() //TODO: Add the filters. Pagination should be done in the future
+                            viewState.viewState.data.let { data ->
+                                data.albums?.items?.let { allItems.addAll(it) }
+                                data.artists?.items?.let { allItems.addAll(it) }
+                                data.playlists?.items?.let { allItems.addAll(it) }
+                                data.tracks?.items?.let { allItems.addAll(it) }
+                                data.episodes?.items?.let {
+                                    allItems.addAll(
+                                        listOf(
+                                            it
+                                        )
+                                    )
+                                }
+                                data.shows?.items?.let {
+                                    allItems.addAll(
+                                        listOf(
+                                            it
+                                        )
+                                    )
+                                }
+                                if (data != null) { //You may think that this is not necessary, but it is
+                                    item {
+                                        Text(
+                                            text = stringResource(R.string.showing_results).format(
+                                                allItems.size
+                                            ),
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                                .alpha(0.7f),
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                    }
+                                    data.albums?.items?.forEachIndexed { index, album ->
+                                        item {
+                                            // TODO: Display the album item
+                                        }
+                                    }
+                                    data.artists?.items?.forEachIndexed { index, artist ->
+                                        item {
+                                            // TODO: Display the artist item
+                                        }
+                                    }
+
+                                    data.tracks?.items?.forEachIndexed { index, track ->
+                                        item {
+                                            val artists: List<String> =
+                                                track.artists.map { artist -> artist.name }
+                                            SearchingSongComponent(
+                                                artworkUrl = track.album.images[2].url,
+                                                songName = track.name,
+                                                artists = artists.joinToString(", "),
+                                                spotifyUrl = track.externalUrls.spotify ?: "",
+                                                onClick = { onItemClick(track.type ,track.id) },
+                                                type = typeOfDataToString(
+                                                    type = typeOfSpotifyDataType(
+                                                        track.type
+                                                    )
+                                                )
+                                            )
+                                            HorizontalDivider(
+                                                modifier = Modifier.alpha(0.35f),
+                                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                            )
+                                        }
+                                    }
+
+                                    data.playlists?.items?.forEachIndexed { index, playlist ->
+                                        item {
+                                            SearchingSongComponent(
+                                                artworkUrl = playlist.images[0].url,
+                                                songName = playlist.name,
+                                                artists = playlist.owner.displayName
+                                                    ?: stringResource(R.string.unknown),
+                                                spotifyUrl = playlist.externalUrls.spotify ?: "",
+                                                onClick = { onItemClick(playlist.type ,playlist.id) },
+                                                type = typeOfDataToString(
+                                                    type = typeOfSpotifyDataType(
+                                                        playlist.type
+                                                    )
+                                                )
+                                            )
+                                            HorizontalDivider(
+                                                modifier = Modifier.alpha(0.35f),
+                                                color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                            )
+                                        }
+                                    }
+                                    data.episodes?.items?.forEachIndexed { index, episode ->
+                                        item {
+                                            // TODO: Display the episode item
+                                        }
+                                    }
+                                    data.shows?.items?.forEachIndexed { index, show ->
+                                        item {
+                                            // TODO: Display the show item
+                                        }
+                                    }
+                                }
+                            }
+                            *  */

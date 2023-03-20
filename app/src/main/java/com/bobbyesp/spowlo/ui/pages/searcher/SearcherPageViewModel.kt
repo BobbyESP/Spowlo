@@ -3,7 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.searcher
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.adamratzman.spotify.models.SpotifySearchResult
-import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
+import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

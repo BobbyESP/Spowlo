@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyData
+import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.MarqueeText
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString

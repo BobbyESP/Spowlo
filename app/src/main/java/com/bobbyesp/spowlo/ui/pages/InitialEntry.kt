@@ -61,7 +61,7 @@ import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
-import com.bobbyesp.spowlo.features.spotify_api.SpotifyApiRequests
+import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.animatedComposable
@@ -429,25 +429,30 @@ fun InitialEntry(
                         navDeepLink {
                             // Want to go to "markdown_viewer/{markdownFileName}"
                             uriPattern =
-                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE)
+                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE).append("/{type}")
                                     .append("/{id}").toString()
-                            Log.d("TST_NAV", uriPattern!!)
+                        }
+                        val typeArg = navArgument("type") {
+                            type = NavType.StringType
                         }
 
-                        val navArgument = navArgument("id") {
+                        val idArg = navArgument("id") {
                             type = NavType.StringType
                         }
                         val routeWithIdPattern: String =
-                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{id}").toString()
+                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}").append("/{id}").toString()
                         animatedComposableVariant(
                             routeWithIdPattern,
-                            arguments = listOf(navArgument)
+                            arguments = listOf(typeArg ,idArg)
                         ) { backStackEntry ->
                             val id =
                                 backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
+                            val type = backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
+
                             PlaylistPage(
                                 onBackPressed,
-                                id = id
+                                id = id,
+                                type = type
                             )
                         }
 

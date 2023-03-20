@@ -20,17 +20,19 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyData
+import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.pages.common.LoadingPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.SpotifyPageBinder
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistPage(
     onBackPressed: () -> Unit,
     playlistPageViewModel: PlaylistPageViewModel = hiltViewModel(),
-    id: String
+    id: String,
+    type : String
 ) {
     val scope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -38,7 +40,7 @@ fun PlaylistPage(
     val viewState by playlistPageViewModel.viewStateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        playlistPageViewModel.loadData(id)
+        playlistPageViewModel.loadData(id, typeOfSpotifyDataType(type))
     }
 
     with(viewState) {

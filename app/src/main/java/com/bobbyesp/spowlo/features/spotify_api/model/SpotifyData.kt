@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.spotify_api.data.dtos
+package com.bobbyesp.spowlo.features.spotify_api.model
 
 import com.adamratzman.spotify.models.ReleaseDate
 
@@ -7,6 +7,7 @@ data class SpotifyData(
     val name: String = "",
     val artists: List<String> = emptyList(),
     val releaseDate: ReleaseDate? = null,
+    val playlistSize : Int? = 0,
     val type: SpotifyDataType = SpotifyDataType.TRACK
 )
 

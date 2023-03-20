@@ -3,8 +3,8 @@ package com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyData
-import com.bobbyesp.spowlo.features.spotify_api.data.dtos.SpotifyDataType
+import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
+import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.AlbumPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.ArtistPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.PlaylistViewPage
