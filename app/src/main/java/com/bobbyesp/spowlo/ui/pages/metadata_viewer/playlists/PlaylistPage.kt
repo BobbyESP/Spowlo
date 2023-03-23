@@ -20,7 +20,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.pages.common.LoadingPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.SpotifyPageBinder
@@ -78,7 +77,7 @@ fun PlaylistPage(
                             .fillMaxSize()) {
                         item{
                             Box(Modifier.animateItemPlacement()) {
-                                SpotifyPageBinder(spotifyData = state.data, modifier = Modifier)
+                                SpotifyPageBinder(data = state.data, type = typeOfSpotifyDataType(type), modifier = Modifier)
                             }
                         }
                     }
@@ -91,7 +90,7 @@ fun PlaylistPage(
 sealed class PlaylistDataState {
     object Loading : PlaylistDataState()
     class Error(val error: Exception) : PlaylistDataState()
-    class Loaded(val data: SpotifyData) : PlaylistDataState()
+    class Loaded(val data: Any) : PlaylistDataState()
 }
 
 class ToolbarOptions(

@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.adamratzman.spotify.models.SimpleAlbum
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 
@@ -25,4 +26,19 @@ fun typeOfSpotifyDataType(type: String): SpotifyDataType {
         "artist" -> SpotifyDataType.ARTIST
         else -> SpotifyDataType.TRACK
     }
+}
+
+@Composable
+fun dataStringToString(data: String, additional: String): String {
+    return when (typeOfSpotifyDataType(data)) {
+        SpotifyDataType.ALBUM -> stringResource(id = R.string.album) + " • " + additional
+        SpotifyDataType.ARTIST -> stringResource(id = R.string.artist) + " • " + additional
+        SpotifyDataType.PLAYLIST -> stringResource(id = R.string.playlist) + " • " + additional
+        SpotifyDataType.TRACK -> stringResource(id = R.string.track) + " • " + additional
+    }
+}
+
+//RELEASE DATE TO STRING
+fun releaseDateToString(album: SimpleAlbum): String {
+    TODO()
 }

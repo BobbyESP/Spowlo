@@ -21,21 +21,23 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.MarqueeText
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.dataStringToString
 
 @Composable
 fun TrackPage(
-    data: SpotifyData,
+    data: Track,
     modifier: Modifier
 ) {
     val localConfig = LocalConfiguration.current
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 12.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 12.dp)
+    ) {
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.extraSmall)
@@ -53,7 +55,7 @@ fun TrackPage(
                         matchHeightConstraintsFirst = true
                     )
                     .clip(MaterialTheme.shapes.small),
-                model = data.artworkUrl,
+                model = data.album.images[0].url,
                 contentDescription = stringResource(id = R.string.track_artwork),
                 contentScale = ContentScale.Crop,
             )
@@ -72,7 +74,7 @@ fun TrackPage(
             Spacer(modifier = Modifier.height(6.dp))
             SelectionContainer {
                 Text(
-                    text = data.artists.joinToString(", ") { it },
+                    text = data.artists.joinToString(", ") { it.name },
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -82,7 +84,9 @@ fun TrackPage(
             Spacer(modifier = Modifier.height(6.dp))
             SelectionContainer {
                 Text(
-                    text = typeOfDataToString(data.type) + " • " + data.releaseDate?.year.toString(),
+                    text = dataStringToString(
+                        data = data.type,
+                        additional = data.album.releaseDate!!.year.toString()),      //TODO: CHANGE THIS TO NOT BE HARDCODED
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )

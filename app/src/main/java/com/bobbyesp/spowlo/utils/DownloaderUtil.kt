@@ -203,8 +203,12 @@ object DownloaderUtil {
     private fun SpotDLRequest.addAudioProvider(): SpotDLRequest = this.apply {
         when (PreferencesUtil.getAudioProvider()) {
             0 -> null
-            1 -> addOption("--provider", "youtube-music")
-            2 -> addOption("--provider", "youtube")
+            1 -> {
+                addOption("--audio", "youtube-music")
+                addOption("youtube")
+            }
+            2 -> addOption("--audio", "youtube-music")
+            3 -> addOption("--audio", "youtube")
         }
     }
 
@@ -292,7 +296,7 @@ object DownloaderUtil {
                 }
             }.onSuccess { response ->
                 return when {
-                    response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found."))
+                    response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found. Try changing the audio provider in the settings and also disabling the 'Don't filter results' option."))
                     response.output.contains("YT-DLP") -> Result.failure(Throwable("An error occurred to yt-dlp while downloading the song. Please, report this issue in GitHub."))
                     else -> onFinishDownloading(
                         this,

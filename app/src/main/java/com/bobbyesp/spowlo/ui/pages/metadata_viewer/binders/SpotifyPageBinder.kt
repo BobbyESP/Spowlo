@@ -3,7 +3,10 @@ package com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
+import com.adamratzman.spotify.models.Album
+import com.adamratzman.spotify.models.Artist
+import com.adamratzman.spotify.models.Playlist
+import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.AlbumPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.ArtistPage
@@ -12,26 +15,41 @@ import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.TrackPage
 
 @Composable
 fun SpotifyPageBinder(
-    spotifyData: SpotifyData,
-    modifier : Modifier = Modifier
+    data: Any,
+    type: SpotifyDataType,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        when (spotifyData.type) {
+        when (type) {
             SpotifyDataType.ALBUM -> {
-                AlbumPage(spotifyData, modifier)
+                val album = data as? Album
+                album?.let {
+                    AlbumPage(album, modifier)
+                }
             }
 
             SpotifyDataType.ARTIST -> {
-                ArtistPage(spotifyData, modifier)
+                val artist = data as? Artist
+                artist?.let {
+                    ArtistPage(artist, modifier)
+                }
             }
 
             SpotifyDataType.PLAYLIST -> {
-                PlaylistViewPage(spotifyData, modifier)
+                val playlist = data as? Playlist
+                playlist?.let {
+                    PlaylistViewPage(playlist, modifier)
+                }
             }
 
             SpotifyDataType.TRACK -> {
-                TrackPage(spotifyData, modifier)
+                val track = data as? Track
+                track?.let {
+                    TrackPage(track, modifier)
+                }
             }
         }
     }
 }
+
+//data-type to SpotifyDataType

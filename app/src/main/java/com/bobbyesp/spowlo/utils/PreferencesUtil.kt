@@ -173,8 +173,9 @@ object PreferencesUtil {
     fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
         return when (audioProviderInt){
             0 -> context.getString(R.string.default_option)
-            1 -> "Youtube Music"
-            2 -> "Youtube"
+            1 -> context.getString(R.string.both)
+            2 -> "Youtube Music"
+            3 -> "Youtube"
             else -> "Youtube Music"
         }
     }
@@ -182,8 +183,8 @@ object PreferencesUtil {
     @Composable
     fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
         return when (audioProviderInt){
-            0 -> LocalAsset(id = R.drawable.youtube_music_icons8)
-            1 -> LocalAsset(id = R.drawable.icons8_youtube)
+            2 -> LocalAsset(id = R.drawable.youtube_music_icons8)
+            3 -> LocalAsset(id = R.drawable.icons8_youtube)
             else -> LocalAsset(id = R.drawable.youtube_music_icons8)
         }
     }
@@ -191,22 +192,22 @@ object PreferencesUtil {
     fun getAudioQualityDesc(audioQualityStr: Int = getAudioQuality()): String {
         return when (audioQualityStr) {
             0 -> context.getString(R.string.not_specified)
-            1 -> "8k"
-            2 -> "16k"
-            3 -> "24k"
-            4 -> "32k"
-            5 -> "40k"
-            6 -> "48k"
-            7 -> "64k"
-            8 -> "80k"
-            9 -> "96k"
-            10 -> "112k"
-            11 -> "128k"
-            12 -> "160k"
-            13 -> "192k"
-            14 -> "224k"
-            15 -> "256k"
-            16 -> "320k"
+            1 -> "8 kbps"
+            2 -> "16 kbps"
+            3 -> "24 kbps"
+            4 -> "32 kbps"
+            5 -> "40 kbps"
+            6 -> "48 kbps"
+            7 -> "64 kbps"
+            8 -> "80 kbps"
+            9 -> "96 kbps"
+            10 -> "112 kbps"
+            11 -> "128 kbps"
+            12 -> "160 kbps"
+            13 -> "192 kbps"
+            14 -> "224 kbps"
+            15 -> "256 kbps"
+            16 -> "320 kbps"
             17 -> context.getString(R.string.not_convert)
             else -> "auto"
         }

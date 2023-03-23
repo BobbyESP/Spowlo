@@ -13,15 +13,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
-import com.bobbyesp.spowlo.ui.components.SingleChoiceItemWithIcon
+import com.bobbyesp.spowlo.ui.components.SingleChoiceItem
 import com.bobbyesp.spowlo.utils.AUDIO_PROVIDER
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 
@@ -45,16 +45,16 @@ fun AudioProviderDialog(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 LazyColumn {
-                    for (i in 0..1) {
+                    for (i in 0..3) {
                         item {
-                            SingleChoiceItemWithIcon(
+                            SingleChoiceItem(
                                 text = PreferencesUtil.getAudioProviderDesc(i),
                                 selected = audioProvider == i,
-                                icon = PreferencesUtil.getAudioProviderIcon(i),
                                 onClick = {
                                     audioProvider = i
-                                }
+                                },
                             )
+
                         }
                     }
                 }
@@ -68,9 +68,11 @@ fun AudioProviderDialog(
                 }
             )
         },
-        dismissButton = { TextButton(onClick = { onDismissRequest() }) {
-            Text(text = stringResource(id = R.string.dismiss))
-        } },
+        dismissButton = {
+            TextButton(onClick = { onDismissRequest() }) {
+                Text(text = stringResource(id = R.string.dismiss))
+            }
+        },
     )
 
 }

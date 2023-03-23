@@ -1,11 +1,8 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists
 
 import androidx.lifecycle.ViewModel
-import com.adamratzman.spotify.models.ReleaseDate
-import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyData
-import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
+import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,13 +27,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                SpotifyData(
-                                    data!!.album.images[0].url,
-                                    data.name,
-                                    data.artists.map { it.name },
-                                    data.album.releaseDate,
-                                    type = typeOfSpotifyDataType(data.type),
-                                )
+                                data!!
                             )
                         )
                     }
@@ -56,13 +47,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                SpotifyData(
-                                    data!!.images[0].url,
-                                    data.name,
-                                    data.artists.map { it.name },
-                                    data.releaseDate,
-                                    type = typeOfSpotifyDataType(data.type),
-                                )
+                                data!!
                             )
                         )
                     }
@@ -83,14 +68,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                SpotifyData(
-                                    data!!.images[0].url,
-                                    data.name,
-                                    listOf(data.owner.displayName ?: data.owner.id),
-                                    ReleaseDate(2000, 1, 1),
-                                    data.tracks.total,
-                                    typeOfSpotifyDataType(data.type),
-                                )
+                                data!!
                             )
                         )
                     }

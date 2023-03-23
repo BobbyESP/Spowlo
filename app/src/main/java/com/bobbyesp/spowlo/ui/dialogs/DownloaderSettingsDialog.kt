@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -75,7 +76,7 @@ import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun DownloaderSettingsDialog(
     useDialog: Boolean = false,

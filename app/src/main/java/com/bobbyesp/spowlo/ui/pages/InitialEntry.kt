@@ -7,7 +7,6 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -46,8 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,9 +52,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
-import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
@@ -92,10 +87,6 @@ import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
-import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
-import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import com.bobbyesp.spowlo.utils.SPOTDL
-import com.bobbyesp.spowlo.utils.SPOTDL_UPDATE
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -107,7 +98,6 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
@@ -131,7 +121,6 @@ fun InitialEntry(
             navBackStackEntry?.destination?.parent?.route ?: Route.DownloaderNavi
         )
     }
-
     //navController.currentBackStack.value.getOrNull(1)?.destination?.route
     val shouldHideBottomNavBar = remember(navBackStackEntry) {
         navBackStackEntry?.destination?.hierarchy?.any { it.route == Route.SPOTIFY_SETUP } == true
@@ -463,14 +452,14 @@ fun InitialEntry(
         }
     }
 
-    if (BuildConfig.DEBUG) LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
         runCatching {
-            SpotifyApiRequests.buildApi()
+            SpotifyApiRequests.provideSpotifyApi()
         }.onFailure {
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
         }.onSuccess {
-            val req = SpotifyApiRequests.searchAllTypes("Faded Alan Walker")
+            val req = SpotifyApiRequests.provideSearchAllTypes("Faded Alan Walker")
             Log.d("InitialEntry", "Name:" + req.tracks!![0].name)
             Log.d("InitialEntry", "Artist:" + req.tracks!![0].artists[0].name)
             Log.d("InitialEntry", "Album:" + req.tracks!![0].album.name)
@@ -482,19 +471,6 @@ fun InitialEntry(
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (!SPOTDL_UPDATE.getBoolean()) return@LaunchedEffect
-        runCatching {
-            withContext(Dispatchers.IO) {
-                val res = UpdateUtil.updateSpotDL()
-                if (res == SpotDL.UpdateStatus.DONE) {
-                    ToastUtil.makeToastSuspend(context.getString(R.string.spotDl_uptodate) + " (${SPOTDL.getString()})")
-                }
-            }
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
             runCatching {
@@ -522,53 +498,9 @@ fun InitialEntry(
     }
 
     if (showUpdateDialog) {
-        /*UpdateDialogImpl(
-            onDismissRequest = {
-                showUpdateDialog = false
-                updateJob?.cancel()
-            },
-            title = latestRelease.name.toString(),
-            onConfirmUpdate = {
-                updateJob = scope.launch(Dispatchers.IO) {
-                    runCatching {
-                        UpdateUtil.downloadApk(latestRelease = latestRelease)
-                            .collect { downloadStatus ->
-                                currentDownloadStatus = downloadStatus
-                                if (downloadStatus is UpdateUtil.DownloadStatus.Finished) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        launcher.launch(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-                                    }
-                                }
-                            }
-                    }.onFailure {
-                        it.printStackTrace()
-                        currentDownloadStatus = UpdateUtil.DownloadStatus.NotYet
-                        ToastUtil.makeToastSuspend(context.getString(R.string.app_update_failed))
-                        return@launch
-                    }
-                }
-            },
-            releaseNote = latestRelease.body.toString(),
-            downloadStatus = currentDownloadStatus
-        )*/
         UpdaterBottomDrawer(latestRelease = latestRelease)
     }
 
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-private fun buildAnimationForward(scope: AnimatedContentScope<NavBackStackEntry>): Boolean {
-    val isRoute = getStartingRoute(scope.initialState.destination)
-    val tsRoute = getStartingRoute(scope.targetState.destination)
-
-    val isIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == isRoute }
-    val tsIndex = MainActivity.showInBottomNavigation.keys.indexOfFirst { it == tsRoute }
-
-    return tsIndex == -1 || isRoute == tsRoute || tsIndex > isIndex
-}
-
-private fun getStartingRoute(destination: NavDestination): String {
-    return destination.hierarchy.toList().let { it[it.lastIndex - 1] }.route.orEmpty()
 }
 
 //TODO: Separate the SettingsPage into a different NavGraph (like Seal)
