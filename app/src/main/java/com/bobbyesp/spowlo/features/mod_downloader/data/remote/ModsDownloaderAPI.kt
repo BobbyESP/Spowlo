@@ -12,10 +12,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import okio.IOException
 import java.io.File
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 object ModsDownloaderAPI {
@@ -34,21 +39,20 @@ object ModsDownloaderAPI {
     @CheckResult
     suspend fun getAPIResponse(): Result<APIResponseDto> {
         return suspendCoroutine { continuation ->
-            client.newCall(requestAPIResponse).enqueue(object : okhttp3.Callback {
-                override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {
-                    continuation.resumeWith(Result.failure(e))
-                }
+            client.newCall(requestAPIResponse).enqueue(object : Callback {
 
-                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    val body = response.body?.string()
-                    if (body != null) {
-                        val apiResponseDto = jsonFormat.decodeFromString(APIResponseDto.serializer(), body)
-                        continuation.resume(Result.success(apiResponseDto))
-                    } else {
-                        continuation.resumeWith(Result.failure(Exception("Body is null")))
+                    override fun onResponse(call: Call, response: Response) {
+                        val responseData = response.body.string()
+                        val apiResponse =
+                            jsonFormat.decodeFromString(APIResponseDto.serializer(), responseData)
+                        response.body.close()
+                        continuation.resume(Result.success(apiResponse))
                     }
-                }
-            })
+
+                    override fun onFailure(call: Call, e: IOException) {
+                        continuation.resumeWithException(e)
+                    }
+                })
         }
     }
 

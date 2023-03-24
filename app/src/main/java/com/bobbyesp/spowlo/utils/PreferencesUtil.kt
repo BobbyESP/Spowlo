@@ -214,7 +214,7 @@ object PreferencesUtil {
     }
 
     fun isNetworkAvailableForDownload() =
-        CELLULAR_DOWNLOAD.getBoolean() || !App.connectivityManager.isActiveNetworkMetered
+        !App.connectivityManager.isActiveNetworkMetered //CELLULAR_DOWNLOAD.getBoolean() ||
 
     fun isAutoUpdateEnabled() = AUTO_UPDATE.getBoolean(!isFDroidBuild())
 

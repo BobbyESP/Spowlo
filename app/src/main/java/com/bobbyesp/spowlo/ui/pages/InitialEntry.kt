@@ -483,7 +483,7 @@ fun InitialEntry(
 
 
     LaunchedEffect(Unit) {
-        if (!PreferencesUtil.isNetworkAvailableForDownload()) launch(Dispatchers.IO) {
+        if (PreferencesUtil.isNetworkAvailableForDownload()) launch(Dispatchers.IO) {
             runCatching {
                 UpdateUtil.checkForUpdate()?.let {
                     latestRelease = it
@@ -501,7 +501,7 @@ fun InitialEntry(
 
     LaunchedEffect(Unit) {
         Log.d(TAG, "InitialEntry: Checking for mod updates")
-        if (!PreferencesUtil.isNetworkAvailableForDownload()) ModsDownloaderAPI.getAPIResponse()
+        if (PreferencesUtil.isNetworkAvailableForDownload()) ModsDownloaderAPI.getAPIResponse()
             .onSuccess {
                 Log.d(TAG, "InitialEntry: Mods API call success")
                 modsDownloaderViewModel.updateApiResponse(it)
