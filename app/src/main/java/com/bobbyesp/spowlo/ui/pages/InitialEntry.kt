@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
@@ -199,7 +200,8 @@ fun InitialEntry(
                         NavigationBar(
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-                                .navigationBarsPadding(),
+                                .navigationBarsPadding()
+                                .height(72.dp),
                         ) {
                             MainActivity.showInBottomNavigation.forEach { (route, icon) ->
                                 val text = when (route) {
@@ -237,7 +239,8 @@ fun InitialEntry(
                                         Text(
                                             text = text,
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.padding(top = 6.dp)
                                         )
                                     })
                             }
@@ -462,6 +465,7 @@ fun InitialEntry(
         }
     }
 
+    //INIT SPOTIFY API
     LaunchedEffect(Unit) {
         runCatching {
             SpotifyApiRequests.provideSpotifyApi()
