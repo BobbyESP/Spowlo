@@ -102,7 +102,8 @@ object UpdateUtil {
 
     private suspend fun getLatestRelease(): LatestRelease {
         return suspendCoroutine { continuation ->
-            client.newCall(requestForReleases).enqueue(object : Callback {
+            client.newCall(requestForReleases)
+                .enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     val responseData = response.body.string()
 //                    val latestRelease = jsonFormat.decodeFromString<LatestRelease>(responseData)
@@ -118,7 +119,6 @@ object UpdateUtil {
                     response.body.close()
                     continuation.resume(latestRelease)
                 }
-
                 override fun onFailure(call: Call, e: IOException) {
                     continuation.resumeWithException(e)
                 }

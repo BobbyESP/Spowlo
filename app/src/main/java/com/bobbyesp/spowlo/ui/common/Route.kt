@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.common
 
 object Route {
 
+    const val DOWNLOADER_SHEET = "downloader_sheet"
     const val NavGraph = "nav_graph"
     const val SearcherNavi = "searcher_navi"
     const val DownloaderNavi = "downloader_navi"
@@ -36,15 +37,11 @@ object Route {
     const val DOWNLOAD_DIRECTORY = "download_directory"
     const val CREDITS = "credits"
     const val LANGUAGES = "languages"
-    const val DARK_THEME = "dark_theme"
     const val DOWNLOAD_QUEUE = "queue"
     const val DOWNLOAD_FORMAT = "download_format"
     const val NETWORK_PREFERENCES = "network_preferences"
     const val COOKIE_PROFILE = "cookie_profile"
     const val COOKIE_GENERATOR_WEBVIEW = "cookie_webview"
-
-    const val TASK_HASHCODE = "task_hashcode"
-    const val TEMPLATE_ID = "template_id"
 
     //DIALOGS
     const val AUDIO_QUALITY_DIALOG = "audio_quality_dialog"

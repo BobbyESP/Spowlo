@@ -87,6 +87,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
+import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -268,7 +269,7 @@ fun InitialEntry(
                             DownloaderPage(
                                 navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
                                 navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) },
-                                navigateToPlaylistPage = { navController.navigate(Route.PLAYLIST) },
+                                navigateToDownloaderSheet = { navController.navigate(Route.DOWNLOADER_SHEET) },
                                 onSongCardClicked = {
                                     navController.navigate(Route.PLAYLIST_METADATA_PAGE)
                                 },
@@ -403,6 +404,10 @@ fun InitialEntry(
                                 navController
                             )
                         }
+
+                        bottomSheet(Route.DOWNLOADER_SHEET) {
+                        }
+
                     }
 
                     //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
@@ -421,6 +426,8 @@ fun InitialEntry(
                                 StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE).append("/{type}")
                                     .append("/{id}").toString()
                         }
+
+                        //We create the arguments for the route
                         val typeArg = navArgument("type") {
                             type = NavType.StringType
                         }
@@ -428,8 +435,13 @@ fun InitialEntry(
                         val idArg = navArgument("id") {
                             type = NavType.StringType
                         }
+
+
+                        //We build the route with the type of the destination and the id of it
                         val routeWithIdPattern: String =
                             StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}").append("/{id}").toString()
+
+                        //We create the composable with the route and the arguments
                         animatedComposableVariant(
                             routeWithIdPattern,
                             arguments = listOf(typeArg ,idArg)
@@ -444,8 +456,6 @@ fun InitialEntry(
                                 type = type
                             )
                         }
-
-
                     }
                 }
             }
@@ -471,10 +481,10 @@ fun InitialEntry(
         }
     }
 
+
     LaunchedEffect(Unit) {
-        launch(Dispatchers.IO) {
+        if (!PreferencesUtil.isNetworkAvailableForDownload()) launch(Dispatchers.IO) {
             runCatching {
-                //TODO: Add check for updates of spotDL
                 UpdateUtil.checkForUpdate()?.let {
                     latestRelease = it
                     showUpdateDialog = true
@@ -484,18 +494,22 @@ fun InitialEntry(
                 }
             }.onFailure {
                 it.printStackTrace()
+                ToastUtil.makeToastSuspend(context.getString(R.string.update_check_failed))
             }
         }
     }
 
     LaunchedEffect(Unit) {
-        Log.d(TAG, "InitialEntry: Checking for updates")
-        ModsDownloaderAPI.callModsAPI().onFailure {
-            ToastUtil.makeToastSuspend(App.context.getString(R.string.api_call_failed))
-        }.onSuccess {
-            modsDownloaderViewModel.updateApiResponse(it)
-        }
+        Log.d(TAG, "InitialEntry: Checking for mod updates")
+        if (!PreferencesUtil.isNetworkAvailableForDownload()) ModsDownloaderAPI.getAPIResponse()
+            .onSuccess {
+                Log.d(TAG, "InitialEntry: Mods API call success")
+                modsDownloaderViewModel.updateApiResponse(it)
+            }.onFailure {
+                ToastUtil.makeToastSuspend(App.context.getString(R.string.api_call_failed))
+            }
     }
+
 
     if (showUpdateDialog) {
         UpdaterBottomDrawer(latestRelease = latestRelease)

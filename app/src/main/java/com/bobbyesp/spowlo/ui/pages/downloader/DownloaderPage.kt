@@ -97,12 +97,14 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 @OptIn(
-    ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class
+    ExperimentalPermissionsApi::class,
+    ExperimentalComposeUiApi::class,
+    ExperimentalMaterialApi::class
 )
 fun DownloaderPage(
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
-    navigateToPlaylistPage: () -> Unit = {},
+    navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
     onNavigateToTaskList: () -> Unit = {},
     navigateToMods: () -> Unit = {},
@@ -139,10 +141,7 @@ fun DownloaderPage(
     }
 
     val downloadCallback = {
-        if (CONFIGURE.getBoolean()) downloaderViewModel.showDialog(
-            scope,
-            useDialog
-        )
+        if (CONFIGURE.getBoolean()) navigateToDownloaderSheet()
         else checkPermissionOrDownload()
         keyboardController?.hide()
     }
@@ -178,7 +177,10 @@ fun DownloaderPage(
             viewState = viewState,
             errorState = errorState,
             downloadCallback = { downloadCallback() },
-            navigateToSettings = navigateToSettings,
+            navigateToSettings = {
+                navigateToSettings()
+                keyboardController?.hide()
+            },
             navigateToDownloads = navigateToDownloads,
             navigateToMods = navigateToMods,
             onNavigateToTaskList = onNavigateToTaskList,
@@ -235,39 +237,41 @@ fun DownloaderPageImplementation(
     isPreview: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp),
-            navigationIcon = {
-                IconButton(onClick = { navigateToSettings() }) {
-                    Icon(
-                        imageVector = Icons.Outlined.FormatListBulleted,
-                        contentDescription = stringResource(id = R.string.show_more_actions)
-                    )
-                }
-            }, actions = {
-                IconButton(onClick = { navigateToMods() }) {
-                    Icon(
-                        imageVector = LocalAsset(id = R.drawable.spotify_logo),
-                        contentDescription = stringResource(id = R.string.mods_downloader)
-                    )
-                }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp),
+                navigationIcon = {
+                    IconButton(onClick = { navigateToSettings() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.FormatListBulleted,
+                            contentDescription = stringResource(id = R.string.show_more_actions)
+                        )
+                    }
+                }, actions = {
+                    IconButton(onClick = { navigateToMods() }) {
+                        Icon(
+                            imageVector = LocalAsset(id = R.drawable.spotify_logo),
+                            contentDescription = stringResource(id = R.string.mods_downloader)
+                        )
+                    }
 
-                IconButton(onClick = { navigateToDownloads() }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Subscriptions,
-                        contentDescription = stringResource(id = R.string.downloads_history)
-                    )
-                }
-            })
-    }, floatingActionButton = {
-        FABs(
-            modifier = with(Modifier) { if (showDownloadProgress) this else this.imePadding() },
-            downloadCallback = downloadCallback,
-            pasteCallback = pasteCallback,
-            cancelCallback = cancelCallback,
-            isDownloading = downloaderState is Downloader.State.DownloadingSong,
-        )
-    }) {
+                    IconButton(onClick = { navigateToDownloads() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Subscriptions,
+                            contentDescription = stringResource(id = R.string.downloads_history)
+                        )
+                    }
+                })
+        }, floatingActionButton = {
+            FABs(
+                modifier = with(Modifier) { if (showDownloadProgress) this else this.imePadding() },
+                downloadCallback = downloadCallback,
+                pasteCallback = pasteCallback,
+                cancelCallback = cancelCallback,
+                isDownloading = downloaderState is Downloader.State.DownloadingSong,
+            )
+        }) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -322,8 +326,7 @@ fun DownloaderPageImplementation(
                                 song = info,
                                 progress = progress,
                                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-                                isLyrics = info.lyrics?.isNotEmpty()
-                                    ?: false,
+                                isLyrics = hasLyrics,
                                 isExplicit = info.explicit,
                                 onClick = { onSongCardClicked() }
                             )
@@ -377,7 +380,7 @@ fun FABs(
     downloadCallback: () -> Unit = {},
     pasteCallback: () -> Unit = {},
     cancelCallback: () -> Unit = {},
-    isDownloading : Boolean = false
+    isDownloading: Boolean = false
 ) {
     Column(
         modifier = modifier.padding(6.dp), horizontalAlignment = Alignment.End
@@ -441,7 +444,6 @@ fun InputUrl(
         maxLines = 3,
         trailingIcon = {
             if (url.isNotEmpty()) ClearButton { onValueChange("") }
-//            else PasteUrlButton { onPaste() }
         }, keyboardActions = KeyboardActions(onDone = {
             softwareKeyboardController?.hide()
             focusManager.moveFocus(FocusDirection.Down)

@@ -279,4 +279,5 @@
     <string name="not_implemented">Sorry, this page is not yet implemented ;(</string>
     <string name="go_back">Go back</string>
     <string name="both">Both</string>
+    <string name="update_check_failed">The app updates checker failed</string>
 </resources>
