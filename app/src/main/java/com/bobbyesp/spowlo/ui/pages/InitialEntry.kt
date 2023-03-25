@@ -64,6 +64,7 @@ import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
+import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.DownloaderBottomSheet
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.MoreOptionsHomeBottomSheet
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
@@ -240,7 +241,6 @@ fun InitialEntry(
                                             text = text,
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(top = 6.dp)
                                         )
                                     })
                             }
@@ -267,7 +267,6 @@ fun InitialEntry(
                     route = Route.NavGraph
                 ) {
                     navigation(startDestination = Route.HOME, route = Route.DownloaderNavi) {
-                        //TODO: Add all routes
                         animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
                             DownloaderPage(
                                 navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
@@ -409,6 +408,10 @@ fun InitialEntry(
                         }
 
                         bottomSheet(Route.DOWNLOADER_SHEET) {
+                            DownloaderBottomSheet(
+                                onBackPressed,
+                                downloaderViewModel
+                            )
                         }
 
                     }

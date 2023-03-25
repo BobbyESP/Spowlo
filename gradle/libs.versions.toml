@@ -12,7 +12,6 @@ navTransitions = "0.11.0-alpha"
 androidxPaging = "3.1.1"
 paginationCompose = "1.0.0-alpha18"
 
-
 androidxLifecycle = "2.6.0"
 androidxNavigation = "2.5.3"
 androidxComposeMaterial3 = "1.1.0-alpha08"

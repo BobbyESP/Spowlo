@@ -43,8 +43,8 @@ sealed class Version(
 
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
-    versionMinor = 2,
-    versionPatch = 1,
+    versionMinor = 3,
+    versionPatch = 0,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -207,10 +207,9 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.navigation.animation)
     implementation(libs.accompanist.webview)
-    implementation(libs.accompanist.pager.layouts)
-    implementation(libs.accompanist.pager.indicators)
     implementation(libs.accompanist.flowlayout)
     implementation(libs.accompanist.material)
+    implementation(libs.accompanist.pager.indicators)
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
 
@@ -240,11 +239,11 @@ dependencies {
 
     implementation(libs.markdown)
     //Exoplayer
-    implementation(libs.exoplayer.core)
-    implementation(libs.exoplayer.ui)
-    implementation(libs.exoplayer.dash)
-    implementation(libs.exoplayer.smoothstreaming)
-    implementation(libs.exoplayer.extension.mediasession)
+//    implementation(libs.exoplayer.core)
+//    implementation(libs.exoplayer.ui)
+//    implementation(libs.exoplayer.dash)
+//    implementation(libs.exoplayer.smoothstreaming)
+//    implementation(libs.exoplayer.extension.mediasession)
 
     implementation(libs.customtabs)
 

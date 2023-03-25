@@ -22,12 +22,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Aod
 import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.Cookie
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.Update
-import androidx.compose.material.icons.outlined.Cookie
 import androidx.compose.material.icons.rounded.EnergySavingsLeaf
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
@@ -123,7 +124,7 @@ fun SettingsPage(navController: NavController) {
             }
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.general_settings)) },
+                    title = { Text(text = stringResource(id = R.string.general_settings), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.general_settings_desc)) },
                     icon = Icons.Filled.SettingsApplications,
                  onClick = {
@@ -137,7 +138,7 @@ fun SettingsPage(navController: NavController) {
             }
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.spotify_settings)) },
+                    title = { Text(text = stringResource(id = R.string.spotify_settings), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.spotify_settings_desc)) },
                     icon = LocalAsset(id = R.drawable.spotify_logo),
                     onClick = {
@@ -151,7 +152,7 @@ fun SettingsPage(navController: NavController) {
             item {
                 //new settings item for download directory
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.download_directory)) },
+                    title = { Text(text = stringResource(id = R.string.download_directory), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.download_directory_desc)) },
                     icon = Icons.Filled.Folder,
                     onClick = {
@@ -164,7 +165,7 @@ fun SettingsPage(navController: NavController) {
             }
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.format)) },
+                    title = { Text(text = stringResource(id = R.string.format), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.format_settings_desc)) },
                     icon = Icons.Filled.AudioFile,
                     onClick = {
@@ -178,7 +179,7 @@ fun SettingsPage(navController: NavController) {
             item {
                 //rewrite this with new settings item
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.appearance)) },
+                    title = { Text(text = stringResource(id = R.string.appearance), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.appearance_settings)) },
                     icon = Icons.Filled.Aod,
                     onClick = {
@@ -192,9 +193,9 @@ fun SettingsPage(navController: NavController) {
             item {
                 //Cookies page
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.cookies)) },
+                    title = { Text(text = stringResource(id = R.string.cookies), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.cookies_desc)) },
-                    icon = Icons.Outlined.Cookie,
+                    icon = Icons.Filled.Cookie,
                     onClick = {
                         navController.navigate(Route.COOKIE_PROFILE) {
                             launchSingleTop = true
@@ -206,7 +207,7 @@ fun SettingsPage(navController: NavController) {
 
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.documentation)) },
+                    title = { Text(text = stringResource(id = R.string.documentation), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.documentation_desc)) },
                     icon = Icons.Filled.Help,
                     onClick = {
@@ -220,7 +221,7 @@ fun SettingsPage(navController: NavController) {
 
             item{
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.updates_channels)) },
+                    title = { Text(text = stringResource(id = R.string.updates_channels), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.updates_channels_desc)) },
                     icon = Icons.Filled.Update,
                     onClick = {
@@ -234,7 +235,7 @@ fun SettingsPage(navController: NavController) {
 
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.about)) },
+                    title = { Text(text = stringResource(id = R.string.about), fontWeight = FontWeight.Bold) },
                     description = { Text(text = stringResource(id = R.string.about_page)) },
                     icon = Icons.Filled.Info,
                     onClick = {

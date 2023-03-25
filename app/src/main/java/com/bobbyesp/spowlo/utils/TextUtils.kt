@@ -2,14 +2,10 @@ package com.bobbyesp.spowlo.utils
 
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.res.Resources
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
-import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
@@ -38,10 +34,10 @@ object GeneralTextUtils {
     fun convertDuration(durationOfSong: Double): String {
         //First of all the duration comes with this format "146052" but it has to be "146.052"
         var duration = 0.0
-        if (durationOfSong > 100000.0){
-            duration = durationOfSong / 1000
+        duration = if (durationOfSong > 100000.0){
+            durationOfSong / 1000
         } else {
-            duration = durationOfSong
+            durationOfSong
         }
         val hours = (duration / 3600).toInt()
         val minutes = ((duration % 3600) / 60).toInt()

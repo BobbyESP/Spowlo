@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,9 +76,7 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.getLanguageDesc
 import com.bobbyesp.spowlo.utils.palettesMap
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.rememberPagerState
 import com.google.android.material.color.DynamicColors
 import com.kyant.monet.Hct
 import com.kyant.monet.LocalTonalPalettes
@@ -103,7 +103,7 @@ val colorList = listOf(
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
-    ExperimentalPagerApi::class
+    ExperimentalFoundationApi::class, ExperimentalPagerApi::class
 )
 @Composable
 fun AppearancePage(
@@ -167,7 +167,7 @@ fun AppearancePage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clearAndSetSemantics { }, state = pagerState,
-                    count = colorList.size, contentPadding = PaddingValues(horizontal = 12.dp)
+                    pageCount = colorList.size, contentPadding = PaddingValues(horizontal = 12.dp)
                 ) {
                     Row() { ColorButtons(colorList[it]) }
                 }
