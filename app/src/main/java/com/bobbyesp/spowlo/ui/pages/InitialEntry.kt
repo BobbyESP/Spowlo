@@ -410,7 +410,8 @@ fun InitialEntry(
                         bottomSheet(Route.DOWNLOADER_SHEET) {
                             DownloaderBottomSheet(
                                 onBackPressed,
-                                downloaderViewModel
+                                downloaderViewModel,
+                                navController
                             )
                         }
 

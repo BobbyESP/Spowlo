@@ -37,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.DismissButton
@@ -52,7 +51,6 @@ import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil.templateStateFlow
 import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
 import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.USE_CACHING
@@ -143,7 +141,6 @@ fun DownloaderSettingsDialog(
     var showClientIdDialog by remember { mutableStateOf(false) }
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
-    val templateList by templateStateFlow.collectAsStateWithLifecycle(ArrayList())
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 

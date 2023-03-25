@@ -309,11 +309,6 @@ object PreferencesUtil {
 
     fun getCookies(): String = cookiesStateFlow.value
 
-    val templateStateFlow: StateFlow<List<CommandTemplate>> =
-        DatabaseUtil.getTemplateFlow().distinctUntilChanged().stateIn(
-            applicationScope, started = SharingStarted.Eagerly, emptyList()
-        )
-
 }
 
 data class DarkThemePreference(
