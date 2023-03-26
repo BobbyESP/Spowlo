@@ -49,6 +49,11 @@ For most devices, it is recommended to install the **ARM64-v8a** version of the 
 
 - Download the latest stable version from [GitHub releases](https://github.com/BobbyESP/Spowlo/releases/latest)
 
+## Translation
+
+We are using Hosted Weblate for the translations of the app. if you want to contribute follow [this link](https://hosted.weblate.org/engage/spowlo/) 🖇️ 
+
+
 ## 📖Credits
 Thanks to [xnetcat](https://github.com/xnetcat) for it's help with some spotDL related things!
 
