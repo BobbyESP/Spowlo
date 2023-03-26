@@ -5,7 +5,10 @@ import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -13,14 +16,15 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Dataset
 import androidx.compose.material.icons.outlined.DownloadDone
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +33,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -72,8 +80,7 @@ fun DownloaderBottomSheet(
     }
 
     val checkPermissionOrDownload = {
-        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted)
-            downloaderViewModel.startDownloadSong()
+        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
         else {
             storagePermission.launchPermissionRequest()
         }
@@ -95,10 +102,55 @@ fun DownloaderBottomSheet(
             .background(MaterialTheme.colorScheme.background)
             .navigationBarsPadding()
             .clip(roundedTopShape)
+            .padding(8.dp)
 
     ) {
-        //I want to create a pager here with tabs at the top for each page
-        TabRow(selectedTabIndex = pagerState.currentPage) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.DownloadDone,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp, start = 8.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = stringResource(R.string.settings_before_download),
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .padding(vertical = 12.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Text(
+            text = stringResource(R.string.settings_before_download_text),
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.Start).padding(start = 8.dp)
+        )
+        IndicatorBehindScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                Box(
+                    Modifier
+                        .padding(vertical = 12.dp)
+                        .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                        .fillMaxHeight()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                )
+            },
+            edgePadding = 16.dp,
+            tabAlignment = Alignment.CenterStart,
+        ) {
             pages.forEachIndexed { index, page ->
                 Tab(
                     text = { Text(text = page) },
@@ -107,20 +159,22 @@ fun DownloaderBottomSheet(
                         scope.launch {
                             pagerState.animateScrollToPage(index)
                         }
-                    }
+                    },
                 )
             }
         }
         HorizontalPager(pageCount = pages.size, state = pagerState) {
             when (pages[it]) {
                 BottomSheetPages.MAIN -> {
-                   Text(text = "Main page")
+                    Text(text = "Main page", color = MaterialTheme.colorScheme.onSurface)
                 }
+
                 BottomSheetPages.SECONDARY -> {
-                    Text(text = "Secondary page")
+                    Text(text = "Secondary page", color = MaterialTheme.colorScheme.onSurface)
                 }
+
                 BottomSheetPages.TERTIARY -> {
-                    Text(text = "Tertiary page")
+                    Text(text = "Tertiary page", color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         }

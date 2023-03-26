@@ -194,23 +194,23 @@ fun SearcherPageImpl(
                             val allItems =
                                 mutableListOf<Any>() //TODO: Add the filters. Pagination should be done in the future
                             viewState.viewState.data.let { data ->
-                                data.albums?.items?.let { allItems.addAll(it) }
-                                data.artists?.items?.let { allItems.addAll(it) }
+                                data.albums?.items?.let {/* allItems.addAll(it)*/ }
+                                data.artists?.items?.let { /*allItems.addAll(it) */}
                                 data.playlists?.items?.let { allItems.addAll(it) }
                                 data.tracks?.items?.let { allItems.addAll(it) }
-                                data.episodes?.items?.let {
+                                data.episodes?.items?.let {/*
                                     allItems.addAll(
                                         listOf(
                                             it
                                         )
-                                    )
+                                    )*/
                                 }
-                                data.shows?.items?.let {
+                                data.shows?.items?.let {/*
                                     allItems.addAll(
                                         listOf(
                                             it
                                         )
-                                    )
+                                    )*/
                                 }
                                 if (data != null) { //You may think that this is not necessary, but it is
                                     item {

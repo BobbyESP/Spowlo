@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
@@ -201,8 +200,7 @@ fun InitialEntry(
                         NavigationBar(
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-                                .navigationBarsPadding()
-                                .height(72.dp),
+                                .navigationBarsPadding(),
                         ) {
                             MainActivity.showInBottomNavigation.forEach { (route, icon) ->
                                 val text = when (route) {

@@ -45,7 +45,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -402,7 +404,7 @@ fun FABs(
     }*/
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun InputUrl(
     url: String,
@@ -434,7 +436,12 @@ fun InputUrl(
             focusManager.moveFocus(FocusDirection.Down)
             onDone()
         }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                8.dp
+            ), unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
     )
     AnimatedVisibility(visible = showDownloadProgress) {
         Row(
