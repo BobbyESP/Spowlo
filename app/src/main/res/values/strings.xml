@@ -280,4 +280,8 @@
     <string name="go_back">Go back</string>
     <string name="both">Both</string>
     <string name="update_check_failed">The app updates checker failed</string>
+    <string name="track_popularity">Popularity</string>
+    <string name="track_duration">Duration</string>
+    <string name="download_started_msg">Download started</string>
+    <string name="download_finished_msg">Download finished</string>
 </resources>

@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -70,6 +69,7 @@ import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPage
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPageViewModel
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.playlist.PlaylistMetadataPage
@@ -106,12 +106,13 @@ private const val TAG = "InitialEntry"
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class
 )
 @Composable
 fun InitialEntry(
     downloaderViewModel: DownloaderViewModel,
     modsDownloaderViewModel: ModsDownloaderViewModel,
+    playlistPageViewModel: PlaylistPageViewModel,
     isUrlShared: Boolean
 ) {
     //bottom sheet remember state
@@ -167,13 +168,12 @@ fun InitialEntry(
             }
         }
     }
-
     val cookiesViewModel: CookiesSettingsViewModel = viewModel()
     val onBackPressed: () -> Unit = { navController.popBackStack() }
 
     if (isUrlShared) {
-        if (navController.currentDestination?.route != Route.HOME) {
-            navController.popBackStack(route = Route.HOME, inclusive = false, saveState = true)
+        if (navController.currentDestination?.route != Route.DOWNLOADER) {
+            navController.popBackStack(route = Route.DOWNLOADER, inclusive = false, saveState = true)
         }
     }
     Box(
@@ -266,17 +266,26 @@ fun InitialEntry(
                     startDestination = Route.DownloaderNavi,
                     route = Route.NavGraph
                 ) {
-                    navigation(startDestination = Route.HOME, route = Route.DownloaderNavi) {
-                        animatedComposable(Route.HOME) { //TODO: Change this route to Route.DOWNLOADER, but by now, keep it as Route.HOME
+                    navigation(startDestination = Route.DOWNLOADER, route = Route.DownloaderNavi) {
+                        animatedComposable(Route.DOWNLOADER) {
                             DownloaderPage(
-                                navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY) },
-                                navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) },
-                                navigateToDownloaderSheet = { navController.navigate(Route.DOWNLOADER_SHEET) },
+                                navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY){
+                                    launchSingleTop = true
+                                } },
+                                navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) {
+                                    launchSingleTop = true
+                                }},
+                                navigateToDownloaderSheet = { navController.navigate(Route.DOWNLOADER_SHEET){
+                                    launchSingleTop = true
+                                } },
                                 onSongCardClicked = {
-                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE)
+                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE){
+                                        launchSingleTop = true
+                                    }
                                 },
-                                onNavigateToTaskList = { navController.navigate(Route.TASK_LIST) },
-                                navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) },
+                                navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) {
+                                    launchSingleTop = true
+                                }},
                                 downloaderViewModel = downloaderViewModel
                             )
                         }
@@ -460,7 +469,7 @@ fun InitialEntry(
                             PlaylistPage(
                                 onBackPressed,
                                 id = id,
-                                type = type
+                                type = type,
                             )
                         }
                     }

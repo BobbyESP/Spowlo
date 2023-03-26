@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
@@ -21,7 +22,8 @@ fun SettingsItemNew(
     trailing: (@Composable () -> Unit)? = null,
     icon: ImageVector? = null,
     addTonalElevation: Boolean = false,
-    clipCorners: Boolean = false
+    clipCorners: Boolean = false,
+    highlightIcon : Boolean = false
 ) {
     ListItem(
         modifier = Modifier
@@ -38,7 +40,10 @@ fun SettingsItemNew(
         trailingContent = trailing,
         supportingContent = description,
         headlineContent = title,
-        tonalElevation = if (addTonalElevation) 3.dp else 0.dp
+        tonalElevation = if (addTonalElevation) 3.dp else 0.dp,
+        colors = ListItemDefaults.colors(
+            leadingIconColor = if(highlightIcon) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+        )
     )
 }
 
@@ -52,7 +57,8 @@ fun SettingsItemNew(
     trailing: (@Composable () -> Unit)? = null,
     icon: ImageVector? = null,
     addTonalElevation: Boolean = false,
-    clipCorners: Boolean = false
+    clipCorners: Boolean = false,
+    highlightIcon : Boolean = false
 ) {
     SettingsItemNew(
         modifier = modifier
@@ -66,7 +72,8 @@ fun SettingsItemNew(
         title = title,
         trailing = trailing,
         addTonalElevation = addTonalElevation,
-        clipCorners = clipCorners
+        clipCorners = clipCorners,
+        highlightIcon = highlightIcon
     )
 }
 
@@ -81,7 +88,8 @@ fun SettingsSwitch(
     icon: ImageVector? = null,
     thumbContent: (@Composable () -> Unit)? = null,
     addTonalElevation: Boolean = false,
-    clipCorners: Boolean = false
+    clipCorners: Boolean = false,
+    highlightIcon: Boolean = false
 ) {
     val toggleableModifier = if (onCheckedChange != null) {
         Modifier.toggleable(
@@ -106,6 +114,7 @@ fun SettingsSwitch(
             )
         },
         addTonalElevation = addTonalElevation,
-        clipCorners = clipCorners
+        clipCorners = clipCorners,
+        highlightIcon = highlightIcon
     )
 }

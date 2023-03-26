@@ -24,6 +24,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPageViewModel
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -37,6 +38,8 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
     private val downloaderViewModel: DownloaderViewModel by viewModels()
     private val modsDownloaderViewModel: ModsDownloaderViewModel by viewModels()
+    private val playlistPageViewModel: PlaylistPageViewModel by viewModels()
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +49,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         runBlocking {
-            if (Build.VERSION.SDK_INT < 33)
-                AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
-                )
+            if (Build.VERSION.SDK_INT < 33) AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(PreferencesUtil.getLanguageConfiguration())
+            )
         }
         context = this.baseContext
         setContent {
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                     InitialEntry(
                         downloaderViewModel = downloaderViewModel,
                         modsDownloaderViewModel = modsDownloaderViewModel,
+                        playlistPageViewModel = playlistPageViewModel,
                         isUrlShared = isUrlSharingTriggered
                     )
                 }
@@ -73,7 +76,8 @@ class MainActivity : AppCompatActivity() {
         handleShareIntent(intent)
     }
 
-    //This function is very important. It handles the intent of opening the app from a shared link and put it in the url field
+    //This function is very important.
+    //It handles the intent of opening the app from a shared link and put it in the url field
     override fun onNewIntent(intent: Intent) {
         handleShareIntent(intent)
         super.onNewIntent(intent)
@@ -91,11 +95,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             Intent.ACTION_SEND -> {
-                intent.getStringExtra(Intent.EXTRA_TEXT)
-                    ?.let { sharedContent ->
+                intent.getStringExtra(Intent.EXTRA_TEXT)?.let { sharedContent ->
                         intent.removeExtra(Intent.EXTRA_TEXT)
-                        matchUrlFromSharedText(sharedContent)
-                            .let { matchedUrl ->
+                        matchUrlFromSharedText(sharedContent).let { matchedUrl ->
                                 if (sharedUrl != matchedUrl) {
                                     sharedUrl = matchedUrl
                                     downloaderViewModel.updateUrl(sharedUrl, true)
@@ -112,9 +114,8 @@ class MainActivity : AppCompatActivity() {
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
-            val localeListCompat =
-                if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
-                else LocaleListCompat.forLanguageTags(locale)
+            val localeListCompat = if (locale.isEmpty()) LocaleListCompat.getEmptyLocaleList()
+            else LocaleListCompat.forLanguageTags(locale)
             App.applicationScope.launch(Dispatchers.Main) {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }

@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists
 
 import androidx.lifecycle.ViewModel
+import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,6 +88,11 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun downloadTrack(url: String) {
+        Downloader.executeParallelDownloadWithUrl(url)
+    }
+
 }
 
 

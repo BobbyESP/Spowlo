@@ -17,7 +17,8 @@ import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.TrackPage
 fun SpotifyPageBinder(
     data: Any,
     type: SpotifyDataType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trackDownloadCallback : (String) -> Unit,
 ) {
     Column(modifier = modifier) {
         when (type) {
@@ -45,7 +46,7 @@ fun SpotifyPageBinder(
             SpotifyDataType.TRACK -> {
                 val track = data as? Track
                 track?.let {
-                    TrackPage(track, modifier)
+                    TrackPage(track, modifier, trackDownloadCallback)
                 }
             }
         }

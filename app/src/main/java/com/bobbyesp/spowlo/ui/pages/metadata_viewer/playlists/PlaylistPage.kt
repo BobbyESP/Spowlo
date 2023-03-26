@@ -31,7 +31,7 @@ fun PlaylistPage(
     onBackPressed: () -> Unit,
     playlistPageViewModel: PlaylistPageViewModel = hiltViewModel(),
     id: String,
-    type : String
+    type : String,
 ) {
     val scope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -77,7 +77,9 @@ fun PlaylistPage(
                             .fillMaxSize()) {
                         item{
                             Box(Modifier.animateItemPlacement()) {
-                                SpotifyPageBinder(data = state.data, type = typeOfSpotifyDataType(type), modifier = Modifier)
+                                SpotifyPageBinder(data = state.data, type = typeOfSpotifyDataType(type), modifier = Modifier, trackDownloadCallback = { url ->
+                                    playlistPageViewModel.downloadTrack(url)
+                                } )
                             }
                         }
                     }

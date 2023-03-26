@@ -133,7 +133,8 @@ fun SettingsPage(navController: NavController) {
                     }
                 },
                     addTonalElevation = true,
-                    modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+                    highlightIcon = true
                 )
             }
             item {
@@ -146,7 +147,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
             item {
@@ -160,7 +162,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
             item {
@@ -173,7 +176,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
             item {
@@ -187,7 +191,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
             item {
@@ -201,7 +206,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
 
@@ -215,7 +221,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
 
@@ -229,7 +236,8 @@ fun SettingsPage(navController: NavController) {
                             launchSingleTop = true
                         }
                     },
-                    addTonalElevation = true
+                    addTonalElevation = true,
+                    highlightIcon = true
                 )
             }
 
@@ -244,6 +252,7 @@ fun SettingsPage(navController: NavController) {
                         }
                     },
                     addTonalElevation = true,
+                    highlightIcon = true,
                     modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                 )
             }

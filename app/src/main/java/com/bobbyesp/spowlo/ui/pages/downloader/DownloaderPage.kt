@@ -30,11 +30,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material.icons.outlined.FormatListBulleted
-import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -106,7 +106,6 @@ fun DownloaderPage(
     navigateToDownloads: () -> Unit = {},
     navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
-    onNavigateToTaskList: () -> Unit = {},
     navigateToMods: () -> Unit = {},
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
@@ -181,7 +180,6 @@ fun DownloaderPage(
             },
             navigateToDownloads = navigateToDownloads,
             navigateToMods = navigateToMods,
-            onNavigateToTaskList = onNavigateToTaskList,
             onSongCardClicked = { songCardClicked() },
             showOutput = showConsoleOutput,
             showSongCard = true,
@@ -224,7 +222,6 @@ fun DownloaderPageImplementation(
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
     navigateToMods: () -> Unit = {},
-    onNavigateToTaskList: () -> Unit = {},
     pasteCallback: () -> Unit = {},
     cancelCallback: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
@@ -236,7 +233,7 @@ fun DownloaderPageImplementation(
         TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp), navigationIcon = {
             IconButton(onClick = { navigateToSettings() }) {
                 Icon(
-                    imageVector = Icons.Outlined.FormatListBulleted,
+                    imageVector = Icons.Filled.FormatListBulleted,
                     contentDescription = stringResource(id = R.string.show_more_actions)
                 )
             }
@@ -250,7 +247,7 @@ fun DownloaderPageImplementation(
 
             IconButton(onClick = { navigateToDownloads() }) {
                 Icon(
-                    imageVector = Icons.Outlined.Subscriptions,
+                    imageVector = Icons.Filled.LibraryMusic,
                     contentDescription = stringResource(id = R.string.downloads_history)
                 )
             }
@@ -390,7 +387,7 @@ fun FABs(
         }, modifier = Modifier.padding(vertical = 12.dp)
         )
 
-        }
+    }
 
     /*AnimatedVisibility(visible = isDownloading) {
         ExtendedFloatingActionButton(
@@ -403,8 +400,6 @@ fun FABs(
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
     }*/
-
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -420,7 +415,8 @@ fun InputUrl(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
-    OutlinedTextField(value = url,
+    OutlinedTextField(
+        value = url,
         isError = error,
         onValueChange = onValueChange,
         label = { Text(stringResource(R.string.url_query_spotify)) },
