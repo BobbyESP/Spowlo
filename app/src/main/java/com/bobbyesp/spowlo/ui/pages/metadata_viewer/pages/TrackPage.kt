@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,10 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,8 +29,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.adamratzman.spotify.models.AudioFeatures
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.MarqueeText
@@ -41,6 +48,14 @@ fun TrackPage(
     trackDownloadCallback: (String) -> Unit,
 ) {
     val localConfig = LocalConfiguration.current
+    val audioFeatures by remember {
+        mutableStateOf(mutableStateOf<AudioFeatures?>(null))
+    }
+
+    LaunchedEffect(Unit){
+        val feats = SpotifyApiRequests.providesGetAudioFeatures(data.id)
+        audioFeatures.value = feats
+    }
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -126,7 +141,25 @@ fun TrackPage(
                     bodyText = GeneralTextUtils.convertDuration(data.durationMs.toDouble()),
                     modifier = Modifier.weight(1f)
                 )
-
+            }
+            AnimatedVisibility(visible = audioFeatures.value != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    ExtraInfoCard(
+                        headlineText = stringResource(id = R.string.loudness),
+                        bodyText = audioFeatures.value!!.loudness.toString(),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    ExtraInfoCard(
+                        headlineText = stringResource(id = R.string.tempo),
+                        bodyText = audioFeatures.value!!.tempo.toString() + " BPM",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }

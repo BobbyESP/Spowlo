@@ -11,7 +11,6 @@ import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.CookieProfile
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
@@ -63,6 +62,7 @@ const val USE_CACHING = "use_caching"
 const val DONT_FILTER_RESULTS = "dont_filter_results"
 const val GEO_BYPASS = "geo-bypass"
 const val AUDIO_PROVIDER = "audio_provider"
+const val THREADS = "threads"
 
 const val SPOTDL_UPDATE = "spotdl_update"
 const val TEMPLATE_ID = "template_id"
@@ -118,6 +118,7 @@ private val IntPreferenceDefaults = mapOf(
     AUDIO_QUALITY to 17,
     AUDIO_PROVIDER to 0,
     UPDATE_CHANNEL to STABLE,
+    THREADS to 1,
 )
 
 val palettesMap = mapOf(

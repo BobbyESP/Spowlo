@@ -86,6 +86,7 @@ import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
 import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
+import com.bobbyesp.spowlo.ui.theme.harmonizeWith
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.DEBUG
@@ -440,7 +441,9 @@ fun InputUrl(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 8.dp
-            ), unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer.harmonizeWith(other = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)),
         ),
     )
     AnimatedVisibility(visible = showDownloadProgress) {

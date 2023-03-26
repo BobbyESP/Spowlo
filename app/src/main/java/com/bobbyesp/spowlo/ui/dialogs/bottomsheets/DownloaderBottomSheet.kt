@@ -2,8 +2,12 @@ package com.bobbyesp.spowlo.ui.dialogs.bottomsheets
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,12 +20,17 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Dataset
 import androidx.compose.material.icons.outlined.DownloadDone
+import androidx.compose.material.icons.outlined.HighQuality
+import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -43,11 +52,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.components.AudioFilterChip
+import com.bobbyesp.spowlo.ui.components.ButtonChip
+import com.bobbyesp.spowlo.ui.components.DrawerSheetSubtitle
 import com.bobbyesp.spowlo.ui.components.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
+import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
+import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
+import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
+import com.bobbyesp.spowlo.utils.COOKIES
+import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
+import com.bobbyesp.spowlo.utils.GEO_BYPASS
+import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
+import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
+import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.ToastUtil
+import com.bobbyesp.spowlo.utils.USE_CACHING
+import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
+import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -64,7 +91,6 @@ fun DownloaderBottomSheet(
     val pagerState = rememberPagerState(initialPage = 0)
 
     val pages = listOf(BottomSheetPages.MAIN, BottomSheetPages.SECONDARY, BottomSheetPages.TERTIARY)
-    var selectedTabIndex by remember { mutableStateOf(0) }
     val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
     val roundedTopShape =
         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
@@ -86,6 +112,77 @@ fun DownloaderBottomSheet(
         }
     }
 
+    val settings = PreferencesUtil
+
+    var preserveOriginalAudio by remember {
+        mutableStateOf(
+            settings.getValue(
+                ORIGINAL_AUDIO
+            )
+        )
+    }
+
+    var useSpotifyCredentials by remember {
+        mutableStateOf(
+            settings.getValue(
+                USE_SPOTIFY_CREDENTIALS
+            )
+        )
+    }
+
+    var useYtMetadata by remember {
+        mutableStateOf(
+            settings.getValue(
+                USE_YT_METADATA
+            )
+        )
+    }
+
+    var useCookies by remember {
+        mutableStateOf(
+            settings.getValue(
+                COOKIES
+            )
+        )
+    }
+
+    var useCaching by remember {
+        mutableStateOf(
+            settings.getValue(
+                USE_CACHING
+            )
+        )
+    }
+
+    var dontFilter by remember {
+        mutableStateOf(
+            settings.getValue(
+                DONT_FILTER_RESULTS
+            )
+        )
+    }
+
+    var useSyncedLyrics by remember {
+        mutableStateOf(
+            settings.getValue(SYNCED_LYRICS)
+        )
+    }
+
+    var useGeoBypass by remember {
+        mutableStateOf(
+            settings.getValue(
+                GEO_BYPASS
+            )
+        )
+    }
+
+    var skipInfoFetch by remember { mutableStateOf(settings.getValue(SKIP_INFO_FETCH)) }
+
+    var showAudioFormatDialog by remember { mutableStateOf(false) }
+    var showAudioQualityDialog by remember { mutableStateOf(false) }
+    var showClientIdDialog by remember { mutableStateOf(false) }
+    var showClientSecretDialog by remember { mutableStateOf(false) }
+
     val downloadButtonCallback = {
         navController.popBackStack()
         checkPermissionOrDownload()
@@ -103,6 +200,12 @@ fun DownloaderBottomSheet(
             .navigationBarsPadding()
             .clip(roundedTopShape)
             .padding(8.dp)
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                ),
+            )
 
     ) {
         Row(
@@ -138,6 +241,7 @@ fun DownloaderBottomSheet(
         )
         IndicatorBehindScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
+            modifier = Modifier.animateContentSize(),
             indicator = { tabPositions ->
                 Box(
                     Modifier
@@ -163,18 +267,171 @@ fun DownloaderBottomSheet(
                 )
             }
         }
-        HorizontalPager(pageCount = pages.size, state = pagerState) {
+        HorizontalPager(pageCount = pages.size, state = pagerState, modifier = Modifier.animateContentSize()) {
             when (pages[it]) {
                 BottomSheetPages.MAIN -> {
-                    Text(text = "Main page", color = MaterialTheme.colorScheme.onSurface)
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(6.dp)
+                    ) {
+                        DrawerSheetSubtitle(text = stringResource(id = R.string.general_settings))
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                        ) {
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.preserve_original_audio),
+                                animated = true,
+                                selected = preserveOriginalAudio,
+                                onClick = {
+                                    preserveOriginalAudio = !preserveOriginalAudio
+                                    scope.launch {
+                                        settings.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
+                                    }
+                                }
+                            )
+                            ButtonChip(
+                                label = stringResource(id = R.string.audio_format),
+                                icon = Icons.Outlined.AudioFile,
+                                onClick = { showAudioFormatDialog = true },
+                            )
+                            ButtonChip(
+                                label = stringResource(id = R.string.audio_quality),
+                                icon = Icons.Outlined.HighQuality,
+                                enabled = !preserveOriginalAudio,
+                                onClick = { showAudioQualityDialog = true },
+                            )
+                        }
+                        DrawerSheetSubtitle(text = stringResource(id = R.string.spotify))
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                        ) {
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.use_spotify_credentials),
+                                animated = true,
+                                selected = useSpotifyCredentials,
+                                onClick = {
+                                    useSpotifyCredentials = !useSpotifyCredentials
+                                    scope.launch {
+                                        settings.updateValue(USE_SPOTIFY_CREDENTIALS, useSpotifyCredentials)
+                                    }
+                                }
+                            )
+                            ButtonChip(
+                                label = stringResource(id = R.string.client_id),
+                                icon = Icons.Outlined.Person,
+                                enabled = useSpotifyCredentials,
+                                onClick = { showClientIdDialog = true },
+                            )
+                            ButtonChip(
+                                label = stringResource(id = R.string.client_secret),
+                                icon = Icons.Outlined.Key,
+                                enabled = useSpotifyCredentials,
+                                onClick = { showClientSecretDialog = true },
+                            )
+                        }
+
+                    }
                 }
 
                 BottomSheetPages.SECONDARY -> {
-                    Text(text = "Secondary page", color = MaterialTheme.colorScheme.onSurface)
+
                 }
 
                 BottomSheetPages.TERTIARY -> {
-                    Text(text = "Tertiary page", color = MaterialTheme.colorScheme.onSurface)
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(6.dp)
+                    ) {
+                        DrawerSheetSubtitle(text = stringResource(id = R.string.experimental_features))
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                        ) {
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.synced_lyrics),
+                                animated = true,
+                                selected = useSyncedLyrics,
+                                onClick = {
+                                    useSyncedLyrics = !useSyncedLyrics
+                                    scope.launch {
+                                        settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
+                                    }
+                                }
+                            )
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.geo_bypass),
+                                selected = useGeoBypass,
+                                animated = true,
+                                onClick = {
+                                    useGeoBypass = !useGeoBypass
+                                    scope.launch {
+                                        settings.updateValue(GEO_BYPASS, useGeoBypass)
+                                    }
+                                }
+                            )
+
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.use_cache),
+                                animated = true,
+                                selected = useCaching,
+                                onClick = {
+                                    useCaching = !useCaching
+                                    scope.launch {
+                                        settings.updateValue(USE_CACHING, useCaching)
+                                    }
+                                }
+                            )
+
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.dont_filter_results),
+                                selected = dontFilter,
+                                animated = true,
+                                onClick = {
+                                    dontFilter = !dontFilter
+                                    scope.launch {
+                                        settings.updateValue(DONT_FILTER_RESULTS, dontFilter)
+                                    }
+                                }
+                            )
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.use_cookies),
+                                animated = true,
+                                selected = useCookies,
+                                onClick = {
+                                    useCookies = !useCookies
+                                    scope.launch {
+                                        settings.updateValue(COOKIES, useCookies)
+                                    }
+                                }
+                            )
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.use_yt_metadata),
+                                animated = true,
+                                selected = useYtMetadata,
+                                onClick = {
+                                    useYtMetadata = !useYtMetadata
+                                    scope.launch {
+                                        settings.updateValue(USE_YT_METADATA, useYtMetadata)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -217,10 +474,36 @@ fun DownloaderBottomSheet(
             }
         }
     }
+
+    if (showAudioFormatDialog) {
+        AudioFormatDialog(
+            onDismissRequest = { showAudioFormatDialog = false },
+        )
+    }
+    if (showAudioQualityDialog) {
+        AudioQualityDialog(
+            onDismissRequest = { showAudioQualityDialog = false },
+        )
+    }
+    if (showClientIdDialog) {
+        SpotifyClientIDDialog {
+            showClientIdDialog = !showClientIdDialog
+        }
+    }
+    if (showClientSecretDialog) {
+        SpotifyClientSecretDialog {
+            showClientSecretDialog = !showClientSecretDialog
+        }
+    }
 }
 
 object BottomSheetPages {
-    const val MAIN = "main"
-    const val SECONDARY = "secondary"
-    const val TERTIARY = "tertiary"
+    val MAIN = getString(R.string.audio)
+    val SECONDARY = "secondary"
+    val TERTIARY = getString(R.string.experimental_features)
+}
+
+//GET STRING FROM APP.CONTEXT GIVEN A r.string ID
+fun getString(id: Int): String {
+    return App.context.getString(id)
 }

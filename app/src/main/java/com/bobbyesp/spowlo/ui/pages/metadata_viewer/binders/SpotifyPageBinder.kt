@@ -46,7 +46,7 @@ fun SpotifyPageBinder(
             SpotifyDataType.TRACK -> {
                 val track = data as? Track
                 track?.let {
-                    TrackPage(track, modifier, trackDownloadCallback)
+                    TrackPage(track,modifier,trackDownloadCallback)
                 }
             }
         }

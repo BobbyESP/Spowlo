@@ -284,4 +284,9 @@
     <string name="track_duration">Duration</string>
     <string name="download_started_msg">Download started</string>
     <string name="download_finished_msg">Download finished</string>
+    <string name="loudness">Loudness</string>
+    <string name="tempo">Tempo</string>
+    <string name="threads">Threads</string>
+    <string name="threads_number_desc">Change how many downloads at a time can be running. This doesn\'t apply on single track downloads.</string>
+    <string name="threads_number">Number of threads</string>
 </resources>

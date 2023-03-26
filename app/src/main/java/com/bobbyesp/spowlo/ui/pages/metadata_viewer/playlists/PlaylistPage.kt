@@ -77,9 +77,13 @@ fun PlaylistPage(
                             .fillMaxSize()) {
                         item{
                             Box(Modifier.animateItemPlacement()) {
-                                SpotifyPageBinder(data = state.data, type = typeOfSpotifyDataType(type), modifier = Modifier, trackDownloadCallback = { url ->
+                                SpotifyPageBinder(
+                                    data = state.data,
+                                    type = typeOfSpotifyDataType(type),
+                                    modifier = Modifier,
+                                    trackDownloadCallback = { url ->
                                     playlistPageViewModel.downloadTrack(url)
-                                } )
+                                },                                    )
                             }
                         }
                     }
