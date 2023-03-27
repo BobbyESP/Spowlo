@@ -144,7 +144,7 @@ fun SongCard(
                 Box(Modifier.fillMaxWidth()) {
                     val progressAnimationValue by animateFloatAsState(
                         targetValue = progress,
-                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
                     )
                     if (progress < 0f)
                         LinearProgressIndicator(

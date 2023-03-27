@@ -18,7 +18,7 @@ fun SpotifyPageBinder(
     data: Any,
     type: SpotifyDataType,
     modifier: Modifier = Modifier,
-    trackDownloadCallback : (String) -> Unit,
+    trackDownloadCallback : (String, String) -> Unit,
 ) {
     Column(modifier = modifier) {
         when (type) {

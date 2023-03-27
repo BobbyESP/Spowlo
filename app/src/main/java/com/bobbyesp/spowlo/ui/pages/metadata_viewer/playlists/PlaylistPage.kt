@@ -81,8 +81,8 @@ fun PlaylistPage(
                                     data = state.data,
                                     type = typeOfSpotifyDataType(type),
                                     modifier = Modifier,
-                                    trackDownloadCallback = { url ->
-                                    playlistPageViewModel.downloadTrack(url)
+                                    trackDownloadCallback = { url, name ->
+                                    playlistPageViewModel.downloadTrack(url, name)
                                 },                                    )
                             }
                         }

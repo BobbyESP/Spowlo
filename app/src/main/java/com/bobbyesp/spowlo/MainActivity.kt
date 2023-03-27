@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.FileDownloadDone
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity() {
         val showInBottomNavigation = mapOf(
             Route.DownloaderNavi to Icons.Rounded.Download,
             Route.SearcherNavi to Icons.Rounded.Search,
+            Route.DownloadTasksNavi to Icons.Rounded.FileDownloadDone,
         )
     }
 }

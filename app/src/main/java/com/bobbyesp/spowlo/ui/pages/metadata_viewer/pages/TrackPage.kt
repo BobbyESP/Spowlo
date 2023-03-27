@@ -45,7 +45,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 fun TrackPage(
     data: Track,
     modifier: Modifier,
-    trackDownloadCallback: (String) -> Unit,
+    trackDownloadCallback: (String, String) -> Unit,
 ) {
     val localConfig = LocalConfiguration.current
     val audioFeatures by remember {
@@ -116,12 +116,13 @@ fun TrackPage(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
+            val taskName = StringBuilder().append(data.name).append(" - ").append(data.artists.joinToString(", ") { it.name }).toString()
             TrackComponent(contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 songName = data.name,
                 artists = data.artists.joinToString(", ") { it.name },
                 spotifyUrl = data.externalUrls.spotify!!,
                 isExplicit = data.explicit,
-                onClick = { trackDownloadCallback(data.externalUrls.spotify!!) })
+                onClick = { trackDownloadCallback(data.externalUrls.spotify!!, taskName) })
         }
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
         Column(modifier = Modifier.fillMaxWidth()) {

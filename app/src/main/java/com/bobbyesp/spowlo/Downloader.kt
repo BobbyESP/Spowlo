@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo
 
-import android.content.ClipboardManager
 import android.util.Log
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.mutableStateMapOf
@@ -49,9 +48,10 @@ object Downloader {
         val url: String,
         val consoleOutput: String,
         val state: State,
-        val currentLine: String
+        val currentLine: String,
+        val taskName : String,
     ) {
-        fun toKey(extraString: String) = makeKey(url, extraString)
+        fun toKey() = makeKey(url, url.reversed())
 
         private fun randomString() = UUID.randomUUID().toString()
         sealed class State {
@@ -62,7 +62,12 @@ object Downloader {
         }
 
         override fun hashCode(): Int {
-            return (this.url + randomString()).hashCode()
+            return (this.url + this .url.reverse()).hashCode()
+        }
+
+        //get the inverse of a string (from end to start)
+        fun String.reverse(): String {
+            return this.reversed()
         }
 
         override fun equals(other: Any?): Boolean {
@@ -79,7 +84,7 @@ object Downloader {
             return true
         }
 
-        fun onCopyLog(clipboardManager: ClipboardManager) {
+        fun onCopyLog(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
             clipboardManager.setText(AnnotatedString(consoleOutput))
         }
 
@@ -91,7 +96,7 @@ object Downloader {
         }
 
 
-        fun onCopyError(clipboardManager: ClipboardManager) {
+        fun onCopyError(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
             clipboardManager.setText(AnnotatedString(currentLine))
             ToastUtil.makeToast(R.string.error_copied)
         }
@@ -158,20 +163,22 @@ object Downloader {
 
     val mutableTaskList = mutableStateMapOf<String, DownloadTask>()
 
-    fun onTaskStarted(url: String, extraKey: String) =
+    fun onTaskStarted(url: String, name: String) =
         DownloadTask(
             url = url,
             consoleOutput = "",
             state = DownloadTask.State.Running(0f),
-            currentLine = ""
+            currentLine = "",
+            taskName = name
         ).run {
-            mutableTaskList.put(this.toKey(extraKey), this)
+            mutableTaskList.put(this.toKey(), this)
         }
 
     fun updateTaskOutput(url: String, line: String, progress: Float) {
-        val key = makeKey(url)
+        val key = makeKey(url, url.reversed())
         val oldValue = mutableTaskList[key] ?: return
         val newValue = oldValue.run {
+            if (currentLine == line || currentLine.contains("...")) return
             copy(
                 consoleOutput = consoleOutput + line + "\n",
                 currentLine = line,
@@ -431,10 +438,10 @@ object Downloader {
         }
     }
 
-    fun executeParallelDownloadWithUrl(url: String) =
+    fun executeParallelDownloadWithUrl(url: String, name: String) =
         applicationScope.launch(Dispatchers.IO) {
             DownloaderUtil.executeParallelDownload(
-                url
+                url, name
             )
         }
 

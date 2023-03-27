@@ -14,8 +14,6 @@ object Route {
     const val PLAYLIST = "playlist"
     const val SETTINGS = "settings"
     const val FORMAT_SELECTION = "format"
-    const val TASK_LIST = "task_list"
-    const val TASK_LOG = "task_log"
     const val PLAYLIST_METADATA_PAGE = "playlist_metadata_page"
     const val MODS_DOWNLOADER = "mods_downloader"
     const val SEARCHER = "searcher"
@@ -26,7 +24,8 @@ object Route {
     const val DOCUMENTATION = "documentation"
     const val MORE_OPTIONS_HOME = "more_options_home"
     const val SONG_INFO_HISTORY = "song_info_history"
-
+    const val DOWNLOAD_TASKS = "download_tasks"
+    const val DownloadTasksNavi = "download_tasks_navi"
     const val PLAYLIST_PAGE = "playlist_page"
 
     const val APPEARANCE = "appearance"
@@ -38,6 +37,7 @@ object Route {
     const val CREDITS = "credits"
     const val LANGUAGES = "languages"
     const val DOWNLOAD_QUEUE = "queue"
+    const val FULLSCREEN_LOG = "fullscreen_log"
     const val DOWNLOAD_FORMAT = "download_format"
     const val NETWORK_PREFERENCES = "network_preferences"
     const val COOKIE_PROFILE = "cookie_profile"

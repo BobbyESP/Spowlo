@@ -89,8 +89,8 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun downloadTrack(url: String) {
-        Downloader.executeParallelDownloadWithUrl(url)
+    fun downloadTrack(url: String, name: String) {
+        Downloader.executeParallelDownloadWithUrl(url, name)
     }
 
 }

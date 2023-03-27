@@ -58,12 +58,17 @@ import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.common.Route.MARKDOWN_VIEWER
 import com.bobbyesp.spowlo.ui.common.animatedComposable
 import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
+import com.bobbyesp.spowlo.ui.common.arg
+import com.bobbyesp.spowlo.ui.common.id
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.DownloaderBottomSheet
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.MoreOptionsHomeBottomSheet
+import com.bobbyesp.spowlo.ui.pages.download_tasks.DownloadTasksPage
+import com.bobbyesp.spowlo.ui.pages.download_tasks.FullscreenConsoleOutput
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
@@ -172,7 +177,11 @@ fun InitialEntry(
 
     if (isUrlShared) {
         if (navController.currentDestination?.route != Route.DOWNLOADER) {
-            navController.popBackStack(route = Route.DOWNLOADER, inclusive = false, saveState = true)
+            navController.popBackStack(
+                route = Route.DOWNLOADER,
+                inclusive = false,
+                saveState = true
+            )
         }
     }
     Box(
@@ -206,6 +215,7 @@ fun InitialEntry(
                                 val text = when (route) {
                                     Route.DownloaderNavi -> App.context.getString(R.string.downloader)
                                     Route.SearcherNavi -> App.context.getString(R.string.searcher)
+                                    Route.DownloadTasksNavi -> App.context.getString(R.string.tasks)
                                     else -> ""
                                 }
 
@@ -267,23 +277,31 @@ fun InitialEntry(
                     navigation(startDestination = Route.DOWNLOADER, route = Route.DownloaderNavi) {
                         animatedComposable(Route.DOWNLOADER) {
                             DownloaderPage(
-                                navigateToDownloads = { navController.navigate(Route.DOWNLOADS_HISTORY){
-                                    launchSingleTop = true
-                                } },
-                                navigateToSettings = { navController.navigate(Route.MORE_OPTIONS_HOME) {
-                                    launchSingleTop = true
-                                }},
-                                navigateToDownloaderSheet = { navController.navigate(Route.DOWNLOADER_SHEET){
-                                    launchSingleTop = true
-                                } },
-                                onSongCardClicked = {
-                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE){
+                                navigateToDownloads = {
+                                    navController.navigate(Route.DOWNLOADS_HISTORY) {
                                         launchSingleTop = true
                                     }
                                 },
-                                navigateToMods = { navController.navigate(Route.MODS_DOWNLOADER) {
-                                    launchSingleTop = true
-                                }},
+                                navigateToSettings = {
+                                    navController.navigate(Route.MORE_OPTIONS_HOME) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateToDownloaderSheet = {
+                                    navController.navigate(Route.DOWNLOADER_SHEET) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onSongCardClicked = {
+                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateToMods = {
+                                    navController.navigate(Route.MODS_DOWNLOADER) {
+                                        launchSingleTop = true
+                                    }
+                                },
                                 downloaderViewModel = downloaderViewModel
                             )
                         }
@@ -380,7 +398,7 @@ fun InitialEntry(
                         }
 
                         animatedComposable(
-                            "markdown_viewer/{markdownFileName}",
+                            MARKDOWN_VIEWER arg "markdownFileName",
                             arguments = listOf(
                                 navArgument(
                                     "markdownFileName"
@@ -437,7 +455,8 @@ fun InitialEntry(
                         navDeepLink {
                             // Want to go to "markdown_viewer/{markdownFileName}"
                             uriPattern =
-                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE).append("/{type}")
+                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE)
+                                    .append("/{type}")
                                     .append("/{id}").toString()
                         }
 
@@ -453,21 +472,45 @@ fun InitialEntry(
 
                         //We build the route with the type of the destination and the id of it
                         val routeWithIdPattern: String =
-                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}").append("/{id}").toString()
+                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}")
+                                .append("/{id}").toString()
 
                         //We create the composable with the route and the arguments
                         animatedComposableVariant(
                             routeWithIdPattern,
-                            arguments = listOf(typeArg ,idArg)
+                            arguments = listOf(typeArg, idArg)
                         ) { backStackEntry ->
                             val id =
                                 backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
-                            val type = backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
+                            val type = backStackEntry.arguments?.getString("type")
+                                ?: "SOMETHING WENT WRONG"
 
                             PlaylistPage(
                                 onBackPressed,
                                 id = id,
                                 type = type,
+                            )
+                        }
+                    }
+
+                    navigation(startDestination = Route.DOWNLOAD_TASKS, route = Route.DownloadTasksNavi) {
+
+                        animatedComposable(
+                            Route.FULLSCREEN_LOG arg "taskHashCode",
+                            arguments = listOf(navArgument("taskHashCode") {
+                                type = NavType.IntType
+                            }
+                            )) {
+
+                            FullscreenConsoleOutput(
+                                onBackPressed = onBackPressed,
+                                taskHashCode = it.arguments?.getInt("taskHashCode") ?: -1
+                            )
+                        }
+
+                        animatedComposable(Route.DOWNLOAD_TASKS) {
+                            DownloadTasksPage(
+                                onNavigateToDetail = { navController.navigate(Route.FULLSCREEN_LOG id it) }
                             )
                         }
                     }

@@ -21,6 +21,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.Cookie
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getSdcardTempDir
 import com.bobbyesp.spowlo.utils.FilesUtil.moveFilesToSdcard
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getInt
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,7 +69,8 @@ object DownloaderUtil {
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
-        val sdcardUri: String = SDCARD_URI.getString()
+        val sdcardUri: String = SDCARD_URI.getString(),
+        val threads: Int = THREADS.getInt()
     )
 
     object CookieScheme {
@@ -287,41 +289,42 @@ object DownloaderUtil {
 
             val request = SpotDLRequest()
             val pathBuilder = StringBuilder()
-            commonRequest(downloadPreferences, url, request, pathBuilder).apply {
-                if (useSpotifyPreferences) {
-                    if (spotifyClientID.isEmpty() || spotifyClientSecret.isEmpty()) return Result.failure(
-                        Throwable("Spotify client ID or secret is empty while you have the custom credentials option enabled! \n Please check your settings.")
-                    )
-                    addOption("--client-id", spotifyClientID)
-                    addOption("--client-secret", spotifyClientSecret)
-                }
-            }.runCatching {
-                SpotDL.getInstance().execute(this, taskId, callback = progressCallback)
-            }.onFailure { th ->
-                return if (th.message?.contains("No such file or directory") == true) {
-                    th.printStackTrace()
-                    onFinishDownloading(
-                        this,
-                        songInfo = songInfo,
-                        downloadPath = pathBuilder.toString(),
-                        sdcardUri = sdcardUri
-                    )
-                } else {
-                    return Result.failure(th)
-                }
-            }.onSuccess { response ->
-                return when {
-                    response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found. Try changing the audio provider in the settings and also disabling the 'Don't filter results' option."))
-                    response.output.contains("YT-DLP") -> Result.failure(Throwable("An error occurred to yt-dlp while downloading the song. Please, report this issue in GitHub."))
-                    else -> onFinishDownloading(
-                        this,
-                        songInfo = songInfo,
-                        downloadPath = pathBuilder.toString(),
-                        sdcardUri = sdcardUri
-                    )
+            commonRequest(downloadPreferences, url, request, pathBuilder)
+                .apply {
+                    if (useSpotifyPreferences) {
+                        if (spotifyClientID.isEmpty() || spotifyClientSecret.isEmpty()) return Result.failure(
+                            Throwable("Spotify client ID or secret is empty while you have the custom credentials option enabled! \n Please check your settings.")
+                        )
+                        addOption("--client-id", spotifyClientID)
+                        addOption("--client-secret", spotifyClientSecret)
+                    }
+                }.runCatching {
+                    SpotDL.getInstance().execute(this, taskId, callback = progressCallback)
+                }.onFailure { th ->
+                    return if (th.message?.contains("No such file or directory") == true) {
+                        th.printStackTrace()
+                        onFinishDownloading(
+                            this,
+                            songInfo = songInfo,
+                            downloadPath = pathBuilder.toString(),
+                            sdcardUri = sdcardUri
+                        )
+                    } else {
+                        return Result.failure(th)
+                    }
+                }.onSuccess { response ->
+                    return when {
+                        response.output.contains("LookupError") -> Result.failure(Throwable("A LookupError occurred. The song wasn't found. Try changing the audio provider in the settings and also disabling the 'Don't filter results' option."))
+                        response.output.contains("YT-DLP") -> Result.failure(Throwable("An error occurred to yt-dlp while downloading the song. Please, report this issue in GitHub."))
+                        else -> onFinishDownloading(
+                            this,
+                            songInfo = songInfo,
+                            downloadPath = pathBuilder.toString(),
+                            sdcardUri = sdcardUri
+                        )
 
+                    }
                 }
-            }
             return onFinishDownloading(
                 this,
                 songInfo = songInfo,
@@ -395,18 +398,21 @@ object DownloaderUtil {
     }
 
 
-    fun executeParallelDownload(url: String) {
-        val taskId = Downloader.makeKey(url = url, randomString = getRandomUUID())
+    fun executeParallelDownload(url: String, name: String) {
+        val taskId = Downloader.makeKey(url = url, randomString = url.reversed())
         ToastUtil.makeToastSuspend(context.getString(R.string.download_started_msg))
 
         val pathBuilder = StringBuilder()
         val downloadPreferences = DownloadPreferences()
-        val request = commonRequest(downloadPreferences, url, SpotDLRequest(), pathBuilder)
+        val request = commonRequest(downloadPreferences, url, SpotDLRequest(), pathBuilder).apply {
+            addOption("--threads", downloadPreferences.threads.toString())
+        }
 
         onProcessStarted()
-        onTaskStarted(url, taskId)
+        onTaskStarted(url, name)
         kotlin.runCatching {
             val response = SpotDL.getInstance().execute(request, taskId) { progress, _, text ->
+                Log.d(TAG, "executeParallelDownload: $progress $text")
                 Downloader.updateTaskOutput(
                     url = url, line = text, progress = progress
                 )

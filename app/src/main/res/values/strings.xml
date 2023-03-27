@@ -254,7 +254,7 @@
     <string name="audio_provider">Audio provider</string>
     <string name="audio_provider_desc">Choose from where you want to download the songs</string>
     <string name="api_call_failed">Calling the MODs API wasn\'t successful</string>
-    <string name="mods_advertisement">This mods are hosted by me. If you cannot download them, please, report it in the Telegram channel if possible!</string>
+    <string name="mods_advertisement">This mods are hosted by me. If you cannot download them, please, report it in the Telegram chatroom if possible!</string>
     <string name="spotDl_uptodate">SpotDL is up to date</string>
     <string name="geo_bypass">Geo bypass</string>
     <string name="use_geobypass_desc">Use a localization bypass to download songs from countries that YT Music is restricted.</string>
@@ -289,4 +289,14 @@
     <string name="threads">Threads</string>
     <string name="threads_number_desc">Change how many downloads at a time can be running. This doesn\'t apply on single track downloads.</string>
     <string name="threads_number">Number of threads</string>
+    <string name="download_log">Download log</string>
+    <string name="copy_log">Copy full log</string>
+    <string name="copy_error_report">Copy error report</string>
+    <string name="restart">Restart</string>
+    <string name="no_running_downloads">There is no running downloads</string>
+    <string name="downloading">Downloading</string>
+    <string name="open_log">Open log</string>
+    <string name="restart_task">Restart task</string>
+    <string name="download_tasks">Download tasks</string>
+    <string name="tasks">Tasks</string>
 </resources>
