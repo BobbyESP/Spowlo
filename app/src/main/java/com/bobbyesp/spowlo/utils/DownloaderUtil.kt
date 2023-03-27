@@ -366,10 +366,14 @@ object DownloaderUtil {
     private fun insertInfoIntoDownloadHistory(
         songInfo: Song, filePaths: List<String>
     ) {
+
         filePaths.forEach { filePath ->
+            val fullString = StringBuilder()
+            fullString.append(songInfo.name)
+            fullString.append(filePath)
             DatabaseUtil.insertInfo(
                 DownloadedSongInfo(
-                    id = songInfo.name.toInt() + filePath.toInt(),
+                    id = createIntFromString(fullString.toString()),
                     songName = songInfo.name,
                     songAuthor = songInfo.artist,
                     songUrl = songInfo.url,
@@ -380,6 +384,14 @@ object DownloaderUtil {
                 )
             )
         }
+    }
+
+    fun createIntFromString(string: String): Int {
+        var int = 0
+        for (i in string.indices) {
+            int += string[i].code
+        }
+        return int
     }
 
 
