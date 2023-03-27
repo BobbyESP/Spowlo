@@ -258,7 +258,7 @@
     <string name="spotDl_uptodate">SpotDL is up to date</string>
     <string name="geo_bypass">Geo bypass</string>
     <string name="use_geobypass_desc">Use a localization bypass to download songs from countries that YT Music is restricted.</string>
-    <string name="spotify_api_error">An error ocurred while trying to connect to the Spotify API</string>
+    <string name="spotify_api_error">An error occurred while trying to connect to the Spotify API</string>
     <string name="searcher_page_query_text_box_label">What would you like to download?</string>
     <string name="searcher_page_no_results">No results were found</string>
     <string name="single">Single</string>
@@ -266,16 +266,16 @@
     <string name="not_specified">Not specified</string>
     <string name="default_option">Default</string>
     <string name="not_convert">Don\'t convert</string>
-    <string name="error">An error ocurried while searching</string>
+    <string name="searching_error">An error occurred while searching</string>
     <string name="search">Type something on the text box for searching through Spotify!</string>
-    <string name="err_act_reload">Realod the page</string>
+    <string name="err_act_reload">Reload the page</string>
     <string name="error_copy">Copy the error</string>
     <string name="track_artwork">Track artwork</string>
     <string name="album">Album</string>
     <string name="artist">Artist</string>
     <string name="playlist">Playlist</string>
     <string name="track">Track</string>
-    <string name="showing_results">Shwowing %1$d results</string>
+    <string name="showing_results">Showing %1$d results</string>
     <string name="not_implemented">Sorry, this page is not yet implemented ;(</string>
     <string name="go_back">Go back</string>
     <string name="both">Both</string>
@@ -299,4 +299,10 @@
     <string name="restart_task">Restart task</string>
     <string name="download_tasks">Download tasks</string>
     <string name="tasks">Tasks</string>
+    <string name="error">An error occurred</string>
+    <string name="font_size">Font size</string>
+    <string name="channel_name">Download</string>
+    <string name="channel_description">Show up your downloads on notification centre</string>
+    <string name="service_title">Spowlo is downloading</string>
+    <string name="execute_parallel_download">Executing parallel download</string>
 </resources>

@@ -399,7 +399,7 @@ object DownloaderUtil {
 
 
     fun executeParallelDownload(url: String, name: String) {
-        val taskId = Downloader.makeKey(url = url, randomString = url.reversed())
+        val taskId = Downloader.makeKey(url = url, additionalString = url.reversed())
         ToastUtil.makeToastSuspend(context.getString(R.string.download_started_msg))
 
         val pathBuilder = StringBuilder()
@@ -417,7 +417,9 @@ object DownloaderUtil {
                     url = url, line = text, progress = progress
                 )
             }
-            onTaskEnded(url, response.output)
+            //clear all the lines that contains a "…" on it
+            val finalResponse = removeDuplicateLines(clearLinesWithEllipsis(response.output))
+            onTaskEnded(url, finalResponse)
         }.onFailure {
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.download_error_msg))
@@ -429,5 +431,19 @@ object DownloaderUtil {
         }
         onProcessEnded()
         ToastUtil.makeToastSuspend(context.getString(R.string.download_finished_msg))
+    }
+
+    fun clearLinesWithEllipsis(input: String): String {
+        val lines = input.split("\n")
+            .filterNot { it.contains("…") }
+            .joinToString("\n")
+        return lines
+    }
+
+    fun removeDuplicateLines(input: String): String {
+        val lines = input.split("\n")
+            .distinct()
+            .joinToString("\n")
+        return lines
     }
 }

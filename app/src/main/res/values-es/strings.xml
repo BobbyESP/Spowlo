@@ -9,7 +9,7 @@
     <string name="album">Álbum</string>
     <string name="amoled_cloned">Mod AMOLED clonado</string>
     <string name="amoled">Mod AMOLED</string>
-    <string name="error">Ocurrió un error en la búsqueda</string>
+    <string name="searching_error">Ocurrió un error en la búsqueda</string>
     <string name="task_running">Una descarga ya está en progreso.</string>
     <string name="update_available">Una nueva actualización está disponible!</string>
     <string name="app_update_failed">Ocurrió un error al intentar actualizar la aplicación</string>

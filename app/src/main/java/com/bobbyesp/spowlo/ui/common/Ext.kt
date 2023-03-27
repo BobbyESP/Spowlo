@@ -19,3 +19,7 @@ inline val String.intState
     @Composable get() = remember {
         mutableStateOf(this.getInt())
     }
+
+fun String.containsEllipsis(): Boolean {
+    return this.contains("…")
+}

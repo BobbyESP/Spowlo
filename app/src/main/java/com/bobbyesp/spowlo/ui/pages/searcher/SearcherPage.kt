@@ -178,7 +178,7 @@ fun SearcherPageImpl(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = stringResource(R.string.error),
+                                            text = stringResource(R.string.searching_error),
                                             style = MaterialTheme.typography.headlineSmall,
                                             modifier = Modifier,
                                             overflow = TextOverflow.Ellipsis,

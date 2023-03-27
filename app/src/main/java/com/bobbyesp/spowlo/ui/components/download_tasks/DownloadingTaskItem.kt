@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.RestartAlt
-import androidx.compose.material.icons.outlined.UnfoldMore
+import androidx.compose.material.icons.outlined.Terminal
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,8 +95,10 @@ fun DownloadingTaskItem(
             }
         )
         Surface(
+            modifier = modifier,
             color = containerColor,
             shape = CardDefaults.shape,
+            onClick = { onShowLog() },
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
@@ -146,7 +148,7 @@ fun DownloadingTaskItem(
                                     .size(24.dp),
                                 imageVector = Icons.Filled.Error,
                                 tint = accentColor,
-                                contentDescription = stringResource(id = R.string.error)
+                                contentDescription = stringResource(id = R.string.searching_error)
                             )
                         }
                     }
@@ -159,7 +161,7 @@ fun DownloadingTaskItem(
                         MarqueeText(
                             text = header,
                             style = MaterialTheme.typography.titleSmall,
-                            color = contentColor,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.Bold,
@@ -184,7 +186,7 @@ fun DownloadingTaskItem(
                         )
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.UnfoldMore,
+                            imageVector = Icons.Outlined.Terminal,
                             contentDescription = stringResource(
                                 id = R.string.open_log
                             )
@@ -205,7 +207,7 @@ fun DownloadingTaskItem(
                         textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
                         // color is going to be like this: if the system color is dark, then the text color is white, otherwise it's black
                         color = Color.White,
-                        maxLines = 2
+                        maxLines = 1
                     )
                 }
 

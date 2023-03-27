@@ -41,7 +41,7 @@ fun ErrorPage(
                     .padding(bottom = 12.dp)
             )
             Text(
-                stringResource(id = R.string.error),
+                stringResource(id = R.string.searching_error),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
