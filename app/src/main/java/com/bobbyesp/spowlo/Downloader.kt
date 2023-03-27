@@ -119,16 +119,14 @@ object Downloader {
         val duration: Double = 0.0,
         val isExplicit: Boolean = false,
         val hasLyrics: Boolean = false,
-        // val fileSizeApprox: Long = 0,
         val progress: Float = 0f,
         val progressText: String = "",
         val thumbnailUrl: String = "",
         val taskId: String = "",
         val output: String = "",
-        // val playlistIndex: Int = 0,
     )
 
-    private fun Song.toTask(playlistIndex: Int = 0, preferencesHash: Int): DownloadTaskItem =
+    private fun Song.toTask(preferencesHash: Int): DownloadTaskItem =
         DownloadTaskItem(
             info = this,
             spotifyUrl = this.url,
@@ -140,7 +138,7 @@ object Downloader {
             progress = 0f,
             progressText = "",
             thumbnailUrl = this.cover_url,
-            taskId = this.song_id + preferencesHash + playlistIndex,
+            taskId = this.song_id + preferencesHash,
         )
 
     private var currentJob: Job? = null
@@ -356,6 +354,7 @@ object Downloader {
                             isFetchingInfo = true,
                             isTaskAborted = true
                         )
+                        return@launch
                     }
                     .onSuccess { info ->
                         for (song in info) {

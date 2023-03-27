@@ -32,6 +32,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
@@ -172,7 +173,8 @@ fun DownloaderPage(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        DownloaderPageImplementation(downloaderState = downloaderState,
+        DownloaderPageImplementation(
+            downloaderState = downloaderState,
             taskState = taskState,
             viewState = viewState,
             errorState = errorState,
@@ -389,10 +391,8 @@ fun FABs(
             )
         }, modifier = Modifier.padding(vertical = 12.dp)
         )
-
     }
-
-    /*AnimatedVisibility(visible = isDownloading) {
+    AnimatedVisibility(visible = isDownloading) {
         ExtendedFloatingActionButton(
             text = { Text(stringResource(R.string.cancel)) },
             onClick = cancelCallback, icon = {
@@ -402,7 +402,7 @@ fun FABs(
                 )
             }, modifier = Modifier.padding(vertical = 12.dp)
         )
-    }*/
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
