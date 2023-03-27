@@ -106,6 +106,7 @@ private val BooleanPreferenceDefaults =
         SPOTDL_UPDATE to true,
         GEO_BYPASS to false,
         SKIP_INFO_FETCH to false,
+        NOTIFICATION to true,
     )
 
 private val IntPreferenceDefaults = mapOf(

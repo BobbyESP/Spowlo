@@ -23,6 +23,7 @@ import com.bobbyesp.spowlo.utils.DownloaderUtil
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
+import com.bobbyesp.spowlo.utils.NotificationsUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -73,6 +74,7 @@ class App : Application() {
                 getString(R.string.app_name)
             ).absolutePath
         )
+        if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
     }
 
     companion object {

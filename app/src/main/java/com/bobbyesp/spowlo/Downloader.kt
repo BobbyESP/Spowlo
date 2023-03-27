@@ -280,7 +280,7 @@ object Downloader {
         val isDownloadingPlaylist = downloaderState.value is State.DownloadingPlaylist
 
         mutableTaskState.update { songInfo.toTask(preferencesHash = preferences.hashCode()) }
-        val notificationId = songInfo.song_id.toInt() + preferences.hashCode()
+        val notificationId = preferences.hashCode() + songInfo.song_id.getNumbers()
         if (!isDownloadingPlaylist) updateState(State.DownloadingSong)
         return DownloaderUtil.downloadSong(
             songInfo = songInfo,
@@ -482,4 +482,15 @@ object Downloader {
 
     fun onProcessStarted() = mutableProcessCount.update { it + 1 }
     fun String.toNotificationId(): Int = this.hashCode()
+
+    //get just the numbers from a string and return an int
+    fun String.getNumbers(): Int {
+        val sb = StringBuilder()
+        for (c in this) {
+            if (c.isDigit()) {
+                sb.append(c)
+            }
+        }
+        return sb.toString().toInt()
+    }
 }

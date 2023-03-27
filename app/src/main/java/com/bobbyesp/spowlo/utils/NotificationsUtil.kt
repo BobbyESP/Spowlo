@@ -33,7 +33,7 @@ object NotificationsUtil {
     private const val PROGRESS_INITIAL = 0
     private const val CHANNEL_ID = "download_notification"
     private const val SERVICE_CHANNEL_ID = "download_service"
-    private const val NOTIFICATION_GROUP_ID = "seal.download.notification"
+    private const val NOTIFICATION_GROUP_ID = "spowlo.download.notification"
     private const val DEFAULT_NOTIFICATION_ID = 100
     const val SERVICE_NOTIFICATION_ID = 123
     private lateinit var serviceNotification: Notification
@@ -124,7 +124,7 @@ object NotificationsUtil {
         notificationManager.notify(notificationId, builder.build())
     }
 
-    fun finishNotificationForCustomCommands(
+    fun finishNotificationForParallelDownloads(
         notificationId: Int = DEFAULT_NOTIFICATION_ID,
         title: String? = null,
         text: String? = null,
@@ -198,12 +198,12 @@ object NotificationsUtil {
             }
     }
 
-    fun makeNotificationForCustomCommand(
+    fun makeNotificationForParallelDownloads(
         notificationId: Int,
         taskId: String,
         progress: Int,
         text: String? = null,
-        templateName: String,
+        extraString: String,
         taskUrl: String
     ) {
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
@@ -221,7 +221,7 @@ object NotificationsUtil {
         )
 
         NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
-            .setContentTitle("[${templateName}_${taskUrl}] " + context.getString(R.string.execute_parallel_download))
+            .setContentTitle("[${extraString}_${taskUrl}] " + context.getString(R.string.execute_parallel_download))
             .setContentText(text)
             .setOngoing(true)
             .setProgress(PROGRESS_MAX, progress, progress == -1)

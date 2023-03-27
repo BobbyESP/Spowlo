@@ -13,7 +13,7 @@ import com.bobbyesp.spowlo.utils.ToastUtil
 class NotificationActionReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "CancelReceiver"
-        private const val PACKAGE_NAME_PREFIX = "com.junkfood.seal."
+        private const val PACKAGE_NAME_PREFIX = "com.bobbyesp.spowlo."
 
         const val ACTION_CANCEL_TASK = 0
         const val ACTION_ERROR_REPORT = 1
