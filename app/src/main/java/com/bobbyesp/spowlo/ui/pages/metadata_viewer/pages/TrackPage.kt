@@ -117,7 +117,8 @@ fun TrackPage(
             modifier = Modifier.fillMaxWidth()
         ) {
             val taskName = StringBuilder().append(data.name).append(" - ").append(data.artists.joinToString(", ") { it.name }).toString()
-            TrackComponent(contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            TrackComponent(
+                contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 songName = data.name,
                 artists = data.artists.joinToString(", ") { it.name },
                 spotifyUrl = data.externalUrls.spotify!!,

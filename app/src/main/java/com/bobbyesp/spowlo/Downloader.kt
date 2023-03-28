@@ -376,8 +376,7 @@ object Downloader {
             updateState(State.FetchingInfo)
             DownloaderUtil.fetchSongInfoFromUrl(
                 url = url
-            )
-                .onFailure {
+            ).onFailure {
                     manageDownloadError(
                         it,
                         isFetchingInfo = true,

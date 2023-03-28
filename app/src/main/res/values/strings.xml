@@ -305,4 +305,5 @@
     <string name="channel_description">Show up your downloads on notification centre</string>
     <string name="service_title">Spowlo is downloading</string>
     <string name="execute_parallel_download">Executing parallel download</string>
+    <string name="followers">Followers</string>
 </resources>
