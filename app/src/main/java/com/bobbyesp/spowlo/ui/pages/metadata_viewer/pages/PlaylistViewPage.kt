@@ -1,7 +1,9 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +34,14 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.MarqueeText
-import com.bobbyesp.spowlo.ui.pages.common.NotImplementedPage
+import com.bobbyesp.spowlo.ui.components.songs.metadata_viewer.TrackComponent
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.dataStringToString
 
 @Composable
 fun PlaylistViewPage(
     data: Playlist,
-    modifier: Modifier
+    modifier: Modifier,
+    trackDownloadCallback: (String, String) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
 
@@ -102,11 +109,40 @@ fun PlaylistViewPage(
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )
             }
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                FilledTonalIconButton(
+                    onClick = {
+                    trackDownloadCallback(data.externalUrls.spotify!!, data.name)
+                },
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Download,
+                        contentDescription = "Download full playlist icon",
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(14.dp)
+                    )
+                }
+
+            }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                NotImplementedPage()
+                //for every track in the playlist, show the track name and the artist name
+                data.tracks.items.forEach { track ->
+                    val actualTrack = track.track?.asTrack
+                    val taskName = StringBuilder().append(actualTrack?.name).append(" - ").append(actualTrack?.artists?.joinToString(", ") { it.name }).toString()
+                    TrackComponent(
+                        contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        songName = actualTrack?.name ?: App.context.getString(R.string.unknown),
+                        artists = actualTrack?.artists?.joinToString(", ") { it.name } ?: "",
+                        spotifyUrl = actualTrack?.externalUrls?.spotify!!,
+                        isExplicit = actualTrack.explicit,
+                        onClick = { trackDownloadCallback(actualTrack.externalUrls.spotify!!, taskName) }
+                    )
+                }
             }
         }
     }

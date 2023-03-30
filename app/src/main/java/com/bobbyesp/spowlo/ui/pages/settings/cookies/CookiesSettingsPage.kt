@@ -213,9 +213,6 @@ fun CookieProfilePage(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
 @Composable
 fun CookieGeneratorDialog(
     cookiesViewModel: CookiesSettingsViewModel = viewModel(),
@@ -253,7 +250,8 @@ fun CookieGeneratorDialog(
             TextButtonWithIcon(
                 onClick = { navigateToCookieGeneratorPage() },
                 icon = Icons.Outlined.GeneratingTokens,
-                text = stringResource(id = R.string.generate_new_cookies)
+                text = stringResource(id = R.string.generate_new_cookies),
+                enabled = url.isNotEmpty()
             )
 
         }

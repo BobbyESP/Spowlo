@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.download_tasks.DownloadingTaskItem
 import com.bobbyesp.spowlo.ui.components.download_tasks.TaskState
 
@@ -71,6 +73,9 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                             onCopyLog(clipboardManager)
                         }, onShowLog = {
                             onNavigateToDetail(hashCode())
+                        },
+                        onCopyLink = {
+                            onCopyUrl(clipboardManager)
                         }
                     )
                 }
@@ -81,13 +86,22 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                 modifier = Modifier.fillMaxSize(),
             ) {
                 Column(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = stringResource(R.string.no_running_downloads),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    HorizontalDivider( modifier = Modifier.padding(vertical = 24.dp, horizontal = 4.dp))
+                    Text(
+                        text = stringResource(R.string.no_running_downloads_description),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
                     )
                 }
             }

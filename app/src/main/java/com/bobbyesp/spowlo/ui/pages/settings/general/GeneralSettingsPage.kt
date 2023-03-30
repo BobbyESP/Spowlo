@@ -30,7 +30,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -46,9 +45,10 @@ import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
-import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
-import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
+import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
+import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
+import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.GEO_BYPASS
@@ -71,9 +71,9 @@ fun GeneralSettingsPage(
     val scope = rememberCoroutineScope()
     val hapticFeedback = LocalHapticFeedback.current
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState(),
-        canScroll = { true })
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState(),
+            canScroll = { true })
 
     var displayErrorReport by DEBUG.booleanState
 
@@ -134,113 +134,82 @@ fun GeneralSettingsPage(
         },
         content = {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 item {
-                    PreferenceItem(
-                        title = stringResource(id = R.string.spotdl_version),
-                        description = spotDLVersion,
-                        icon = Icons.Outlined.Info,
-                        onClick = {
-                        },
-                        onClickLabel = stringResource(id = R.string.update),
-                        onLongClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    ElevatedSettingsCard {
+                        SettingsItemNew(
+                            onClick = { },
+                            title = { Text(text = stringResource(id = R.string.spotdl_version)) },
+                            icon = Icons.Outlined.Info,
+                            description = { Text(text = spotDLVersion) })
 
-                        }, onLongClickLabel = stringResource(id = R.string.open_settings)
-                    )
-                }
-                item {
-                    PreferenceSwitch(
-                        title = stringResource(R.string.print_details),
-                        description = stringResource(R.string.print_details_desc),
-                        icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
-                        enabled = true,
-                        onClick = {
-                            displayErrorReport = !displayErrorReport
-                            PreferencesUtil.updateValue(DEBUG, displayErrorReport)
-                        },
-                        isChecked = displayErrorReport
-                    )
+                        SettingsSwitch(
+                            onCheckedChange = {
+                                displayErrorReport = !displayErrorReport
+                                PreferencesUtil.updateValue(DEBUG, displayErrorReport)
+                            },
+                            checked = displayErrorReport,
+                            title = {
+                                Text(text = stringResource(R.string.print_details))
+                            },
+                            icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
+                            description = { Text(text = stringResource(R.string.print_details_desc)) },
+                        )
+                    }
                 }
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.library_settings))
                 }
                 item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.use_cache),
-                        description = stringResource(id = R.string.use_cache_desc),
-                        icon = Icons.Outlined.Cached,
-                        onClick = {
-                            scope.launch {
+                    ElevatedSettingsCard {
+                        SettingsSwitch(
+                            onCheckedChange = {
                                 useCache = !useCache
                                 PreferencesUtil.updateValue(USE_CACHING, useCache)
-                            }
-                        },
-                        isChecked = useCache
-                    )
-                }
-                item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.geo_bypass),
-                        description = stringResource(id = R.string.use_geobypass_desc),
-                        icon = Icons.Outlined.MyLocation,
-                        onClick = {
-                            scope.launch {
+                            },
+                            checked = useCache,
+                            title = {
+                                Text(text = stringResource(id = R.string.use_cache))
+                            },
+                            icon = Icons.Outlined.Cached,
+                            description = { Text(text = stringResource(id = R.string.use_cache_desc)) },
+                        )
+
+                        SettingsSwitch(
+                            onCheckedChange = {
                                 useGeobypass = !useGeobypass
                                 PreferencesUtil.updateValue(GEO_BYPASS, useGeobypass)
-                            }
-                        },
-                        isChecked = useGeobypass
-                    )
-                }
-                item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.dont_filter_results),
-                        description = stringResource(id = R.string.dont_filter_results_desc),
-                        icon = Icons.Outlined.Filter,
-                        onClick = {
-                            scope.launch {
+                            },
+                            checked = useGeobypass,
+                            title = {
+                                Text(text = stringResource(id = R.string.geo_bypass))
+                            },
+                            icon = Icons.Outlined.MyLocation,
+                            description = { Text(text = stringResource(id = R.string.use_geobypass_desc)) },
+                        )
+
+                        SettingsSwitch(
+                            onCheckedChange = {
                                 dontFilter = !dontFilter
                                 PreferencesUtil.updateValue(DONT_FILTER_RESULTS, dontFilter)
-                            }
-                        },
-                        isChecked = dontFilter
-                    )
+                            },
+                            checked = dontFilter,
+                            title = {
+                                Text(text = stringResource(id = R.string.dont_filter_results))
+                            },
+                            icon = Icons.Outlined.Filter,
+                            description = { Text(text = stringResource(id = R.string.dont_filter_results_desc)) },
+                        )
+                    }
                 }
                 item {
-                    HorizontalDivider()
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 }
                 item {
-                    /*PreferenceItem(
-                        title = stringResource(id = R.string.threads_number),
-                        description = stringResource(id = R.string.threads_number_desc),
-                        icon = Icons.Outlined.Settings,
-                        onClick = {
-                            scope.launch {
-                                val result = MaterialDialog(context).show {
-                                    title(text = stringResource(id = R.string.threads_number))
-                                    message(text = stringResource(id = R.string.threads_number_desc))
-                                    input(
-                                        hint = stringResource(id = R.string.threads_number),
-                                        prefill = threadsNumber.toString(),
-                                        inputType = InputType.TYPE_CLASS_NUMBER
-                                    ) { _, text ->
-                                        threadsNumber = text.toString().toInt()
-                                        PreferencesUtil.updateValue(THREADS_NUMBER, threadsNumber)
-                                    }
-                                    positiveButton(text = stringResource(id = R.string.ok))
-                                    negativeButton(text = stringResource(id = R.string.cancel))
-                                }
-                            }
-                        },
-                        onClickLabel = stringResource(id = R.string.update),
-                        onLongClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-
-                        }, onLongClickLabel = stringResource(id = R.string.open_settings)
-                    )*/
                     //threads number item with a slicer
                     Column(
                         modifier = Modifier.fillMaxWidth()
@@ -275,8 +244,7 @@ fun GeneralSettingsPage(
                                 Text(
                                     text = stringResource(id = R.string.threads_number_desc),
                                     modifier = Modifier.padding(
-                                        vertical = 12.dp,
-                                        horizontal = 16.dp
+                                        vertical = 12.dp, horizontal = 16.dp
                                     ),
                                     style = MaterialTheme.typography.bodyMedium.copy(
                                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

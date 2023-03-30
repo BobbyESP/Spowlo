@@ -66,10 +66,12 @@ fun DownloadingTaskItem(
             "[sample] sample: Downloading webpage\n" +
             "[sample] sample: Downloading android player API JSON\n" +
             "[info] Available automatic captions for sample:" + "[info] Available automatic captions for sample:",
+    artworkUrl: String = "https://www.example.com",
     onCopyLog: () -> Unit = {},
     onCopyError: () -> Unit = {},
     onRestart: () -> Unit = {},
     onShowLog: () -> Unit = {},
+    onCopyLink: () -> Unit = {},
 ) {
     CompositionLocalProvider(LocalTonalPalettes provides greenTonalPalettes) {
         val greenScheme = dynamicColorScheme(!LocalDarkTheme.current.isDarkTheme())
@@ -216,6 +218,10 @@ fun DownloadingTaskItem(
                         icon = Icons.Outlined.ContentCopy,
                         label = stringResource(id = R.string.copy_log)
                     ) { onCopyLog() }
+                    FlatButtonChip(
+                        icon = Icons.Outlined.ContentCopy,
+                        label = stringResource(id = R.string.copy_link)
+                    ) { onCopyLink() }
                     if (status == TaskState.ERROR) {
                         FlatButtonChip(
                             icon = Icons.Outlined.ErrorOutline,

@@ -39,7 +39,7 @@ fun SpotifyPageBinder(
             SpotifyDataType.PLAYLIST -> {
                 val playlist = data as? Playlist
                 playlist?.let {
-                    PlaylistViewPage(playlist, modifier)
+                    PlaylistViewPage(playlist, modifier, trackDownloadCallback)
                 }
             }
 

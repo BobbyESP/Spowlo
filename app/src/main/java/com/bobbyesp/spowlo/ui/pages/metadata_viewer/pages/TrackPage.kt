@@ -123,7 +123,8 @@ fun TrackPage(
                 artists = data.artists.joinToString(", ") { it.name },
                 spotifyUrl = data.externalUrls.spotify!!,
                 isExplicit = data.explicit,
-                onClick = { trackDownloadCallback(data.externalUrls.spotify!!, taskName) })
+                onClick = { trackDownloadCallback(data.externalUrls.spotify!!, taskName) }
+            )
         }
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
         Column(modifier = Modifier.fillMaxWidth()) {

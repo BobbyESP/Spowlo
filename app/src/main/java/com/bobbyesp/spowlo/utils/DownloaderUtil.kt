@@ -411,12 +411,12 @@ object DownloaderUtil {
         onProcessStarted()
         onTaskStarted(url, name)
         kotlin.runCatching {
-            val response = SpotDL.getInstance().execute(request, taskId) { progress, _, text ->
-                Log.d(TAG, "executeParallelDownload: $progress $text")
+            val response = SpotDL.getInstance().execute(request = request, processId = taskId, forceProcessDestroy = true, callback =  { progress, _, text ->
+                //Log.d(TAG, "executeParallelDownload: $progress $text")
                 Downloader.updateTaskOutput(
                     url = url, line = text, progress = progress
                 )
-            }
+            } )
             //clear all the lines that contains a "…" on it
             val finalResponse = removeDuplicateLines(clearLinesWithEllipsis(response.output))
             onTaskEnded(url, finalResponse)
@@ -426,7 +426,7 @@ object DownloaderUtil {
             if (it is SpotDL.CanceledException) return@onFailure
             it.message.run {
                 if (isNullOrEmpty()) onTaskEnded(url)
-                else onTaskError(this, url, taskId)
+                else onTaskError(this, url)
             }
         }
         onProcessEnded()

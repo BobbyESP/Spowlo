@@ -2,11 +2,14 @@ package com.bobbyesp.spowlo.ui.components.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,7 +24,7 @@ fun SettingsItemNew(
     description: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     icon: ImageVector? = null,
-    addTonalElevation: Boolean = false,
+    addTonalElevation: Boolean = true,
     clipCorners: Boolean = false,
     highlightIcon : Boolean = false
 ) {
@@ -56,7 +59,7 @@ fun SettingsItemNew(
     description: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     icon: ImageVector? = null,
-    addTonalElevation: Boolean = false,
+    addTonalElevation: Boolean = true,
     clipCorners: Boolean = false,
     highlightIcon : Boolean = false
 ) {
@@ -87,7 +90,7 @@ fun SettingsSwitch(
     description: (@Composable () -> Unit)? = null,
     icon: ImageVector? = null,
     thumbContent: (@Composable () -> Unit)? = null,
-    addTonalElevation: Boolean = false,
+    addTonalElevation: Boolean = true,
     clipCorners: Boolean = false,
     highlightIcon: Boolean = false
 ) {
@@ -117,4 +120,15 @@ fun SettingsSwitch(
         clipCorners = clipCorners,
         highlightIcon = highlightIcon
     )
+}
+
+@Composable
+fun ElevatedSettingsCard(
+    content : @Composable () -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+    ) {
+        content()
+    }
 }

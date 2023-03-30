@@ -306,4 +306,6 @@
     <string name="service_title">Spowlo is downloading</string>
     <string name="execute_parallel_download">Executing parallel download</string>
     <string name="followers">Followers</string>
+    <string name="no_running_downloads_description">Here will appear all the downloads that you make from the searcher page.</string>
+    <string name="log_copied">The log has been copied to the clipboard</string>
 </resources>

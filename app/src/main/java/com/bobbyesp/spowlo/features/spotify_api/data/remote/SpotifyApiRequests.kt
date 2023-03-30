@@ -128,6 +128,7 @@ object SpotifyApiRequests {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return null
         }.onSuccess {
+            Log.d("SpotifyApiRequests", "Playlist: $it")
             return it
         }
         return null

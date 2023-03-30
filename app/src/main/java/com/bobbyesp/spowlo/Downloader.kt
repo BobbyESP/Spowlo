@@ -85,6 +85,12 @@ object Downloader {
 
         fun onCopyLog(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
             clipboardManager.setText(AnnotatedString(consoleOutput))
+            ToastUtil.makeToastSuspend(context.getString(R.string.log_copied))
+        }
+
+        fun onCopyUrl(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
+            clipboardManager.setText(AnnotatedString(url))
+            ToastUtil.makeToastSuspend(context.getString(R.string.link_copied))
         }
 
 
@@ -200,7 +206,7 @@ object Downloader {
         val key = makeKey(url, url.reversed())
         val oldValue = mutableTaskList[key] ?: return
         val newValue = oldValue.run {
-            if (currentLine == line || line.containsEllipsis()) return
+            if (currentLine == line || line.containsEllipsis() || consoleOutput.contains(line)) return
             copy(
                 consoleOutput = consoleOutput + line + "\n",
                 currentLine = line,
@@ -230,7 +236,7 @@ object Downloader {
         FilesUtil.scanDownloadDirectoryToMediaLibrary(App.audioDownloadDir)
     }
 
-    fun onTaskError(errorReport: String, url: String, extraString: String) =
+    fun onTaskError(errorReport: String, url: String) =
         mutableTaskList.run {
             val key = makeKey(url, url.reversed())
             NotificationsUtil.makeErrorReportNotification(
@@ -297,6 +303,7 @@ object Downloader {
                 title = songInfo.name
             )
         }.onFailure {
+            Log.d("Downloader", "$it")
             if (it is SpotDL.CanceledException) return@onFailure
             Log.d("Downloader", "The download has been canceled (app thread)")
             manageDownloadError(

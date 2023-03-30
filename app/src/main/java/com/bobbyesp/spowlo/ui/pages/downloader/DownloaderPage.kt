@@ -389,17 +389,17 @@ fun FABs(
             )
         }, modifier = Modifier.padding(vertical = 12.dp)
         )
-    }
-    AnimatedVisibility(visible = isDownloading) {
-        ExtendedFloatingActionButton(
-            text = { Text(stringResource(R.string.cancel)) },
-            onClick = cancelCallback, icon = {
-                Icon(
-                    Icons.Outlined.Cancel,
-                    contentDescription = stringResource(R.string.cancel_download)
-                )
-            }, modifier = Modifier.padding(vertical = 12.dp)
-        )
+        AnimatedVisibility(visible = isDownloading) {
+            ExtendedFloatingActionButton(
+                text = { Text(stringResource(R.string.cancel)) },
+                onClick = cancelCallback, icon = {
+                    Icon(
+                        Icons.Outlined.Cancel,
+                        contentDescription = stringResource(R.string.cancel_download)
+                    )
+                }, modifier = Modifier.padding(vertical = 12.dp)
+            )
+        }
     }
 }
 
