@@ -114,7 +114,7 @@ fun PlaylistViewPage(
                     onClick = {
                     trackDownloadCallback(data.externalUrls.spotify!!, data.name)
                 },
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(48.dp).padding(12.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Download,

@@ -33,6 +33,12 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
         kotlin.runCatching {
             api.searchAllTypes(viewStateFlow.value.query)
         }.onSuccess { result ->
+            if (result == SpotifySearchResult(null, null, null, null, null, null)) {
+                mutableViewStateFlow.update { viewState ->
+                    viewState.copy(viewState = ViewSearchState.Error("No results found"))
+                }
+                return@onSuccess
+            }
             mutableViewStateFlow.update { viewState ->
                 viewState.copy(viewState = ViewSearchState.Success(result))
             }

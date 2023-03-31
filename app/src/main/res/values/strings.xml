@@ -317,4 +317,6 @@
     <string name="spotify_api_info">Spotify API</string>
     <string name="spotify_api_info_description">This Spotify credentials can be used for having more closer and precise results to the songs requested in the main downloader page of the app. \n\nThis doesn\'t make effect on the searcher page because the app already uses extended-quota API credentials provided by Spotify.</string>
     <string name="parallel_download">Parallel download</string>
+    <string name="tracks">Tracks</string>
+    <string name="playlists">Playlists</string>
 </resources>

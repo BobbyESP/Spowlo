@@ -39,6 +39,7 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -172,8 +173,7 @@ fun DownloaderPage(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        DownloaderPageImplementation(
-            downloaderState = downloaderState,
+        DownloaderPageImplementation(downloaderState = downloaderState,
             taskState = taskState,
             viewState = viewState,
             errorState = errorState,
@@ -199,8 +199,7 @@ fun DownloaderPage(
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
         with(viewState) {
-            DownloaderSettingsDialog(
-                useDialog = useDialog,
+            DownloaderSettingsDialog(useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
                 confirm = { checkPermissionOrDownload() },
@@ -381,26 +380,29 @@ fun FABs(
             )
         }, modifier = Modifier.padding(vertical = 12.dp)
         )
-        ExtendedFloatingActionButton(onClick = downloadCallback, text = {
-            Text(stringResource(R.string.download))
-        }, icon = {
-            Icon(
-                Icons.Outlined.FileDownload,
-                contentDescription = stringResource(R.string.download)
-            )
-        }, modifier = Modifier.padding(vertical = 12.dp)
-        )
-        AnimatedVisibility(visible = isDownloading) {
-            ExtendedFloatingActionButton(
-                text = { Text(stringResource(R.string.cancel)) },
-                onClick = cancelCallback, icon = {
-                    Icon(
-                        Icons.Outlined.Cancel,
-                        contentDescription = stringResource(R.string.cancel_download)
-                    )
-                }, modifier = Modifier.padding(vertical = 12.dp)
-            )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            AnimatedVisibility(visible = isDownloading) {
+                FloatingActionButton(
+                    onClick = cancelCallback,
+                    content = {
+                        Icon(
+                            Icons.Outlined.Cancel,
+                            contentDescription = stringResource(R.string.cancel_download)
+                        )
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
+            }
+            ExtendedFloatingActionButton(onClick = downloadCallback, text = {
+                Text(stringResource(R.string.download))
+            }, icon = {
+                Icon(
+                    Icons.Outlined.FileDownload,
+                    contentDescription = stringResource(R.string.download)
+                )
+            }, modifier = Modifier.padding(vertical = 12.dp))
         }
+
     }
 }
 
@@ -442,7 +444,11 @@ fun InputUrl(
                 8.dp
             ),
             unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-            errorContainerColor = MaterialTheme.colorScheme.errorContainer.harmonizeWith(other = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)),
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer.harmonizeWith(
+                other = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    8.dp
+                )
+            ),
         ),
     )
     AnimatedVisibility(visible = showDownloadProgress) {

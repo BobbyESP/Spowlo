@@ -112,9 +112,9 @@ val colorList = listOf(
 fun AppearancePage(
     navController: NavHostController
 ) {
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState(),
-            canScroll = { true })
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState(),
+        canScroll = { true })
     var showDarkThemeDialog by remember { mutableStateOf(false) }
     val darkTheme = LocalDarkTheme.current
     var darkThemeValue by remember { mutableStateOf(darkTheme.darkThemeValue) }
@@ -133,7 +133,8 @@ fun AppearancePage(
             LargeTopAppBar(title = {
                 Text(
                     modifier = Modifier,
-                    text = stringResource(id = R.string.display), fontWeight = FontWeight.Bold
+                    text = stringResource(id = R.string.display),
+                    fontWeight = FontWeight.Bold
                 )
             }, navigationIcon = {
                 BackButton {
@@ -155,7 +156,7 @@ fun AppearancePage(
                         explicit = true,
                         cover_url = "https://i.scdn.co/image/ab67616d0000b273a152de6438e748b4c0cddff7",
                         duration = 132.954
-                    ), modifier = Modifier.padding(16.dp)
+                    ), modifier = Modifier.padding(16.dp), isPreview = true
                 )
                 val pagerState =
                     rememberPagerState(initialPage = colorList.indexOf(Color(LocalSeedColor.current))
@@ -199,7 +200,6 @@ fun AppearancePage(
                     description = LocalDarkTheme.current.getDarkThemeDesc(),
                     onChecked = { PreferencesUtil.modifyDarkThemePreference(if (isDarkTheme) OFF else ON) },
                     onClick = { navController.navigate(Route.APP_THEME) })
-                //todo: add the languages page
                 if (Build.VERSION.SDK_INT >= 24) PreferenceItem(
                     title = stringResource(R.string.language),
                     icon = Icons.Outlined.Language,
