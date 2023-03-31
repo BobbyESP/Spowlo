@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Aod
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Cookie
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.rounded.EnergySavingsLeaf
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +55,7 @@ import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.PreferencesHintCard
 import com.bobbyesp.spowlo.ui.components.SettingTitle
 import com.bobbyesp.spowlo.ui.components.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.components.fraction
 import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 
@@ -85,6 +88,16 @@ fun SettingsPage(navController: NavController) {
         topBar = {
             SmallTopAppBar(
                 titleText = stringResource(id = R.string.settings),
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.settings),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface.copy(
+                            alpha = fraction(scrollBehavior.state.overlappedFraction)
+                        ),
+                        maxLines = 1
+                    )
+                },
                 navigationIcon = { BackButton { navController.popBackStack() } },
                 scrollBehavior = scrollBehavior
             )
@@ -95,7 +108,7 @@ fun SettingsPage(navController: NavController) {
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             item {
-                SettingTitle(text = stringResource(id = R.string.settings))
+                SettingTitle(text = stringResource(id = R.string.settings), fontWeight = FontWeight.Bold)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (context.packageManager.queryIntentActivities(
@@ -124,22 +137,49 @@ fun SettingsPage(navController: NavController) {
             }
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.general_settings), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.general),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.general_settings_desc)) },
                     icon = Icons.Filled.SettingsApplications,
-                 onClick = {
-                    navController.navigate(Route.GENERAL_DOWNLOAD_PREFERENCES) {
-                        launchSingleTop = true
-                    }
-                },
+                    onClick = {
+                        navController.navigate(Route.GENERAL_DOWNLOAD_PREFERENCES) {
+                            launchSingleTop = true
+                        }
+                    },
                     addTonalElevation = true,
                     modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
                     highlightIcon = true
                 )
             }
             item {
+                SettingsItemNew(onClick = {
+                    navController.navigate(Route.DOWNLOADER_SETTINGS) {
+                        launchSingleTop = true
+                    }
+                }, title = {
+                    Text(
+                        text = stringResource(id = R.string.downloader),
+                        fontWeight = FontWeight.Bold
+                    )
+                }, description = {
+                    Text(text = stringResource(id = R.string.downloader_settings_desc))
+                }, icon = Icons.Filled.Download,
+                    highlightIcon = true
+                )
+
+            }
+            item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.spotify_settings), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.spotify_settings),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.spotify_settings_desc)) },
                     icon = LocalAsset(id = R.drawable.spotify_logo),
                     onClick = {
@@ -154,7 +194,12 @@ fun SettingsPage(navController: NavController) {
             item {
                 //new settings item for download directory
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.download_directory), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.download_directory),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.download_directory_desc)) },
                     icon = Icons.Filled.Folder,
                     onClick = {
@@ -168,7 +213,12 @@ fun SettingsPage(navController: NavController) {
             }
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.format), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.format),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.format_settings_desc)) },
                     icon = Icons.Filled.AudioFile,
                     onClick = {
@@ -183,7 +233,12 @@ fun SettingsPage(navController: NavController) {
             item {
                 //rewrite this with new settings item
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.appearance), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.appearance),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.appearance_settings)) },
                     icon = Icons.Filled.Aod,
                     onClick = {
@@ -198,7 +253,12 @@ fun SettingsPage(navController: NavController) {
             item {
                 //Cookies page
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.cookies), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.cookies),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.cookies_desc)) },
                     icon = Icons.Filled.Cookie,
                     onClick = {
@@ -213,7 +273,12 @@ fun SettingsPage(navController: NavController) {
 
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.documentation), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.documentation),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.documentation_desc)) },
                     icon = Icons.Filled.Help,
                     onClick = {
@@ -226,9 +291,14 @@ fun SettingsPage(navController: NavController) {
                 )
             }
 
-            item{
+            item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.updates_channels), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.updates_channels),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.updates_channels_desc)) },
                     icon = Icons.Filled.Update,
                     onClick = {
@@ -243,7 +313,12 @@ fun SettingsPage(navController: NavController) {
 
             item {
                 SettingsItemNew(
-                    title = { Text(text = stringResource(id = R.string.about), fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.about),
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     description = { Text(text = stringResource(id = R.string.about_page)) },
                     icon = Icons.Filled.Info,
                     onClick = {
@@ -253,7 +328,12 @@ fun SettingsPage(navController: NavController) {
                     },
                     addTonalElevation = true,
                     highlightIcon = true,
-                    modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                    modifier = Modifier.clip(
+                        RoundedCornerShape(
+                            bottomStart = 8.dp,
+                            bottomEnd = 8.dp
+                        )
+                    )
                 )
             }
             item {

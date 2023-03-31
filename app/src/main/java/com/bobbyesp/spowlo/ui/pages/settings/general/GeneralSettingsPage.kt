@@ -1,23 +1,17 @@
 package com.bobbyesp.spowlo.ui.pages.settings.general
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cached
-import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material.icons.outlined.Print
 import androidx.compose.material.icons.outlined.PrintDisabled
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -28,8 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -43,7 +37,6 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.BackButton
-import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
@@ -52,10 +45,9 @@ import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.GEO_BYPASS
+import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil.updateInt
 import com.bobbyesp.spowlo.utils.THREADS
-import com.bobbyesp.spowlo.utils.USE_CACHING
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -77,9 +69,9 @@ fun GeneralSettingsPage(
 
     var displayErrorReport by DEBUG.booleanState
 
-    var useCache by remember {
+    var useNotifications by remember {
         mutableStateOf(
-            PreferencesUtil.getValue(USE_CACHING)
+            PreferencesUtil.getValue(NOTIFICATION)
         )
     }
 
@@ -120,12 +112,13 @@ fun GeneralSettingsPage(
         }
     }
 
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .nestedScroll(scrollBehavior.nestedScrollConnection),
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = { Text(text = stringResource(id = R.string.general_settings)) },
+                title = { Text(text = stringResource(id = R.string.general), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     BackButton { onBackPressed() }
                 },
@@ -142,7 +135,12 @@ fun GeneralSettingsPage(
                     ElevatedSettingsCard {
                         SettingsItemNew(
                             onClick = { },
-                            title = { Text(text = stringResource(id = R.string.spotdl_version)) },
+                            title = {
+                                Text(
+                                    text = stringResource(id = R.string.spotdl_version),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
                             icon = Icons.Outlined.Info,
                             description = { Text(text = spotDLVersion) })
 
@@ -153,7 +151,10 @@ fun GeneralSettingsPage(
                             },
                             checked = displayErrorReport,
                             title = {
-                                Text(text = stringResource(R.string.print_details))
+                                Text(
+                                    text = stringResource(R.string.print_details),
+                                    fontWeight = FontWeight.Bold
+                                )
                             },
                             icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
                             description = { Text(text = stringResource(R.string.print_details_desc)) },
@@ -162,109 +163,29 @@ fun GeneralSettingsPage(
                 }
 
                 item {
-                    PreferenceSubtitle(text = stringResource(id = R.string.library_settings))
+                    PreferenceSubtitle(text = stringResource(id = R.string.general_settings))
                 }
                 item {
-                    ElevatedSettingsCard {
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                useCache = !useCache
-                                PreferencesUtil.updateValue(USE_CACHING, useCache)
-                            },
-                            checked = useCache,
-                            title = {
-                                Text(text = stringResource(id = R.string.use_cache))
-                            },
-                            icon = Icons.Outlined.Cached,
-                            description = { Text(text = stringResource(id = R.string.use_cache_desc)) },
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            useNotifications = !useNotifications
+                            PreferencesUtil.updateValue(NOTIFICATION, useNotifications)
+                        },
+                        checked = useNotifications,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.use_notifications),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = if(useNotifications) Icons.Outlined.NotificationsActive else Icons.Outlined.NotificationsOff,
+                        description = {
+                            Text(text = stringResource(R.string.use_notifications_desc))
+                        },
+                        modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
                         )
-
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                useGeobypass = !useGeobypass
-                                PreferencesUtil.updateValue(GEO_BYPASS, useGeobypass)
-                            },
-                            checked = useGeobypass,
-                            title = {
-                                Text(text = stringResource(id = R.string.geo_bypass))
-                            },
-                            icon = Icons.Outlined.MyLocation,
-                            description = { Text(text = stringResource(id = R.string.use_geobypass_desc)) },
-                        )
-
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                dontFilter = !dontFilter
-                                PreferencesUtil.updateValue(DONT_FILTER_RESULTS, dontFilter)
-                            },
-                            checked = dontFilter,
-                            title = {
-                                Text(text = stringResource(id = R.string.dont_filter_results))
-                            },
-                            icon = Icons.Outlined.Filter,
-                            description = { Text(text = stringResource(id = R.string.dont_filter_results_desc)) },
-                        )
-                    }
                 }
-                item {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                }
-                item {
-                    //threads number item with a slicer
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.threads),
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .padding(start = 16.dp, top = 16.dp)
-                                            .weight(1f)
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.threads_number) + ": " + threadsNumber.value.toString(),
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            color = MaterialTheme.colorScheme.onSurface.copy(
-                                                alpha = 0.6f
-                                            )
-                                        ),
-                                        modifier = Modifier.padding(end = 16.dp, top = 16.dp)
-                                    )
-                                }
-                                Text(
-                                    text = stringResource(id = R.string.threads_number_desc),
-                                    modifier = Modifier.padding(
-                                        vertical = 12.dp, horizontal = 16.dp
-                                    ),
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                    )
-                                )
 
-                            }
-                        }
-                        Slider(
-                            value = threadsNumber.value.toFloat(),
-                            onValueChange = {
-                                threadsNumber.value = it.toInt()
-                                THREADS.updateInt(it.toInt())
-                            },
-                            valueRange = 1f..10f,
-                            steps = 9,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
-                }
             }
         })
 }

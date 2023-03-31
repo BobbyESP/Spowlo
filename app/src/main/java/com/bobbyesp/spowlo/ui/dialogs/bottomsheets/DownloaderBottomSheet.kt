@@ -273,7 +273,7 @@ fun DownloaderBottomSheet(
                     Column(
                         modifier = Modifier.fillMaxWidth().padding(6.dp)
                     ) {
-                        DrawerSheetSubtitle(text = stringResource(id = R.string.general_settings))
+                        DrawerSheetSubtitle(text = stringResource(id = R.string.general))
                         Row(
                             modifier = Modifier
                                 .horizontalScroll(rememberScrollState())

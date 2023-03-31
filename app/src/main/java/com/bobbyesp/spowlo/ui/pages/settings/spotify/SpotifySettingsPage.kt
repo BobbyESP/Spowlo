@@ -4,15 +4,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.PermIdentity
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
@@ -24,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
@@ -68,6 +74,7 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
 
     var showClientIdDialog by remember { mutableStateOf(false) }
     var showClientSecretDialog by remember { mutableStateOf(false) }
+    var showHelpDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
@@ -78,13 +85,24 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.spotify_settings),
+                        text = stringResource(id = R.string.spotify_settings), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {
                         onBackPressed()
                     }
-                }, scrollBehavior = scrollBehavior
+                },
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(onClick = {
+                        showHelpDialog = !showHelpDialog
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.HelpOutline,
+                            contentDescription = stringResource(R.string.how_does_it_work)
+                        )
+                    }
+                }
             )
         }, content = {
             LazyColumn(
@@ -93,7 +111,7 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                     .padding(horizontal = 20.dp)
             ) {
                 item {
-                    PreferenceSubtitle(text = stringResource(id = R.string.general_settings))
+                    PreferenceSubtitle(text = stringResource(id = R.string.general))
                 }
                 item {
                     Card(
@@ -165,4 +183,33 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
             showClientSecretDialog = !showClientSecretDialog
         }
     }
+    if (showHelpDialog) {
+        SpotifySettingsPageInfoDialog {
+            showHelpDialog = !showHelpDialog
+        }
+    }
+}
+
+@Composable
+fun SpotifySettingsPageInfoDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(stringResource(id = R.string.spotify_api_info))
+        },
+        text = {
+            Text(stringResource(id = R.string.spotify_api_info_description))
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.agree))
+            }
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.HelpOutline,
+                contentDescription = stringResource(id = R.string.how_does_it_work)
+            )
+        }
+    )
 }

@@ -47,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.components.AutoResizableText
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.songs.search_feat.SearchingSongComponent
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString
@@ -66,7 +67,7 @@ fun SearcherPage(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-         SearcherPageImpl(
+        SearcherPageImpl(
             viewState = viewState,
             onValueChange = { query ->
                 searcherPageViewModel.updateSearchText(query)
@@ -112,24 +113,16 @@ fun SearcherPageImpl(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(MaterialTheme.colorScheme.background)
+                                        .background(MaterialTheme.colorScheme.background).padding(horizontal = 16.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        modifier = Modifier.align(Alignment.Center),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = stringResource(id = R.string.search),
-                                            modifier = Modifier.align(
-                                                Alignment.CenterHorizontally
-                                            ),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-
+                                    AutoResizableText(
+                                        text = stringResource(id = R.string.search),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
+
                             }
                         }
 
@@ -195,7 +188,7 @@ fun SearcherPageImpl(
                                 mutableListOf<Any>() //TODO: Add the filters. Pagination should be done in the future
                             viewState.viewState.data.let { data ->
                                 data.albums?.items?.let {/* allItems.addAll(it)*/ }
-                                data.artists?.items?.let { /*allItems.addAll(it) */}
+                                data.artists?.items?.let { /*allItems.addAll(it) */ }
                                 data.playlists?.items?.let { allItems.addAll(it) }
                                 data.tracks?.items?.let { allItems.addAll(it) }
                                 data.episodes?.items?.let {/*
@@ -250,7 +243,7 @@ fun SearcherPageImpl(
                                                 songName = track.name,
                                                 artists = artists.joinToString(", "),
                                                 spotifyUrl = track.externalUrls.spotify ?: "",
-                                                onClick = { onItemClick(track.type ,track.id) },
+                                                onClick = { onItemClick(track.type, track.id) },
                                                 type = typeOfDataToString(
                                                     type = typeOfSpotifyDataType(
                                                         track.type
@@ -272,7 +265,12 @@ fun SearcherPageImpl(
                                                 artists = playlist.owner.displayName
                                                     ?: stringResource(R.string.unknown),
                                                 spotifyUrl = playlist.externalUrls.spotify ?: "",
-                                                onClick = { onItemClick(playlist.type ,playlist.id) },
+                                                onClick = {
+                                                    onItemClick(
+                                                        playlist.type,
+                                                        playlist.id
+                                                    )
+                                                },
                                                 type = typeOfDataToString(
                                                     type = typeOfSpotifyDataType(
                                                         playlist.type

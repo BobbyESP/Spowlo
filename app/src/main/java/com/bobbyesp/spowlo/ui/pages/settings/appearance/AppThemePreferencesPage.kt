@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -45,7 +46,7 @@ fun AppThemePreferencesPage(onBackPressed: () -> Unit) {
                 title = {
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
-                        text = stringResource(R.string.dark_theme),
+                        text = stringResource(R.string.dark_theme), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton() {

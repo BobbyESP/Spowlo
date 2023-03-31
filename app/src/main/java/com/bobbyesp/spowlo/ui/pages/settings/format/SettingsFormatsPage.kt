@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
@@ -57,7 +58,7 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.format),
+                        text = stringResource(id = R.string.format), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {

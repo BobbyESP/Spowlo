@@ -88,6 +88,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.documentation.DocumentationPage
+import com.bobbyesp.spowlo.ui.pages.settings.downloader.DownloaderSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
@@ -343,6 +344,11 @@ fun InitialEntry(
                                 onBackPressed()
                             }
                         }
+                        animatedComposable(Route.DOWNLOADER_SETTINGS) {
+                            DownloaderSettingsPage {
+                                onBackPressed()
+                            }
+                        }
                         slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
                             PlaylistMetadataPage(
                                 onBackPressed,
@@ -489,6 +495,7 @@ fun InitialEntry(
                                 onBackPressed,
                                 id = id,
                                 type = type,
+                                playlistPageViewModel = playlistPageViewModel,
                             )
                         }
                     }
@@ -526,22 +533,12 @@ fun InitialEntry(
         }.onFailure {
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
-        }.onSuccess {
-            val req = SpotifyApiRequests.provideSearchAllTypes("Faded Alan Walker")
-            Log.d("InitialEntry", "Name:" + req.tracks!![0].name)
-            Log.d("InitialEntry", "Artist:" + req.tracks!![0].artists[0].name)
-            Log.d("InitialEntry", "Album:" + req.tracks!![0].album.name)
-            Log.d("InitialEntry", "Album Image:" + req.tracks!![0].album.images[0].url)
-            Log.d("InitialEntry", "Duration:" + req.tracks!![0].durationMs)
-            Log.d("InitialEntry", "Popularity:" + req.tracks!![0].popularity)
-            Log.d("InitialEntry", "-------------------------------------------")
-            Log.d("InitialEntry", "Full response: $req")
         }
     }
 
 
     LaunchedEffect(Unit) {
-        if (PreferencesUtil.isNetworkAvailableForDownload()) launch(Dispatchers.IO) {
+        if (PreferencesUtil.isNetworkAvailable()) launch(Dispatchers.IO) {
             runCatching {
                 UpdateUtil.checkForUpdate()?.let {
                     latestRelease = it
@@ -559,7 +556,7 @@ fun InitialEntry(
 
     LaunchedEffect(Unit) {
         Log.d(TAG, "InitialEntry: Checking for mod updates")
-        if (PreferencesUtil.isNetworkAvailableForDownload()) ModsDownloaderAPI.getAPIResponse()
+        if (PreferencesUtil.isNetworkAvailable()) ModsDownloaderAPI.getAPIResponse()
             .onSuccess {
                 Log.d(TAG, "InitialEntry: Mods API call success")
                 modsDownloaderViewModel.updateApiResponse(it)

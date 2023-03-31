@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.booleanState
@@ -77,7 +78,7 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
         LargeTopAppBar(title = {
             Text(
                 modifier = Modifier,
-                text = stringResource(id = R.string.auto_update),
+                text = stringResource(id = R.string.auto_update), fontWeight = FontWeight.Bold
             )
         }, navigationIcon = {
             BackButton {

@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.packageInfo
@@ -69,6 +70,7 @@ fun AboutPage(onBackPressed: () -> Unit) {
                     Text(
                         modifier = Modifier,
                         text = stringResource(id = R.string.about),
+                        fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {

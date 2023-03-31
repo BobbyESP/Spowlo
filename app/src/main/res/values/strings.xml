@@ -37,7 +37,7 @@
     <string name="url_query_spotify">Spotify URL or query</string>
     <string name="battery_configuration_desc">Activate the usage of the app in background to make sure that all works fine.</string>
     <string name="battery_configuration">Battery configuration</string>
-    <string name="general_settings">General</string>
+    <string name="general">General</string>
     <string name="appearance">Appearance</string>
     <string name="appearance_settings">Change how the app looks like</string>
     <string name="about">About</string>
@@ -308,4 +308,13 @@
     <string name="followers">Followers</string>
     <string name="no_running_downloads_description">Here will appear all the downloads that you make from the searcher page.</string>
     <string name="log_copied">The log has been copied to the clipboard</string>
+    <string name="advanced_features">Advanced features</string>
+    <string name="downloader_settings_desc">Change more advanced settings of spotDL and parallel downloads</string>
+    <string name="general_settings">General settings</string>
+    <string name="use_notifications">Use notifications</string>
+    <string name="use_notifications_desc">Pop up notifications with the actual downloads progress</string>
+    <string name="agree">Agree</string>
+    <string name="spotify_api_info">Spotify API</string>
+    <string name="spotify_api_info_description">This Spotify credentials can be used for having more closer and precise results to the songs requested in the main downloader page of the app. \n\nThis doesn\'t make effect on the searcher page because the app already uses extended-quota API credentials provided by Spotify.</string>
+    <string name="parallel_download">Parallel download</string>
 </resources>

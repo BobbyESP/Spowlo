@@ -200,30 +200,69 @@ object Downloader {
             taskName = name
         ).run {
             mutableTaskList.put(this.toKey(), this)
+
+            val key = makeKey(url, url.reversed())
+            NotificationsUtil.notifyProgress(
+                name + " - " + context.getString(R.string.parallel_download),
+                notificationId = key.toNotificationId(),
+                progress = (state as DownloadTask.State.Running).progress.toInt(),
+                text = currentLine
+            )
         }
 
-    fun updateTaskOutput(url: String, line: String, progress: Float) {
+    fun updateTaskOutput(url: String, line: String, progress: Float, isPlaylist: Boolean = false) {
         val key = makeKey(url, url.reversed())
         val oldValue = mutableTaskList[key] ?: return
         val newValue = oldValue.run {
             if (currentLine == line || line.containsEllipsis() || consoleOutput.contains(line)) return
-            copy(
-                consoleOutput = consoleOutput + line + "\n",
-                currentLine = line,
-                state = DownloadTask.State.Running(progress)
-            )
+            when(isPlaylist) {
+                true -> {
+                    copy(
+                        consoleOutput = consoleOutput + line + "\n",
+                        currentLine = line,
+                        state = DownloadTask.State.Running(
+                            if (line.contains("Total")) {
+                                getProgress(line)
+                            } else {
+                                (state as DownloadTask.State.Running).progress
+                            }
+                        )
+                    )
+
+                }
+                false -> {
+                    copy(
+                        consoleOutput = consoleOutput + line + "\n",
+                        currentLine = line,
+                        state = DownloadTask.State.Running(progress)
+                    )
+                }
+            }
         }
         mutableTaskList[key] = newValue
     }
 
+    private fun getProgress(line: String): Float{
+        val PERCENT: Float
+        //Get the two numbers before an % in the line
+        val regex = Regex("(\\d+)%")
+        val matchResult = regex.find(line)
+        //Log the result
+        ///if (BuildConfig.DEBUG) Log.d(TAG, "Progress: ${matchResult?.groupValues?.get(1)?.toFloat() ?: 0f}")
+        PERCENT = matchResult?.groupValues?.get(1)?.toFloat() ?: 0f
+        //divide percent by 100 to get a value between 0 and 1
+        return PERCENT / 100f
+    }
+
     fun onTaskEnded(
         url: String,
-        response: String? = null
+        response: String? = null,
+        notificationTitle : String? = null
     ) {
         val key = makeKey(url, url.reversed())
         NotificationsUtil.finishNotification(
             notificationId = key.toNotificationId(),
-            title = key,
+            title = notificationTitle,
             text = context.getString(R.string.status_completed),
         )
         mutableTaskList.run {

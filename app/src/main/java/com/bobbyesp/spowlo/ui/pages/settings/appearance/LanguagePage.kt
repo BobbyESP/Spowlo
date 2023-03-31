@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
@@ -63,7 +64,7 @@ fun LanguagePage(onBackPressed: () -> Unit) {
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.language),
+                        text = stringResource(id = R.string.language), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {

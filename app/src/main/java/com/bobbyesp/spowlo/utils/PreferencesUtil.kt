@@ -218,6 +218,9 @@ object PreferencesUtil {
     fun isNetworkAvailableForDownload() =
         !App.connectivityManager.isActiveNetworkMetered //CELLULAR_DOWNLOAD.getBoolean() ||
 
+    //check if the phone is connected to a network source (wifi or mobile data)
+    fun isNetworkAvailable() = App.connectivityManager.activeNetworkInfo?.isConnected == true
+
     fun isAutoUpdateEnabled() = AUTO_UPDATE.getBoolean(!isFDroidBuild())
 
 

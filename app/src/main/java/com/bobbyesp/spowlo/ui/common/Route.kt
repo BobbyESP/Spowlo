@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.common
 
 object Route {
 
+    const val DOWNLOADER_SETTINGS = "downloader_settings"
     const val DOWNLOADER_SHEET = "downloader_sheet"
     const val NavGraph = "nav_graph"
     const val SearcherNavi = "searcher_navi"

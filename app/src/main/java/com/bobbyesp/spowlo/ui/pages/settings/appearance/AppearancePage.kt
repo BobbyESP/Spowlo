@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bobbyesp.library.dto.Song
@@ -132,7 +133,7 @@ fun AppearancePage(
             LargeTopAppBar(title = {
                 Text(
                     modifier = Modifier,
-                    text = stringResource(id = R.string.display),
+                    text = stringResource(id = R.string.display), fontWeight = FontWeight.Bold
                 )
             }, navigationIcon = {
                 BackButton {

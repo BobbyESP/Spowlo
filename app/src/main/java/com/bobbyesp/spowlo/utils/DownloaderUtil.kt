@@ -15,6 +15,7 @@ import com.bobbyesp.spowlo.Downloader.onProcessStarted
 import com.bobbyesp.spowlo.Downloader.onTaskEnded
 import com.bobbyesp.spowlo.Downloader.onTaskError
 import com.bobbyesp.spowlo.Downloader.onTaskStarted
+import com.bobbyesp.spowlo.Downloader.toNotificationId
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.Cookie
@@ -389,7 +390,7 @@ object DownloaderUtil {
         }
     }
 
-    fun createIntFromString(string: String): Int {
+    private fun createIntFromString(string: String): Int {
         var int = 0
         for (i in string.indices) {
             int += string[i].code
@@ -399,7 +400,7 @@ object DownloaderUtil {
 
 
     fun executeParallelDownload(url: String, name: String) {
-        val taskId = Downloader.makeKey(url = url, additionalString = url.reversed())
+        val taskId = Downloader.makeKey(url, url.reversed())
         ToastUtil.makeToastSuspend(context.getString(R.string.download_started_msg))
 
         val pathBuilder = StringBuilder()
@@ -408,18 +409,29 @@ object DownloaderUtil {
             addOption("--threads", downloadPreferences.threads.toString())
         }
 
+        val isPlaylist = url.contains("playlist")
+
         onProcessStarted()
         onTaskStarted(url, name)
         kotlin.runCatching {
-            val response = SpotDL.getInstance().execute(request = request, processId = taskId, forceProcessDestroy = true, callback =  { progress, _, text ->
-                //Log.d(TAG, "executeParallelDownload: $progress $text")
-                Downloader.updateTaskOutput(
-                    url = url, line = text, progress = progress
-                )
-            } )
+            val response = SpotDL.getInstance().execute(
+                request = request,
+                processId = taskId,
+                forceProcessDestroy = true,
+                callback = { progress, _, text ->
+                    NotificationsUtil.notifyProgress(
+                        name + " - " + context.getString(R.string.parallel_download),
+                        notificationId = taskId.toNotificationId(),
+                        progress = progress.toInt(),
+                        text = text
+                    )
+                    Downloader.updateTaskOutput(
+                        url = url, line = text, progress = progress, isPlaylist = isPlaylist
+                    )
+                })
             //clear all the lines that contains a "…" on it
             val finalResponse = removeDuplicateLines(clearLinesWithEllipsis(response.output))
-            onTaskEnded(url, finalResponse)
+            onTaskEnded(url, finalResponse, name)
         }.onFailure {
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.download_error_msg))

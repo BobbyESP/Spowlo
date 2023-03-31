@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.dp
@@ -109,7 +110,7 @@ fun CookieProfilePage(
             LargeTopAppBar(title = {
                 Text(
                     modifier = Modifier,
-                    text = stringResource(id = R.string.cookies),
+                    text = stringResource(id = R.string.cookies), fontWeight = FontWeight.Bold
                 )
             }, navigationIcon = {
                 BackButton {

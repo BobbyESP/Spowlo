@@ -199,7 +199,8 @@ fun DownloaderPage(
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
         with(viewState) {
-            DownloaderSettingsDialog(useDialog = useDialog,
+            DownloaderSettingsDialog(
+                useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
                 confirm = { checkPermissionOrDownload() },

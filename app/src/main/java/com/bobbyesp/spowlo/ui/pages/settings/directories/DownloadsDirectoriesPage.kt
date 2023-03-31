@@ -27,12 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
-import com.bobbyesp.spowlo.utils.CUSTOM_PATH
-import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.SUBDIRECTORY
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +34,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
@@ -49,14 +47,16 @@ import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
-import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitchWithDivider
 import com.bobbyesp.spowlo.ui.components.PreferencesHintCard
 import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
+import com.bobbyesp.spowlo.utils.CUSTOM_PATH
 import com.bobbyesp.spowlo.utils.FilesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.SDCARD_DOWNLOAD
 import com.bobbyesp.spowlo.utils.SDCARD_URI
+import com.bobbyesp.spowlo.utils.SUBDIRECTORY
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -166,7 +166,7 @@ fun DownloadsDirectoriesPage(
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.download_directory),
+                        text = stringResource(id = R.string.download_directory), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {
@@ -200,7 +200,7 @@ fun DownloadsDirectoriesPage(
                     }
                 item {
                     Text(
-                        text = stringResource(id = R.string.general_settings),
+                        text = stringResource(id = R.string.general),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 18.dp, top = 12.dp, bottom = 4.dp),
