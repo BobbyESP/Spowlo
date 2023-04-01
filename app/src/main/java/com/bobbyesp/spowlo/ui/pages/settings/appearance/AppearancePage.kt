@@ -64,10 +64,10 @@ import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
-import com.bobbyesp.spowlo.ui.components.PreferenceItem
-import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
-import com.bobbyesp.spowlo.ui.components.PreferenceSwitchWithDivider
 import com.bobbyesp.spowlo.ui.components.SingleChoiceItem
+import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
+import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
+import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitchWithDivider
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.DarkThemePreference.Companion.FOLLOW_SYSTEM
@@ -147,6 +147,7 @@ fun AppearancePage(
             Column(
                 Modifier
                     .padding(it)
+                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 SongCard(
@@ -167,7 +168,7 @@ fun AppearancePage(
                         .clearAndSetSemantics { },
                     state = pagerState,
                     pageCount = colorList.size,
-                    contentPadding = PaddingValues(horizontal = 12.dp)
+                    contentPadding = PaddingValues(horizontal = 6.dp)
                 ) {
                     Row { ColorButtons(colorList[it]) }
                 }
@@ -183,34 +184,57 @@ fun AppearancePage(
                     indicatorWidth = 6.dp)
 
                 if (DynamicColors.isDynamicColorAvailable()) {
-                    PreferenceSwitch(title = stringResource(id = R.string.dynamic_color),
-                        description = stringResource(
-                            id = R.string.dynamic_color_desc
-                        ),
+                    SettingsSwitch(
+                        title = {
+                            Text(
+                                stringResource(id = R.string.dynamic_color),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        description = {
+                            Text(
+                                stringResource(id = R.string.dynamic_color_desc)
+                            )
+                        },
                         icon = Icons.Outlined.Palette,
-                        isChecked = LocalDynamicColorSwitch.current,
-                        onClick = {
+                        checked = LocalDynamicColorSwitch.current,
+                        onCheckedChange = {
                             PreferencesUtil.switchDynamicColor()
-                        })
+                        }, modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)))
                 }
                 val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
-                PreferenceSwitchWithDivider(title = stringResource(id = R.string.dark_theme),
-                    icon = Icons.Outlined.DarkMode,
-                    isChecked = isDarkTheme,
-                    description = LocalDarkTheme.current.getDarkThemeDesc(),
-                    onChecked = { PreferencesUtil.modifyDarkThemePreference(if (isDarkTheme) OFF else ON) },
+                SettingsSwitchWithDivider(
+                    onCheckedChange = {
+                        PreferencesUtil.modifyDarkThemePreference(
+                            if (isDarkTheme) OFF else ON
+                        )
+                    }, checked = isDarkTheme,
+                    title = {
+                        Text(
+                            stringResource(id = R.string.dark_theme), fontWeight = FontWeight.Bold
+                        )
+                    },
+                    description = {
+                        Text(
+                            LocalDarkTheme.current.getDarkThemeDesc()
+                        )
+                    }, icon = Icons.Outlined.DarkMode,
                     onClick = { navController.navigate(Route.APP_THEME) })
-                if (Build.VERSION.SDK_INT >= 24) PreferenceItem(
-                    title = stringResource(R.string.language),
+
+                if (Build.VERSION.SDK_INT >= 24) SettingsItemNew(
+                    title = { Text(text = stringResource(R.string.language), fontWeight = FontWeight.Bold) },
                     icon = Icons.Outlined.Language,
-                    description = getLanguageDesc()
-                ) { navController.navigate(Route.LANGUAGES) }
+                    description = {Text(getLanguageDesc())},
+                    onClick ={ navController.navigate(Route.LANGUAGES) },
+                    modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                )
             }
         })
-    if (showDarkThemeDialog) AlertDialog(onDismissRequest = {
-        showDarkThemeDialog = false
-        darkThemeValue = darkTheme.darkThemeValue
-    },
+    if (showDarkThemeDialog) AlertDialog(
+        onDismissRequest = {
+            showDarkThemeDialog = false
+            darkThemeValue = darkTheme.darkThemeValue
+        },
         confirmButton = {
             ConfirmButton {
                 showDarkThemeDialog = false

@@ -5,7 +5,6 @@ import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Album
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.AudioFeatures
-import com.adamratzman.spotify.models.PagingObject
 import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.SpotifyPublicUser
 import com.adamratzman.spotify.models.SpotifySearchResult
@@ -87,7 +86,7 @@ object SpotifyApiRequests {
 
     private suspend fun searchTracks(searchQuery: String): List<Track> {
         kotlin.runCatching {
-            provideSpotifyApi().search.searchTrack(searchQuery, limit = 50, offset = 1, market = Market.ES)
+            provideSpotifyApi().search.searchTrack(searchQuery, limit = 50)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return listOf()
@@ -103,27 +102,10 @@ object SpotifyApiRequests {
         return searchTracks(query)
     }
 
-    suspend fun searchTracksForPaging(searchQuery: String, nextPageNumber: Int): PagingObject<Track>? {
-        kotlin.runCatching {
-            provideSpotifyApi().search.searchTrack(searchQuery, limit = 50, offset = nextPageNumber, market = Market.ES)
-        }.onFailure {
-            Log.d("SpotifyApiRequests", "Error: ${it.message}")
-        }.onSuccess {
-            return it
-        }
-        return null
-    }
-
-    @Provides
-    @Singleton
-    suspend fun provideSearchTracksForPaging(query: String, nextPageNumber: Int): PagingObject<Track>? {
-        return searchTracksForPaging(query, nextPageNumber)
-    }
-
     //search by id
     suspend fun getPlaylistById(id: String): Playlist? {
         kotlin.runCatching {
-            provideSpotifyApi().playlists.getPlaylist(id, market = Market.ES)
+            provideSpotifyApi().playlists.getPlaylist(id)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return null
@@ -142,7 +124,7 @@ object SpotifyApiRequests {
 
     suspend fun getTrackById(id: String): Track? {
         kotlin.runCatching {
-            provideSpotifyApi().tracks.getTrack(id, market = Market.ES)
+            provideSpotifyApi().tracks.getTrack(id)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return null
@@ -178,7 +160,7 @@ object SpotifyApiRequests {
 
     suspend fun getAlbumById(id: String): Album? {
         kotlin.runCatching {
-            provideSpotifyApi().albums.getAlbum(id, market = Market.ES)
+            provideSpotifyApi().albums.getAlbum(id)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return null

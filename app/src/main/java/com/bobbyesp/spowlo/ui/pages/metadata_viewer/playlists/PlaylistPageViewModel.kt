@@ -20,6 +20,12 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
     )
 
     suspend fun loadData(id: String, type: SpotifyDataType = SpotifyDataType.TRACK) {
+        mutableViewStateFlow.update {
+            it.copy(
+                id = id,
+                state = PlaylistDataState.Loading
+            )
+        }
         when (type) {
             SpotifyDataType.TRACK -> {
                 kotlin.runCatching {

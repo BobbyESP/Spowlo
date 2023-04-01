@@ -5,7 +5,7 @@
     <string name="audio">Sonido</string>
     <string name="check_for_updates">Buscar actualizaciones</string>
     <string name="artist">Artista</string>
-    <string name="audio_provider_desc">Cambia donde quieres descargar las canciones</string>
+    <string name="audio_provider_desc">Cambia desde donde quieres descargar las canciones</string>
     <string name="album">Álbum</string>
     <string name="amoled_cloned">Mod AMOLED clonado</string>
     <string name="amoled">Mod AMOLED</string>
@@ -22,7 +22,7 @@
     <string name="regular_cloned_description">Un mod de Spotify normal con saltos ilimitados, escucha en demanda, libre de anuncios y con las últimas funciones pero clonado. Esto significa que se instalará como una aplicación aparte de la original, podiendo tener ambas instaladas a la vez.</string>
     <string name="audio_provider">Proveedor de audio</string>
     <string name="audio_quality">Calidad de sonido</string>
-    <string name="api_call_failed">La llamada a la API de los Mods no fue bien...</string>
+    <string name="api_call_failed">La llamada a la API de los Mods no fue bien…</string>
     <string name="cancel_download">Cancelar descarga</string>
     <string name="check_source_code">Mira el código fuente de Spowlo en GitHub!</string>
     <string name="appearance_settings">Cambia como se ve la aplicación</string>

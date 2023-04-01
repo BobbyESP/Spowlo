@@ -2,7 +2,9 @@ package com.bobbyesp.spowlo.ui.components.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -14,7 +16,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -126,6 +132,41 @@ fun SettingsSwitch(
         addTonalElevation = addTonalElevation,
         clipCorners = clipCorners,
         highlightIcon = highlightIcon
+    )
+}
+
+@Composable
+fun SettingsNewSingleChoiceItem(
+    modifier: Modifier = Modifier,
+    text: String,
+    selected: Boolean,
+    wantsTonalElevation: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    onClick: () -> Unit,
+) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = text,
+                maxLines = 1,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        trailingContent = {
+            RadioButton(
+                selected = selected,
+                onClick = onClick
+            )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics { }
+            .clickable(
+                onClick = onClick,
+            )
+            .padding(contentPadding)
+            .then(modifier),
+        tonalElevation = if (wantsTonalElevation) 3.dp else 0.dp,
     )
 }
 

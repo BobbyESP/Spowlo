@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.searcher
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.adamratzman.spotify.models.SpotifySearchResult
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
@@ -42,7 +41,6 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
             mutableViewStateFlow.update { viewState ->
                 viewState.copy(viewState = ViewSearchState.Success(result))
             }
-            Log.d("SearcherPageViewModel", "makeSearch: $result")
         }.onFailure {
             mutableViewStateFlow.update { viewState ->
                 viewState.copy(viewState = ViewSearchState.Error(it.message.toString()))

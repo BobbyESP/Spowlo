@@ -96,7 +96,7 @@ object Downloader {
 
         fun onRestart() {
             applicationScope.launch(Dispatchers.IO) {
-                getInfoAndDownload(url, skipInfoFetch = true)
+                executeParallelDownloadWithUrl(url, name = taskName)
             }
         }
 

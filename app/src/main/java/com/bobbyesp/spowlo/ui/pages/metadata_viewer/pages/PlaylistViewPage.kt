@@ -109,26 +109,28 @@ fun PlaylistViewPage(
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )
             }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(12.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                FilledTonalIconButton(
-                    onClick = {
-                    trackDownloadCallback(data.externalUrls.spotify!!, data.name)
-                },
-                    modifier = Modifier.size(48.dp),
+            if(data.externalUrls.spotify != null){
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Download,
-                        contentDescription = "Download full playlist icon",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(14.dp)
-                    )
-                }
+                    FilledTonalIconButton(
+                        onClick = {
+                            trackDownloadCallback(data.externalUrls.spotify!!, data.name)
+                        },
+                        modifier = Modifier.size(48.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Download,
+                            contentDescription = "Download full playlist icon",
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(14.dp)
+                        )
+                    }
 
+                }
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Column(
@@ -142,9 +144,13 @@ fun PlaylistViewPage(
                         contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         songName = actualTrack?.name ?: App.context.getString(R.string.unknown),
                         artists = actualTrack?.artists?.joinToString(", ") { it.name } ?: "",
-                        spotifyUrl = actualTrack?.externalUrls?.spotify!!,
-                        isExplicit = actualTrack.explicit,
-                        onClick = { trackDownloadCallback(actualTrack.externalUrls.spotify!!, taskName) }
+                        spotifyUrl = actualTrack?.externalUrls?.spotify ?: "",
+                        isExplicit = actualTrack?.explicit ?: false,
+                        onClick = {
+                            if (actualTrack != null) {
+                                trackDownloadCallback(actualTrack.externalUrls.spotify!!, taskName)
+                            }
+                        }
                     )
                 }
             }

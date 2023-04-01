@@ -1,10 +1,11 @@
 package com.bobbyesp.spowlo.ui.pages.settings.appearance
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -28,8 +30,8 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.components.BackButton
-import com.bobbyesp.spowlo.ui.components.PreferenceSingleChoiceItem
 import com.bobbyesp.spowlo.ui.components.PreferencesHintCard
+import com.bobbyesp.spowlo.ui.components.settings.SettingsNewSingleChoiceItem
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.LANGUAGE
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -76,6 +78,7 @@ fun LanguagePage(onBackPressed: () -> Unit) {
             LazyColumn(
                 modifier = Modifier
                     .padding(it)
+                    .padding(horizontal = 16.dp)
                     .selectableGroup()
             ) {
                 item {
@@ -87,18 +90,37 @@ fun LanguagePage(onBackPressed: () -> Unit) {
                     ) { ChromeCustomTabsUtil.openUrl(spowloWeblateUrl) }
                 }
                 item {
-                    PreferenceSingleChoiceItem(
-                        text = stringResource(R.string.follow_system),
-                        selected = language == SYSTEM_DEFAULT,
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 18.dp)
-                    ) { setLanguage(SYSTEM_DEFAULT) }
+                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                        SettingsNewSingleChoiceItem(
+                            text = stringResource(R.string.follow_system),
+                            selected = language == SYSTEM_DEFAULT,
+                            modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                        ) { setLanguage(SYSTEM_DEFAULT) }
+                    }
+
                 }
-                for (languageData in languageMap) {
+                for ((index, languageData) in languageMap.entries.withIndex()) {
                     item {
-                        PreferenceSingleChoiceItem(
+                        SettingsNewSingleChoiceItem(
                             text = getLanguageDesc(languageData.key),
                             selected = language == languageData.key,
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 18.dp)
+                            modifier = when (index) {
+                                0 -> Modifier.clip(
+                                    RoundedCornerShape(
+                                        topStart = 8.dp,
+                                        topEnd = 8.dp
+                                    )
+                                )
+
+                                languageMap.size - 1 -> Modifier.clip(
+                                    RoundedCornerShape(
+                                        bottomStart = 8.dp,
+                                        bottomEnd = 8.dp
+                                    )
+                                )
+
+                                else -> Modifier
+                            }
                         ) { setLanguage(languageData.key) }
                     }
                 }
