@@ -28,7 +28,6 @@ import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
-import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 
@@ -67,11 +66,6 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                 }, scrollBehavior = scrollBehavior
             )
         }, content = {
-            val isCustomCommandEnabled by remember {
-                mutableStateOf(
-                    PreferencesUtil.getValue(CUSTOM_COMMAND)
-                )
-            }
             LazyColumn(Modifier.padding(it)) {
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.audio))
@@ -109,7 +103,6 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                         title = stringResource(R.string.audio_provider),
                         description = stringResource(R.string.audio_provider_desc),
                         icon = Icons.Outlined.ShuffleOn,
-                        enabled = !isCustomCommandEnabled,
                     ) { showAudioProviderDialog = true }
                 }
             }

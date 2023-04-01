@@ -109,12 +109,16 @@ fun PlaylistViewPage(
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )
             }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 FilledTonalIconButton(
                     onClick = {
                     trackDownloadCallback(data.externalUrls.spotify!!, data.name)
                 },
-                    modifier = Modifier.size(48.dp).padding(12.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Download,

@@ -20,6 +20,7 @@ import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DownloaderUtil
+import com.bobbyesp.spowlo.utils.EXTRA_DIRECTORY
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
@@ -74,6 +75,9 @@ class App : Application() {
                 getString(R.string.app_name)
             ).absolutePath
         )
+        extraDownloadDir = EXTRA_DIRECTORY.getString(
+            ""
+        )
         if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
     }
 
@@ -81,6 +85,7 @@ class App : Application() {
         private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
+        lateinit var extraDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo

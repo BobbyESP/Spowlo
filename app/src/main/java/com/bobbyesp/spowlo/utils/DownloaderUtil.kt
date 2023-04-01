@@ -49,9 +49,7 @@ object DownloaderUtil {
 
     data class DownloadPreferences(
         val downloadPlaylist: Boolean = PreferencesUtil.getValue(PLAYLIST),
-        val subdirectory: Boolean = PreferencesUtil.getValue(SUBDIRECTORY),
         val customPath: Boolean = PreferencesUtil.getValue(CUSTOM_PATH),
-        val outputPathTemplate: String = PreferencesUtil.getOutputPathTemplate(),
         val maxFileSize: String = MAX_FILE_SIZE.getString(),
         val cookies: Boolean = PreferencesUtil.getValue(COOKIES),
         val cookiesContent: String = PreferencesUtil.getCookies(),
@@ -71,6 +69,7 @@ object DownloaderUtil {
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
         val sdcardUri: String = SDCARD_URI.getString(),
+        val extraDirectory: String = PreferencesUtil.getExtraDirectory(),
         val threads: Int = THREADS.getInt()
     )
 
@@ -233,6 +232,11 @@ object DownloaderUtil {
                 addOption("download", url)
 
                 pathBuilder.append(audioDownloadDir)
+
+                if (extraDirectory.isNotEmpty()) {
+                    pathBuilder.append("/").append(extraDirectory)
+                }
+
                 Log.d(TAG, "downloadSong: $pathBuilder")
 
                 addOption("--output", pathBuilder.toString())

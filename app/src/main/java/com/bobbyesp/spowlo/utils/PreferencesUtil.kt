@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-const val CUSTOM_COMMAND = "custom_command"
 const val SPOTDL = "spotDL_Init"
 const val DEBUG = "debug"
 const val CONFIGURE = "configure"
@@ -37,17 +36,16 @@ const val AUDIO_FORMAT = "audio_format"
 const val AUDIO_QUALITY = "audio_quality"
 const val WELCOME_DIALOG = "welcome_dialog"
 const val AUDIO_DIRECTORY = "audio_dir"
+const val EXTRA_DIRECTORY = "extra_dir"
 const val ORIGINAL_AUDIO = "original_audio"
 const val SDCARD_DOWNLOAD = "sdcard_download"
 const val SDCARD_URI = "sd_card_uri"
-const val SUBDIRECTORY = "sub-directory"
 const val PLAYLIST = "playlist"
 const val LANGUAGE = "language"
 const val NOTIFICATION = "notification"
 private const val THEME_COLOR = "theme_color"
 const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
-const val OUTPUT_PATH_TEMPLATE = "path_template"
 
 const val USE_YT_METADATA = "use_yt_metadata"
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
@@ -82,11 +80,9 @@ const val SYSTEM_DEFAULT = 0
 const val STABLE = 0
 const val PRE_RELEASE = 1
 
-const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results"""
-
 private val StringPreferenceDefaults =
     mapOf(
-        OUTPUT_PATH_TEMPLATE to "{artists} - {title}.{output-ext}",
+        EXTRA_DIRECTORY to "",
         SPOTIFY_CLIENT_ID to "",
         SPOTIFY_CLIENT_SECRET to "",
     )
@@ -152,7 +148,7 @@ object PreferencesUtil {
     fun encodeString(key: String, string: String) = key.updateString(string)
     fun containsKey(key: String) = kv.containsKey(key)
 
-    fun getOutputPathTemplate(): String = OUTPUT_PATH_TEMPLATE.getString()
+    fun getExtraDirectory(): String = EXTRA_DIRECTORY.getString()
 
     fun getAudioFormat(): Int = AUDIO_FORMAT.getInt()
 
