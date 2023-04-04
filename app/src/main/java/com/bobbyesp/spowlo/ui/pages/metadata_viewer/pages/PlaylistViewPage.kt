@@ -46,13 +46,15 @@ fun PlaylistViewPage(
     val localConfig = LocalConfiguration.current
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top
     ) {
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.extraSmall)
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 6.dp), contentAlignment = Alignment.Center
+                .padding(bottom = 6.dp),
+            contentAlignment = Alignment.Center
         ) {
             //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
             val size = (localConfig.screenHeightDp / 3)
@@ -94,7 +96,8 @@ fun PlaylistViewPage(
             SelectionContainer {
                 Text(
                     text = dataStringToString(
-                        data = data.type, additional = data.followers.total.toString() + " " + App.context.getString(R.string.followers)
+                        data = data.type,
+                        additional = data.followers.total.toString() + " " + App.context.getString(R.string.followers)
                             .lowercase()
                     ),
                     style = MaterialTheme.typography.bodySmall,
@@ -109,9 +112,11 @@ fun PlaylistViewPage(
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )
             }
-            if(data.externalUrls.spotify != null){
+            if (data.externalUrls.spotify != null) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -132,30 +137,47 @@ fun PlaylistViewPage(
 
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                //for every track in the playlist, show the track name and the artist name
-                data.tracks.items.forEach { track ->
-                    val actualTrack = track.track?.asTrack
-                    val taskName = StringBuilder().append(actualTrack?.name).append(" - ").append(actualTrack?.artists?.joinToString(", ") { it.name }).toString()
-                    TrackComponent(
-                        contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        songName = actualTrack?.name ?: App.context.getString(R.string.unknown),
-                        artists = actualTrack?.artists?.joinToString(", ") { it.name } ?: "",
-                        spotifyUrl = actualTrack?.externalUrls?.spotify ?: "",
-                        isExplicit = actualTrack?.explicit ?: false,
-                        isPlaylist = true,
-                        imageUrl = actualTrack?.album?.images?.get(0)?.url ?: "",
-                        onClick = {
-                            if (actualTrack != null) {
-                                trackDownloadCallback(actualTrack.externalUrls.spotify!!, taskName)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+            if (data.tracks.size > 0) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    //for every track in the playlist, show the track name and the artist name
+                    data.tracks.items.forEach { track ->
+                        val actualTrack = track.track?.asTrack
+                        val taskName = StringBuilder().append(actualTrack?.name).append(" - ")
+                            .append(actualTrack?.artists?.joinToString(", ") { it.name }).toString()
+                        TrackComponent(
+                            contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            songName = actualTrack?.name ?: App.context.getString(R.string.unknown),
+                            artists = actualTrack?.artists?.joinToString(", ") { it.name } ?: "",
+                            spotifyUrl = actualTrack?.externalUrls?.spotify ?: "",
+                            isExplicit = actualTrack?.explicit ?: false,
+                            isPlaylist = true,
+                            imageUrl = actualTrack?.album?.images?.getOrNull(0)?.url ?: "",
+                            onClick = {
+                                if (actualTrack != null) {
+                                    trackDownloadCallback(
+                                        actualTrack.externalUrls.spotify!!,
+                                        taskName
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+/*@ExperimentalSerializationApi
+object PlaylistSaver : Saver<Playlist?, String> {
+    override fun restore(value: String): Playlist? {
+        return Json.decodeFromString(value)
+    }
+
+    override fun SaverScope.save(value: Playlist?): String {
+        return Json.encodeToString(value)
+    }
+}*/

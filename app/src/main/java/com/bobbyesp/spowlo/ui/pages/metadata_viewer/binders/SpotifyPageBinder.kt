@@ -1,8 +1,11 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Album
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.Playlist
@@ -18,39 +21,48 @@ fun SpotifyPageBinder(
     data: Any,
     type: SpotifyDataType,
     modifier: Modifier = Modifier,
-    trackDownloadCallback : (String, String) -> Unit,
+    trackDownloadCallback: (String, String) -> Unit,
 ) {
-    Column(modifier = modifier) {
+
+    LazyColumn(modifier = modifier.padding(top = 6.dp), verticalArrangement = Arrangement.Top) {
+
         when (type) {
             SpotifyDataType.ALBUM -> {
                 val album = data as? Album
-                album?.let {
-                    AlbumPage(album, modifier)
+                item {
+                    album?.let {
+                        AlbumPage(album, modifier, trackDownloadCallback)
+                    }
                 }
             }
 
             SpotifyDataType.ARTIST -> {
                 val artist = data as? Artist
-                artist?.let {
-                    ArtistPage(artist, modifier)
+                item {
+                    artist?.let {
+                        ArtistPage(artist, modifier)
+                    }
                 }
             }
 
             SpotifyDataType.PLAYLIST -> {
                 val playlist = data as? Playlist
-                playlist?.let {
-                    PlaylistViewPage(playlist, modifier, trackDownloadCallback)
+                item {
+                    playlist?.let {
+                        PlaylistViewPage(playlist, modifier, trackDownloadCallback)
+                    }
                 }
+
             }
 
             SpotifyDataType.TRACK -> {
                 val track = data as? Track
-                track?.let {
-                    TrackPage(track,modifier,trackDownloadCallback)
+                item {
+                    track?.let {
+                        TrackPage(track, modifier, trackDownloadCallback)
+                    }
                 }
             }
         }
     }
 }
-
-//data-type to SpotifyDataType

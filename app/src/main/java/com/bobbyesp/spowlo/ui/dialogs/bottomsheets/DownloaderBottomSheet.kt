@@ -361,6 +361,28 @@ fun DownloaderBottomSheet(
                             .fillMaxWidth()
                             .padding(6.dp)
                     ) {
+                        DrawerSheetSubtitle(text = stringResource(id = R.string.general))
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                        ) {
+                            AudioFilterChip(label = stringResource(id = R.string.use_cache),
+                                animated = true,
+                                selected = useCaching,
+                                onClick = {
+                                    useCaching = !useCaching
+                                    scope.launch {
+                                        settings.updateValue(USE_CACHING, useCaching)
+                                    }
+                                })
+
+                        }
+
                         DrawerSheetSubtitle(text = stringResource(id = R.string.experimental_features))
                         Row(
                             modifier = Modifier
@@ -389,17 +411,6 @@ fun DownloaderBottomSheet(
                                         settings.updateValue(GEO_BYPASS, useGeoBypass)
                                     }
                                 })
-
-                            AudioFilterChip(label = stringResource(id = R.string.use_cache),
-                                animated = true,
-                                selected = useCaching,
-                                onClick = {
-                                    useCaching = !useCaching
-                                    scope.launch {
-                                        settings.updateValue(USE_CACHING, useCaching)
-                                    }
-                                })
-
                             AudioFilterChip(label = stringResource(id = R.string.dont_filter_results),
                                 selected = dontFilter,
                                 animated = true,
@@ -514,7 +525,7 @@ fun DownloaderBottomSheet(
 object BottomSheetPages {
     val MAIN = getString(R.string.audio)
     val SECONDARY = "secondary"
-    val TERTIARY = getString(R.string.experimental_features)
+    val TERTIARY = getString(R.string.downloader)
 }
 
 //GET STRING FROM APP.CONTEXT GIVEN A r.string ID

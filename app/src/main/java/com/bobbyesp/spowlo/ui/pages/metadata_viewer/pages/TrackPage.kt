@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,11 +59,17 @@ fun TrackPage(
     var audioFeatures by rememberSaveable(stateSaver = AudioFeaturesSaver) {
         mutableStateOf(null)
     }
+    var trackData by rememberSaveable(stateSaver = TrackSaver) {
+        mutableStateOf(data)
+    }
 
     LaunchedEffect(Unit) {
         if (audioFeatures == null) {
             val feats = SpotifyApiRequests.providesGetAudioFeatures(data.id)
             audioFeatures = feats
+        }
+        if (trackData != data) {
+            trackData = data
         }
     }
 
@@ -75,7 +80,7 @@ fun TrackPage(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.extraSmall)
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 6.dp), contentAlignment = Alignment.Center
+                .padding(bottom = 6.dp), contentAlignment = Alignment.Center
         ) {
             //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
             val size = (localConfig.screenHeightDp / 3)
@@ -86,7 +91,7 @@ fun TrackPage(
                         1f, matchHeightConstraintsFirst = true
                     )
                     .clip(MaterialTheme.shapes.small),
-                model = data.album.images[0].url,
+                model = trackData.album.images[0].url,
                 contentDescription = stringResource(id = R.string.track_artwork),
                 contentScale = ContentScale.Crop,
             )
@@ -98,7 +103,7 @@ fun TrackPage(
         ) {
             SelectionContainer {
                 MarqueeText(
-                    text = data.name,
+                    text = trackData.name,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.headlineMedium
                 )
@@ -106,7 +111,7 @@ fun TrackPage(
             Spacer(modifier = Modifier.height(6.dp))
             SelectionContainer {
                 Text(
-                    text = data.artists.joinToString(", ") { it.name },
+                    text = trackData.artists.joinToString(", ") { it.name },
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -117,7 +122,7 @@ fun TrackPage(
             SelectionContainer {
                 Text(
                     text = dataStringToString(
-                        data = data.type, additional = data.album.releaseDate?.year.toString()
+                        data = trackData.type, additional = trackData.album.releaseDate?.year.toString()
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(alpha = 0.8f)
@@ -125,18 +130,18 @@ fun TrackPage(
             }
         }
         HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            val taskName = StringBuilder().append(data.name).append(" - ").append(data.artists.joinToString(", ") { it.name }).toString()
-            TrackComponent(
-                contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                songName = data.name,
-                artists = data.artists.joinToString(", ") { it.name },
-                spotifyUrl = data.externalUrls.spotify!!,
-                isExplicit = data.explicit,
-                onClick = { trackDownloadCallback(data.externalUrls.spotify!!, taskName) }
-            )
+            val taskName = StringBuilder().append(trackData.name).append(" - ")
+                .append(trackData.artists.joinToString(", ") { it.name }).toString()
+            TrackComponent(contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                songName = trackData.name,
+                artists = trackData.artists.joinToString(", ") { it.name },
+                spotifyUrl = trackData.externalUrls.spotify!!,
+                isExplicit = trackData.explicit,
+                onClick = { trackDownloadCallback(trackData.externalUrls.spotify!!, taskName) })
         }
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -147,13 +152,13 @@ fun TrackPage(
             ) {
                 ExtraInfoCard(
                     headlineText = stringResource(id = R.string.track_popularity),
-                    bodyText = data.popularity.toString(),
+                    bodyText = trackData.popularity.toString(),
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 ExtraInfoCard(
                     headlineText = stringResource(id = R.string.track_duration),
-                    bodyText = GeneralTextUtils.convertDuration(data.durationMs.toDouble()),
+                    bodyText = GeneralTextUtils.convertDuration(trackData.durationMs.toDouble()),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -188,6 +193,17 @@ object AudioFeaturesSaver : Saver<AudioFeatures?, String> {
     }
 
     override fun SaverScope.save(value: AudioFeatures?): String {
+        return Json.encodeToString(value)
+    }
+}
+
+@ExperimentalSerializationApi
+object TrackSaver : Saver<Track, String> {
+    override fun restore(value: String): Track {
+        return Json.decodeFromString(value)
+    }
+
+    override fun SaverScope.save(value: Track): String {
         return Json.encodeToString(value)
     }
 }

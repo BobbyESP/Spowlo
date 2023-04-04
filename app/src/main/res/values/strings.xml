@@ -324,4 +324,6 @@
     <string name="spotdl_update_failed">The spotDL update failed.</string>
     <string name="spotdl_update_success">SpotDL is updated. You are using the version %1$s</string>
     <string name="see_playlist">See playlist</string>
+    <string name="metadata_viewer">Metadata viewer</string>
+    <string name="albums">Albums</string>
 </resources>

@@ -11,7 +11,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,9 +24,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.DeleteSweep
-import androidx.compose.material.icons.outlined.DownloadForOffline
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -69,6 +69,7 @@ import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.DismissButton
+import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.MultiChoiceItem
 import com.bobbyesp.spowlo.ui.components.SpowloDialog
@@ -102,10 +103,9 @@ fun DownloadsHistoryPage(
         Log.d("DownloadsHistoryPage", songsList.toString())
     }
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState(),
-        canScroll = { true }
-    )
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState(),
+            canScroll = { true })
     val scope = rememberCoroutineScope()
 
     val fileSizeMap = remember(songsList.size) {
@@ -158,11 +158,9 @@ fun DownloadsHistoryPage(
         remember(songsList, isSelectEnabled, viewState) { mutableStateListOf<Int>() }
 
     val selectedFiles = remember(selectedItemIds.size) {
-        mutableStateOf(
-            songsList.count { info ->
-                selectedItemIds.contains(info.id)
-            }
-        )
+        mutableStateOf(songsList.count { info ->
+            selectedItemIds.contains(info.id)
+        })
     }
 
     val selectedFileSizeSum by remember(selectedItemIds.size) {
@@ -179,12 +177,9 @@ fun DownloadsHistoryPage(
 
     val checkBoxState by remember(selectedItemIds, visibleItemCount) {
         derivedStateOf {
-            if (selectedItemIds.isEmpty())
-                ToggleableState.Off
-            else if (selectedItemIds.size == visibleItemCount.value && selectedItemIds.isNotEmpty())
-                ToggleableState.On
-            else
-                ToggleableState.Indeterminate
+            if (selectedItemIds.isEmpty()) ToggleableState.Off
+            else if (selectedItemIds.size == visibleItemCount.value && selectedItemIds.isNotEmpty()) ToggleableState.On
+            else ToggleableState.Indeterminate
         }
     }
 
@@ -192,95 +187,88 @@ fun DownloadsHistoryPage(
         isSelectEnabled = false
     }
 
-    Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(
-                        modifier = Modifier,
-                        text = stringResource(R.string.downloads_history)
-                    )
-                },
-                navigationIcon = {
-                    BackButton {
-                        onBackPressed()
-                    }
-                }, actions = {
-                    Row(){
-                        IconToggleButton(
-                            modifier = Modifier,
-                            onCheckedChange = { isSelectEnabled = !isSelectEnabled },
-                            checked = isSelectEnabled,
-                            enabled = songsList.isNotEmpty()
-                        ) {
-                            Icon(
-                                Icons.Outlined.Checklist,
-                                contentDescription = stringResource(R.string.multiselect_mode)
-                            )
-                        }
-                    }
-                }, scrollBehavior = scrollBehavior
+    Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+        LargeTopAppBar(title = {
+            Text(
+                modifier = Modifier, text = stringResource(R.string.downloads_history)
             )
-        }, bottomBar = {
-            AnimatedVisibility(
-                isSelectEnabled,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                BottomAppBar(
-                    modifier = Modifier
+        }, navigationIcon = {
+            BackButton {
+                onBackPressed()
+            }
+        }, actions = {
+            Row {
+                IconToggleButton(
+                    modifier = Modifier,
+                    onCheckedChange = { isSelectEnabled = !isSelectEnabled },
+                    checked = isSelectEnabled,
+                    enabled = songsList.isNotEmpty()
                 ) {
-                    val selectAllText = stringResource(R.string.select_all)
-                    TriStateCheckbox(
-                        modifier = Modifier.semantics {
-                            this.contentDescription = selectAllText
-                        },
-                        state = checkBoxState,
-                        onClick = {
-                            when (checkBoxState) {
-                                ToggleableState.On -> selectedItemIds.clear()
-                                else -> {
-                                    for (item in songsList) {
-                                        if (!selectedItemIds.contains(item.id)
-                                            && item.filterSort(viewState)
-                                        ) {
-                                            selectedItemIds.add(item.id)
-                                        }
+                    Icon(
+                        Icons.Outlined.Checklist,
+                        contentDescription = stringResource(R.string.multiselect_mode)
+                    )
+                }
+            }
+        }, scrollBehavior = scrollBehavior
+        )
+    }, bottomBar = {
+        AnimatedVisibility(
+            isSelectEnabled,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            BottomAppBar(
+                modifier = Modifier
+            ) {
+                val selectAllText = stringResource(R.string.select_all)
+                TriStateCheckbox(
+                    modifier = Modifier.semantics {
+                        this.contentDescription = selectAllText
+                    },
+                    state = checkBoxState,
+                    onClick = {
+                        when (checkBoxState) {
+                            ToggleableState.On -> selectedItemIds.clear()
+                            else -> {
+                                for (item in songsList) {
+                                    if (!selectedItemIds.contains(item.id) && item.filterSort(
+                                            viewState
+                                        )
+                                    ) {
+                                        selectedItemIds.add(item.id)
                                     }
                                 }
                             }
-                        },
+                        }
+                    },
+                )
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.multiselect_item_count).format(
+                        selectedFiles.value,
+                    ),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                IconButton(
+                    onClick = { showRemoveMultipleItemsDialog = true },
+                    enabled = selectedItemIds.isNotEmpty()
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.DeleteSweep,
+                        contentDescription = stringResource(id = R.string.remove)
                     )
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(R.string.multiselect_item_count).format(
-                            selectedFiles.value,
-                        ),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    IconButton(
-                        onClick = { showRemoveMultipleItemsDialog = true },
-                        enabled = selectedItemIds.isNotEmpty()
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.DeleteSweep,
-                            contentDescription = stringResource(id = R.string.remove)
-                        )
-                    }
                 }
             }
         }
-    ) { innerPaddings ->
+    }) { innerPaddings ->
         val cellCount = when (LocalWindowWidthState.current) {
             WindowWidthSizeClass.Expanded -> 2
             else -> 1
         }
         val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(cellCount) }
         LazyVerticalGrid(
-            modifier = Modifier
-                .padding(innerPaddings), columns = GridCells.Fixed(cellCount)
+            modifier = Modifier.padding(innerPaddings), columns = GridCells.Fixed(cellCount)
         ) {
             if (filterSet.size > 1) {
                 item {
@@ -300,7 +288,8 @@ fun DownloadsHistoryPage(
 
             if (songsList.isEmpty()) {
                 item {
-                    Column(modifier = Modifier.fillMaxSize(),
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         EmptyState(
@@ -314,17 +303,14 @@ fun DownloadsHistoryPage(
             }
 
             for (song in songsList) {
-                item(
-                    key = song.id,
-                    contentType = { song.songPath.contains(AUDIO_REGEX) }) {
+                item(key = song.id, contentType = { song.songPath.contains(AUDIO_REGEX) }) {
                     with(song) {
                         AnimatedVisibility(
                             visible = song.filterSort(viewState),
                             exit = shrinkVertically() + fadeOut(),
                             enter = expandVertically() + fadeIn()
                         ) {
-                            HistoryMediaItem(
-                                modifier = Modifier,
+                            HistoryMediaItem(modifier = Modifier,
                                 songName = songName,
                                 author = songAuthor,
                                 artworkUrl = thumbnailUrl,
@@ -340,8 +326,12 @@ fun DownloadsHistoryPage(
                                     if (selectedItemIds.contains(id)) selectedItemIds.remove(id)
                                     else selectedItemIds.add(id)
                                 },
-                                onClick = { FilesUtil.openFile(songPath) }
-                            ) { downloadsHistoryViewModel.showDrawer(scope, song) }
+                                onClick = { FilesUtil.openFile(songPath) }) {
+                                downloadsHistoryViewModel.showDrawer(
+                                    scope,
+                                    song
+                                )
+                            }
                         }
                     }
                 }
@@ -351,16 +341,15 @@ fun DownloadsHistoryPage(
     DownloadHistoryBottomDrawer()
     if (showRemoveMultipleItemsDialog) {
         var deleteFile by remember { mutableStateOf(false) }
-        SpowloDialog(
-            onDismissRequest = { showRemoveMultipleItemsDialog = false },
+        SpowloDialog(onDismissRequest = { showRemoveMultipleItemsDialog = false },
             icon = { Icon(Icons.Outlined.DeleteSweep, null) },
-            title = { Text(stringResource(R.string.delete_info)) }, text = {
+            title = { Text(stringResource(R.string.delete_info)) },
+            text = {
                 Column {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                        ,
+                            .padding(horizontal = 24.dp),
                         text = stringResource(R.string.delete_multiple_items_msg).format(
                             selectedFiles.value
                         )
@@ -371,7 +360,8 @@ fun DownloadsHistoryPage(
                         checked = deleteFile
                     ) { deleteFile = !deleteFile }
                 }
-            }, confirmButton = {
+            },
+            confirmButton = {
                 ConfirmButton {
                     scope.launch {
                         DatabaseUtil.deleteInfoListByIdList(selectedItemIds, deleteFile)
@@ -379,12 +369,12 @@ fun DownloadsHistoryPage(
                     showRemoveMultipleItemsDialog = false
                     isSelectEnabled = false
                 }
-            }, dismissButton = {
+            },
+            dismissButton = {
                 DismissButton {
                     showRemoveMultipleItemsDialog = false
                 }
-            }
-        )
+            })
     }
 }
 
@@ -398,17 +388,17 @@ fun EmptyState(modifier: Modifier, text: String) {
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = Icons.Outlined.DownloadForOffline,
+            imageVector = Icons.Filled.DownloadForOffline,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(72.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider(modifier = Modifier.height(16.dp).padding(horizontal = 32.dp))
         Text(
             text = text,
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
         )
     }
 }

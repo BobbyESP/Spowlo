@@ -71,7 +71,7 @@ android {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
         targetSdk = 33
-        versionCode = 10201
+        versionCode = 10300
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
@@ -246,7 +246,7 @@ dependencies {
 //    implementation(libs.exoplayer.extension.mediasession)
 
     implementation(libs.customtabs)
-    implementation(libs.shimmer)
+   // implementation(libs.shimmer)
 
     debugImplementation(libs.crash.handler)
 

@@ -374,7 +374,6 @@ object DownloaderUtil {
     private fun insertInfoIntoDownloadHistory(
         songInfo: Song, filePaths: List<String>
     ) {
-
         filePaths.forEach { filePath ->
             val fullString = StringBuilder()
             fullString.append(songInfo.name)

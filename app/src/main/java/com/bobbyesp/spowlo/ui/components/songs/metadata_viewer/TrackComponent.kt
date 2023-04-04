@@ -78,7 +78,7 @@ fun TrackComponent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                if(isPlaylist){
+                if(isPlaylist && imageUrl.isNotEmpty()) {
                     AsyncImageImpl(
                         modifier = Modifier
                             .size(40.dp)

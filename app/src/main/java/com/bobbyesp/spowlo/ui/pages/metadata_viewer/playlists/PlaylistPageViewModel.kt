@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
@@ -29,7 +30,8 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
         when (type) {
             SpotifyDataType.TRACK -> {
                 kotlin.runCatching {
-                    SpotifyApiRequests.getTrackById(id)
+                    Log.d("SpotifyApiRequests", "provideGetTrackById($id)")
+                    SpotifyApiRequests.provideGetTrackById(id)
                 }.onSuccess { data ->
                     mutableViewStateFlow.update {
                         it.copy(
@@ -49,7 +51,7 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
 
             SpotifyDataType.ALBUM -> {
                 kotlin.runCatching {
-                    SpotifyApiRequests.getAlbumById(id)
+                    SpotifyApiRequests.providesGetAlbumById(id)
                 }.onSuccess { data ->
                     mutableViewStateFlow.update {
                         it.copy(
@@ -70,7 +72,8 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
 
             SpotifyDataType.PLAYLIST -> {
                 kotlin.runCatching {
-                    SpotifyApiRequests.getPlaylistById(id)
+                    Log.d("SpotifyApiRequests", "provideGetPlaylistById($id)")
+                    SpotifyApiRequests.provideGetPlaylistById(id)
                 }.onSuccess { data ->
                     mutableViewStateFlow.update {
                         it.copy(

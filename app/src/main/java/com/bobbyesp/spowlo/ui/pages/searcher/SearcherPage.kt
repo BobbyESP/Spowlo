@@ -62,7 +62,7 @@ import com.bobbyesp.spowlo.ui.components.songs.search_feat.SearchingSongComponen
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.IndicatorBehindScrollableTabRow
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.getString
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.tabIndicatorOffset
-import com.bobbyesp.spowlo.ui.pages.common.ErrorPage
+import com.bobbyesp.spowlo.ui.pages.commonPages.ErrorPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
@@ -108,7 +108,7 @@ fun SearcherPageImpl(
     viewState: SearcherPageViewModel.ViewState,
     onValueChange: (String) -> Unit,
     onItemClick: (String, String) -> Unit,
-    reloadPageCallback : () -> Unit = {}
+    reloadPageCallback: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         with(viewState) {
@@ -187,7 +187,11 @@ fun SearcherPageImpl(
 
                         is ViewSearchState.Success -> {
                             val pagerState = rememberPagerState(initialPage = 0)
-                            val pages = listOf(SearcherPages.TRACKS, SearcherPages.PLAYLISTS)
+                            val pages = listOf(
+                                SearcherPages.TRACKS,
+                                SearcherPages.PLAYLISTS,
+                                SearcherPages.ALBUMS
+                            )
                             val scope = rememberCoroutineScope()
 
                             IndicatorBehindScrollableTabRow(
@@ -221,9 +225,11 @@ fun SearcherPageImpl(
                                 }
                             }
 
-                            HorizontalPager(pageCount = pages.size, state = pagerState, modifier = Modifier
-                                .animateContentSize()
-                                .fillMaxSize()) {
+                            HorizontalPager(
+                                pageCount = pages.size, state = pagerState, modifier = Modifier
+                                    .animateContentSize()
+                                    .fillMaxSize()
+                            ) {
                                 when (pages[it]) {
                                     SearcherPages.TRACKS -> {
                                         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -253,8 +259,14 @@ fun SearcherPageImpl(
                                                             artworkUrl = track.album.images[2].url,
                                                             songName = track.name,
                                                             artists = artists.joinToString(", "),
-                                                            spotifyUrl = track.externalUrls.spotify ?: "",
-                                                            onClick = { onItemClick(track.type, track.id) },
+                                                            spotifyUrl = track.externalUrls.spotify
+                                                                ?: "",
+                                                            onClick = {
+                                                                onItemClick(
+                                                                    track.type,
+                                                                    track.id
+                                                                )
+                                                            },
                                                             type = typeOfDataToString(
                                                                 type = typeOfSpotifyDataType(
                                                                     track.type
@@ -270,6 +282,7 @@ fun SearcherPageImpl(
                                             }
                                         }
                                     }
+
                                     SearcherPages.PLAYLISTS -> {
                                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                                             viewState.viewState.data.let { data ->
@@ -297,7 +310,8 @@ fun SearcherPageImpl(
                                                             songName = playlist.name,
                                                             artists = playlist.owner.displayName
                                                                 ?: stringResource(R.string.unknown),
-                                                            spotifyUrl = playlist.externalUrls.spotify ?: "",
+                                                            spotifyUrl = playlist.externalUrls.spotify
+                                                                ?: "",
                                                             onClick = {
                                                                 onItemClick(
                                                                     playlist.type,
@@ -307,6 +321,56 @@ fun SearcherPageImpl(
                                                             type = typeOfDataToString(
                                                                 type = typeOfSpotifyDataType(
                                                                     playlist.type
+                                                                )
+                                                            )
+                                                        )
+                                                        HorizontalDivider(
+                                                            modifier = Modifier.alpha(0.35f),
+                                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    SearcherPages.ALBUMS -> {
+                                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                            viewState.viewState.data.let { data ->
+                                                item {
+                                                    Text(
+                                                        text = stringResource(R.string.showing_results).format(
+                                                            data.playlists?.size
+                                                        ),
+                                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                                            fontWeight = FontWeight.Bold
+                                                        ),
+                                                        modifier = Modifier
+                                                            .padding(16.dp)
+                                                            .alpha(0.7f),
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        textAlign = TextAlign.Start,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+
+                                                }
+                                                data.albums?.items?.forEachIndexed { index, album ->
+                                                    item {
+                                                        SearchingSongComponent(
+                                                            artworkUrl = album.images[0].url,
+                                                            songName = album.name,
+                                                            artists = album.artists[0].name,
+                                                            spotifyUrl = album.externalUrls.spotify
+                                                                ?: "",
+                                                            onClick = {
+                                                                onItemClick(
+                                                                    album.type,
+                                                                    album.id
+                                                                )
+                                                            },
+                                                            type = typeOfDataToString(
+                                                                type = typeOfSpotifyDataType(
+                                                                    album.type
                                                                 )
                                                             )
                                                         )
@@ -382,4 +446,5 @@ fun QueryTextBox(
 object SearcherPages {
     val TRACKS = getString(R.string.tracks)
     val PLAYLISTS = getString(R.string.playlists)
+    val ALBUMS = getString(R.string.albums)
 }
