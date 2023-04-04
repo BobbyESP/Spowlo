@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.library.SpotDL
-import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.booleanState
@@ -42,10 +41,15 @@ import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
 import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
+import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.getString
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
+import com.bobbyesp.spowlo.utils.ToastUtil
+import com.bobbyesp.spowlo.utils.UpdateUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -72,6 +76,7 @@ fun GeneralSettingsPage(
             PreferencesUtil.getValue(NOTIFICATION)
         )
     }
+    var isUpdatingLib by remember { mutableStateOf(false) }
 
     val loadingString = App.context.getString(R.string.loading)
 
@@ -92,8 +97,8 @@ fun GeneralSettingsPage(
         GlobalScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    spotDLVersion = SpotDL.getInstance()
-                        .execute(SpotDLRequest().addOption("-v"), null, null).output
+                    spotDLVersion = SpotDL.getInstance().version(appContext = App.context)
+                        ?: getString(R.string.unknown)
                 }
             } catch (e: Exception) {
                 spotDLVersion = e.message ?: e.toString()
@@ -123,7 +128,23 @@ fun GeneralSettingsPage(
             ) {
                 item {
                     ElevatedSettingsCard {
-                        SettingsItemNew(onClick = { },
+                        SettingsItemNew(
+                            onClick = {
+                                scope.launch {
+                                    runCatching {
+                                        isUpdatingLib = true
+                                        UpdateUtil.updateSpotDL()
+                                        spotDLVersion = SPOTDL.getString()
+                                    }.onFailure {
+                                        ToastUtil.makeToastSuspend(App.context.getString(R.string.spotdl_update_failed))
+                                    }.onSuccess {
+                                        ToastUtil.makeToastSuspend(
+                                            App.context.getString(R.string.spotdl_update_success)
+                                                .format(spotDLVersion)
+                                        )
+                                    }
+                                }
+                            },
                             title = {
                                 Text(
                                     text = stringResource(id = R.string.spotdl_version),

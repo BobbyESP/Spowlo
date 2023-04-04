@@ -53,13 +53,13 @@ object UpdateUtil {
     private val _updateViewState = MutableStateFlow(UpdateViewState())
     val updateViewState = _updateViewState.asStateFlow()
 
-    fun showUpdateDrawer(){
+    fun showUpdateDrawer() {
         _updateViewState.update {
             it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Expanded))
         }
     }
 
-    fun hideUpdateDrawer(){
+    fun hideUpdateDrawer() {
         _updateViewState.update {
             it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Hidden))
         }
@@ -81,48 +81,44 @@ object UpdateUtil {
             .build()
 
     private val requestForReleases =
-        Request.Builder().url("https://api.github.com/repos/${OWNER}/${REPO}/releases")
-            .build()
+        Request.Builder().url("https://api.github.com/repos/${OWNER}/${REPO}/releases").build()
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
 
-    suspend fun updateSpotDL(): SpotDL.UpdateStatus? =
-        withContext(Dispatchers.IO) {
-            SpotDL.getInstance().updateSpotDL(
-                context,
-                "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
-            ).apply {
-                if (this == SpotDL.UpdateStatus.DONE)
-                    SpotDL.getInstance().version(context)?.let {
-                        PreferencesUtil.encodeString(SPOTDL, it)
-                    }
+    suspend fun updateSpotDL(): SpotDL.UpdateStatus? = withContext(Dispatchers.IO) {
+        SpotDL.getInstance().updateSpotDL(
+            context
+        ).apply {
+            if (this == SpotDL.UpdateStatus.DONE) SpotDL.getInstance().version(context)?.let {
+                PreferencesUtil.encodeString(SPOTDL, it)
             }
         }
+    }
 
 
     private suspend fun getLatestRelease(): LatestRelease {
         return suspendCoroutine { continuation ->
-            client.newCall(requestForReleases)
-                .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val responseData = response.body.string()
+            client.newCall(requestForReleases).enqueue(object : Callback {
+                    override fun onResponse(call: Call, response: Response) {
+                        val responseData = response.body.string()
 //                    val latestRelease = jsonFormat.decodeFromString<LatestRelease>(responseData)
-                    val releaseList =
-                        jsonFormat.decodeFromString<List<LatestRelease>>(responseData)
-                    val latestRelease =
-                        releaseList.filter { if (UPDATE_CHANNEL.getInt() == STABLE) it.name.toVersion() is Version.Stable else true }
-                            .maxByOrNull { it.name.toVersion() }
-                            ?: throw Exception("null response")
-                    releaseList.sortedBy { it.name.toVersion() }.forEach {
-                        Log.d(TAG, it.tagName.toString())
+                        val releaseList =
+                            jsonFormat.decodeFromString<List<LatestRelease>>(responseData)
+                        val latestRelease =
+                            releaseList.filter { if (UPDATE_CHANNEL.getInt() == STABLE) it.name.toVersion() is Version.Stable else true }
+                                .maxByOrNull { it.name.toVersion() }
+                                ?: throw Exception("null response")
+                        releaseList.sortedBy { it.name.toVersion() }.forEach {
+                            Log.d(TAG, it.tagName.toString())
+                        }
+                        response.body.close()
+                        continuation.resume(latestRelease)
                     }
-                    response.body.close()
-                    continuation.resume(latestRelease)
-                }
-                override fun onFailure(call: Call, e: IOException) {
-                    continuation.resumeWithException(e)
-                }
-            })
+
+                    override fun onFailure(call: Call, e: IOException) {
+                        continuation.resumeWithException(e)
+                    }
+                })
         }
     }
 
@@ -146,8 +142,7 @@ object UpdateUtil {
         }
 
 
-    private fun Context.getLatestApk() =
-        File(getExternalFilesDir("apk"), "latest.apk")
+    private fun Context.getLatestApk() = File(getExternalFilesDir("apk"), "latest.apk")
 
     private fun Context.getFileProvider() = "${packageName}.provider"
 
@@ -167,8 +162,7 @@ object UpdateUtil {
     }
 
     suspend fun downloadApk(
-        context: Context = App.context,
-        latestRelease: LatestRelease
+        context: Context = App.context, latestRelease: LatestRelease
     ): Flow<DownloadStatus> = withContext(Dispatchers.IO) {
         val apkVersion = context.packageManager.getPackageArchiveInfo(
             context.getLatestApk().absolutePath, 0
@@ -289,10 +283,7 @@ object UpdateUtil {
 
 
     sealed class Version(
-        val major: Int,
-        val minor: Int,
-        val patch: Int,
-        val build: Int = 0
+        val major: Int, val minor: Int, val patch: Int, val build: Int = 0
     ) : Comparable<Version> {
         companion object {
             private const val BUILD = 1L
@@ -306,8 +297,7 @@ object UpdateUtil {
 
         class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
             Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-            override fun toVersionName(): String =
-                "${major}.${minor}.${patch}-beta.$build"
+            override fun toVersionName(): String = "${major}.${minor}.${patch}-beta.$build"
 
             override fun toNumber(): Long =
                 major * MAJOR + minor * MINOR + patch * PATCH + build * BUILD
@@ -316,8 +306,7 @@ object UpdateUtil {
 
         class Stable(versionMajor: Int = 0, versionMinor: Int = 0, versionPatch: Int = 0) :
             Version(versionMajor, versionMinor, versionPatch) {
-            override fun toVersionName(): String =
-                "${major}.${minor}.${patch}"
+            override fun toVersionName(): String = "${major}.${minor}.${patch}"
 
             override fun toNumber(): Long =
                 major * MAJOR + minor * MINOR + patch * PATCH + build * BUILD + 50
@@ -326,14 +315,9 @@ object UpdateUtil {
         }
 
         class ReleaseCandidate(
-            versionMajor: Int,
-            versionMinor: Int,
-            versionPatch: Int,
-            versionBuild: Int
-        ) :
-            Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-            override fun toVersionName(): String =
-                "${major}.${minor}.${patch}-rc.$build"
+            versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
+        ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+            override fun toVersionName(): String = "${major}.${minor}.${patch}-rc.$build"
 
             override fun toNumber(): Long =
                 major * MAJOR + minor * MINOR + patch * PATCH + build * BUILD + 25

@@ -146,6 +146,8 @@ fun PlaylistViewPage(
                         artists = actualTrack?.artists?.joinToString(", ") { it.name } ?: "",
                         spotifyUrl = actualTrack?.externalUrls?.spotify ?: "",
                         isExplicit = actualTrack?.explicit ?: false,
+                        isPlaylist = true,
+                        imageUrl = actualTrack?.album?.images?.get(0)?.url ?: "",
                         onClick = {
                             if (actualTrack != null) {
                                 trackDownloadCallback(actualTrack.externalUrls.spotify!!, taskName)

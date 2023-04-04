@@ -108,7 +108,7 @@ object Downloader {
 
         fun onCancel() {
             toKey().run {
-                SpotDL.getInstance().destroyProcessById(this)
+                SpotDL.getInstance().destroyProcessById(this, true)
                 onProcessCanceled(this)
             }
         }
@@ -512,7 +512,7 @@ object Downloader {
         updateState(State.Idle)
         clearProgressState(isFinished = false)
         taskState.value.taskId.run {
-            SpotDL.getInstance().destroyProcessById(this)
+            SpotDL.getInstance().destroyProcessById(this, true)
             NotificationsUtil.cancelNotification(this.toNotificationId())
         }
     }

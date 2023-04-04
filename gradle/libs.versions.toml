@@ -21,9 +21,10 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.5"
 
-spotdlAndroidVersion = "dd296e76cc"
+spotdlAndroidVersion = "3d8e42a3f0"
 spotifyApiKotlinVersion = "3.8.8"
 
+shimmerLibrary = "1.0.4"
 crashHandlerVersion = "2.0.2"
 
 coil = "2.2.2"
@@ -125,6 +126,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmerLibrary" }
 
 soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
 soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Cookie
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.Update
@@ -271,7 +270,7 @@ fun SettingsPage(navController: NavController) {
                 )
             }
 
-            item {
+            /*item {
                 SettingsItemNew(
                     title = {
                         Text(
@@ -290,7 +289,7 @@ fun SettingsPage(navController: NavController) {
                     highlightIcon = true
                 )
             }
-
+*/
             item {
                 SettingsItemNew(
                     title = {

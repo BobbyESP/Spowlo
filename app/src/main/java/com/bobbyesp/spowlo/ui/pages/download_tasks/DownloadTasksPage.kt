@@ -67,6 +67,9 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                         onCopyError = {
                             onCopyError(clipboardManager)
                         },
+                        onCancel = {
+                            onCancel()
+                        },
                         onRestart = {
                             onRestart()
                         }, onCopyLog = {
@@ -96,7 +99,12 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    HorizontalDivider( modifier = Modifier.padding(vertical = 24.dp, horizontal = 4.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            vertical = 24.dp,
+                            horizontal = 4.dp
+                        )
+                    )
                     Text(
                         text = stringResource(R.string.no_running_downloads_description),
                         style = MaterialTheme.typography.labelLarge,

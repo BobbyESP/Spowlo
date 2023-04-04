@@ -437,6 +437,7 @@ object DownloaderUtil {
             val finalResponse = removeDuplicateLines(clearLinesWithEllipsis(response.output))
             onTaskEnded(url, finalResponse, name)
         }.onFailure {
+            Log.d("Canceled?", "Exception: $it")
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.download_error_msg))
             if (it is SpotDL.CanceledException) return@onFailure

@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.DownloadDone
 import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PlaylistAddCheck
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -85,13 +86,17 @@ import kotlinx.coroutines.launch
 fun DownloaderBottomSheet(
     onBackPressed: () -> Unit,
     downloaderViewModel: DownloaderViewModel,
-    navController: NavController
+    navController: NavController,
+    navigateToPlaylist: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(initialPage = 0)
 
-    val pages = listOf(BottomSheetPages.MAIN, BottomSheetPages.SECONDARY, BottomSheetPages.TERTIARY)
+    val pages =
+        listOf(BottomSheetPages.MAIN, BottomSheetPages.TERTIARY) //, BottomSheetPages.SECONDARY
+
     val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
+
     val roundedTopShape =
         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
@@ -202,8 +207,7 @@ fun DownloaderBottomSheet(
             .padding(8.dp)
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
+                    durationMillis = 300, easing = FastOutSlowInEasing
                 ),
             )
 
@@ -222,9 +226,8 @@ fun DownloaderBottomSheet(
             Text(
                 text = stringResource(R.string.settings_before_download),
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier
-                    .padding(vertical = 12.dp),
-                maxLines = 2,
+                modifier = Modifier.padding(vertical = 12.dp),
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
@@ -237,7 +240,9 @@ fun DownloaderBottomSheet(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Start).padding(start = 8.dp)
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp)
         )
         IndicatorBehindScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -267,11 +272,15 @@ fun DownloaderBottomSheet(
                 )
             }
         }
-        HorizontalPager(pageCount = pages.size, state = pagerState, modifier = Modifier.animateContentSize()) {
+        HorizontalPager(
+            pageCount = pages.size, state = pagerState, modifier = Modifier.animateContentSize()
+        ) {
             when (pages[it]) {
                 BottomSheetPages.MAIN -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(6.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp)
                     ) {
                         DrawerSheetSubtitle(text = stringResource(id = R.string.general))
                         Row(
@@ -283,8 +292,7 @@ fun DownloaderBottomSheet(
                                     color = MaterialTheme.colorScheme.surfaceVariant
                                 ),
                         ) {
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.preserve_original_audio),
+                            AudioFilterChip(label = stringResource(id = R.string.preserve_original_audio),
                                 animated = true,
                                 selected = preserveOriginalAudio,
                                 onClick = {
@@ -292,8 +300,7 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
                                     }
-                                }
-                            )
+                                })
                             ButtonChip(
                                 label = stringResource(id = R.string.audio_format),
                                 icon = Icons.Outlined.AudioFile,
@@ -316,17 +323,17 @@ fun DownloaderBottomSheet(
                                     color = MaterialTheme.colorScheme.surfaceVariant
                                 ),
                         ) {
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.use_spotify_credentials),
+                            AudioFilterChip(label = stringResource(id = R.string.use_spotify_credentials),
                                 animated = true,
                                 selected = useSpotifyCredentials,
                                 onClick = {
                                     useSpotifyCredentials = !useSpotifyCredentials
                                     scope.launch {
-                                        settings.updateValue(USE_SPOTIFY_CREDENTIALS, useSpotifyCredentials)
+                                        settings.updateValue(
+                                            USE_SPOTIFY_CREDENTIALS, useSpotifyCredentials
+                                        )
                                     }
-                                }
-                            )
+                                })
                             ButtonChip(
                                 label = stringResource(id = R.string.client_id),
                                 icon = Icons.Outlined.Person,
@@ -350,7 +357,9 @@ fun DownloaderBottomSheet(
 
                 BottomSheetPages.TERTIARY -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(6.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp)
                     ) {
                         DrawerSheetSubtitle(text = stringResource(id = R.string.experimental_features))
                         Row(
@@ -362,8 +371,7 @@ fun DownloaderBottomSheet(
                                     color = MaterialTheme.colorScheme.surfaceVariant
                                 ),
                         ) {
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.synced_lyrics),
+                            AudioFilterChip(label = stringResource(id = R.string.synced_lyrics),
                                 animated = true,
                                 selected = useSyncedLyrics,
                                 onClick = {
@@ -371,10 +379,8 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
                                     }
-                                }
-                            )
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.geo_bypass),
+                                })
+                            AudioFilterChip(label = stringResource(id = R.string.geo_bypass),
                                 selected = useGeoBypass,
                                 animated = true,
                                 onClick = {
@@ -382,11 +388,9 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(GEO_BYPASS, useGeoBypass)
                                     }
-                                }
-                            )
+                                })
 
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.use_cache),
+                            AudioFilterChip(label = stringResource(id = R.string.use_cache),
                                 animated = true,
                                 selected = useCaching,
                                 onClick = {
@@ -394,11 +398,9 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(USE_CACHING, useCaching)
                                     }
-                                }
-                            )
+                                })
 
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.dont_filter_results),
+                            AudioFilterChip(label = stringResource(id = R.string.dont_filter_results),
                                 selected = dontFilter,
                                 animated = true,
                                 onClick = {
@@ -406,10 +408,8 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(DONT_FILTER_RESULTS, dontFilter)
                                     }
-                                }
-                            )
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.use_cookies),
+                                })
+                            AudioFilterChip(label = stringResource(id = R.string.use_cookies),
                                 animated = true,
                                 selected = useCookies,
                                 onClick = {
@@ -417,10 +417,8 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(COOKIES, useCookies)
                                     }
-                                }
-                            )
-                            AudioFilterChip(
-                                label = stringResource(id = R.string.use_yt_metadata),
+                                })
+                            AudioFilterChip(label = stringResource(id = R.string.use_yt_metadata),
                                 animated = true,
                                 selected = useYtMetadata,
                                 onClick = {
@@ -428,8 +426,7 @@ fun DownloaderBottomSheet(
                                     scope.launch {
                                         settings.updateValue(USE_YT_METADATA, useYtMetadata)
                                     }
-                                }
-                            )
+                                })
                         }
                     }
                 }
@@ -466,11 +463,28 @@ fun DownloaderBottomSheet(
                 )
             }
             item {
-                FilledButtonWithIcon(
-                    onClick = downloadButtonCallback,
-                    icon = Icons.Outlined.DownloadDone,
-                    text = stringResource(R.string.start_download)
-                )
+                if (viewState.url.contains("playlist")) {
+                    //https://open.spotify.com/playlist/4aKFWQtn0Tstw68SIMURye?si=c9e7282b0c354d34
+                    //get playlist id after the playlist/ and before the ?
+                    var playlistId = viewState.url.substringAfter("playlist/").substringBefore("?")
+
+                    if (viewState.url == "playlist")
+                        run {
+                            playlistId = "7804lpXmApCGPd2Rdai6k1"
+                        }
+                    FilledButtonWithIcon(
+                        onClick = { navigateToPlaylist(playlistId) },
+                        icon = Icons.Outlined.PlaylistAddCheck,
+                        text = stringResource(R.string.see_playlist)
+                    )
+
+                } else {
+                    FilledButtonWithIcon(
+                        onClick = downloadButtonCallback,
+                        icon = Icons.Outlined.DownloadDone,
+                        text = stringResource(R.string.start_download)
+                    )
+                }
             }
         }
     }

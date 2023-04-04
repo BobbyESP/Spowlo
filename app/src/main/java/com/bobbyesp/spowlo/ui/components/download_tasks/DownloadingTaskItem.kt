@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.RestartAlt
@@ -72,6 +74,7 @@ fun DownloadingTaskItem(
     onRestart: () -> Unit = {},
     onShowLog: () -> Unit = {},
     onCopyLink: () -> Unit = {},
+    onCancel: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalTonalPalettes provides greenTonalPalettes) {
         val greenScheme = dynamicColorScheme(!LocalDarkTheme.current.isDarkTheme())
@@ -80,6 +83,7 @@ fun DownloadingTaskItem(
                 TaskState.FINISHED -> greenScheme.primary
                 TaskState.RUNNING -> primary
                 TaskState.ERROR -> error.harmonizeWithPrimary()
+                TaskState.CANCELED -> Color.Gray.harmonizeWithPrimary()
             }
         }
         val containerColor = MaterialTheme.colorScheme.run {
@@ -94,6 +98,7 @@ fun DownloadingTaskItem(
                 TaskState.FINISHED -> R.string.status_completed
                 TaskState.RUNNING -> R.string.downloading
                 TaskState.ERROR -> R.string.error
+                TaskState.CANCELED -> R.string.task_canceled
             }
         )
         Surface(
@@ -151,6 +156,16 @@ fun DownloadingTaskItem(
                                 imageVector = Icons.Filled.Error,
                                 tint = accentColor,
                                 contentDescription = stringResource(id = R.string.searching_error)
+                            )
+                        }
+                        TaskState.CANCELED -> {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .size(24.dp),
+                                imageVector = Icons.Filled.Cancel,
+                                tint = accentColor,
+                                contentDescription = stringResource(id = R.string.task_canceled)
                             )
                         }
                     }
@@ -234,6 +249,12 @@ fun DownloadingTaskItem(
                             iconColor = MaterialTheme.colorScheme.secondary,
                         ) { onRestart() }
                     }
+                    if (status == TaskState.RUNNING)
+                        FlatButtonChip(
+                            icon = Icons.Outlined.Cancel,
+                            label = stringResource(id = R.string.cancel),
+                            iconColor = MaterialTheme.colorScheme.secondary,
+                        ) { onCancel() }
                 }
             }
         }
@@ -241,5 +262,5 @@ fun DownloadingTaskItem(
 }
 
 enum class TaskState {
-    FINISHED, RUNNING, ERROR
+    FINISHED, RUNNING, ERROR, CANCELED
 }

@@ -76,6 +76,7 @@ fun SearcherPage(
 ) {
     val viewState by searcherPageViewModel.viewStateFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()

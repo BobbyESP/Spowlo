@@ -321,4 +321,7 @@
     <string name="playlists">Playlists</string>
     <string name="pre_configure_download">Configure download</string>
     <string name="pre_configure_download_desc">Open the configuration dialog before every download</string>
+    <string name="spotdl_update_failed">The spotDL update failed.</string>
+    <string name="spotdl_update_success">SpotDL is updated. You are using the version %1$s</string>
+    <string name="see_playlist">See playlist</string>
 </resources>

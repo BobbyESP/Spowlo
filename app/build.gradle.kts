@@ -246,6 +246,7 @@ dependencies {
 //    implementation(libs.exoplayer.extension.mediasession)
 
     implementation(libs.customtabs)
+    implementation(libs.shimmer)
 
     debugImplementation(libs.crash.handler)
 

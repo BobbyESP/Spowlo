@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.ExplicitIcon
 import com.bobbyesp.spowlo.ui.components.songs.LyricsIcon
@@ -53,6 +57,8 @@ fun TrackComponent(
     spotifyUrl: String,
     hasLyrics: Boolean = false,
     isExplicit: Boolean = false,
+    isPlaylist: Boolean = false,
+    imageUrl : String = "",
     onClick: () -> Unit = { ChromeCustomTabsUtil.openUrl(spotifyUrl) }
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -72,9 +78,23 @@ fun TrackComponent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
+                if(isPlaylist){
+                    AsyncImageImpl(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .aspectRatio(
+                                1f, matchHeightConstraintsFirst = true
+                            )
+                            .clip(MaterialTheme.shapes.extraSmall),
+                        model = imageUrl,
+                        contentDescription = stringResource(id = R.string.track_artwork),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .padding(6.dp)
+                        .padding(start = if(isPlaylist) 6.dp else 0.dp)
                         .weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start

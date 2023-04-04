@@ -40,13 +40,13 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongCard(
+    modifier: Modifier = Modifier,
     song: Song,
     onClick: () -> Unit = {},
     progress: Float = 0.69f,
     isPreview: Boolean = false,
     isExplicit: Boolean = true,
     isLyrics: Boolean = false,
-    modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
         ElevatedCard(
@@ -174,6 +174,7 @@ fun SongCard(
 fun ShowSongCard() {
     Surface {
         SongCard(
+            song =
             Song(
                 "Save Your Tears",
                 listOf("The Weekend"),
@@ -213,6 +214,7 @@ fun ShowSongCard() {
 fun ShowSongCardNight() {
     Surface {
         SongCard(
+            song =
             Song(
                 "mariposas",
                 listOf("sangiovanni"),

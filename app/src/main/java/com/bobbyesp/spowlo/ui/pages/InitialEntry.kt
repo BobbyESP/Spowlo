@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -51,6 +52,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
@@ -95,6 +97,8 @@ import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -106,12 +110,13 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun InitialEntry(
@@ -423,7 +428,6 @@ fun InitialEntry(
                         }
 
                         //DIALOGS -------------------------------
-                        //TODO: ADD DIALOGS
                         dialog(Route.AUDIO_QUALITY_DIALOG) {
                             AudioQualityDialog(
                                 onBackPressed
@@ -439,13 +443,19 @@ fun InitialEntry(
                         }
 
                         bottomSheet(Route.DOWNLOADER_SHEET) {
-                            DownloaderBottomSheet(
-                                onBackPressed,
-                                downloaderViewModel,
-                                navController
-                            )
-                        }
+                            /*ModalBottomSheetLayout(
+                                bottomSheetNavigator = BottomSheetNavigator(
+                                    rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true),
+                                )
+                            ) {*/
+                                DownloaderBottomSheet(
+                                    onBackPressed,
+                                    downloaderViewModel,
+                                    navController
+                                ) { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id) }
+                          //  }
 
+                        }
                     }
 
                     //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
@@ -500,7 +510,10 @@ fun InitialEntry(
                         }
                     }
 
-                    navigation(startDestination = Route.DOWNLOAD_TASKS, route = Route.DownloadTasksNavi) {
+                    navigation(
+                        startDestination = Route.DOWNLOAD_TASKS,
+                        route = Route.DownloadTasksNavi
+                    ) {
 
                         animatedComposable(
                             Route.FULLSCREEN_LOG arg "taskHashCode",
@@ -536,7 +549,6 @@ fun InitialEntry(
         }
     }
 
-
     LaunchedEffect(Unit) {
         if (PreferencesUtil.isNetworkAvailable()) launch(Dispatchers.IO) {
             runCatching {
@@ -565,6 +577,20 @@ fun InitialEntry(
             }
     }
 
+    LaunchedEffect(Unit) {
+        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
+        kotlin.runCatching {
+            withContext(Dispatchers.IO) {
+                val result = UpdateUtil.updateSpotDL()
+                if (result == SpotDL.UpdateStatus.DONE) {
+                    ToastUtil.makeToastSuspend(
+                        App.context.getString(R.string.spotdl_update_success)
+                            .format(SPOTDL.getString())
+                    )
+                }
+            }
+        }
+    }
 
     if (showUpdateDialog) {
         UpdaterBottomDrawer(latestRelease = latestRelease)
