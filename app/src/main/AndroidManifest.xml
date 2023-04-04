@@ -92,6 +92,10 @@
                 android:value="true" />
         </service>
 
+        <service android:name=".DownloaderKeepUpService"
+            android:enabled="true"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.bobbyesp.spowlo.provider"
