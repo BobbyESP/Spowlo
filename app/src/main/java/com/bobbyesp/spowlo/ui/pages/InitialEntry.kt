@@ -51,6 +51,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
@@ -452,7 +453,9 @@ fun InitialEntry(
                                     onBackPressed,
                                     downloaderViewModel,
                                     navController
-                                ) { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id) }
+                                ) { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id, navOptions = navOptions {
+                                    launchSingleTop = true
+                                }) }
                           //  }
 
                         }

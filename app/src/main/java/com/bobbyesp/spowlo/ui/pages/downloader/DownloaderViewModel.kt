@@ -68,6 +68,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
     }
 
     fun startDownloadSong(skipInfoFetch: Boolean = false) {
+
         val url = viewStateFlow.value.url
         Downloader.clearErrorState()
         if (!Downloader.isDownloaderAvailable())
@@ -76,6 +77,7 @@ class DownloaderViewModel @Inject constructor() : ViewModel() {
             showErrorMessage(R.string.url_empty)
             return
         }
+        //request notification permission
         Downloader.getInfoAndDownload(url, skipInfoFetch = skipInfoFetch)
     }
 

@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.downloader
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -91,6 +92,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.harmonizeWith
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
+import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -124,6 +126,30 @@ fun DownloaderPage(
         }
     }
 
+    val notificationsPermission = rememberPermissionState(
+        permission = Manifest.permission.ACCESS_NOTIFICATION_POLICY
+    ) { b: Boolean ->
+        Log.d("DownloaderPage", "notificationsPermission: $b")
+        if (b) {
+            PreferencesUtil.updateValue(NOTIFICATION, true)
+        } else {
+            PreferencesUtil.updateValue(NOTIFICATION, false)
+            ToastUtil.makeToast(R.string.permission_denied)
+        }
+    }
+
+    val modernNotificationPermission = rememberPermissionState(
+        permission = Manifest.permission.POST_NOTIFICATIONS
+    ) { b: Boolean ->
+        Log.d("DownloaderPage", "modernNotificationPermission: $b")
+        if (b) {
+            PreferencesUtil.updateValue(NOTIFICATION, true)
+        } else {
+            PreferencesUtil.updateValue(NOTIFICATION, false)
+            ToastUtil.makeToast(R.string.permission_denied)
+        }
+    }
+
     //STATE FLOWS
     val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
     val downloaderState by Downloader.downloaderState.collectAsStateWithLifecycle()
@@ -146,6 +172,20 @@ fun DownloaderPage(
         if (CONFIGURE.getBoolean()) navigateToDownloaderSheet()
         else checkPermissionOrDownload()
         keyboardController?.hide()
+        if(NOTIFICATION.getBoolean()){
+            when(Build.VERSION.SDK_INT){
+                in 23..31 -> {
+                    if(notificationsPermission.status != PermissionStatus.Granted){
+                        notificationsPermission.launchPermissionRequest()
+                    }
+                }
+                in 32..Int.MAX_VALUE -> {
+                    if(modernNotificationPermission.status != PermissionStatus.Granted){
+                        modernNotificationPermission.launchPermissionRequest()
+                    }
+                }
+            }
+        }
     }
 
     val songCardClicked = {
