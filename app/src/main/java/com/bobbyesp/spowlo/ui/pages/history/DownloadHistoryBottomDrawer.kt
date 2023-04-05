@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.history
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -144,9 +145,9 @@ fun DownloadHistoryBottomDrawerImpl(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    BottomDrawer(drawerState = drawerState, sheetContent = {
+    BottomDrawer(modifier = Modifier.animateContentSize(),drawerState = drawerState, sheetContent = {
         AnimatedVisibility(visible = !showDeleteInfo) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().animateContentSize()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -232,7 +233,8 @@ fun DownloadHistoryBottomDrawerImpl(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(6.dp)
+                    .animateContentSize(),
                 horizontalAlignment = Alignment.Start
             ) {
                 Row(
@@ -278,7 +280,7 @@ fun DownloadHistoryBottomDrawerImpl(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState())
-                        .padding(top = 24.dp),
+                        .padding(top = 24.dp).animateContentSize(),
                 ) {
                     OutlinedButtonWithIcon(
                         modifier = Modifier

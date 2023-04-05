@@ -11,19 +11,16 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.InlineEnterItem
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceInfo
-import com.bobbyesp.spowlo.utils.FilesUtil.inputStreamToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +42,7 @@ fun DocumentationPage(
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.documentation)
+                        text = stringResource(id = R.string.documentation), fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {

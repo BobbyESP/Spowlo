@@ -14,17 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun SettingTitle(text: String) {
+fun SettingTitle(text: String, fontWeight: FontWeight = FontWeight.Normal) {
     Text(
         modifier = Modifier
             .padding(top = 32.dp)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         text = text,
-        style = MaterialTheme.typography.displaySmall
+        style = MaterialTheme.typography.displaySmall,
+        fontWeight = fontWeight,
     )
 }
 

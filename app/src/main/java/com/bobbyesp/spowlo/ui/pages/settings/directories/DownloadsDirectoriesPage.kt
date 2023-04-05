@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SdCardAlert
 import androidx.compose.material.icons.outlined.LibraryMusic
@@ -27,20 +28,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
-import com.bobbyesp.spowlo.utils.CUSTOM_PATH
-import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.SUBDIRECTORY
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
@@ -48,12 +48,12 @@ import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceInfo
-import com.bobbyesp.spowlo.ui.components.PreferenceItem
-import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
-import com.bobbyesp.spowlo.ui.components.PreferenceSwitchWithDivider
 import com.bobbyesp.spowlo.ui.components.PreferencesHintCard
-import com.bobbyesp.spowlo.utils.CUSTOM_COMMAND
+import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
+import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitchWithDivider
+import com.bobbyesp.spowlo.utils.CUSTOM_PATH
 import com.bobbyesp.spowlo.utils.FilesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.SDCARD_DOWNLOAD
 import com.bobbyesp.spowlo.utils.SDCARD_URI
@@ -65,6 +65,7 @@ private const val validDirectoryRegex = "/storage/emulated/0/(Download|Documents
 private fun String.isValidDirectory(): Boolean {
     return this.contains(Regex(validDirectoryRegex))
 }
+
 private enum class Directory {
     AUDIO, SDCARD
 }
@@ -85,8 +86,6 @@ fun DownloadsDirectoriesPage(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var isSubdirectoryEnabled
-            by remember { mutableStateOf(PreferencesUtil.getValue(SUBDIRECTORY)) }
     var isCustomPathEnabled
             by remember { mutableStateOf(PreferencesUtil.getValue(CUSTOM_PATH)) }
 
@@ -101,15 +100,11 @@ fun DownloadsDirectoriesPage(
         mutableStateOf(PreferencesUtil.getValue(SDCARD_DOWNLOAD))
     }
 
-    var pathTemplateText by remember { mutableStateOf(PreferencesUtil.getOutputPathTemplate()) }
+    var pathTemplateText by remember { mutableStateOf(PreferencesUtil.getExtraDirectory()) }
 
     var showClearTempDialog by remember { mutableStateOf(false) }
 
     var editingDirectory by remember { mutableStateOf(Directory.AUDIO) }
-
-    val isCustomCommandEnabled by remember {
-        mutableStateOf(PreferencesUtil.getValue(CUSTOM_COMMAND))
-    }
 
     val storagePermission =
         rememberPermissionState(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -141,7 +136,7 @@ fun DownloadsDirectoriesPage(
                 }
                 val path = FilesUtil.getRealPath(it)
                 App.updateDownloadDir(path)
-                    audioDirectoryText = path
+                audioDirectoryText = path
             }
         }
 
@@ -167,6 +162,7 @@ fun DownloadsDirectoriesPage(
                     Text(
                         modifier = Modifier,
                         text = stringResource(id = R.string.download_directory),
+                        fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {
@@ -175,8 +171,12 @@ fun DownloadsDirectoriesPage(
                 }, scrollBehavior = scrollBehavior
             )
         }, content = {
-            LazyColumn(modifier = Modifier.padding(it)) {
-                if(sdcardUri.isEmpty())
+            LazyColumn(
+                modifier = Modifier
+                    .padding(it)
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (sdcardUri.isEmpty())
                     item {
                         PreferenceInfo(text = stringResource(id = R.string.sdcard_not_activable_hint))
                     }
@@ -200,41 +200,57 @@ fun DownloadsDirectoriesPage(
                     }
                 item {
                     Text(
-                        text = stringResource(id = R.string.general_settings),
+                        text = stringResource(id = R.string.general),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 18.dp, top = 12.dp, bottom = 4.dp),
+                            .padding(start = 2.dp, top = 12.dp, bottom = 4.dp),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
-                item{
-                    PreferenceItem(
-                        title = stringResource(id = R.string.audio_directory),
-                        description = audioDirectoryText,
-                        enabled = !isCustomCommandEnabled && !sdcardDownload,
-                        icon = Icons.Outlined.LibraryMusic
-                    ) {
-                        editingDirectory = Directory.AUDIO
-                        openDirectoryChooser()
-                    }
+                item {
+                    SettingsItemNew(
+                        onClick = {
+                            editingDirectory = Directory.AUDIO
+                            openDirectoryChooser()
+                        },
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.audio_directory),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        description = { Text(text = audioDirectoryText) },
+                        icon = Icons.Outlined.LibraryMusic,
+                        modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    )
                 }
                 item {
-                    PreferenceSwitchWithDivider(
-                        title = stringResource(id = R.string.sdcard_directory),
-                        description = sdcardUri,
-                        isChecked = sdcardDownload,
-                        enabled = !isCustomCommandEnabled,
-                        isSwitchEnabled = !isCustomCommandEnabled && sdcardUri.isNotBlank(),
-                        onChecked = {
+                    SettingsSwitchWithDivider(
+                        onCheckedChange = {
                             sdcardDownload = !sdcardDownload
                             PreferencesUtil.updateValue(SDCARD_DOWNLOAD, sdcardDownload)
                         },
+                        checked = sdcardDownload,
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.sdcard_directory),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        description = {
+                            Text(
+                                text = sdcardUri,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        },
+                        enabled = sdcardUri.isNotBlank(),
                         icon = Icons.Outlined.SdCard,
                         onClick = {
                             editingDirectory = Directory.SDCARD
                             openDirectoryChooser()
-                        }
+                        },
+                        modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                     )
                 }
             }

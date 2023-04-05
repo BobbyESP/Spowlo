@@ -3,11 +3,12 @@ package com.bobbyesp.spowlo.ui.pages.settings.general
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cached
-import androidx.compose.material.icons.outlined.Filter
+import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material.icons.outlined.Print
 import androidx.compose.material.icons.outlined.PrintDisabled
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,26 +24,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.bobbyesp.library.SpotDL
-import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
-import com.bobbyesp.spowlo.ui.components.PreferenceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
-import com.bobbyesp.spowlo.ui.components.PreferenceSwitch
+import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
+import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
+import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
+import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.getString
+import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
-import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
-import com.bobbyesp.spowlo.utils.GEO_BYPASS
+import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.USE_CACHING
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
+import com.bobbyesp.spowlo.utils.ToastUtil
+import com.bobbyesp.spowlo.utils.UpdateUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -64,38 +71,36 @@ fun GeneralSettingsPage(
 
     var displayErrorReport by DEBUG.booleanState
 
-    var useCache by remember {
+    var useNotifications by remember {
         mutableStateOf(
-            PreferencesUtil.getValue(USE_CACHING)
+            PreferencesUtil.getValue(NOTIFICATION)
         )
     }
-
-    var dontFilter by remember {
-        mutableStateOf(
-            PreferencesUtil.getValue(DONT_FILTER_RESULTS)
-        )
-    }
-
-    var useGeobypass by remember {
-        mutableStateOf(
-            PreferencesUtil.getValue(GEO_BYPASS)
-        )
-    }
+    var isUpdatingLib by remember { mutableStateOf(false) }
 
     val loadingString = App.context.getString(R.string.loading)
 
-    var spotDLVersion by remember { mutableStateOf(
-        loadingString
-    ) }
+    var spotDLVersion by remember {
+        mutableStateOf(
+            loadingString
+        )
+    }
+
+    var configureBeforeDownload by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(CONFIGURE)
+        )
+    }
 
     //create a non-blocking coroutine to get the version
     LaunchedEffect(Unit) {
         GlobalScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    spotDLVersion = SpotDL.getInstance().execute(SpotDLRequest().addOption("-v"), null, null).output
+                    spotDLVersion = SpotDL.getInstance().version(appContext = App.context)
+                        ?: getString(R.string.unknown)
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 spotDLVersion = e.message ?: e.toString()
             }
 
@@ -106,89 +111,116 @@ fun GeneralSettingsPage(
         .fillMaxSize()
         .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
-                title = { Text(text = stringResource(id = R.string.general_settings)) },
-                navigationIcon = {
-                    BackButton { onBackPressed() }
-                },
-                scrollBehavior = scrollBehavior
+            LargeTopAppBar(title = {
+                Text(
+                    text = stringResource(id = R.string.general), fontWeight = FontWeight.Bold
+                )
+            }, navigationIcon = {
+                BackButton { onBackPressed() }
+            }, scrollBehavior = scrollBehavior
             )
         },
         content = {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 item {
-                    PreferenceItem(
-                        title = stringResource(id = R.string.spotdl_version),
-                        description = spotDLVersion,
-                        icon = Icons.Outlined.Info,
-                        onClick = {
-                        },
-                        onClickLabel = stringResource(id = R.string.update),
-                        onLongClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    ElevatedSettingsCard {
+                        SettingsItemNew(
+                            onClick = {
+                                scope.launch {
+                                    runCatching {
+                                        isUpdatingLib = true
+                                        UpdateUtil.updateSpotDL()
+                                        spotDLVersion = SPOTDL.getString()
+                                    }.onFailure {
+                                        ToastUtil.makeToastSuspend(App.context.getString(R.string.spotdl_update_failed))
+                                    }.onSuccess {
+                                        ToastUtil.makeToastSuspend(
+                                            App.context.getString(R.string.spotdl_update_success)
+                                                .format(spotDLVersion)
+                                        )
+                                    }
+                                }
+                            },
+                            title = {
+                                Text(
+                                    text = stringResource(id = R.string.spotdl_version),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            icon = Icons.Outlined.Info,
+                            description = { Text(text = spotDLVersion) })
 
-                        }, onLongClickLabel = stringResource(id = R.string.open_settings)
-                    )
-                }
-                item {
-                    PreferenceSwitch(
-                        title = stringResource(R.string.print_details),
-                        description = stringResource(R.string.print_details_desc),
-                        icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
-                        enabled = true,
-                        onClick = {
-                            displayErrorReport = !displayErrorReport
-                            PreferencesUtil.updateValue(DEBUG, displayErrorReport)
-                        },
-                        isChecked = displayErrorReport
-                    )
+                        SettingsSwitch(
+                            onCheckedChange = {
+                                displayErrorReport = !displayErrorReport
+                                PreferencesUtil.updateValue(DEBUG, displayErrorReport)
+                            },
+                            checked = displayErrorReport,
+                            title = {
+                                Text(
+                                    text = stringResource(R.string.print_details),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
+                            description = { Text(text = stringResource(R.string.print_details_desc)) },
+                        )
+                    }
                 }
 
-                item{
-                    PreferenceSubtitle(text = stringResource(id = R.string.library_settings))
+                item {
+                    PreferenceSubtitle(text = stringResource(id = R.string.general_settings))
                 }
                 item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.use_cache),
-                        description = stringResource(id = R.string.use_cache_desc),
-                        icon = Icons.Outlined.Cached,
-                        onClick = {
-                            scope.launch {
-                                useCache = !useCache
-                                PreferencesUtil.updateValue(USE_CACHING, useCache)
-                            }
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            useNotifications = !useNotifications
+                            PreferencesUtil.updateValue(NOTIFICATION, useNotifications)
                         },
-                        isChecked = useCache
+                        checked = useNotifications,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.use_notifications),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = if (useNotifications) Icons.Outlined.NotificationsActive else Icons.Outlined.NotificationsOff,
+                        description = {
+                            Text(text = stringResource(R.string.use_notifications_desc))
+                        },
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                topStart = 8.dp, topEnd = 8.dp
+                            )
+                        ),
                     )
                 }
                 item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.geo_bypass),
-                        description = stringResource(id = R.string.use_geobypass_desc),
-                        icon = Icons.Outlined.MyLocation,
-                        onClick = {
-                            scope.launch {
-                                useGeobypass = !useGeobypass
-                                PreferencesUtil.updateValue(GEO_BYPASS, useGeobypass)
-                            }
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            configureBeforeDownload = !configureBeforeDownload
+                            PreferencesUtil.updateValue(CONFIGURE, configureBeforeDownload)
                         },
-                        isChecked = useGeobypass
-                    )
-                }
-                item {
-                    PreferenceSwitch(
-                        title = stringResource(id = R.string.dont_filter_results),
-                        description = stringResource(id = R.string.dont_filter_results_desc),
-                        icon = Icons.Outlined.Filter,
-                        onClick = {
-                            scope.launch {
-                                dontFilter = !dontFilter
-                                PreferencesUtil.updateValue(DONT_FILTER_RESULTS, dontFilter)
-                            }
+                        checked = configureBeforeDownload,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.pre_configure_download),
+                                fontWeight = FontWeight.Bold
+                            )
                         },
-                        isChecked = dontFilter
+                        icon = Icons.Outlined.Construction,
+                        description = {
+                            Text(text = stringResource(R.string.pre_configure_download_desc))
+                        },
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                bottomStart = 8.dp, bottomEnd = 8.dp
+                            )
+                        ),
                     )
                 }
             }

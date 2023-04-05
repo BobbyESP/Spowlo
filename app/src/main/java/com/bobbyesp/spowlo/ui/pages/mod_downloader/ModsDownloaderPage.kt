@@ -26,8 +26,7 @@ import com.bobbyesp.spowlo.ui.components.PreferenceInfo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModsDownloaderPage(
-    onBackPressed: () -> Unit,
-    modsDownloaderViewModel: ModsDownloaderViewModel
+    onBackPressed: () -> Unit, modsDownloaderViewModel: ModsDownloaderViewModel
 ) {
     val apiResponse = modsDownloaderViewModel.apiResponseFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -44,8 +43,7 @@ fun ModsDownloaderPage(
                 )
             }, navigationIcon = {
                 BackButton { onBackPressed() }
-            }, actions = {
-            }, scrollBehavior = scrollBehavior
+            }, actions = {}, scrollBehavior = scrollBehavior
             )
         }) { paddings ->
         LazyColumn(
@@ -59,8 +57,7 @@ fun ModsDownloaderPage(
                     PreferenceInfo(text = stringResource(id = R.string.mods_advertisement))
                 }
                 item {
-                    PackagesListItem(
-                        type = PackagesListItemType.Regular,
+                    PackagesListItem(type = PackagesListItemType.Regular,
                         expanded = false,
                         onClick = {},
                         packages = apps.Regular.sortedByDescending { it.version },
@@ -68,8 +65,7 @@ fun ModsDownloaderPage(
                     )
                 }
                 item {
-                    PackagesListItem(
-                        type = PackagesListItemType.RegularCloned,
+                    PackagesListItem(type = PackagesListItemType.RegularCloned,
                         expanded = false,
                         onClick = {},
                         packages = apps.Regular_Cloned.sortedByDescending { it.version },
@@ -77,8 +73,7 @@ fun ModsDownloaderPage(
                     )
                 }
                 item {
-                    PackagesListItem(
-                        type = PackagesListItemType.Amoled,
+                    PackagesListItem(type = PackagesListItemType.Amoled,
                         expanded = false,
                         onClick = {},
                         packages = apps.AMOLED.sortedByDescending { it.version },
@@ -86,8 +81,7 @@ fun ModsDownloaderPage(
                     )
                 }
                 item {
-                    PackagesListItem(
-                        type = PackagesListItemType.AmoledCloned,
+                    PackagesListItem(type = PackagesListItemType.AmoledCloned,
                         expanded = false,
                         onClick = {},
                         packages = apps.AMOLED_Cloned.sortedByDescending { it.version },
@@ -96,8 +90,7 @@ fun ModsDownloaderPage(
                 }
 
                 item {
-                    PackagesListItem(
-                        type = PackagesListItemType.Lite,
+                    PackagesListItem(type = PackagesListItemType.Lite,
                         expanded = false,
                         onClick = {},
                         packages = apps.Lite.sortedByDescending { it.version },

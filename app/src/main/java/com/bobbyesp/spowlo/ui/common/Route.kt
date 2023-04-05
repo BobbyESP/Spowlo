@@ -1,14 +1,20 @@
 package com.bobbyesp.spowlo.ui.common
 
 object Route {
+
+    const val DOWNLOADER_SETTINGS = "downloader_settings"
+    const val DOWNLOADER_SHEET = "downloader_sheet"
+    const val NavGraph = "nav_graph"
+    const val SearcherNavi = "searcher_navi"
+    const val DownloaderNavi = "downloader_navi"
+
+
     const val HOME = "home"
     const val DOWNLOADER = "downloader"
     const val DOWNLOADS_HISTORY = "download_history"
     const val PLAYLIST = "playlist"
     const val SETTINGS = "settings"
     const val FORMAT_SELECTION = "format"
-    const val TASK_LIST = "task_list"
-    const val TASK_LOG = "task_log"
     const val PLAYLIST_METADATA_PAGE = "playlist_metadata_page"
     const val MODS_DOWNLOADER = "mods_downloader"
     const val SEARCHER = "searcher"
@@ -17,6 +23,11 @@ object Route {
     const val UPDATER_PAGE = "updater_page"
     const val MARKDOWN_VIEWER = "markdown_viewer"
     const val DOCUMENTATION = "documentation"
+    const val MORE_OPTIONS_HOME = "more_options_home"
+    const val SONG_INFO_HISTORY = "song_info_history"
+    const val DOWNLOAD_TASKS = "download_tasks"
+    const val DownloadTasksNavi = "download_tasks_navi"
+    const val PLAYLIST_PAGE = "playlist_page"
 
     const val APPEARANCE = "appearance"
     const val APP_THEME = "app_theme"
@@ -26,15 +37,12 @@ object Route {
     const val DOWNLOAD_DIRECTORY = "download_directory"
     const val CREDITS = "credits"
     const val LANGUAGES = "languages"
-    const val DARK_THEME = "dark_theme"
     const val DOWNLOAD_QUEUE = "queue"
+    const val FULLSCREEN_LOG = "fullscreen_log"
     const val DOWNLOAD_FORMAT = "download_format"
     const val NETWORK_PREFERENCES = "network_preferences"
     const val COOKIE_PROFILE = "cookie_profile"
     const val COOKIE_GENERATOR_WEBVIEW = "cookie_webview"
-
-    const val TASK_HASHCODE = "task_hashcode"
-    const val TEMPLATE_ID = "template_id"
 
     //DIALOGS
     const val AUDIO_QUALITY_DIALOG = "audio_quality_dialog"

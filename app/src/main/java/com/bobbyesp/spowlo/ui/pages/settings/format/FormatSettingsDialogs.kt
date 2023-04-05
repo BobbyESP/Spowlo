@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.settings.format
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,89 +33,83 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 @Composable
 fun AudioFormatDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {}) {
     var audioFormat by remember { mutableStateOf(PreferencesUtil.getAudioFormat()) }
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.dismiss))
-            }
-        },
-        icon = { Icon(Icons.Outlined.AudioFile, null) },
-        title = {
-            Text(stringResource(R.string.audio_format))
-        }, confirmButton = {
-            TextButton(onClick = {
-                PreferencesUtil.encodeInt(AUDIO_FORMAT, audioFormat)
-                onConfirm()
-                onDismissRequest()
-            }) {
-                Text(text = stringResource(R.string.confirm))
-            }
-        }, text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    text = stringResource(R.string.audio_format_desc),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                for (i in 0..5)
-                    SingleChoiceItem(
-                        text = PreferencesUtil.getAudioFormatDesc(i),
-                        selected = audioFormat == i
-                    ) { audioFormat = i }
-            }
-        })
+    AlertDialog(onDismissRequest = onDismissRequest, dismissButton = {
+        TextButton(onClick = onDismissRequest) {
+            Text(stringResource(R.string.dismiss))
+        }
+    }, icon = { Icon(Icons.Outlined.AudioFile, null) }, title = {
+        Text(stringResource(R.string.audio_format))
+    }, confirmButton = {
+        TextButton(onClick = {
+            PreferencesUtil.encodeInt(AUDIO_FORMAT, audioFormat)
+            onConfirm()
+            onDismissRequest()
+        }) {
+            Text(text = stringResource(R.string.confirm))
+        }
+    }, text = {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                text = stringResource(R.string.audio_format_desc),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            for (i in 0..5) SingleChoiceItem(
+                text = PreferencesUtil.getAudioFormatDesc(i), selected = audioFormat == i
+            ) { audioFormat = i }
+        }
+    })
 }
 
 @Composable
 fun AudioQualityDialog(onDismissRequest: () -> Unit, onConfirm: () -> Unit = {}) {
     var audioQuality by remember { mutableStateOf(PreferencesUtil.getAudioQuality()) }
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.dismiss))
-            }
-        },
-        icon = { Icon(Icons.Outlined.HighQuality, null) },
-        title = {
-            Text(stringResource(R.string.audio_quality))
-        }, confirmButton = {
-            TextButton(onClick = {
-                PreferencesUtil.encodeInt(AUDIO_QUALITY, audioQuality)
-                onConfirm()
-                onDismissRequest()
-            }) {
-                Text(text = stringResource(R.string.confirm))
-            }
-        }, text = {
-            Column(modifier = Modifier) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    text = stringResource(R.string.audio_quality_desc),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                LazyColumn(content = {
-                    for (i in 0..17)
-                        item {
-                            SingleChoiceItem(
-                                text = PreferencesUtil.getAudioQualityDesc(i),
-                                selected = audioQuality == i
-                            ) { audioQuality = i }
+    AlertDialog(onDismissRequest = onDismissRequest, dismissButton = {
+        TextButton(onClick = onDismissRequest) {
+            Text(stringResource(R.string.dismiss))
+        }
+    }, icon = { Icon(Icons.Outlined.HighQuality, null) }, title = {
+        Text(stringResource(R.string.audio_quality))
+    }, confirmButton = {
+        TextButton(onClick = {
+            Log.d("FormatSettingsDialog", "The chosen audioQuality is: $audioQuality")
+            PreferencesUtil.encodeInt(AUDIO_QUALITY, audioQuality)
+            Log.d(
+                "FormatSettingsDialog",
+                "The encoded int to the AUDIO_QUALITY settings var is: ${PreferencesUtil.getAudioQuality()}"
+            )
+            onConfirm()
+            onDismissRequest()
+        }) {
+            Text(text = stringResource(R.string.confirm))
+        }
+    }, text = {
+        Column(modifier = Modifier) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                text = stringResource(R.string.audio_quality_desc),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            LazyColumn(
+                content = {
+                    for (i in 17 downTo 0) item {
+                        SingleChoiceItem(
+                            text = PreferencesUtil.getAudioQualityDesc(i),
+                            selected = audioQuality == i
+                        ) {
+                            audioQuality = i
+                            Log.d(
+                                "FormatSettingsDialog", "Changed to $i"
+                            )
                         }
-                }, modifier = Modifier.size(400.dp))
-            }
-        })
-}
-
-@Composable
-fun CustomOutputBottomDrawer(
-
-){
-
+                    }
+                }, modifier = Modifier.size(400.dp)
+            )
+        }
+    })
 }
 

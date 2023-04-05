@@ -8,9 +8,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
+import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.CookieProfile
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-const val CUSTOM_COMMAND = "custom_command"
 const val SPOTDL = "spotDL_Init"
 const val DEBUG = "debug"
 const val CONFIGURE = "configure"
@@ -37,21 +36,22 @@ const val AUDIO_FORMAT = "audio_format"
 const val AUDIO_QUALITY = "audio_quality"
 const val WELCOME_DIALOG = "welcome_dialog"
 const val AUDIO_DIRECTORY = "audio_dir"
+const val EXTRA_DIRECTORY = "extra_dir"
 const val ORIGINAL_AUDIO = "original_audio"
 const val SDCARD_DOWNLOAD = "sdcard_download"
 const val SDCARD_URI = "sd_card_uri"
-const val SUBDIRECTORY = "sub-directory"
 const val PLAYLIST = "playlist"
 const val LANGUAGE = "language"
 const val NOTIFICATION = "notification"
 private const val THEME_COLOR = "theme_color"
 const val PALETTE_STYLE = "palette_style"
 const val CUSTOM_PATH = "custom_path"
-const val OUTPUT_PATH_TEMPLATE = "path_template"
 
 const val USE_YT_METADATA = "use_yt_metadata"
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
 const val SYNCED_LYRICS = "synced_lyrics"
+
+const val SKIP_INFO_FETCH = "skip_info_fetch"
 
 const val SPOTIFY_CLIENT_ID = "spotify_client_id"
 const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
@@ -60,6 +60,7 @@ const val USE_CACHING = "use_caching"
 const val DONT_FILTER_RESULTS = "dont_filter_results"
 const val GEO_BYPASS = "geo-bypass"
 const val AUDIO_PROVIDER = "audio_provider"
+const val THREADS = "threads"
 
 const val SPOTDL_UPDATE = "spotdl_update"
 const val TEMPLATE_ID = "template_id"
@@ -79,11 +80,9 @@ const val SYSTEM_DEFAULT = 0
 const val STABLE = 0
 const val PRE_RELEASE = 1
 
-const val TEMPLATE_EXAMPLE = """--audio youtube-music --dont-filter-results"""
-
 private val StringPreferenceDefaults =
     mapOf(
-        OUTPUT_PATH_TEMPLATE to "{artists} - {title}.{output-ext}",
+        EXTRA_DIRECTORY to "",
         SPOTIFY_CLIENT_ID to "",
         SPOTIFY_CLIENT_SECRET to "",
     )
@@ -102,6 +101,8 @@ private val BooleanPreferenceDefaults =
         DONT_FILTER_RESULTS to false,
         SPOTDL_UPDATE to true,
         GEO_BYPASS to false,
+        SKIP_INFO_FETCH to false,
+        NOTIFICATION to true,
     )
 
 private val IntPreferenceDefaults = mapOf(
@@ -114,6 +115,7 @@ private val IntPreferenceDefaults = mapOf(
     AUDIO_QUALITY to 17,
     AUDIO_PROVIDER to 0,
     UPDATE_CHANNEL to STABLE,
+    THREADS to 1,
 )
 
 val palettesMap = mapOf(
@@ -146,7 +148,7 @@ object PreferencesUtil {
     fun encodeString(key: String, string: String) = key.updateString(string)
     fun containsKey(key: String) = kv.containsKey(key)
 
-    fun getOutputPathTemplate(): String = OUTPUT_PATH_TEMPLATE.getString()
+    fun getExtraDirectory(): String = EXTRA_DIRECTORY.getString()
 
     fun getAudioFormat(): Int = AUDIO_FORMAT.getInt()
 
@@ -161,54 +163,59 @@ object PreferencesUtil {
             2 -> "ogg"
             3 -> "opus"
             4 -> "m4a"
-            5 -> "Default"
+            5 -> context.getString(R.string.not_specified)
             else -> "mp3"
         }
     }
 
     fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
         return when (audioProviderInt){
-            0 -> "youtube-music"
-            1 -> "youtube"
-            else -> "youtube-music"
+            0 -> context.getString(R.string.default_option)
+            1 -> context.getString(R.string.both)
+            2 -> "Youtube Music"
+            3 -> "Youtube"
+            else -> "Youtube Music"
         }
     }
 
     @Composable
     fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
         return when (audioProviderInt){
-            0 -> LocalAsset(id = R.drawable.youtube_music_icons8)
-            1 -> LocalAsset(id = R.drawable.icons8_youtube)
+            2 -> LocalAsset(id = R.drawable.youtube_music_icons8)
+            3 -> LocalAsset(id = R.drawable.icons8_youtube)
             else -> LocalAsset(id = R.drawable.youtube_music_icons8)
         }
     }
 
     fun getAudioQualityDesc(audioQualityStr: Int = getAudioQuality()): String {
         return when (audioQualityStr) {
-            0 -> "8k"
-            1 -> "16k"
-            2 -> "24k"
-            3 -> "32k"
-            4 -> "40k"
-            5 -> "48k"
-            6 -> "64k"
-            7 -> "80k"
-            8 -> "96k"
-            9 -> "112k"
-            10 -> "128k"
-            11 -> "160k"
-            12 -> "192k"
-            13 -> "224k"
-            14 -> "256k"
-            15 -> "320k"
-            16 -> "disable"
-            17 -> "auto"
+            0 -> context.getString(R.string.not_specified)
+            1 -> "8 kbps"
+            2 -> "16 kbps"
+            3 -> "24 kbps"
+            4 -> "32 kbps"
+            5 -> "40 kbps"
+            6 -> "48 kbps"
+            7 -> "64 kbps"
+            8 -> "80 kbps"
+            9 -> "96 kbps"
+            10 -> "112 kbps"
+            11 -> "128 kbps"
+            12 -> "160 kbps"
+            13 -> "192 kbps"
+            14 -> "224 kbps"
+            15 -> "256 kbps"
+            16 -> "320 kbps"
+            17 -> context.getString(R.string.not_convert)
             else -> "auto"
         }
     }
 
     fun isNetworkAvailableForDownload() =
-        CELLULAR_DOWNLOAD.getBoolean() || !App.connectivityManager.isActiveNetworkMetered
+        !App.connectivityManager.isActiveNetworkMetered //CELLULAR_DOWNLOAD.getBoolean() ||
+
+    //check if the phone is connected to a network source (wifi or mobile data)
+    fun isNetworkAvailable() = App.connectivityManager.activeNetworkInfo?.isConnected == true
 
     fun isAutoUpdateEnabled() = AUTO_UPDATE.getBoolean(!isFDroidBuild())
 
@@ -302,17 +309,6 @@ object PreferencesUtil {
         }.stateIn(applicationScope, started = SharingStarted.Eagerly, COOKIE_HEADER)
 
     fun getCookies(): String = cookiesStateFlow.value
-
-    val templateStateFlow: StateFlow<List<CommandTemplate>> =
-        DatabaseUtil.getTemplateFlow().distinctUntilChanged().stateIn(
-            applicationScope, started = SharingStarted.Eagerly, emptyList()
-        )
-
-    fun getTemplate(): CommandTemplate {
-        return templateStateFlow.value.run {
-            find { it.id == TEMPLATE_ID.getInt() } ?: first()
-        }
-    }
 
 }
 

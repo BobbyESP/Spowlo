@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,13 +40,13 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongCard(
+    modifier: Modifier = Modifier,
     song: Song,
     onClick: () -> Unit = {},
     progress: Float = 0.69f,
     isPreview: Boolean = false,
     isExplicit: Boolean = true,
     isLyrics: Boolean = false,
-    modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
         ElevatedCard(
@@ -102,7 +100,7 @@ fun SongCard(
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 LyricsIcon(
-                                    visible = isLyrics
+                                    visible = false //isLyrics
                                 )
                             }
                             Spacer(Modifier.height(8.dp))
@@ -146,7 +144,7 @@ fun SongCard(
                 Box(Modifier.fillMaxWidth()) {
                     val progressAnimationValue by animateFloatAsState(
                         targetValue = progress,
-                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
                     )
                     if (progress < 0f)
                         LinearProgressIndicator(
@@ -176,6 +174,7 @@ fun SongCard(
 fun ShowSongCard() {
     Surface {
         SongCard(
+            song =
             Song(
                 "Save Your Tears",
                 listOf("The Weekend"),
@@ -215,6 +214,7 @@ fun ShowSongCard() {
 fun ShowSongCardNight() {
     Surface {
         SongCard(
+            song =
             Song(
                 "mariposas",
                 listOf("sangiovanni"),

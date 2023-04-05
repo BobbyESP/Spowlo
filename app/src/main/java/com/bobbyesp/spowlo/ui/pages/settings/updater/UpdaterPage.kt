@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material3.ButtonDefaults
@@ -29,10 +30,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.booleanState
@@ -40,9 +43,9 @@ import com.bobbyesp.spowlo.ui.common.intState
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.PreferenceInfo
-import com.bobbyesp.spowlo.ui.components.PreferenceSingleChoiceItem
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.PreferenceSwitchWithContainer
+import com.bobbyesp.spowlo.ui.components.settings.SettingsNewSingleChoiceItem
 import com.bobbyesp.spowlo.ui.dialogs.UpdateDialog
 import com.bobbyesp.spowlo.utils.AUTO_UPDATE
 import com.bobbyesp.spowlo.utils.PRE_RELEASE
@@ -77,7 +80,7 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
         LargeTopAppBar(title = {
             Text(
                 modifier = Modifier,
-                text = stringResource(id = R.string.auto_update),
+                text = stringResource(id = R.string.auto_update), fontWeight = FontWeight.Bold
             )
         }, navigationIcon = {
             BackButton {
@@ -104,10 +107,11 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
                 )
             }
             item {
-                PreferenceSingleChoiceItem(
+                SettingsNewSingleChoiceItem(
                     text = stringResource(id = R.string.stable_channel),
                     selected = updateChannel == STABLE,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                    modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
                 ) {
                     updateChannel = STABLE
                     UPDATE_CHANNEL.updateInt(updateChannel)
@@ -115,10 +119,11 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
             }
 
             item {
-                PreferenceSingleChoiceItem(
+                SettingsNewSingleChoiceItem(
                     text = stringResource(id = R.string.pre_release_channel),
                     selected = updateChannel == PRE_RELEASE,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                    modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                 ) {
                     updateChannel = PRE_RELEASE
                     UPDATE_CHANNEL.updateInt(updateChannel)
@@ -128,7 +133,7 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
                 var isLoading by remember { mutableStateOf(false) }
                 Row(
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
                 ) {
                     ProgressIndicatorButton(
                         modifier = Modifier

@@ -1,2 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="song_album_artist">Artista del álbum</string>
+    <string name="checked">Marcado</string>
+    <string name="audio">Sonido</string>
+    <string name="check_for_updates">Buscar actualizaciones</string>
+    <string name="artist">Artista</string>
+    <string name="audio_provider_desc">Cambia desde donde quieres descargar las canciones</string>
+    <string name="album">Álbum</string>
+    <string name="amoled_cloned">Mod AMOLED clonado</string>
+    <string name="amoled">Mod AMOLED</string>
+    <string name="searching_error">Ocurrió un error en la búsqueda</string>
+    <string name="task_running">Una descarga ya está en progreso.</string>
+    <string name="update_available">Una nueva actualización está disponible!</string>
+    <string name="app_update_failed">Ocurrió un error al intentar actualizar la aplicación</string>
+    <string name="error_checking_for_updates">Ocurrió un error al buscar acutalizaciones</string>
+    <string name="fetch_info_error_msg">Ocurrió un error al buscar la información de la canción</string>
+    <string name="spotify_api_error">Ocurrió un error al intentar conectarse a la API de Spotify</string>
+    <string name="regular_description">Un mod de Spotify normal con saltos ilimitados, escucha en demanda, libre de anuncios y con las últimas funciones. Esto sustituye la versión original de Spotify (la que descargas desde la Play Store).</string>
+    <string name="pre_release_channel">Canal Beta</string>
+    <string name="version">Versión de la aplicación</string>
+    <string name="regular_cloned_description">Un mod de Spotify normal con saltos ilimitados, escucha en demanda, libre de anuncios y con las últimas funciones pero clonado. Esto significa que se instalará como una aplicación aparte de la original, podiendo tener ambas instaladas a la vez.</string>
+    <string name="audio_provider">Proveedor de audio</string>
+    <string name="audio_quality">Calidad de sonido</string>
+    <string name="api_call_failed">La llamada a la API de los Mods no fue bien…</string>
+    <string name="cancel_download">Cancelar descarga</string>
+    <string name="check_source_code">Mira el código fuente de Spowlo en GitHub!</string>
+    <string name="appearance_settings">Cambia como se ve la aplicación</string>
+    <string name="spotify_settings_desc">Cambia ajustes relacionados con la API de Spotify…</string>
+    <string name="format_settings_desc">Cambia el formato de tus descargas</string>
+    <string name="additional_settings">Ajustes adicionales</string>
+    <string name="download_error_msg">Ocurrió un error al intentar descargar la canción</string>
+    <string name="about">Acerca de</string>
+    <string name="filesize_gb">%.2f GB</string>
+    <string name="add">Añadir</string>
+    <string name="filesize_mb">%.2f MB</string>
+    <string name="network_settings_desc">Cambia tu configuración de internet</string>
+    <string name="lite_description">"Una versión ligera de Spotify sin anuncios y con saltos ilimitados. "</string>
+    <string name="multiselect_item_count">%1$d canción(es)</string>
+    <string name="are_you_sure">Estás seguro\?</string>
+    <string name="battery_configuration_desc">Activa el uso de la aplicación en segundo plano para asegurarse de que todo funciona correctamente.</string>
+    <string name="settings_before_download_text">Ajusta tu descarga</string>
+    <string name="appearance">Apariencia</string>
+    <string name="auto_update">Auto-actualizar</string>
+    <string name="song_album">Álbum</string>
+    <string name="updates_channels_desc">Auto-actualización de la aplicación, canal de actualización…</string>
+    <string name="battery_configuration">Configuración de la batería</string>
+    <string name="cancel">Cancelar</string>
+    <string name="download_directory_desc">Cambia donde las descargas son guardadas</string>
+    <string name="display">Apariencia</string>
+    <string name="audio_directory">Directorio de los archivos de sonido</string>
+    <string name="audio_format">Formato del audio</string>
+    <string name="unknown_error">Ocurrió un error desconocido.</string>
+</resources>

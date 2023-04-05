@@ -4,21 +4,27 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
+import android.os.IBinder
 import android.os.Looper
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
 import com.bobbyesp.spowlo.utils.DownloaderUtil
+import com.bobbyesp.spowlo.utils.EXTRA_DIRECTORY
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.FilesUtil.createEmptyFile
 import com.bobbyesp.spowlo.utils.FilesUtil.getCookiesFile
+import com.bobbyesp.spowlo.utils.NotificationsUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -69,12 +75,17 @@ class App : Application() {
                 getString(R.string.app_name)
             ).absolutePath
         )
+        extraDownloadDir = EXTRA_DIRECTORY.getString(
+            ""
+        )
+        if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
     }
 
     companion object {
         private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
+        lateinit var extraDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
@@ -83,36 +94,37 @@ class App : Application() {
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
-        /* var isServiceRunning = false
+        var isServiceRunning = false
 
-         private val connection = object : ServiceConnection {
-             override fun onServiceConnected(className: ComponentName, service: IBinder) {
-                 val binder = service as DownloadService.DownloadServiceBinder
-                 isServiceRunning = true
-             }
+        private val connection = object : ServiceConnection {
+            override fun onServiceConnected(className: ComponentName, service: IBinder) {
+                val binder = service as DownloaderKeepUpService.DownloadServiceBinder
+                isServiceRunning = true
+            }
 
-             override fun onServiceDisconnected(arg0: ComponentName) {
-             }
-         }
+            override fun onServiceDisconnected(arg0: ComponentName) {
 
-         fun startService() {
-             if (isServiceRunning) return
-             Intent(context.applicationContext, DownloadService::class.java).also { intent ->
-                 context.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-             }
-         }
+            }
+        }
 
-         fun stopService() {
-             if (!isServiceRunning) return
-             try {
-                 isServiceRunning = false
-                 context.applicationContext.run {
-                     unbindService(connection)
-                 }
-             } catch (e: Exception) {
-                 e.printStackTrace()
-             }
-         }*/
+        fun startService() {
+            if (isServiceRunning) return
+            Intent(context.applicationContext, DownloaderKeepUpService::class.java).also { intent ->
+                context.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            }
+        }
+
+        fun stopService() {
+            if (!isServiceRunning) return
+            try {
+                isServiceRunning = false
+                context.applicationContext.run {
+                    unbindService(connection)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
 
         fun getPrivateDownloadDirectory(): String =

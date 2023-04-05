@@ -15,8 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetDefaults
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,13 +35,14 @@ import androidx.compose.ui.zIndex
 @Composable
 fun BottomDrawer(
     modifier: Modifier = Modifier,
-    drawerState: ModalBottomSheetState = androidx.compose.material.rememberModalBottomSheetState(
-        ModalBottomSheetValue.Hidden
+    drawerState: ModalBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it == ModalBottomSheetValue.Hidden || it == ModalBottomSheetValue.Expanded },
     ),
     sheetContent: @Composable ColumnScope.() -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-    androidx.compose.material.ModalBottomSheetLayout(
+    ModalBottomSheetLayout(
         modifier = modifier,
         sheetShape = RoundedCornerShape(
             topStart = 28.0.dp,

@@ -1,27 +1,30 @@
 [versions]
-accompanist = "0.28.0"
-androidGradlePlugin = "7.4.0"
+accompanist = "0.29.2-rc"
+androidGradlePlugin = "7.4.2"
 androidxComposeBom = "2023.01.00"
 androidxComposeCompiler = "1.4.0"
-androidxCore = "1.9.0"
+androidxCore = "1.10.0-rc01"
 androidMaterial = "1.9.0-alpha02"
 androidxAppCompat = "1.7.0-alpha02"
 androidxActivity = "1.6.1"
 markdownDependency = "0.3.2"
 navTransitions = "0.11.0-alpha"
+androidxPaging = "3.1.1"
+paginationCompose = "1.0.0-alpha18"
 
-androidxLifecycle = "2.6.0-rc01"
+androidxLifecycle = "2.6.0"
 androidxNavigation = "2.5.3"
-androidxComposeMaterial3 = "1.1.0-alpha07"
+androidxComposeMaterial3 = "1.1.0-alpha08"
 
 androidxEspresso = "3.5.1"
 androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.5"
 
-spotdlAndroidVersion = "fc391374c9"
+spotdlAndroidVersion = "3d8e42a3f0"
 spotifyApiKotlinVersion = "3.8.8"
 
+shimmerLibrary = "1.0.4"
 crashHandlerVersion = "2.0.2"
 
 coil = "2.2.2"
@@ -63,6 +66,11 @@ accompanist-pager-indicators = { group = "com.google.accompanist", name = "accom
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 #Accompanist material component
 accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
+
+#Paging3
+paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidxPaging" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paginationCompose" }
+
 
 #Markdown parser
 markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdownDependency" }
@@ -118,6 +126,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmerLibrary" }
 
 soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
 soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }

@@ -20,6 +20,7 @@ import okhttp3.Response
 import okio.IOException
 import java.io.File
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 object ModsDownloaderAPI {
@@ -32,48 +33,38 @@ object ModsDownloaderAPI {
     private val client = OkHttpClient()
     const val TAG = "APKsDownloaderAPI"
 
-    private val requestAPIResponse =
-        Request.Builder()
-            .url(BASE_URL + ENDPOINT)
-            .build()
+    private val requestAPIResponse = Request.Builder().url(BASE_URL + ENDPOINT).build()
 
 
     @CheckResult
-    private suspend fun getAPIResponse(): Result<APIResponseDto>{
-        return suspendCoroutine {
+    suspend fun getAPIResponse(): Result<APIResponseDto> {
+        return suspendCoroutine { continuation ->
             client.newCall(requestAPIResponse).enqueue(object : Callback {
 
-                override fun onFailure(call: Call, e: IOException) {
-                    it.resumeWith(Result.failure(e))
-                }
+                    override fun onResponse(call: Call, response: Response) {
+                        val responseData = response.body.string()
+                        val apiResponse =
+                            jsonFormat.decodeFromString(APIResponseDto.serializer(), responseData)
+                        response.body.close()
+                        continuation.resume(Result.success(apiResponse))
+                    }
 
-                override fun onResponse(call: Call, response: Response) {
-                    val responseData = response.body.string()
-                    val apiResponse = jsonFormat.decodeFromString(APIResponseDto.serializer(), responseData)
-                    response.body.close()
-                    it.resume(Result.success(apiResponse))
-                }
-            })
+                    override fun onFailure(call: Call, e: IOException) {
+                        continuation.resumeWithException(e)
+                    }
+                })
         }
     }
 
-    suspend fun callModsAPI(): Result<APIResponseDto> {
-        return getAPIResponse()
-    }
-
-    private fun Context.getSpotifyAPK() =
-        File(getExternalFilesDir("apk"), "Spotify_Spowlo_Mod.apk")
+    private fun Context.getSpotifyAPK() = File(getExternalFilesDir("apk"), "Spotify_Spowlo_Mod.apk")
 
     suspend fun downloadPackage(
-        context: Context = App.context,
-        apiResponseDto: APIResponseDto,
-        listName: String,
-        index: Int
-        ): Flow<UpdateUtil.DownloadStatus> {
-        withContext(Dispatchers.IO){
+        context: Context = App.context, apiResponseDto: APIResponseDto, listName: String, index: Int
+    ): Flow<UpdateUtil.DownloadStatus> {
+        withContext(Dispatchers.IO) {
             var selectedList = emptyList<ApkResponseDto>()
 
-            when(listName){
+            when (listName) {
                 "Regular" -> selectedList = apiResponseDto.apps.Regular
                 "Amoled" -> selectedList = apiResponseDto.apps.AMOLED
                 "Regular_Cloned" -> selectedList = apiResponseDto.apps.Regular_Cloned
@@ -83,9 +74,7 @@ object ModsDownloaderAPI {
 
             val file = context.getSpotifyAPK()
 
-            val request = Request.Builder()
-                .url(selectedList[index].link)
-                .build()
+            val request = Request.Builder().url(selectedList[index].link).build()
 
             try {
                 val response = client.newCall(request).execute()

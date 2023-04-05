@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.utils.connectWithDelimiter
@@ -93,7 +94,7 @@ fun WebViewPage(
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
-            title = { Text(webViewState.pageTitle.toString(), maxLines = 1) },
+            title = { Text(webViewState.pageTitle.toString(), maxLines = 1, fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 IconButton(
                     onClick = { onDismissRequest() }) {

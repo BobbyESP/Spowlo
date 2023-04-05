@@ -25,9 +25,7 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
 </div>
 
 ## ⚠️ Warning
-The Spotify mods downloader has been deleted by request of the xManager team. This is because having the mod downloader in Spowlo meant an avoid of their ads/earning methods. xManager has to pay servers and they pay those just for making the users have free Spotify, I hope that you all understand.
-
-please, instead use the [xManager app](https://github.com/xManager-App/xManager). Maybe somme day I create an app for them who knows haha
+Spowlo uses YT Music and YouTube to download the songs. This is because Spotify DRM bypassing can lead to an account ban and legal issues. If YT Music isn't available in your country, don't worry, you can still use YouTube as audio provider or use a VPN. We are working on making a regional bypass so don't matter your region. Thank you for understanding.
 
 ## 🔮 Features
 
@@ -50,6 +48,11 @@ please, instead use the [xManager app](https://github.com/xManager-App/xManager)
 For most devices, it is recommended to install the **ARM64-v8a** version of the apks
 
 - Download the latest stable version from [GitHub releases](https://github.com/BobbyESP/Spowlo/releases/latest)
+
+## Translation
+
+We are using Hosted Weblate for the translations of the app. if you want to contribute follow [this link](https://hosted.weblate.org/engage/spowlo/) 🖇️ 
+
 
 ## 📖Credits
 Thanks to [xnetcat](https://github.com/xnetcat) for it's help with some spotDL related things!

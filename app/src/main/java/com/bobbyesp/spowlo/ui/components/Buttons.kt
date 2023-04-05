@@ -71,11 +71,13 @@ fun TextButtonWithIcon(
     onClick: () -> Unit,
     icon: ImageVector,
     text: String,
-    contentColor: Color = MaterialTheme.colorScheme.primary
+    contentColor: Color = MaterialTheme.colorScheme.primary,
+    enabled : Boolean = true
 ) {
     TextButton(
         modifier = modifier,
         onClick = onClick,
+        enabled = enabled,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
         colors = ButtonDefaults.textButtonColors(contentColor = contentColor)
     )

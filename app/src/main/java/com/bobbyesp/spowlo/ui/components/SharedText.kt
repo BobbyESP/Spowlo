@@ -1,12 +1,27 @@
 package com.bobbyesp.spowlo.ui.components
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.TargetBasedAnimation
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
@@ -236,7 +251,8 @@ fun AutoResizableText(
     modifier: Modifier = Modifier,
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.bodySmall,
-    color: Color = textStyle.color
+    color: Color = textStyle.color,
+    maxLines: Int = 1,
 ) {
     var resizedTextStyle by remember {
         mutableStateOf(textStyle)
@@ -250,6 +266,7 @@ fun AutoResizableText(
     Text(
         text = text,
         color = color,
+        maxLines = maxLines,
         modifier = modifier.drawWithContent {
             if (shouldDraw) {
                 drawContent()
@@ -260,6 +277,69 @@ fun AutoResizableText(
         onTextLayout = { result ->
             if (result.didOverflowWidth) {
                 if (textStyle.fontSize.isUnspecified) {
+                    resizedTextStyle = resizedTextStyle.copy(
+                        fontSize = defaultFontSize
+                    )
+                }
+                resizedTextStyle = resizedTextStyle.copy(
+                    fontSize = resizedTextStyle.fontSize * 0.95
+                )
+            } else {
+                shouldDraw = true
+            }
+        }
+    )
+}
+
+//auto resizable text but with all the text parameters
+@Composable
+fun AutoResizableText(
+    modifier: Modifier = Modifier,
+    text: String,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    maxLines: Int = 1,
+    style: TextStyle = LocalTextStyle.current.plus(TextStyle()),
+    color: Color = style.color,
+) {
+    var resizedTextStyle by remember {
+        mutableStateOf(style)
+    }
+    var shouldDraw by remember {
+        mutableStateOf(false)
+    }
+
+    val defaultFontSize = MaterialTheme.typography.bodySmall.fontSize
+
+    Text(
+        text = text,
+        color = color,
+        maxLines = maxLines,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+
+        modifier = modifier.drawWithContent {
+            if (shouldDraw) {
+                drawContent()
+            }
+        },
+        softWrap = false,
+        style = resizedTextStyle,
+        onTextLayout = { result ->
+            if (result.didOverflowWidth) {
+                if (style.fontSize.isUnspecified) {
                     resizedTextStyle = resizedTextStyle.copy(
                         fontSize = defaultFontSize
                     )

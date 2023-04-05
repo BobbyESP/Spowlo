@@ -43,8 +43,8 @@ sealed class Version(
 
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
-    versionMinor = 2,
-    versionPatch = 1,
+    versionMinor = 3,
+    versionPatch = 0,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -71,7 +71,7 @@ android {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
         targetSdk = 33
-        versionCode = 10201
+        versionCode = 10300
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
@@ -110,18 +110,42 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            packagingOptions {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            //add client id and secret to build config
+            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField(
+                "String",
+                "CLIENT_SECRET",
+                "\"${project.properties["CLIENT_SECRET"]}\""
+            )
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
+            packagingOptions {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
+            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField(
+                "String",
+                "CLIENT_SECRET",
+                "\"${project.properties["CLIENT_SECRET"]}\""
+            )
+            matchingFallbacks.add(0, "debug")
+            matchingFallbacks.add(1, "release")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -183,10 +207,11 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.navigation.animation)
     implementation(libs.accompanist.webview)
-    implementation(libs.accompanist.pager.layouts)
-    implementation(libs.accompanist.pager.indicators)
     implementation(libs.accompanist.flowlayout)
     implementation(libs.accompanist.material)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.paging.compose)
+    implementation(libs.paging.runtime)
 
     implementation(libs.coil.kt.compose)
 
@@ -214,13 +239,14 @@ dependencies {
 
     implementation(libs.markdown)
     //Exoplayer
-    implementation(libs.exoplayer.core)
-    implementation(libs.exoplayer.ui)
-    implementation(libs.exoplayer.dash)
-    implementation(libs.exoplayer.smoothstreaming)
-    implementation(libs.exoplayer.extension.mediasession)
+//    implementation(libs.exoplayer.core)
+//    implementation(libs.exoplayer.ui)
+//    implementation(libs.exoplayer.dash)
+//    implementation(libs.exoplayer.smoothstreaming)
+//    implementation(libs.exoplayer.extension.mediasession)
 
     implementation(libs.customtabs)
+   // implementation(libs.shimmer)
 
     debugImplementation(libs.crash.handler)
 
