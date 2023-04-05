@@ -172,20 +172,6 @@ fun DownloaderPage(
         if (CONFIGURE.getBoolean()) navigateToDownloaderSheet()
         else checkPermissionOrDownload()
         keyboardController?.hide()
-        if(NOTIFICATION.getBoolean()){
-            when(Build.VERSION.SDK_INT){
-                in 23..31 -> {
-                    if(notificationsPermission.status != PermissionStatus.Granted){
-                        notificationsPermission.launchPermissionRequest()
-                    }
-                }
-                in 32..Int.MAX_VALUE -> {
-                    if(modernNotificationPermission.status != PermissionStatus.Granted){
-                        modernNotificationPermission.launchPermissionRequest()
-                    }
-                }
-            }
-        }
     }
 
     val songCardClicked = {

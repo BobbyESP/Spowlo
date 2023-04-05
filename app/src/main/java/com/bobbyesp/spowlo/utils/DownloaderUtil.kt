@@ -422,11 +422,13 @@ object DownloaderUtil {
                 processId = taskId,
                 forceProcessDestroy = true,
                 callback = { progress, _, text ->
-                    NotificationsUtil.notifyProgress(
-                        name + " - " + context.getString(R.string.parallel_download),
+                    NotificationsUtil.makeNotificationForParallelDownloads(
                         notificationId = taskId.toNotificationId(),
+                        taskId = taskId,
                         progress = progress.toInt(),
-                        text = text
+                        text = text,
+                        extraString = name + " - " + context.getString(R.string.parallel_download),
+                        taskUrl = url,
                     )
                     Downloader.updateTaskOutput(
                         url = url, line = text, progress = progress, isPlaylist = isPlaylist

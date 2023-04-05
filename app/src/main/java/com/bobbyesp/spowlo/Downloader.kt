@@ -187,7 +187,6 @@ object Downloader {
                 if (it) startService()
                 else stopService()
             }
-
         }
     }
 
@@ -199,7 +198,7 @@ object Downloader {
             currentLine = "",
             taskName = name
         ).run {
-            mutableTaskList.put(this.toKey(), this)
+            mutableTaskList[this.toKey()] = this
 
             val key = makeKey(url, url.reversed())
             NotificationsUtil.notifyProgress(
@@ -519,9 +518,11 @@ object Downloader {
 
     fun executeParallelDownloadWithUrl(url: String, name: String) =
         applicationScope.launch(Dispatchers.IO) {
+
             DownloaderUtil.executeParallelDownload(
                 url, name
             )
+
         }
 
     fun onProcessStarted() = mutableProcessCount.update { it + 1 }
