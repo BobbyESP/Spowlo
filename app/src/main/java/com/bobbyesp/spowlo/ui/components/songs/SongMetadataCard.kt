@@ -121,7 +121,7 @@ fun SongMetadataCard(
 
             }
             FilledTonalButton(
-                modifier = Modifier,
+                modifier = Modifier.padding(start = 8.dp),
                 onClick = { ChromeCustomTabsUtil.openUrl(song.url) },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color(red = 30, green = 215, blue = 96).harmonizeWithPrimary(),

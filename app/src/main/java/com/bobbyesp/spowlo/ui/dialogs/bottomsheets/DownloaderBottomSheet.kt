@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Dataset
@@ -51,7 +52,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
@@ -60,14 +60,12 @@ import com.bobbyesp.spowlo.ui.components.ButtonChip
 import com.bobbyesp.spowlo.ui.components.DrawerSheetSubtitle
 import com.bobbyesp.spowlo.ui.components.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
-import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
 import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
-import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
@@ -85,17 +83,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun DownloaderBottomSheet(
     onBackPressed: () -> Unit,
-    downloaderViewModel: DownloaderViewModel,
+    url: String,
     navController: NavController,
-    navigateToPlaylist: (String) -> Unit
+    onDownloadPressed : () -> Unit,
+    onRequestMetadata : () -> Unit,
+    hide: () -> Unit,
+    navigateToPlaylist: (String) -> Unit,
+    navigateToAlbum: (String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(initialPage = 0)
 
     val pages =
         listOf(BottomSheetPages.MAIN, BottomSheetPages.TERTIARY) //, BottomSheetPages.SECONDARY
-
-    val viewState by downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle()
 
     val roundedTopShape =
         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
@@ -104,14 +104,14 @@ fun DownloaderBottomSheet(
         permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
     ) { b: Boolean ->
         if (b) {
-            downloaderViewModel.startDownloadSong()
+            onDownloadPressed()
         } else {
             ToastUtil.makeToast(R.string.permission_denied)
         }
     }
 
     val checkPermissionOrDownload = {
-        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
+        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) onDownloadPressed()
         else {
             storagePermission.launchPermissionRequest()
         }
@@ -173,14 +173,6 @@ fun DownloaderBottomSheet(
         )
     }
 
-    var useGeoBypass by remember {
-        mutableStateOf(
-            settings.getValue(
-                GEO_BYPASS
-            )
-        )
-    }
-
     var skipInfoFetch by remember { mutableStateOf(settings.getValue(SKIP_INFO_FETCH)) }
 
     var showAudioFormatDialog by remember { mutableStateOf(false) }
@@ -189,13 +181,13 @@ fun DownloaderBottomSheet(
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
     val downloadButtonCallback = {
-        navController.popBackStack()
+        hide()
         checkPermissionOrDownload()
     }
 
     val requestMetadata = {
-        navController.popBackStack()
-        downloaderViewModel.requestMetadata()
+        hide()
+        onRequestMetadata()
     }
 
     Column(
@@ -402,15 +394,6 @@ fun DownloaderBottomSheet(
                                         settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
                                     }
                                 })
-                            AudioFilterChip(label = stringResource(id = R.string.geo_bypass),
-                                selected = useGeoBypass,
-                                animated = true,
-                                onClick = {
-                                    useGeoBypass = !useGeoBypass
-                                    scope.launch {
-                                        settings.updateValue(GEO_BYPASS, useGeoBypass)
-                                    }
-                                })
                             AudioFilterChip(label = stringResource(id = R.string.dont_filter_results),
                                 selected = dontFilter,
                                 animated = true,
@@ -474,27 +457,39 @@ fun DownloaderBottomSheet(
                 )
             }
             item {
-                if (viewState.url.contains("playlist")) {
-                    //https://open.spotify.com/playlist/4aKFWQtn0Tstw68SIMURye?si=c9e7282b0c354d34
-                    //get playlist id after the playlist/ and before the ?
-                    var playlistId = viewState.url.substringAfter("playlist/").substringBefore("?")
+                val playlistPattern = "^https?://open.spotify.com/playlist/([a-zA-Z0-9]+)(\\?.*)?\$"
+                val playlistRegex = Regex(playlistPattern)
 
-                    if (viewState.url == "playlist")
-                        run {
-                            playlistId = "7804lpXmApCGPd2Rdai6k1"
-                        }
-                    FilledButtonWithIcon(
-                        onClick = { navigateToPlaylist(playlistId) },
-                        icon = Icons.Outlined.PlaylistAddCheck,
-                        text = stringResource(R.string.see_playlist)
-                    )
+                val albumPattern = "^https?://open.spotify.com/album/([a-zA-Z0-9]+)(\\?.*)?\$"
+                val albumRegex = Regex(albumPattern)
 
-                } else {
-                    FilledButtonWithIcon(
-                        onClick = downloadButtonCallback,
-                        icon = Icons.Outlined.DownloadDone,
-                        text = stringResource(R.string.start_download)
-                    )
+                when {
+                    playlistRegex.matches(url) -> {
+                        val playlistId = playlistRegex.find(url)!!.groupValues[1]
+                        FilledButtonWithIcon(
+                            modifier = Modifier.padding(end = 12.dp),
+                            onClick = { navigateToPlaylist(playlistId) },
+                            icon = Icons.Outlined.PlaylistAddCheck,
+                            text = stringResource(R.string.see_playlist)
+                        )
+                    }
+                    albumRegex.matches(url) -> {
+                        val albumId = albumRegex.find(url)!!.groupValues[1]
+                        FilledButtonWithIcon(
+                            modifier = Modifier.padding(end = 12.dp),
+                            onClick = { navigateToAlbum(albumId) },
+                            icon = Icons.Outlined.Album,
+                            text = stringResource(R.string.see_album)
+                        )
+                    }
+                    else -> {
+                        FilledButtonWithIcon(
+                            modifier = Modifier.padding(end = 12.dp),
+                            onClick = downloadButtonCallback,
+                            icon = Icons.Outlined.DownloadDone,
+                            text = stringResource(R.string.start_download)
+                        )
+                    }
                 }
             }
         }

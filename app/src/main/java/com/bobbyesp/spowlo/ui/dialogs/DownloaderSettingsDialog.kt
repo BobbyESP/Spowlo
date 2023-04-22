@@ -48,7 +48,6 @@ import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
-import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
@@ -123,14 +122,6 @@ fun DownloaderSettingsDialog(
     var useSyncedLyrics by remember {
         mutableStateOf(
             settings.getValue(SYNCED_LYRICS)
-        )
-    }
-
-    var useGeoBypass by remember {
-        mutableStateOf(
-            settings.getValue(
-                GEO_BYPASS
-            )
         )
     }
 

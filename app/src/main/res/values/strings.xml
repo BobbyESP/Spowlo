@@ -326,4 +326,5 @@
     <string name="see_playlist">See playlist</string>
     <string name="metadata_viewer">Metadata viewer</string>
     <string name="albums">Albums</string>
+    <string name="see_album">See album</string>
 </resources>

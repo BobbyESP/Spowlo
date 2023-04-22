@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cached
 import androidx.compose.material.icons.outlined.Filter
-import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,7 +36,6 @@ import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
 import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
-import com.bobbyesp.spowlo.utils.GEO_BYPASS
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.updateInt
 import com.bobbyesp.spowlo.utils.THREADS
@@ -61,12 +59,6 @@ fun DownloaderSettingsPage(
     var dontFilter by remember {
         mutableStateOf(
             PreferencesUtil.getValue(DONT_FILTER_RESULTS)
-        )
-    }
-
-    var useGeobypass by remember {
-        mutableStateOf(
-            PreferencesUtil.getValue(GEO_BYPASS)
         )
     }
 
@@ -126,22 +118,6 @@ fun DownloaderSettingsPage(
                 }
                 item {
                     ElevatedSettingsCard {
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                useGeobypass = !useGeobypass
-                                PreferencesUtil.updateValue(GEO_BYPASS, useGeobypass)
-                            },
-                            checked = useGeobypass,
-                            title = {
-                                Text(
-                                    text = stringResource(id = R.string.geo_bypass),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
-                            icon = Icons.Outlined.MyLocation,
-                            description = { Text(text = stringResource(id = R.string.use_geobypass_desc)) },
-                        )
-
                         SettingsSwitch(
                             onCheckedChange = {
                                 dontFilter = !dontFilter

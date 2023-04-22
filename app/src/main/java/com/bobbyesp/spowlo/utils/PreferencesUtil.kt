@@ -58,7 +58,6 @@ const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
 const val USE_CACHING = "use_caching"
 const val DONT_FILTER_RESULTS = "dont_filter_results"
-const val GEO_BYPASS = "geo-bypass"
 const val AUDIO_PROVIDER = "audio_provider"
 const val THREADS = "threads"
 
@@ -100,7 +99,6 @@ private val BooleanPreferenceDefaults =
         USE_CACHING to true,
         DONT_FILTER_RESULTS to false,
         SPOTDL_UPDATE to true,
-        GEO_BYPASS to false,
         SKIP_INFO_FETCH to false,
         NOTIFICATION to true,
     )

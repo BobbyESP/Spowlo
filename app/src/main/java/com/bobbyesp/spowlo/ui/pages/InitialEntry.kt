@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
@@ -449,15 +450,34 @@ fun InitialEntry(
                                     rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true),
                                 )
                             ) {*/
-                                DownloaderBottomSheet(
-                                    onBackPressed,
-                                    downloaderViewModel,
-                                    navController
-                                ) { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id, navOptions = navOptions {
-                                    launchSingleTop = true
-                                }) }
-                          //  }
+                            //val viewModel = hiltViewModel<DownloaderViewModel>()
 
+                            val viewModelState =
+                                downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
+                            DownloaderBottomSheet(
+                                onBackPressed,
+                                viewModelState.url,
+                                navController,
+                                onDownloadPressed = {},
+                                onRequestMetadata = {},
+                                hide = {},
+                                navigateToPlaylist = { id ->
+                                    navController.navigate(
+                                        Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
+                                        navOptions = navOptions {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        })
+                                },
+                                navigateToAlbum = { id ->
+                                    navController.navigate(
+                                        Route.PLAYLIST_PAGE + "/" + "album" + "/" + id,
+                                        navOptions = navOptions {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        })
+                                },
+                            )
                         }
                     }
 
@@ -487,7 +507,6 @@ fun InitialEntry(
                         val idArg = navArgument("id") {
                             type = NavType.StringType
                         }
-
 
                         //We build the route with the type of the destination and the id of it
                         val routeWithIdPattern: String =
