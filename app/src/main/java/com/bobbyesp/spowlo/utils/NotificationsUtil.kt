@@ -14,13 +14,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.NotificationActionReceiver
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_CANCEL_TASK
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_ERROR_REPORT
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ERROR_REPORT_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.NOTIFICATION_ID_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.TASK_ID_KEY
 import com.bobbyesp.spowlo.R
 
 private const val TAG = "NotificationUtil"

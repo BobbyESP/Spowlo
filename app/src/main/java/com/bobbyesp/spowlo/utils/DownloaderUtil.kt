@@ -9,13 +9,6 @@ import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.Downloader
-import com.bobbyesp.spowlo.Downloader.onProcessEnded
-import com.bobbyesp.spowlo.Downloader.onProcessStarted
-import com.bobbyesp.spowlo.Downloader.onTaskEnded
-import com.bobbyesp.spowlo.Downloader.onTaskError
-import com.bobbyesp.spowlo.Downloader.onTaskStarted
-import com.bobbyesp.spowlo.Downloader.toNotificationId
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.Cookie
