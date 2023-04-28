@@ -3,7 +3,6 @@ package com.bobbyesp.spowlo.utils
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
@@ -11,13 +10,10 @@ import android.provider.DocumentsContract
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.annotation.CheckResult
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.pages.history.THUMBNAIL_REGEX
 import okhttp3.internal.closeQuietly
 import java.io.File
 import java.io.InputStream
@@ -127,7 +123,7 @@ object FilesUtil {
                     context, this.toList().toTypedArray(),
                     null, null
                 )
-                removeAll { it.contains(Regex(THUMBNAIL_REGEX)) }
+                //removeAll { it.contains(Regex(THUMBNAIL_REGEX)) }
             }
 
 

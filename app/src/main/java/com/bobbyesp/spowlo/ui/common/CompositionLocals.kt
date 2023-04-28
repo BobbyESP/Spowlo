@@ -8,6 +8,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
+import com.bobbyesp.spowlo.ui.navigation.LocalNavigationController
+import com.bobbyesp.spowlo.ui.navigation.NavigationController
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.DarkThemePreference
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -24,7 +27,11 @@ val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 
 @Composable
-fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, localWindowHeightSizeClass: WindowHeightSizeClass, content: @Composable () -> Unit) {
+fun SettingsProvider(
+    windowWidthSizeClass: WindowWidthSizeClass,
+    localWindowHeightSizeClass: WindowHeightSizeClass,
+    navController : NavHostController,
+    content: @Composable () -> Unit) {
     val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
     CompositionLocalProvider(
         LocalDarkTheme provides appSettingsState.darkTheme,
@@ -36,6 +43,7 @@ fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, localWindowHeig
         LocalWindowWidthState provides windowWidthSizeClass,
         LocalWindowHeightState provides localWindowHeightSizeClass,
         LocalDynamicColorSwitch provides appSettingsState.isDynamicColorEnabled,
+        LocalNavigationController provides NavigationController { navController },
         content = content
     )
 }

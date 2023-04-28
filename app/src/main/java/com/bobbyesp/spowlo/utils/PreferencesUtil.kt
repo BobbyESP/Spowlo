@@ -3,16 +3,13 @@ package com.bobbyesp.spowlo.utils
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
-import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.CookieProfile
-import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.google.android.material.color.DynamicColors
 import com.kyant.monet.PaletteStyle
@@ -153,61 +150,6 @@ object PreferencesUtil {
     fun getAudioProvider(): Int = AUDIO_PROVIDER.getInt()
 
     fun getAudioQuality(): Int = AUDIO_QUALITY.getInt()
-
-    fun getAudioFormatDesc(audioQualityStr: Int = getAudioFormat()): String {
-        return when (audioQualityStr) {
-            0 -> "mp3"
-            1 -> "flac"
-            2 -> "ogg"
-            3 -> "opus"
-            4 -> "m4a"
-            5 -> context.getString(R.string.not_specified)
-            else -> "mp3"
-        }
-    }
-
-    fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
-        return when (audioProviderInt){
-            0 -> context.getString(R.string.default_option)
-            1 -> context.getString(R.string.both)
-            2 -> "Youtube Music"
-            3 -> "Youtube"
-            else -> "Youtube Music"
-        }
-    }
-
-    @Composable
-    fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
-        return when (audioProviderInt){
-            2 -> LocalAsset(id = R.drawable.youtube_music_icons8)
-            3 -> LocalAsset(id = R.drawable.icons8_youtube)
-            else -> LocalAsset(id = R.drawable.youtube_music_icons8)
-        }
-    }
-
-    fun getAudioQualityDesc(audioQualityStr: Int = getAudioQuality()): String {
-        return when (audioQualityStr) {
-            0 -> context.getString(R.string.not_specified)
-            1 -> "8 kbps"
-            2 -> "16 kbps"
-            3 -> "24 kbps"
-            4 -> "32 kbps"
-            5 -> "40 kbps"
-            6 -> "48 kbps"
-            7 -> "64 kbps"
-            8 -> "80 kbps"
-            9 -> "96 kbps"
-            10 -> "112 kbps"
-            11 -> "128 kbps"
-            12 -> "160 kbps"
-            13 -> "192 kbps"
-            14 -> "224 kbps"
-            15 -> "256 kbps"
-            16 -> "320 kbps"
-            17 -> context.getString(R.string.not_convert)
-            else -> "auto"
-        }
-    }
 
     fun isNetworkAvailableForDownload() =
         !App.connectivityManager.isActiveNetworkMetered //CELLULAR_DOWNLOAD.getBoolean() ||

@@ -24,7 +24,6 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -69,7 +68,7 @@ fun MarkdownViewerPage(
                     style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
                 )
             }, navigationIcon = {
-                BackButton { onBackPressed() }
+                //BackButton { onBackPressed() }
             }, actions = {
             }, scrollBehavior = scrollBehavior
             )

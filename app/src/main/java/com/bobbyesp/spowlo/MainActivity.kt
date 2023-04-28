@@ -7,22 +7,24 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.FileDownloadDone
-import androidx.compose.material.icons.rounded.Search
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
-import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +32,12 @@ import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
+    private var provider: (() -> NavController)? = null
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialApi::class,
+        ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -42,14 +49,20 @@ class MainActivity : AppCompatActivity() {
         }
         context = this.baseContext
         setContent {
+            val bottomSheetState = rememberBottomSheetScaffoldState()
+            val bottomSheetNavigator = rememberBottomSheetNavigator()
+            val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val windowSizeClass = calculateWindowSizeClass(this)
-            SettingsProvider(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass) {
+            SettingsProvider(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass, navController) {
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
-                    InitialEntry()
+                    InitialEntry(
+                        navController = navController,
+                        bottomSheetNavigator = bottomSheetNavigator,
+                    )
                 }
             }
         }
@@ -63,7 +76,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private var sharedUrl = ""
 
         fun setLanguage(locale: String) {
             Log.d(TAG, "setLanguage: $locale")
@@ -73,11 +85,5 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setApplicationLocales(localeListCompat)
             }
         }
-
-        val showInBottomNavigation = mapOf(
-            Route.DownloaderNavi to Icons.Rounded.Download,
-            Route.SearcherNavi to Icons.Rounded.Search,
-            Route.DownloadTasksNavi to Icons.Rounded.FileDownloadDone,
-        )
     }
 }
