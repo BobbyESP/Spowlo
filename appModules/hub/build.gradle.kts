@@ -6,10 +6,9 @@ plugins {
     id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
-apply(plugin = "dagger.hilt.android.plugin")
 
 android {
-    namespace = "com.bobbyesp.appModules.auth"
+    namespace = "com.bobbyesp.appmodules.hub"
     compileSdk = 33
 
     defaultConfig {
@@ -35,6 +34,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
+    buildFeatures {
+        compose = true
+    }
 }
 
 moshi {
@@ -43,18 +48,22 @@ moshi {
 }
 
 dependencies {
-
     implementation(project(":appModules:core"))
+    implementation(project(":uisdk"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
-    implementation(libs.coil.kt.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.ext.compiler)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.compiler)
+    implementation(libs.hilt.ext.compiler)
+    implementation(libs.coil.kt.compose)
+
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.protobuf.converter)
+    implementation(libs.retrofit.moshi.converter)
 
     // Librespot
     implementation("com.github.iTaysonLab.librespot-java:librespot-player:e95c4f0529:thin") {
@@ -62,11 +71,8 @@ dependencies {
         exclude(group = "com.lmax", module = "disruptor")
         exclude(group = "org.apache.logging.log4j")
     }
+    implementation(project(mapOf("path" to ":app")))
 
-    implementation(libs.okhttp)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.protobuf.converter)
-    implementation(libs.retrofit.moshi.converter)
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

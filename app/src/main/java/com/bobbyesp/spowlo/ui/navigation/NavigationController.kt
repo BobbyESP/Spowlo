@@ -1,13 +1,12 @@
 package com.bobbyesp.spowlo.ui.navigation
 
-import android.content.Intent
-import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.ui.pages.BottomSheet
 import com.bobbyesp.spowlo.ui.pages.Dialog
 import com.bobbyesp.spowlo.ui.pages.Screen
+import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import javax.annotation.concurrent.Immutable
 
 @JvmInline
@@ -37,7 +36,7 @@ value class NavigationController(
 
     fun context() = controller().context
     fun string(@StringRes id: Int) = context().getString(id)
-    fun openInBrowser(uri: String) = context().startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse(uri)))
+    fun openInBrowser(uri: String) = ChromeCustomTabsUtil.openUrl(uri)
 }
 
 val LocalNavigationController = staticCompositionLocalOf<NavigationController> { error("Supply NavigationController in composable scope!") }

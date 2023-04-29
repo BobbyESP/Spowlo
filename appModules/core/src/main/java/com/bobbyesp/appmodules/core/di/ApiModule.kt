@@ -7,6 +7,7 @@ import com.bobbyesp.appmodules.core.api.SpotifyCollectionApi
 import com.bobbyesp.appmodules.core.api.SpotifyColorsLyricsApi
 import com.bobbyesp.appmodules.core.api.SpotifyExternalIntegrationApi
 import com.bobbyesp.appmodules.core.api.SpotifyPartnersApi
+import com.bobbyesp.appmodules.core.api.interalApi.SpotifyInternalApi
 import com.bobbyesp.appmodules.core.di.ext.DependencyInjectionExt.interceptRequest
 import com.bobbyesp.appmodules.core.utils.SpotifyUtils
 import com.bobbyesp.appmodules.core.utils.create
@@ -37,7 +38,7 @@ object ApiModule {
             header("client-token", tokenHandler.requestToken())
 
             // 2. Default headers
-            header("User-Agent", "Spotify/${SpotifyUtils.SPOTIFY_APP_VERSION} Android/32 (Pixel 4a (5G))")
+            header("User-Agent", "Spotify/${SpotifyUtils.SPOTIFY_APP_VERSION} Android/32 (Pixel 6a)")
             header("Spotify-App-Version", SpotifyUtils.SPOTIFY_APP_VERSION)
             header("App-Platform", "Android")
 
@@ -68,7 +69,7 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideInternalApi(retrofit: Retrofit): SpInternalApi = retrofit.create("https://spclient.wg.spotify.com")
+    fun provideInternalApi(retrofit: Retrofit): SpotifyInternalApi = retrofit.create("https://spclient.wg.spotify.com")
 
     @Provides
     @Singleton

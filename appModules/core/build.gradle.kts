@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
 apply(plugin = "dagger.hilt.android.plugin")
@@ -40,6 +41,11 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+moshi {
+    // Opt-in to enable moshi-sealed, disabled by default.
+    enableSealed.set(true)
 }
 
 dependencies {
