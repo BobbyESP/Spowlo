@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_package = "com.bobbyesp.spowlo.protos";
+option java_multiple_files = true;
+
+message AppConfig {
+  PlayerConfig playerConfig = 1;
+}
+
+message PlayerConfig {
+  bool autoplay = 1;
+  bool normalization = 2;
+  AudioQuality preferredQuality = 3;
+  AudioNormalization normalizationLevel = 4;
+  int32 crossfade = 5; // 12s - max
+  bool preload = 6;
+  bool useTremolo = 7;
+}
+
+enum AudioQuality {
+  NORMAL = 0;
+  HIGH = 1;
+  VERY_HIGH = 2;
+  LOW = 3;
+  FLAC = 4;
+}
+
+// (loud at +6, normal at +3, quiet at -5)
+enum AudioNormalization {
+  QUIET = 0;
+  BALANCED = 1;
+  LOUD = 2;
+}

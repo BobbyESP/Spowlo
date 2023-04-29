@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.spotify.home.dac.component.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v1.proto";
+
+message TrackCardSmallComponent {
+  string title = 1;
+  string navigate_uri = 2;
+  string image_uri = 3;
+}
+
+message TrackCardMediumComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string image_uri = 4;
+}
+
+message TrackCardLargeComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string image_uri = 4;
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package com.spotify.allplans.v1;
+
+option java_package = "com.spotify.allplans.v1";
+option java_multiple_files = true;
+
+message PlanComponent {
+    string planName = 1;
+    string planColor = 2;
+    string availableAccounts = 3;
+    string planPrice = 4;
+    string uri = 5;
+}
+
+message DisclaimerComponent {
+    string text = 1;
+}

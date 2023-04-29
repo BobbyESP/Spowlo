@@ -12,6 +12,8 @@ navTransitions = "0.11.0-alpha"
 androidxPaging = "3.1.1"
 paginationCompose = "1.0.0-alpha18"
 retrofit = "2.9.0"
+animCompose = "1.4.0-beta01"
+protobuf = "3.21.5"
 
 androidxLifecycle = "2.6.1"
 androidxNavigation = "2.5.3"
@@ -71,7 +73,7 @@ androidx-compose-material = { group = "androidx.compose.material", name = "mater
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
-androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animCompose" }
 
 #Compose UI Util
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util"}
@@ -134,6 +136,11 @@ mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+retrofit-protobuf-converter = { group = "com.squareup.retrofit2", name = "converter-protobuf", version.ref = "retrofit" }
+
+#Google protobuf
+protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobuf" }
 
 #ExoPlayer
 exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version.ref = "exoplayer" }
@@ -152,6 +159,7 @@ junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+
 
 #More
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }

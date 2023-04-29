@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package dac.api.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.dac.api.v1.proto";
+
+message DacResponse {
+    google.protobuf.Any component = 2;
+}
+
+message DacRequest {
+    string uri = 2;
+    google.protobuf.Any featureRequest = 3;
+    ClientInfo clientInfo = 4;
+
+    message ClientInfo {
+        string appName = 1; // ANDROID_MUSIC_APP
+        string version = 2;
+    }
+}

@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "sp/DacPlayer.proto";
+
+package com.spotify.home.dac.component.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v1.proto";
+
+message AlbumCardActionsSmallComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string like_uri = 4;
+  string image_uri = 5;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 6;
+}
+
+message ArtistCardActionsSmallComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string follow_uri = 4;
+  string image_uri = 5;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 6;
+}
+
+message PlaylistCardActionsSmallComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string like_uri = 4;
+  string image_uri = 5;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 6;
+}
+
+message AlbumCardActionsMediumComponent {
+  string title = 1;
+  string image_uri = 2;
+  string artist_name = 3;
+  string artist_image_uri = 4;
+  string navigate_uri = 5;
+  string like_uri = 6;
+  string gradient_color = 7;
+  string concise_fact = 8;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 9;
+  google.protobuf.Any context_menu = 10;
+  string content_type = 11;
+  string description = 12;
+}
+
+message PlaylistCardActionsMediumComponent {
+  string title = 1;
+  string description = 2;
+  string navigate_uri = 3;
+  string like_uri = 4;
+  string image_uri = 5;
+  string gradient_color = 6;
+  string concise_fact = 7;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 8;
+  google.protobuf.Any context_menu = 9;
+  string content_type = 10;
+}
+
+message ArtistCardActionsMediumComponent {
+  string title = 1;
+  string description = 2;
+  string navigate_uri = 3;
+  string follow_uri = 4;
+  string image_uri = 5;
+  string gradient_color = 6;
+  com.spotify.dac.player.v1.proto.PlayCommand play_command = 7;
+  google.protobuf.Any context_menu = 8;
+  string content_type = 9;
+  string concise_fact = 10;
+}

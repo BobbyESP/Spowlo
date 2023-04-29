@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package com.bobbyesp.spowlo.protos;
+
+option java_multiple_files = true;
+option java_package = "com.bobbyesp.spowlo.protos";
+
+message CollectionUpdate {
+  repeated CollectionUpdateEntry items = 1;
+}
+
+message CollectionUpdateEntry {
+  enum Type {
+    TRACK = 0;
+    ALBUM = 1;
+    ARTIST = 4;
+    SHOW = 5;
+    EPISODE = 6;
+  }
+
+  Type type = 1;
+  bytes identifier = 2;
+  int32 addedAt = 5;
+  bool removed = 6;
+}

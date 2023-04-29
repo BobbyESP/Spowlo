@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package dac.api.components;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.dac.api.components";
+
+message VerticalListComponent {
+    repeated google.protobuf.Any components = 2;
+}

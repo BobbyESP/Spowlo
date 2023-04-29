@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package com.spotify.home.dac.component.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v1.proto";
+
+message HomePageComponent {
+  repeated google.protobuf.Any components = 2;
+}
+
+message SectionHeaderComponent {
+  string title = 1;
+}
+
+message SectionComponent {
+  repeated google.protobuf.Any components = 2;
+}
+
+message RecsplanationHeadingComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string image_uri = 4;
+}
+
+// only ubi(soft?!) data here, recent played data are fetched separately
+message RecentlyPlayedSectionComponent {}
+
+message SnappyGridSectionComponent {
+  repeated google.protobuf.Any components = 1;
+  int32 rows = 2;
+}

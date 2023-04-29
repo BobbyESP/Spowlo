@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+option java_package = "com.bobbyesp.spowlo.proto";
+option java_multiple_files = true;
+
+message SearchViewResponse {
+  repeated SearchEntity hits = 1;
+}
+
+message SearchEntity {
+  string uri = 1;
+  string name = 2;
+  string image_uri = 3;
+
+  oneof entity {
+    Artist artist = 4;
+    Track track = 5;
+    Album album = 6;
+    Playlist playlist = 7;
+  }
+
+  message Artist {
+    bool verified = 1;
+  }
+
+  message Track {
+    message OnDemand {
+      string trackUri = 1;
+      string playlistUri = 2;
+    }
+
+    message RelatedEntity {
+      string uri = 1;
+      string name = 2;
+    }
+
+    bool explicit = 1;
+    bool windowed = 2;
+    RelatedEntity trackAlbum = 3;
+    repeated RelatedEntity trackArtists = 4;
+    optional string previewId = 5;
+    optional bool mogef19 = 6;
+    optional bool lyricsMatch = 7;
+    optional OnDemand onDemand = 8;
+  }
+
+  message Album {
+    enum Type {
+        UNDEFINED = 0;
+        ALBUM = 1;
+        SINGLE = 2;
+        COMPILATION = 3;
+        EP = 4;
+        AUDIOBOOK = 5;
+        PODCAST = 6;
+    }
+
+    repeated string artistNames = 1;
+    Type type = 2;
+    int32 releaseDate = 3;
+  }
+
+  message Playlist {
+    bool personalized = 1;
+    bool ownedBySpotify = 2;
+  }
+}

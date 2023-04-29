@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.spotify.home.dac.component.experimental.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.experimental.v1.proto";
+
+message FilterComponent {
+  repeated Facet facets = 1;
+}
+
+message Facet {
+  string title = 1;
+  string value = 2;
+}

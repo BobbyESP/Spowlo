@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package com.spotify.planoverview.v1;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.planoverview.v1";
+
+enum PrepaidDurationUnit {
+    DAY = 0;
+    WEEK = 1;
+    MONTH = 2;
+    YEAR = 3;
+}
+
+enum UserType {
+    MEMBER = 0;
+    MANAGER = 1;
+    KID = 2;
+}
+
+message Benefit {
+    string icon = 1;
+    string text = 2;
+}
+
+message BenefitListComponent {
+    repeated Benefit benefits = 1;
+    bool show_button = 2;
+}
+
+message FallbackPlanComponent {
+    string name = 1;
+    string color = 2;
+    string description = 3;
+}
+
+message Member {
+    bool is_current_user = 1;
+    string name = 2;
+    string image_url = 3;
+    UserType user_type = 4;
+}
+
+message MultiUserMemberComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    repeated Member plan_members = 3;
+    string plan_description = 4;
+}
+
+message MultiUserPlanChangeManagerComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 billing_end_date = 3;
+    repeated Member plan_members = 4;
+    uint32 plan_members_remaining = 5;
+    string plan_description = 6;
+}
+
+message MultiUserPrepaidManagerComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_expiration_date = 3;
+    uint32 prepaid_duration = 4;
+    PrepaidDurationUnit prepaid_duration_unit = 5;
+    repeated Member plan_members = 6;
+    uint32 plan_members_remaining = 7;
+    string plan_description = 8;
+}
+
+message MultiUserRecurringManagerComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_billing_date = 3;
+    string plan_price = 4;
+    repeated Member plan_members = 5;
+    uint32 plan_members_remaining = 6;
+    string plan_description = 7;
+}
+
+message MultiUserTrialManagerComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_expiration_date = 3;
+    uint32 plan_billing_date = 4;
+    string plan_price = 5;
+    repeated Member plan_members = 6;
+    uint32 plan_members_remaining = 7;
+    string plan_description = 8;
+}
+
+message SingleUserPlanChangeComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_expiration_date = 3;
+    string plan_description = 4;
+}
+
+message SingleUserPrepaidComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 prepaid_duration = 3;
+    PrepaidDurationUnit prepaid_duration_unit = 4;
+    uint32 plan_expiration_date = 5;
+    string plan_description = 6;
+}
+
+message SingleUserRecurringComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_billing_date = 3;
+    uint32 plan_expiration_date = 4;
+    string plan_price = 5;
+    bool is_student = 6;
+    string plan_description = 7;
+}
+
+message SingleUserTrialComponent {
+    string plan_name = 1;
+    string plan_color = 2;
+    uint32 plan_billing_date = 3;
+    uint32 plan_expiration_date = 4;
+    string plan_price = 5;
+    string plan_description = 6;
+}

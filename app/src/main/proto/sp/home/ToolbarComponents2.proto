@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "sp/DacPlayer.proto";
+
+package com.spotify.home.dac.component.v2.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v2.proto";
+
+message ToolbarComponentV2 {
+  string day_part_message = 1;
+  string subtitle = 2;
+  repeated google.protobuf.Any items = 3;
+  ToolbarItemProfileComponent profile_button = 4;
+}
+
+message ToolbarItemProfileComponent {
+  string accessibility_title = 1;
+  string username = 2;
+  string user_first_initial = 3;
+  string navigate_uri = 4;
+  string image_uri = 5;
+  string user_display_name = 6;
+}

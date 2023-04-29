@@ -1,0 +1,15 @@
+// Сustom DAC blocks for Jetispot usage
+syntax = "proto3";
+
+option java_package = "com.bobbyesp.spowlo.proto";
+option java_multiple_files = true;
+
+message ErrorComponent {
+  enum ErrorType {
+    UNSUPPORTED = 0;
+    GENERIC_EXCEPTION = 1;
+  }
+
+  ErrorType type = 1;
+  string message = 2;
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "sp_ext/contentfeed.proto";
+
+package com.spotify.contentfeed.proto.v1.client;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.contentfeed.proto.v1.client";
+
+message FeedItemsResponse {
+  repeated com.spotify.contentfeed.proto.v1.common.FeedItem items = 1;
+  string requestId = 2;
+}
+
+message FeedItemsStateRequest {
+  repeated com.spotify.contentfeed.proto.v1.common.FeedItemState items = 1;
+}
+
+message FeedItemsRequest {
+  enum Filter {
+      FILTER_INVALID = 0;
+      FILTER_PODCAST_EPISODE_RELEASE_UNPLAYED = 1;
+  }
+
+  repeated com.spotify.contentfeed.proto.v1.common.ContentType contentTypes = 1;
+  repeated Filter filters = 2;
+}

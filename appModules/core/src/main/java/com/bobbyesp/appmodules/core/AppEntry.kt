@@ -11,7 +11,6 @@ import com.google.accompanist.navigation.animation.composable
 typealias Destinations = Map<Class<out AppEntry>, @JvmSuppressWildcards AppEntry>
 
 interface AppEntry {
-
 }
 
 interface ComposableAppEntry: AppEntry {

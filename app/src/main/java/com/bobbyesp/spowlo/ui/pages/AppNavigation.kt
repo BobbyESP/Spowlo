@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -7,8 +8,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -16,7 +19,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -35,13 +37,16 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.bobbyesp.appmodules.core.BottomNavigationCapable
+import com.bobbyesp.appmodules.core.ComposableAppEntry
 import com.bobbyesp.appmodules.core.Destinations
 import com.bobbyesp.appmodules.core.HasFullscreenRoutes
+import com.bobbyesp.appmodules.core.NestedAppEntry
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -163,10 +168,28 @@ fun AppNavigation(
                         materialSharedAxisXOut(forward = false, slideDistance = slideDistance)
                     }
                 ) {
+                    composable("coreLoading") {
+                        Box(modifier = Modifier.fillMaxSize())
+                    }
+                    viewModel.destinations.forEach { (_, value) ->
+                        when (value) {
+                            is ComposableAppEntry -> with(value) {
+                                composable(
+                                    navController,
+                                    viewModel.destinations
+                                )
+                            }
 
+                            is NestedAppEntry -> with(value) {
+                                navigation(
+                                    navController,
+                                    viewModel.destinations
+                                )
+                            }
+                        }
+                    }
                 }
             }
-            Text(text = "Hello World!", modifier = Modifier.padding(paddingValues))
         }
     }
 
@@ -190,7 +213,8 @@ class AppNavigationViewModel @Inject constructor(
         return "coreLoading"
     }
 
-    fun <T> buildAnimation(scope: AnimatedContentTransitionScope<NavBackStackEntry>, builder: (forwardDirection: Boolean) -> T): T {
+    @OptIn(ExperimentalAnimationApi::class)
+    fun <T> buildAnimation(scope: AnimatedContentScope<NavBackStackEntry>, builder: (forwardDirection: Boolean) -> T): T {
         val isRoute = getStartingRoute(scope.initialState.destination)
         val tsRoute = getStartingRoute(scope.targetState.destination)
 

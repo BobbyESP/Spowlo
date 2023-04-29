@@ -16,11 +16,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
-import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
-import com.bobbyesp.spowlo.ui.common.SettingsProvider
-import com.bobbyesp.spowlo.ui.pages.InitialEntry
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.ui.pages.AppNavigation
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -35,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private var provider: (() -> NavController)? = null
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialApi::class,
+    @OptIn(
+        ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterialApi::class,
         ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,18 +50,7 @@ class MainActivity : AppCompatActivity() {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val windowSizeClass = calculateWindowSizeClass(this)
-            SettingsProvider(windowSizeClass.widthSizeClass, windowSizeClass.heightSizeClass, navController) {
-                SpowloTheme(
-                    darkTheme = LocalDarkTheme.current.isDarkTheme(),
-                    isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
-                    isDynamicColorEnabled = LocalDynamicColorSwitch.current,
-                ) {
-                    InitialEntry(
-                        navController = navController,
-                        bottomSheetNavigator = bottomSheetNavigator,
-                    )
-                }
-            }
+            AppNavigation()
         }
     }
 

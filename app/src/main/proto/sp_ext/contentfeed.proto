@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package com.spotify.contentfeed.proto.v1.common;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.contentfeed.proto.v1.common";
+
+message FeedItem {
+  string id = 1;
+  ContentType contentType = 2;
+  string deduplicationKey = 3;
+  string targetUri = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  FeedItemState state = 6;
+
+  oneof typeSpecificAttributes {
+      MusicRelease musicRelease = 7;
+      PodcastEpisodeRelease podcastEpisodeRelease = 8;
+  }
+}
+
+message FeedItemState {
+  enum InteractionState {
+    INTERACTION_STATE_INVALID = 0;
+    NEW = 1;
+    SEEN = 2;
+  }
+
+  string itemId = 1;
+  InteractionState interactionState = 2;
+  optional google.protobuf.Timestamp timestamp = 3;
+}
+
+enum ContentType {
+  CONTENT_TYPE_INVALID = 0;
+  MUSIC_RELEASE = 1;
+  PODCAST_EPISODE_RELEASE = 2;
+  RECOMMENDATION = 3;
+  ARTIST_OFFER = 5;
+}
+
+message MusicRelease {
+  AlbumType albumType = 1;
+  repeated string artists = 2;
+  optional bool explicit = 3;
+  string albumName = 4;
+  string imageUrl = 5;
+}
+
+message PodcastEpisodeRelease {
+  string showName = 1;
+  int32 episodeType = 2; // enum?
+  int32 durationMilliseconds = 3;
+  bool explicit = 4;
+  string episodeName = 5;
+  string imageUrl = 6;
+  bool is19PlusOnly = 7;
+  bool isMusicAndTalk = 8;
+  bool isPaywalled = 9;
+  bool isUserSubscribed = 10;
+  repeated string musicAndTalkArtistNames = 11;
+  optional string episodeDescription = 12;
+}
+
+enum AlbumType {
+    UNSPECIFIED = 0;
+    ALBUM = 1;
+    SINGLE = 2;
+    COMPILATION = 3;
+    EP = 4;
+    AUDIOBOOK = 5;
+    PODCAST = 6;
+}

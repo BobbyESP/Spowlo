@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.spotify.lyrics.v2.lyrics.proto";
+
+// com.spotify.colorlyrics.proto
+message ColorLyricsResponse {
+  message ColorData {
+    int32 background = 1;
+    int32 text = 2;
+    int32 highlight_text = 3;
+  }
+
+  LyricsResponse lyrics = 1;
+  optional ColorData colors = 2;
+  bool has_vocal_removal = 3;
+  optional ColorData vocal_removal_colors = 4;
+}
+
+message LyricsResponse {
+  enum SyncType {
+    UNSYNCED = 0;
+    LINE_SYNCED = 1;
+    SYLLABLE_SYNCED = 2;
+  }
+
+  message LyricsLine {
+    int64 start_time_ms = 1;
+    string words = 2;
+    repeated Syllable syllables = 3;
+
+    message Syllable {
+      int64 start_time_ms = 1;
+      int64 num_chars = 2;
+    }
+  }
+
+  message AndroidIntent {
+    string provider = 1;
+    string provider_android_app_id = 2;
+    string action = 3;
+    string data = 4;
+    string content_type = 5;
+  }
+
+  message Alternative {
+    string language = 1;
+    repeated LyricsLine lines = 2;
+    bool is_rtl_language = 3;
+  }
+
+  SyncType syncType = 1;
+  repeated LyricsLine lines = 2;
+  string provider = 3;
+  string provider_lyrics_id = 4;
+  string provider_display_name = 5;
+  optional AndroidIntent sync_lyrics_android_intent = 6;
+  string sync_lyrics_uri = 7;
+  bool is_dense_typeface = 8;
+  repeated Alternative alternatives = 9;
+  string language = 10;
+  bool is_rtl_language = 11;
+  int32 fullscreen_action = 12;
+}
+

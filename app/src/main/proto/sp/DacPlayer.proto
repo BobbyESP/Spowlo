@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package com.spotify.dac.player.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.dac.player.v1.proto";
+
+message PlayCommand {
+  bytes context = 1;
+  bytes options = 2;
+}

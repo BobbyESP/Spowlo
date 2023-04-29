@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package spotify.pamviewservice.v1.proto;
+
+option java_package = "com.spotify.pamviewservice.v1.proto";
+
+enum SubscriptionType {
+    UNKNOWN = 0;
+    RECURRING_MONTHLY = 1;
+    TRIAL = 2;
+    PREPAID = 3;
+}
+
+message AllPremiumPlansRow {
+    bool is_trial = 1;
+    bool is_prepaid = 2;
+    string premium_plan = 3;
+    string premium_plan_color = 4;
+    uint32 prepaid_days_remaining = 5;
+    SubscriptionType subscription_type = 6;
+    repeated string available_plan_names = 7;
+}

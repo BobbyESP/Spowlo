@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "sp/DacPlayer.proto";
+
+package com.spotify.home.dac.component.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v1.proto";
+
+message PromoSectionHeadingComponent {
+  string title = 1;
+  google.protobuf.Any context_menu = 2;
+}
+
+message AlbumCardPromoComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string like_uri = 4;
+  string image_uri = 5;
+  string tag = 6;
+  spotify.dac.player.v1.proto.PlayCommand play_command = 7;
+}
+
+message PromoCardOnlyYouComponent {
+  string title = 1;
+  string subtitle = 2;
+  string navigate_uri = 3;
+  string background_image_uri = 4;
+}
+
+message PromoCardHomeComponent {
+  string title = 1;
+  string subtitle = 2;
+  string tag = 3;
+  string navigate_uri = 4;
+  string background_image_uri = 5;
+  string logo_image_uri = 6;
+  string gradient_color = 7;
+  spotify.dac.player.v1.proto.PlayCommand play_command = 8;
+  google.protobuf.Any context_menu = 9;
+  string play_button_color = 10;
+}

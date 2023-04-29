@@ -1,3 +1,4 @@
+
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -6,6 +7,8 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    id("com.google.protobuf") version "0.9.3"
+    id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
 apply(plugin = "dagger.hilt.android.plugin")
@@ -104,6 +107,13 @@ android {
             }
         }
 
+    //source sets in .kts
+    sourceSets {
+        getByName("main") {
+            java.srcDir("src/main/libs")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -175,10 +185,26 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/*.kotlin_module"
             excludes += "META-INF/gradle/incremental.annotation.processors"
+            excludes += "/META-INF/*.kotlin_module"
+            excludes += "/META-INF/*.version"
+            excludes += "/META-INF/**"
+            excludes += "/kotlin/**"
+            excludes += "/kotlinx/**"
+            excludes += "**/*.properties"
+            excludes += "DebugProbesKt.bin"
+            excludes += "kotlin-tooling-metadata.json"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "log4j2.xml"
+            excludes += "**.proto"
         }
         jniLibs.useLegacyPackaging = true
     }
     namespace = "com.bobbyesp.spowlo"
+}
+
+moshi {
+    // Opt-in to enable moshi-sealed, disabled by default.
+    enableSealed.set(true)
 }
 
 dependencies {
@@ -230,8 +256,18 @@ dependencies {
     //Spotify API wrapper
     implementation(libs.spotify.api.android)
 
+    // Librespot
+    implementation("com.github.iTaysonLab.librespot-java:librespot-player:e95c4f0529:thin") {
+        exclude(group = "xyz.gianlu.librespot", module = "librespot-sink")
+        exclude(group = "com.lmax", module = "disruptor")
+        exclude(group = "org.apache.logging.log4j")
+    }
+
     // okhttp
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
+
+    implementation(libs.protobuf.java)
 
     //MMKV
     implementation(libs.mmkv)
@@ -243,20 +279,32 @@ dependencies {
     //implementation(libs.bundles.exoplayer)
 
     implementation(libs.customtabs)
-   // implementation(libs.shimmer)
 
     implementation(libs.soup.anims.core)
     implementation(libs.soup.anims.navigation)
     implementation(libs.richTextMaterial3)
-    implementation(libs.richTextMarkdown)
 
     debugImplementation(libs.crash.handler)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
-//    androidTestImplementation(libs.androidx.compose.ui.test)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.21.5"
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    //option("lite")
+                }
+            }
+        }
+    }
 }

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.spotify.home.dac.component.v1.proto;
+
+option java_multiple_files = true;
+option java_package = "com.spotify.home.dac.component.v1.proto";
+
+message LikedSongsCardMediumComponent {}
+message LikedSongsCardSmallComponent {}
+
+message YourEpisodesCardMediumComponent {}
+message YourEpisodesCardSmallComponent {}
