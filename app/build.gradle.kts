@@ -69,7 +69,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 20000
 
@@ -204,13 +204,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.navigation.animation)
-    implementation(libs.accompanist.webview)
-    implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.material)
-    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.bundles.accompanist)
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
 
@@ -231,20 +225,20 @@ dependencies {
     implementation(libs.spotdl.android.library)
     implementation(libs.spotdl.android.ffmpeg)
 
+    //Spotify API wrapper
     implementation(libs.spotify.api.android)
 
     // okhttp
     implementation(libs.okhttp)
+
     //MMKV
     implementation(libs.mmkv)
 
+    //markdown pasrser
     implementation(libs.markdown)
+
     //Exoplayer
-//    implementation(libs.exoplayer.core)
-//    implementation(libs.exoplayer.ui)
-//    implementation(libs.exoplayer.dash)
-//    implementation(libs.exoplayer.smoothstreaming)
-//    implementation(libs.exoplayer.extension.mediasession)
+    implementation(libs.bundles.exoplayer)
 
     implementation(libs.customtabs)
    // implementation(libs.shimmer)

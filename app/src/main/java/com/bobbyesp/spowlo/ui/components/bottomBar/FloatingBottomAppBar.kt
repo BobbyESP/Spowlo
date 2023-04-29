@@ -9,16 +9,19 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -29,6 +32,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -143,7 +147,18 @@ private fun FloatingBottomBarTabs(
                         }
 
                         is BottomBarItem.Icon -> {
-                            Icon(imageVector = item.icon(), contentDescription = item.description?.let { stringResource(id = it) })
+                            if(selectedItem == index) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(imageVector = item.icon(), contentDescription = item.description?.let { stringResource(id = it) })
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    item.description?.let { stringResource(id = it) }?.let { Text(it, fontWeight = FontWeight.Bold) }
+                                }
+                            } else {
+                                Icon(imageVector = item.icon(), contentDescription = item.description?.let { stringResource(id = it) })
+                            }
+
                         }
                     }
                 }
