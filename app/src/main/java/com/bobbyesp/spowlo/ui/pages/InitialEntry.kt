@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,17 +20,13 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,15 +39,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navigation
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
+import com.bobbyesp.spowlo.ui.common.animatedComposable
+import com.bobbyesp.spowlo.ui.components.bottomBar.BottomBarItem
+import com.bobbyesp.spowlo.ui.components.bottomBar.FloatingBottomBar
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.SPOTDL
@@ -146,17 +147,16 @@ fun InitialEntry(
                         enter = expandVertically() + fadeIn(),
                         exit = shrinkVertically() + fadeOut()
                     ) {
-                        NavigationBar(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-                                .navigationBarsPadding(),
-                        ) {
-                            Screen.showInBottomNavigation.forEach { (screen, icon) ->
 
+                        val bottomBarItems = remember(Screen.showInBottomNavigation) {
+                            Screen.showInBottomNavigation.map { (screen, icon) ->
                                 val selected = currentRootRoute.value == screen.route
 
-                                val onClick = remember(selected, navController, screen.route) {
-                                    {
+                                BottomBarItem.Icon(
+                                    icon = { icon },
+                                    description = screen.title,
+                                    id = screen.route,
+                                    onClick = {
                                         if (!selected) {
                                             navController.navigate(screen.route) {
                                                 popUpTo(Screen.NavGraph.route) {
@@ -167,26 +167,34 @@ fun InitialEntry(
                                             }
                                         }
                                     }
-                                }
-                                NavigationBarItem(
-                                    selected = currentRootRoute.value == screen.route,
-                                    onClick = onClick,
-                                    icon = {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            text = stringResource(screen.title),
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                    })
+                                )
                             }
                         }
+
+                        val selectedItemIndex = remember(bottomBarItems, currentRootRoute) {
+                            bottomBarItems.indexOfFirst { it.id == currentRootRoute.value }
+                                .coerceAtLeast(0)
+                        }
+
+                        val navBarOffset by animateDpAsState(0.dp, label = "")
+                        //val navBarOffsetReverse by animateDpAsState(0.dp, label = "")
+
+                        FloatingBottomBar(
+                            expanded = false,
+                            selectedItem = selectedItemIndex,
+                            items = bottomBarItems,
+                            modifier = Modifier.offset {
+                                IntOffset(
+                                    0,
+                                    navBarOffset
+                                        .toPx()
+                                        .toInt()
+                                )
+                            }, expandedContent = {
+
+                            }
+                        )
+
                     }
                 }, modifier = Modifier
                     .fillMaxSize()
@@ -205,10 +213,43 @@ fun InitialEntry(
                         .padding(paddingValues)
                         .consumeWindowInsets(paddingValues),
                     navController = navController,
-                    startDestination = Screen.Authorization.route,
+                    startDestination = Screen.HomeNavigator.route,
                     route = Screen.NavGraph.route
                 ) {
+                    navigation(
+                        startDestination = Screen.Authorization.route,
+                        route = Screen.AuthNavigator.route
+                    ) {
+                        animatedComposable(Screen.Authorization.route) {
+                            Text(text = "Authorization")
+                        }
+                    }
 
+                    navigation(
+                        startDestination = Screen.Home.route,
+                        route = Screen.HomeNavigator.route
+                    ) {
+                        animatedComposable(Screen.Home.route) {
+                            Text(text = "Home")
+                        }
+                    }
+
+                    navigation(
+                        startDestination = Screen.Search.route,
+                        route = Screen.SearchNavigator.route
+                    ) {
+                        animatedComposable(Screen.Search.route) {
+                            Text(text = "Search")
+                        }
+                    }
+                    navigation(
+                        startDestination = Screen.Library.route,
+                        route = Screen.LibraryNavigator.route
+                    ) {
+                        animatedComposable(Screen.Library.route) {
+                            Text(text = "Playlist")
+                        }
+                    }
                 }
             }
         }

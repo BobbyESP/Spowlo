@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="err_text">An error occurred</string>
+    <string name="err_act_reload">Reload page</string>
+    <string name="err_act_copy">Copy error</string>
+</resources>

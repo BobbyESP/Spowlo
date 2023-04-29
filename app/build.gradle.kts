@@ -42,8 +42,8 @@ sealed class Version(
 }
 
 val currentVersion: Version = Version.Stable(
-    versionMajor = 1,
-    versionMinor = 3,
+    versionMajor = 2,
+    versionMinor = 0,
     versionPatch = 0,
 )
 
@@ -69,9 +69,9 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 33
-        versionCode = 10300
+        versionCode = 20000
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
@@ -183,6 +183,7 @@ android {
 dependencies {
 
     implementation(project(":color"))
+    implementation(project(":uisdk"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)

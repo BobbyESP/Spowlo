@@ -12,6 +12,7 @@ navTransitions = "0.11.0-alpha"
 androidxPaging = "3.1.1"
 paginationCompose = "1.0.0-alpha18"
 
+
 androidxLifecycle = "2.6.0"
 androidxNavigation = "2.5.3"
 androidxComposeMaterial3 = "1.1.0-alpha08"
@@ -47,6 +48,10 @@ mmkv = "1.2.15"
 
 #chrome custom tabs
 customTabs = "1.5.0"
+
+junit = "1.1.5"
+
+kotlinxCollectionsImmutable = "0.3.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -90,6 +95,8 @@ androidx-compose-material3-windowSizeClass = { group = "androidx.compose.materia
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+#compose ui util
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util"}
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -142,6 +149,10 @@ exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", nam
 
 #chrome custom tabs
 customtabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+
+#Kotlin Immutable Collections
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -151,3 +162,8 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[bundles]
+#compose bundle
+compose = ["androidx-lifecycle-runtimeCompose", "android-material", "androidx-compose-material-iconsExtended", "androidx-compose-material3", "androidx-compose-ui", "androidx-compose-ui-util", "androidx-navigation-compose", "androidx-activity-compose"]
+

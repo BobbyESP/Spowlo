@@ -72,15 +72,12 @@ class App : Application() {
     }
 
     companion object {
-        private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
         lateinit var extraDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
-        val SpotDl = SpotDL.getInstance()
-        val FFMPEG = FFmpeg.getInstance()
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
@@ -105,7 +102,7 @@ class App : Application() {
             return StringBuilder().append("App version: $versionName ($versionCode)\n")
                 .append("Device information: Android $release (API ${Build.VERSION.SDK_INT})\n")
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
-                .append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
+                .append("spotDL version: ${SpotDL.getInstance().version(context.applicationContext)}\n")
                 .toString()
         }
 

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages
+package com.bobbyesp.spowlo.ui.pages.additionalPages
 
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
