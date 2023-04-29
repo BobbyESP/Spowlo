@@ -12,6 +12,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/appModules" />
+            <option value="$PROJECT_DIR$/appModules/core" />
             <option value="$PROJECT_DIR$/color" />
             <option value="$PROJECT_DIR$/uisdk" />
           </set>

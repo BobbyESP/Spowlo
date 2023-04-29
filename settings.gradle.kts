@@ -18,3 +18,4 @@ rootProject.name = "Spowlo"
 include (":app")
 include(":color")
 include(":uisdk")
+include(":appModules:core")

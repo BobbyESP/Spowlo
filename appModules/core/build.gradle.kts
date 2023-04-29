@@ -1,11 +1,14 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     id("com.android.library")
+    id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization")
 }
+apply(plugin = "dagger.hilt.android.plugin")
 
 android {
-    namespace = "com.bobbyesp.uisdk"
+    namespace = "com.bobbyesp.appmodules.core"
     compileSdk = 33
 
     defaultConfig {
@@ -31,23 +34,23 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
     buildFeatures {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    kotlin {
+        jvmToolchain(11)
     }
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.coil.kt.compose)
-    implementation(libs.bundles.compose)
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

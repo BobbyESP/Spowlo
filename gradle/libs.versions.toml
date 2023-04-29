@@ -40,7 +40,7 @@ kotlinxSerializationJson = "1.5.0"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
 
-exoplayer = "2.18.6"
+exoplayer = "2.18.4"
 
 room = "2.5.1"
 

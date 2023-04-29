@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="Spowlo.app" target="11" />
+      <module name="Spowlo.appModules.core" target="11" />
+      <module name="Spowlo.uisdk" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
