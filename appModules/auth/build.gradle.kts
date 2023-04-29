@@ -8,7 +8,7 @@ plugins {
 apply(plugin = "dagger.hilt.android.plugin")
 
 android {
-    namespace = "com.bobbyesp.appmodules.core"
+    namespace = "com.bobbyesp.appModules.auth"
     compileSdk = 33
 
     defaultConfig {
@@ -34,12 +34,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
-    }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -53,6 +47,7 @@ dependencies {
     implementation(libs.hilt.compiler)
     implementation(libs.hilt.ext.compiler)
     implementation(libs.coil.kt.compose)
+
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

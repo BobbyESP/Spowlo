@@ -185,6 +185,7 @@ dependencies {
 
     implementation(project(":color"))
     implementation(project(":uisdk"))
+    implementation(project(":appModules:core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
@@ -202,8 +203,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.compose.foundation)
-
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.animation)
 
     implementation(libs.bundles.accompanist)
     implementation(libs.paging.compose)
@@ -243,6 +244,11 @@ dependencies {
 
     implementation(libs.customtabs)
    // implementation(libs.shimmer)
+
+    implementation(libs.soup.anims.core)
+    implementation(libs.soup.anims.navigation)
+    implementation(libs.richTextMaterial3)
+    implementation(libs.richTextMarkdown)
 
     debugImplementation(libs.crash.handler)
 

@@ -8,6 +8,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.ui.navigation.LocalNavigationController
 import com.bobbyesp.spowlo.ui.navigation.NavigationController
@@ -15,6 +17,7 @@ import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.DarkThemePreference
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.palettesMap
+import com.bobbyesp.uisdk.LocalFloatingBarInset
 import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
@@ -30,6 +33,7 @@ val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 fun SettingsProvider(
     windowWidthSizeClass: WindowWidthSizeClass,
     localWindowHeightSizeClass: WindowHeightSizeClass,
+    navBarInsets: Dp = 0.dp,
     navController : NavHostController,
     content: @Composable () -> Unit) {
     val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
@@ -44,6 +48,7 @@ fun SettingsProvider(
         LocalWindowHeightState provides localWindowHeightSizeClass,
         LocalDynamicColorSwitch provides appSettingsState.isDynamicColorEnabled,
         LocalNavigationController provides NavigationController { navController },
+        LocalFloatingBarInset provides navBarInsets,
         content = content
     )
 }

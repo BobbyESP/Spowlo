@@ -40,6 +40,8 @@ kotlinxSerializationJson = "1.5.0"
 okhttp = "5.0.0-alpha.10"
 ktor = "1.6.3"
 
+richText = "0.16.0"
+
 exoplayer = "2.18.4"
 
 room = "2.5.1"
@@ -69,6 +71,7 @@ androidx-compose-material = { group = "androidx.compose.material", name = "mater
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
 
 #Compose UI Util
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util"}
@@ -153,6 +156,9 @@ androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espres
 #More
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmerLibrary" }
+
+richTextMaterial3 = { module = "com.halilibo.compose-richtext:richtext-ui-material3", version.ref = "richText" }
+richTextMarkdown = { module = "com.halilibo.compose-richtext:richtext-commonmark", version.ref = "richText" }
 
 soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
 soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }
