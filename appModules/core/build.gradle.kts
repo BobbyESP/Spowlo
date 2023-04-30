@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    id("com.google.protobuf") version "0.9.3"
     id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
@@ -49,7 +50,7 @@ moshi {
 }
 
 dependencies {
-
+    implementation(project(":uisdk"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
@@ -59,6 +60,7 @@ dependencies {
     implementation(libs.hilt.compiler)
     implementation(libs.hilt.ext.compiler)
     implementation(libs.coil.kt.compose)
+    implementation(libs.datastore)
 
     implementation(libs.okhttp)
     implementation(libs.retrofit)
@@ -71,9 +73,24 @@ dependencies {
         exclude(group = "com.lmax", module = "disruptor")
         exclude(group = "org.apache.logging.log4j")
     }
-    implementation(project(mapOf("path" to ":app")))
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.21.5"
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    //option("lite")
+                }
+            }
+        }
+    }
 }

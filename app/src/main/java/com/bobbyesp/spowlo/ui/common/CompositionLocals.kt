@@ -10,9 +10,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.bobbyesp.spowlo.ui.navigation.LocalNavigationController
-import com.bobbyesp.spowlo.ui.navigation.NavigationController
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.DarkThemePreference
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -34,7 +31,6 @@ fun SettingsProvider(
     windowWidthSizeClass: WindowWidthSizeClass,
     localWindowHeightSizeClass: WindowHeightSizeClass,
     navBarInsets: Dp = 0.dp,
-    navController : NavHostController,
     content: @Composable () -> Unit) {
     val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
     CompositionLocalProvider(
@@ -47,7 +43,6 @@ fun SettingsProvider(
         LocalWindowWidthState provides windowWidthSizeClass,
         LocalWindowHeightState provides localWindowHeightSizeClass,
         LocalDynamicColorSwitch provides appSettingsState.isDynamicColorEnabled,
-        LocalNavigationController provides NavigationController { navController },
         LocalFloatingBarInset provides navBarInsets,
         content = content
     )

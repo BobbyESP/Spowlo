@@ -1,6 +1,7 @@
 package com.bobbyesp.appmodules.core.objects.ui_components
 
-import bruhcollective.itaysonlab.jetispot.core.objs.player.PlayFromContextData
+
+import com.bobbyesp.appmodules.core.objects.player.PlayFromContextData
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.DefaultObject
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel

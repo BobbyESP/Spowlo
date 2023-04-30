@@ -1,6 +1,7 @@
 package com.bobbyesp.appmodules.core.utils
 
-import com.bobbyesp.spowlo.BuildConfig
+import com.bobbyesp.appmodules.core.BuildConfig
+
 
 object Log {
   fun d(tag: String, message: String) = dbg { android.util.Log.d(tag(tag), message) }

@@ -14,7 +14,8 @@ paginationCompose = "1.0.0-alpha18"
 retrofit = "2.9.0"
 animCompose = "1.4.0-beta01"
 protobuf = "3.21.5"
-
+datastore = "1.0.0"
+media3 = "1.0.0-rc01"
 androidxLifecycle = "2.6.1"
 androidxNavigation = "2.5.3"
 androidxComposeMaterial3 = "1.1.0-rc01"
@@ -132,6 +133,9 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 #MMKV
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
+#Datastore
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+
 #OkHttp and Retrofit
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
@@ -150,6 +154,13 @@ exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-das
 exoplayer-smoothstreaming = { group = "com.google.android.exoplayer", name = "exoplayer-smoothstreaming", version.ref = "exoplayer" }
 exoplayer-cast = { group = "com.google.android.exoplayer", name = "exoplayer-cast", version.ref = "exoplayer" }
 exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", name = "extension-mediasession", version.ref = "exoplayer" }
+
+#Media3
+media3-exoplayer = { group = "com.google.android.exoplayer", name = "media3-exoplayer", version.ref = "media3" }
+media3-exoplayer-session = { group = "com.google.android.exoplayer", name = "media3-exoplayer-session", version.ref = "media3" }
+media3-common = { group = "com.google.android.exoplayer", name = "media3-common", version.ref = "media3" }
+media3-exoplayer-ima = { group = "com.google.android.exoplayer", name = "media3-exoplayer-ima", version.ref = "media3" }
+media3-exoplayer-ui = { group = "com.google.android.exoplayer", name = "media3-exoplayer-ui", version.ref = "media3" }
 
 #Chrome custom tabs
 customtabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }

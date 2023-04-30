@@ -17,6 +17,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.ui.pages.AppNavigation
+import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -50,7 +51,11 @@ class MainActivity : AppCompatActivity() {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val windowSizeClass = calculateWindowSizeClass(this)
-            AppNavigation()
+            SpowloTheme {
+                AppNavigation(
+                    windowSizeClass = windowSizeClass,
+                )
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.bobbyesp.appmodules.core.objects.playlists
 
-import bruhcollective.itaysonlab.jetispot.ui.hub.virt.PlaylistEntityView
+
+import com.bobbyesp.appmodules.core.modules.hub.virt.PlaylistEntityView
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)

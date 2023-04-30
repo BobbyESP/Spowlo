@@ -35,6 +35,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
+    buildFeatures {
+        compose = true
+    }
 }
 
 moshi {
@@ -43,8 +49,8 @@ moshi {
 }
 
 dependencies {
-
     implementation(project(":appModules:core"))
+    implementation(project(":uisdk"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)

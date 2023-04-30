@@ -208,10 +208,11 @@ moshi {
 }
 
 dependencies {
-
-    implementation(project(":color"))
     implementation(project(":uisdk"))
     implementation(project(":appModules:core"))
+    implementation(project(":appModules:auth"))
+
+    implementation(project(":color"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)

@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    id("com.google.protobuf") version "0.9.3"
     id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
@@ -65,15 +66,29 @@ dependencies {
     implementation(libs.retrofit.protobuf.converter)
     implementation(libs.retrofit.moshi.converter)
 
-    // Librespot
     implementation("com.github.iTaysonLab.librespot-java:librespot-player:e95c4f0529:thin") {
         exclude(group = "xyz.gianlu.librespot", module = "librespot-sink")
         exclude(group = "com.lmax", module = "disruptor")
         exclude(group = "org.apache.logging.log4j")
     }
-    implementation(project(mapOf("path" to ":app")))
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.21.5"
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    //option("lite")
+                }
+            }
+        }
+    }
 }

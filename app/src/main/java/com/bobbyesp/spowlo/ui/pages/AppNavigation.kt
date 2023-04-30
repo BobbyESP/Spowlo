@@ -20,7 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,14 +36,15 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.bobbyesp.appModules.auth.AuthAppModule
 import com.bobbyesp.appmodules.core.BottomNavigationCapable
 import com.bobbyesp.appmodules.core.ComposableAppEntry
 import com.bobbyesp.appmodules.core.Destinations
 import com.bobbyesp.appmodules.core.HasFullscreenRoutes
 import com.bobbyesp.appmodules.core.NestedAppEntry
+import com.bobbyesp.appmodules.core.find
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
-import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -63,7 +64,8 @@ import javax.inject.Inject
 )
 @Composable
 fun AppNavigation(
-    viewModel: AppNavigationViewModel = hiltViewModel()
+    viewModel: AppNavigationViewModel = hiltViewModel(),
+    windowSizeClass: WindowSizeClass,
 ) {
     val emptyWindowInsets = WindowInsets(0.dp)
     val bottomSheetNavigator = rememberBottomSheetNavigator()
@@ -73,7 +75,7 @@ fun AppNavigation(
 
     val currentRootRoute = remember(navBackStackEntry) {
         mutableStateOf(
-            navBackStackEntry?.destination?.parent?.route ?: Screen.Home.route
+            navBackStackEntry?.destination?.parent?.route ?: ROOT_NAV_GRAPH_ID
         )
     }
 
@@ -109,8 +111,6 @@ fun AppNavigation(
         label = ""
     )
 
-    val windowSizeClass = calculateWindowSizeClass(MainActivity())
-
     ModalBottomSheetLayout(
         bottomSheetNavigator = bottomSheetNavigator,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(
@@ -129,7 +129,6 @@ fun AppNavigation(
                 windowSizeClass.widthSizeClass,
                 windowSizeClass.heightSizeClass,
                 navOffsetReverse,
-                navController
             ) {
                 AnimatedNavHost(
                     navController = navController,
@@ -207,10 +206,11 @@ class AppNavigationViewModel @Inject constructor(
 
     val bottomNavDestinations = listOf<BottomNavigationCapable>(
 
+
     ).map(BottomNavigationCapable::bottomNavigationEntry)
 
     fun awaitSignInAndReturnDestination(): String {
-        return "coreLoading"
+        return destinations.find<AuthAppModule>().graphRoute
     }
 
     @OptIn(ExperimentalAnimationApi::class)
