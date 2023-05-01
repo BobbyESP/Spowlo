@@ -14,7 +14,7 @@ internal class AuthScreenViewModel @Inject constructor(
     private val authManager: SpotifyAuthManager,
     //private val spSessionManager: SpotifySessionManager,
     //private val spConfigurationManager: SpotifyConfigManager
-): ViewModel() {
+) : ViewModel() {
     private val _isAuthInProgress = mutableStateOf(false)
     val isAuthInProgress: State<Boolean> = _isAuthInProgress
 

@@ -2,9 +2,9 @@
 <resources>
     <string name="new_onboarding_title">Welcome to Spowlo</string>
     <string name="new_onboarding_desc">A new Spotify client with an integrated songs downloader!</string>
-    <string name="new_onboarding_sign">Sign in to Spotify</string>
+    <string name="spowlo_login">Spowlo login</string>
     <string name="new_onboarding_downloader">Just downloader</string>
-    <string name="new_onboarding_spotify">Spotify integrated</string>
+    <string name="new_onboarding_spotify">Spotify client</string>
     <string name="new_onboarding_spotify_desc">The safest Spotify third party client ever. Open source with no data collection.</string>
     <string name="auth_err_empty">Username or password are empty!</string>
     <string name="auth_welcome">Welcome message placeholder</string>
@@ -15,8 +15,17 @@
     <string name="show_password">Show password</string>
     <string name="auth_disclaimer">Auth disclaimer</string>
     <string name="auth_next">Auth next text</string>
-    <string name="new_onboarding_material_you"></string>
+    <string name="new_onboarding_material_you">Placeholder</string>
     <string name="new_onboarding_material_you_desc" />
     <string name="integrated_downloader">Integrated downloader</string>
     <string name="integrated_downloader_desc">Spowlo comes with an amazing songs downloader powered by spotDL!</string>
+    <string name="login_sheet_title">Login to feel Spowlo</string>
+    <string name="login">Login</string>
+    <string name="login_sheet_subtitle">Get dive into the next-gen Spotify client</string>
+    <string name="login_spotify">Login to Spotify</string>
+    <string name="auth_discl_title">Authorization disclaimer</string>
+    <string name="auth_discl_desc">Please read the following disclaimer carefully before proceeding</string>
+    <string name="confirm">confirm</string>
+    <string name="bad_credentials">Bad credentials. Please check your username and password.</string>
+    <string name="spowlo_login_subtitle">Login to be able to use the Spotify integrated client</string>
 </resources>

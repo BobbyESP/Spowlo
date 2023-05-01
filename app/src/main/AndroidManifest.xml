@@ -37,6 +37,7 @@
         android:localeConfig="@xml/locales_config"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         tools:targetApi="tiramisu">
         <!--        android:largeHeap="true" -->
         <activity

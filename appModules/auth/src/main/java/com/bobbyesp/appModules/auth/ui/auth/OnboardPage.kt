@@ -1,4 +1,4 @@
-package com.bobbyesp.appModules.auth.ui.auth.onboard
+package com.bobbyesp.appModules.auth.ui.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -64,7 +64,8 @@ fun OnboardPage(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .navigationBarsPadding(), horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    .navigationBarsPadding(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
                     onClick = onAuthClicked,
@@ -72,9 +73,12 @@ fun OnboardPage(
                     contentPadding = PaddingValues(16.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Icon(imageVector = Icons.Rounded.Key, contentDescription = "Spotify login button")
+                    Icon(
+                        imageVector = Icons.Rounded.Key,
+                        contentDescription = "Spotify login button"
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(id = R.string.new_onboarding_sign))
+                    Text(stringResource(id = R.string.login_spotify))
                 }
 
                 FilledTonalButton(
@@ -83,7 +87,10 @@ fun OnboardPage(
                     contentPadding = PaddingValues(16.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Icon(imageVector = Icons.Rounded.Download, contentDescription = "Go downloader page button")
+                    Icon(
+                        imageVector = Icons.Rounded.Download,
+                        contentDescription = "Go downloader page button"
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(id = R.string.new_onboarding_downloader))
                 }
@@ -103,7 +110,10 @@ fun OnboardPage(
             item {
                 OnboardingCard(
                     icon = {
-                        Icon(imageVector = UiUtils.localAsset(R.drawable.spotify_logo), contentDescription = null)
+                        Icon(
+                            imageVector = UiUtils.localAsset(R.drawable.spotify_logo),
+                            contentDescription = null
+                        )
                     },
                     title = stringResource(id = R.string.new_onboarding_spotify),
                     text = stringResource(id = R.string.new_onboarding_spotify_desc)

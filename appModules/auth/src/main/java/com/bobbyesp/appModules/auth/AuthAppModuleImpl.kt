@@ -3,8 +3,9 @@ package com.bobbyesp.appModules.auth
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.bobbyesp.appModules.auth.ui.auth.AuthDisclaimerBottomSheet
 import com.bobbyesp.appModules.auth.ui.auth.AuthScreen
-import com.bobbyesp.appModules.auth.ui.auth.onboard.OnboardPage
+import com.bobbyesp.appModules.auth.ui.auth.OnboardPage
 import com.bobbyesp.appmodules.core.Destinations
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -29,14 +30,20 @@ class AuthAppModuleImpl @Inject constructor() : AuthAppModule() {
         }
         composable(Routes.SignInScreen.url) {
             AuthScreen(
-                onShowDisclaimer = { },
+                onShowDisclaimer = {
+                    navController.navigate(Routes.AuthDisclaimer.url)
+                },
                 onProceedToNextStep = { },
                 onBackClicked = {
                     navController.popBackStack()
                 })
         }
         bottomSheet(Routes.AuthDisclaimer.url) {
-
+            AuthDisclaimerBottomSheet(
+                onCancel = {
+                    navController.popBackStack()
+                },
+            )
         }
     }
 }
