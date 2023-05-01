@@ -48,6 +48,7 @@ import com.bobbyesp.appmodules.core.Destinations
 import com.bobbyesp.appmodules.core.HasFullscreenRoutes
 import com.bobbyesp.appmodules.core.NavigationEntry
 import com.bobbyesp.appmodules.core.NestedAppEntry
+import com.bobbyesp.appmodules.core.SpotifySessionManager
 import com.bobbyesp.appmodules.core.find
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
@@ -174,8 +175,7 @@ fun AppNavigation(
                                     .toPx()
                                     .toInt()
                             )
-                        }, expandedContent = {
-                        }
+                        }, expandedContent = {}
                     )
                 }
             },
@@ -254,6 +254,7 @@ fun AppNavigation(
 @JvmSuppressWildcards
 class AppNavigationViewModel @Inject constructor(
     val destinations: Destinations,
+    private val spotifySessionManager: SpotifySessionManager
 ) : ViewModel() {
     val fullscreenDestinations = (destinations.values
         .filterIsInstance<HasFullscreenRoutes>()
@@ -265,7 +266,11 @@ class AppNavigationViewModel @Inject constructor(
     ).map(BottomNavigationCapable::bottomNavigationEntry)
 
     fun awaitSignInAndReturnDestination(): String {
-        return destinations.find<AuthAppModule>().graphRoute
+        return if (spotifySessionManager.isSignedIn()) {
+            destinations.find<HubAppModule>().graphRoute
+        } else {
+            destinations.find<AuthAppModule>().graphRoute
+        }
     }
 
     @OptIn(ExperimentalAnimationApi::class)

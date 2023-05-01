@@ -1,4 +1,4 @@
-package com.bobbyesp.appmodules.hub.ui.screens
+package com.bobbyesp.appmodules.hub.ui.screens.core
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color

@@ -15,6 +15,8 @@ fun DacComponentRenderer(
     item: Message
 ) {
     when (item) {
+
+        //Home page
         is ShortcutsSectionComponent -> SongsShortcutsGrid(item)
 
         else -> {

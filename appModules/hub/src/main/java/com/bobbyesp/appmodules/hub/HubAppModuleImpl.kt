@@ -1,17 +1,20 @@
 package com.bobbyesp.appmodules.hub
 
+import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.twotone.Home
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.navDeepLink
 import com.bobbyesp.appmodules.core.Destinations
 import com.bobbyesp.appmodules.core.NavigationEntry
 import com.bobbyesp.appmodules.core.api.interalApi.SpotifyInternalApi
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.utils.Log
 import com.bobbyesp.appmodules.hub.ui.dac.DacRendererPage
+import com.bobbyesp.appmodules.hub.ui.screens.dynamic.DynamicSpotifyUriScreen
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import javax.inject.Inject
@@ -36,6 +39,18 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
                 fullscreen = true
             )
         }
+        composable(Routes.SpotifyCapableUri.url, deepLinks = listOf(
+            navDeepLink {
+                uriPattern = deeplinkCapable.getValue(Routes.SpotifyCapableUri)
+                action = Intent.ACTION_VIEW
+            }
+        )) {
+            val fullUrl = it.arguments?.getString("uri")
+            val dpLinkType = it.arguments?.getString("type")
+            val dpLinkTypeId = it.arguments?.getString("typeId")
+            val uri = fullUrl ?: "$dpLinkType:$dpLinkTypeId"
+            DynamicSpotifyUriScreen(uri, "spotify:$uri", onBackPressed = { navController.popBackStack() })
+        }
     }
     private fun NavHostController.navigateToRoot() {
         navigate(Routes.DacRenderer.url) {
@@ -48,5 +63,4 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
         icon = { Icons.TwoTone.Home },
         iconSelected = { Icons.Filled.Home },
     )
-
 }

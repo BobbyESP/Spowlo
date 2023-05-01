@@ -11,6 +11,8 @@ abstract class HubAppModule: NestedAppEntry, HasFullscreenRoutes, BottomNavigati
     override val graphRoute = Routes.NavGraph
     override val startDestination = Routes.DacRenderer.url
 
+    val deeplinkCapable = mapOf(Routes.SpotifyCapableUri to "https://open.spotify.com/{type}/{typeId}")
+
     override val fullscreenRoutes = listOf(
         Routes.SpotifyCapableUri.url,
     )
