@@ -12,10 +12,11 @@ class SpotifyAuthManager @Inject constructor(
     private val spSessionManager: SpotifySessionManager,
     private val spPlayerManager: SpotifyPlayerManager,
 ) {
-    @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun authWith(username: String, password: String) = withContext(Dispatchers.IO) {
         try {
-            spSessionManager.setSession(spSessionManager.createSession().userPass(username, password).create())
+            spSessionManager.setSession(
+                spSessionManager.createSession().userPass(username, password).create()
+            )
             //spPlayerManager.createPlayer()
             //spCollectionManager.init()
             AuthResult.Success
@@ -27,7 +28,6 @@ class SpotifyAuthManager @Inject constructor(
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun authStored() = withContext(Dispatchers.IO) {
         runCatching {
             spSessionManager.setSession(spSessionManager.createSession().stored().create())
@@ -37,9 +37,9 @@ class SpotifyAuthManager @Inject constructor(
     }
 
     sealed class AuthResult {
-        object Success: AuthResult()
-        class SpError(val msg: String): AuthResult()
-        class Exception(val e: kotlin.Exception): AuthResult()
+        object Success : AuthResult()
+        class SpError(val msg: String) : AuthResult()
+        class Exception(val e: kotlin.Exception) : AuthResult()
     }
 
     fun reset() {
