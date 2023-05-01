@@ -14,6 +14,7 @@ import com.bobbyesp.appmodules.core.api.interalApi.SpotifyInternalApi
 import com.bobbyesp.appmodules.core.ui.shared.PagingErrorPage
 import com.bobbyesp.appmodules.core.ui.shared.PagingLoadingPage
 import com.bobbyesp.appmodules.hub.ui.components.FilterComponentBinder
+import com.bobbyesp.uisdk.components.BackButton
 import com.spotify.dac.api.v1.proto.DacResponse
 import com.spotify.home.dac.component.experimental.v1.proto.FilterComponent
 import kotlinx.coroutines.launch
@@ -24,7 +25,8 @@ fun DacRendererPage(
     title: String,
     fullscreen: Boolean = false,
     loader: suspend SpotifyInternalApi.(String) -> DacResponse,
-    onGoBack : () -> Unit,
+    onGoBack: () -> Unit,
+    onNavigateToRequested: (String) -> Unit,
     viewModel: DacRendererViewModel = hiltViewModel()
 ) {
     val scrollBehavior =
@@ -40,21 +42,21 @@ fun DacRendererPage(
     when (viewState) {
         is DacRendererViewModel.State.Loaded -> {
             Scaffold(
-                /*topBar = {
+                topBar = {
                     if (fullscreen) {
                         (viewState as? DacRendererViewModel.State.Loaded)?.sticky?.let { msg ->
-                            DacComponentRenderer(msg)
+                            DacComponentRenderer(msg, onNavigateToRequested)
                         }
                     } else {
-                        LargeTopAppBar(title = {
+                        TopAppBar(title = {
                             Text(title)
                         }, navigationIcon = {
-                            IconButton(onClick = { onGoBack() }) {
-                                Icon(Icons.Rounded.ArrowBack, null)
+                            BackButton {
+                                onGoBack()
                             }
                         }, scrollBehavior = scrollBehavior)
                     }
-                },*/
+                },
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 contentWindowInsets = WindowInsets(top = 0.dp)
             ) { padding ->
@@ -62,7 +64,6 @@ fun DacRendererPage(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(padding)
-                        .systemBarsPadding()
                 ) {
                     (viewState as? DacRendererViewModel.State.Loaded)?.apply {
                         items(data) { item ->
@@ -75,7 +76,7 @@ fun DacRendererPage(
                                 }
                             } else {
                                 CompositionLocalProvider(LocalDacDelegator provides viewModel) {
-                                    DacComponentRenderer(item)
+                                    DacComponentRenderer(item, onNavigateToRequested)
                                 }
                             }
                         }
@@ -87,6 +88,7 @@ fun DacRendererPage(
                 }
             }
         }
+
         is DacRendererViewModel.State.Error -> {
             PagingErrorPage(
                 exception = (viewState as DacRendererViewModel.State.Error).error,

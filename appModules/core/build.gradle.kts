@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.hilt.ext.compiler)
     implementation(libs.coil.kt.compose)
     implementation(libs.datastore)
-
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.ext.compiler)
     kapt(libs.hilt.compiler)

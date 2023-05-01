@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bobbyesp.appmodules.core.SpotifyAuthManager
 import com.bobbyesp.appmodules.core.SpotifyConfigManager
 import com.bobbyesp.appmodules.core.SpotifySessionManager
+import com.bobbyesp.spowlo.protos.AppConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,13 +44,10 @@ internal class AuthScreenViewModel @Inject constructor(
         }
     }
 
-    /*private suspend fun modifyDatastore(runOnBuilder: AppConfig.Builder.() -> Unit) { //TODO
+    private suspend fun modifyDatastore(runOnBuilder: AppConfig.Builder.() -> Unit) {
         spConfigurationManager.dataStore.updateData {
             it.toBuilder().apply(runOnBuilder).build()
         }
-    }*/
+    }
 
 }
-
-//@HiltViewModel
-//internal class AuthScreenViewModel @Inject constructor(hostSteamClient: HostSteamClient) : ViewModel() {

@@ -36,7 +36,8 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
                     homeResponse
                 },
                 onGoBack = { navController.popBackStack() },
-                fullscreen = true
+                fullscreen = true,
+                onNavigateToRequested = { navController.navigate(it) },
             )
         }
         composable(Routes.SpotifyCapableUri.url, deepLinks = listOf(

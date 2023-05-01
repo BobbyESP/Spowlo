@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="home">Home</string>
+    <string name="spowlo_greetings">Spowlo wishes you a nice day!</string>
 </resources>
