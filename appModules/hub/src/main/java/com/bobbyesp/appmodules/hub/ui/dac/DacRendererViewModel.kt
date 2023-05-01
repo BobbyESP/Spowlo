@@ -23,8 +23,8 @@ import javax.inject.Inject
 class DacRendererViewModel @Inject constructor(
     private val spotifyInternalApi: SpotifyInternalApi,
     //private val spotifyPlayerServiceManager: SpotifyPlayerServiceManager,
-   // private val moshi: Moshi
-): ViewModel(), DacDelegator {
+    // private val moshi: Moshi
+) : ViewModel(), DacDelegator {
 
     var facet = "default"
 
@@ -34,11 +34,14 @@ class DacRendererViewModel @Inject constructor(
     suspend fun loadPage(loader: suspend SpotifyInternalApi.(String) -> DacResponse) {
         _state.value = try {
             val (sticky, list) = withContext(Dispatchers.Default) {
-                val messages = parseMessages(when (val protoList = spotifyInternalApi.loader(facet).component.dynamicUnpack()) {
-                    is VerticalListComponent -> protoList.componentsList
-                    is HomePageComponent -> protoList.componentsList
-                    else -> error("Invalid root for DAC renderer! Found: ${protoList.javaClass.simpleName}")
-                })
+                val messages = parseMessages(
+                    when (val protoList =
+                        spotifyInternalApi.loader(facet).component.dynamicUnpack()) {
+                        is VerticalListComponent -> protoList.componentsList
+                        is HomePageComponent -> protoList.componentsList
+                        else -> error("Invalid root for DAC renderer! Found: ${protoList.javaClass.simpleName}")
+                    }
+                )
 
                 if (messages.first() is ToolbarComponent || messages.first() is ToolbarComponentV2) {
                     messages.first() to messages.drop(1)
@@ -58,9 +61,11 @@ class DacRendererViewModel @Inject constructor(
         try {
             item.dynamicUnpack()
         } catch (e: ClassNotFoundException) {
-            ErrorComponent.newBuilder().setType(ErrorComponent.ErrorType.UNSUPPORTED).setMessage(e.message).build()
+            ErrorComponent.newBuilder().setType(ErrorComponent.ErrorType.UNSUPPORTED)
+                .setMessage(e.message).build()
         } catch (e: java.lang.Exception) {
-            ErrorComponent.newBuilder().setType(ErrorComponent.ErrorType.GENERIC_EXCEPTION).setMessage(e.message + "\n\n" + e.stackTraceToString()).build()
+            ErrorComponent.newBuilder().setType(ErrorComponent.ErrorType.GENERIC_EXCEPTION)
+                .setMessage(e.message + "\n\n" + e.stackTraceToString()).build()
         }
     }
 

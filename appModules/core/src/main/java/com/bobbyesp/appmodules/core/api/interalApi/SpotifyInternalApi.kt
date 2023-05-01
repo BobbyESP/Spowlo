@@ -3,6 +3,7 @@ package com.bobbyesp.appmodules.core.api.interalApi
 import com.bobbyesp.appmodules.core.objects.playlists.LikedSongsResponse
 import com.bobbyesp.appmodules.core.objects.tags.ContentFilterResponse
 import com.bobbyesp.appmodules.core.objects.ui_components.UiResponse
+import com.bobbyesp.appmodules.core.utils.Log
 import com.bobbyesp.appmodules.core.utils.SpotifyUtils
 import com.bobbyesp.spowlo.proto.SearchViewResponse
 import com.spotify.dac.api.v1.proto.DacRequest
@@ -95,6 +96,7 @@ interface SpotifyInternalApi {
 
     companion object {
         fun buildDacRequestForHome (bFacet: String = "default") = DacRequest.newBuilder().apply {
+            Log.d("buildDacRequestForHome", "Creating Dac request for home page // bFacet: $bFacet")
             uri = "dac:home" // dac:home-static
             featureRequest = com.google.protobuf.Any.pack(HomeViewServiceRequest.newBuilder().apply {
                 facet = bFacet

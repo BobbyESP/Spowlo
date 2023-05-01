@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CornerSize
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -41,11 +43,14 @@ import com.bobbyesp.appmodules.core.BottomNavigationCapable
 import com.bobbyesp.appmodules.core.ComposableAppEntry
 import com.bobbyesp.appmodules.core.Destinations
 import com.bobbyesp.appmodules.core.HasFullscreenRoutes
+import com.bobbyesp.appmodules.core.NavigationEntry
 import com.bobbyesp.appmodules.core.NestedAppEntry
 import com.bobbyesp.appmodules.core.find
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
+import com.bobbyesp.appmodules.hub.HubAppModule
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
+import com.bobbyesp.uisdk.components.bottomBar.*
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -122,7 +127,54 @@ fun AppNavigation(
     ) {
         Scaffold(
             topBar = {},
-            bottomBar = {},
+            bottomBar = {
+                fun navigateTo(dest: NavigationEntry) {
+                    navController.navigate(dest.route) {
+                        popUpTo(ROOT_NAV_GRAPH_ID) {
+                            saveState = true
+                        }
+
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+
+                val bottomBarItems: List<BottomBarItem> = remember(viewModel.bottomNavDestinations) {
+                    viewModel.bottomNavDestinations.filter { dest ->
+                        dest.route == "@hub"
+                    }.map { entry ->
+                        BottomBarItem.Icon(
+                            icon = entry.icon,
+                            description = entry.name,
+                            id = entry.route,
+                            onClick = {
+                                navigateTo(entry)
+                            }
+                        )
+                    }
+                }
+
+                val selectedItemIndex = remember(bottomBarItems, currentRootRoute) {
+                    bottomBarItems.indexOfFirst { dest ->
+                        currentRootRoute.value == dest.id
+                    }.coerceAtLeast(0)
+                }
+
+                FloatingBottomBar(
+                    expanded = false,
+                    selectedItem = selectedItemIndex,
+                    items = bottomBarItems,
+                    modifier = Modifier.offset {
+                        IntOffset(
+                            0,
+                            navOffset
+                                .toPx()
+                                .toInt()
+                        )
+                    }, expandedContent = {
+                    }
+                )
+            },
             contentWindowInsets = emptyWindowInsets
         ) { paddingValues ->
             SettingsProvider(
@@ -205,8 +257,7 @@ class AppNavigationViewModel @Inject constructor(
         .flatten() + "coreLoading").distinct()
 
     val bottomNavDestinations = listOf<BottomNavigationCapable>(
-
-
+        destinations.find<HubAppModule>()
     ).map(BottomNavigationCapable::bottomNavigationEntry)
 
     fun awaitSignInAndReturnDestination(): String {

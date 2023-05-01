@@ -3,8 +3,6 @@ package com.bobbyesp.appmodules.hub.ui.dac
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -42,7 +40,7 @@ fun DacRendererPage(
     when (viewState) {
         is DacRendererViewModel.State.Loaded -> {
             Scaffold(
-                topBar = {
+                /*topBar = {
                     if (fullscreen) {
                         (viewState as? DacRendererViewModel.State.Loaded)?.sticky?.let { msg ->
                             DacComponentRenderer(msg)
@@ -56,7 +54,7 @@ fun DacRendererPage(
                             }
                         }, scrollBehavior = scrollBehavior)
                     }
-                },
+                },*/
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 contentWindowInsets = WindowInsets(top = 0.dp)
             ) { padding ->
@@ -64,6 +62,7 @@ fun DacRendererPage(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(padding)
+                        .systemBarsPadding()
                 ) {
                     (viewState as? DacRendererViewModel.State.Loaded)?.apply {
                         items(data) { item ->

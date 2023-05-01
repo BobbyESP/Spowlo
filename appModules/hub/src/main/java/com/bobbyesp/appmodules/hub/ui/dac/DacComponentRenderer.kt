@@ -6,13 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.appmodules.hub.BuildConfig
+import com.bobbyesp.appmodules.hub.ui.components.dac.SongsShortcutsGrid
 import com.google.protobuf.Message
+import com.spotify.home.dac.component.v1.proto.ShortcutsSectionComponent
 
 @Composable
 fun DacComponentRenderer(
     item: Message
 ) {
     when (item) {
+        is ShortcutsSectionComponent -> SongsShortcutsGrid(item)
 
         else -> {
             if (BuildConfig.DEBUG) {

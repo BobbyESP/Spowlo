@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.bottomBar
+package com.bobbyesp.uisdk.components.bottomBar
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
