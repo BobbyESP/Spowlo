@@ -7,6 +7,9 @@ import com.bobbyesp.appModules.auth.ui.auth.AuthDisclaimerBottomSheet
 import com.bobbyesp.appModules.auth.ui.auth.AuthScreen
 import com.bobbyesp.appModules.auth.ui.auth.OnboardPage
 import com.bobbyesp.appmodules.core.Destinations
+import com.bobbyesp.appmodules.core.find
+import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
+import com.bobbyesp.appmodules.hub.HubAppModule
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
@@ -33,7 +36,9 @@ class AuthAppModuleImpl @Inject constructor() : AuthAppModule() {
                 onShowDisclaimer = {
                     navController.navigate(Routes.AuthDisclaimer.url)
                 },
-                onProceedToNextStep = { },
+                onProceedToNextStep = {
+                    navController.navigateRoot(destinations.find<HubAppModule>().graphRoute)
+                },
                 onBackClicked = {
                     navController.popBackStack()
                 })

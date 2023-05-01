@@ -7,6 +7,7 @@ plugins {
     id("dev.zacsweers.moshix") version "0.22.1"
     kotlin("plugin.serialization")
 }
+apply(plugin = "dagger.hilt.android.plugin")
 
 android {
     namespace = "com.bobbyesp.appmodules.hub"
@@ -59,7 +60,11 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.compiler)
     implementation(libs.hilt.ext.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.ext.compiler)
+    kapt(libs.hilt.compiler)
     implementation(libs.coil.kt.compose)
+
 
     implementation(libs.okhttp)
     implementation(libs.retrofit)

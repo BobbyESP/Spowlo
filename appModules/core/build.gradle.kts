@@ -62,6 +62,10 @@ dependencies {
     implementation(libs.coil.kt.compose)
     implementation(libs.datastore)
 
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.ext.compiler)
+    kapt(libs.hilt.compiler)
+
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.retrofit.protobuf.converter)

@@ -49,6 +49,7 @@ moshi {
 }
 
 dependencies {
+    implementation(project(":appModules:hub"))
     implementation(project(":appModules:core"))
     implementation(project(":uisdk"))
     implementation(libs.androidx.core.ktx)

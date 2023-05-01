@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import com.bobbyesp.appmodules.core.objects.player.PlayFromContextData
 import kotlinx.coroutines.CoroutineScope
 
 @Stable

@@ -1,14 +1,14 @@
 package com.bobbyesp.appmodules.hub.ui
 
+import androidx.navigation.NavHostController
 import com.bobbyesp.appmodules.core.objects.ui_components.UiEvent
-import com.bobbyesp.spowlo.ui.navigation.NavigationController
 
 object UIEventsHandler {
-    fun handle (navController: NavigationController, delegate: ScreenDelegator, event: UiEvent) {
+    fun handle (navController: NavHostController, delegate: ScreenDelegator, event: UiEvent) {
         when (event) {
             is UiEvent.NavigateToUri -> {
                 if (event.data.uri.startsWith("http")) {
-                    navController.openInBrowser(event.data.uri)
+                    TODO("Handle web links")
                 } else {
                     navController.navigate(event.data.uri)
                 }

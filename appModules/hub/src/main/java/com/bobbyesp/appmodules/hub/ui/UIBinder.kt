@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.appmodules.core.objects.ui_components.UiItem
-import com.bobbyesp.spowlo.BuildConfig
+import com.bobbyesp.appmodules.hub.BuildConfig
 
 @Composable
 fun UIBinder(
