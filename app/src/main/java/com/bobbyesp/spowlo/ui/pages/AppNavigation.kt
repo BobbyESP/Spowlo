@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages
 
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -8,6 +9,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -159,21 +162,22 @@ fun AppNavigation(
                         currentRootRoute.value == dest.id
                     }.coerceAtLeast(0)
                 }
-
-                FloatingBottomBar(
-                    expanded = false,
-                    selectedItem = selectedItemIndex,
-                    items = bottomBarItems,
-                    modifier = Modifier.offset {
-                        IntOffset(
-                            0,
-                            navOffset
-                                .toPx()
-                                .toInt()
-                        )
-                    }, expandedContent = {
-                    }
-                )
+                AnimatedVisibility(visible = !shouldHideNavigationBar, enter = fadeIn(), exit = fadeOut()) {
+                    FloatingBottomBar(
+                        expanded = false,
+                        selectedItem = selectedItemIndex,
+                        items = bottomBarItems,
+                        modifier = Modifier.offset {
+                            IntOffset(
+                                0,
+                                navOffset
+                                    .toPx()
+                                    .toInt()
+                            )
+                        }, expandedContent = {
+                        }
+                    )
+                }
             },
             contentWindowInsets = emptyWindowInsets
         ) { paddingValues ->
