@@ -45,6 +45,6 @@ fun SectionHeaderComponentBinder(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall
         )
-        HorizontalDivider( modifier = Modifier.padding(bottom = 12.dp))
+        HorizontalDivider( modifier = Modifier)
     }
 }

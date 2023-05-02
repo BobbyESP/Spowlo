@@ -144,15 +144,14 @@ fun MediumCard(
         ), modifier = Modifier
             .height(256.dp)
             .width(172.dp)
-            .padding(bottom = 8.dp),
+            .padding(vertical = 12.dp),
         onClick = {
             onNavigateToUri(navigateUri)
         }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
-                .padding(top = 4.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
