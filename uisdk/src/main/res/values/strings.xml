@@ -3,4 +3,6 @@
     <string name="err_text">An error occurred</string>
     <string name="err_act_reload">Reload page</string>
     <string name="err_act_copy">Copy error</string>
+    <string name="checked">Checked</string>
+    <string name="remove">Remove</string>
 </resources>

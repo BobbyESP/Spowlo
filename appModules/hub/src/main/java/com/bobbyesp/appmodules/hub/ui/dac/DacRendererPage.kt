@@ -2,6 +2,7 @@ package com.bobbyesp.appmodules.hub.ui.dac
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,7 +41,9 @@ fun DacRendererPage(
 
     val viewState = viewModel.state.collectAsStateWithLifecycle().value
 
-    Crossfade(targetState = viewState, label = "") { state ->
+    Crossfade(targetState = viewState,
+        animationSpec = tween(175),
+                label = "Fade between music and podcasts") { state ->
         when (state) {
             is DacRendererViewModel.State.Loaded -> {
                 Scaffold(

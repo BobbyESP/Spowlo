@@ -1,6 +1,5 @@
 package com.bobbyesp.appmodules.hub.ui.components.dac
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.appmodules.core.ext.dynamicUnpack
+import com.bobbyesp.appmodules.core.utils.Log
 import com.bobbyesp.appmodules.hub.ui.components.PlaceholderType
 import com.bobbyesp.appmodules.hub.ui.components.PreviewableAsyncImage
 import com.spotify.home.dac.component.v1.proto.AlbumCardShortcutComponent
@@ -31,7 +32,8 @@ import com.spotify.home.dac.component.v1.proto.ShowCardShortcutComponent
 
 @Composable
 fun SongsShortcutsGrid(
-    item: ShortcutsSectionComponent
+    item: ShortcutsSectionComponent,
+    onNavigateToUri: (String) -> Unit
 ) {
     item.shortcutsList.map { it.dynamicUnpack() }.chunked(2).forEachIndexed { idx, pairs ->
         Row(
@@ -47,23 +49,38 @@ fun SongsShortcutsGrid(
                 ) {
                     when (xItem) {
                         is AlbumCardShortcutComponent -> ShortcutComponentBinder(
-                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Album, xItem.title
+                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Album, xItem.title,
+                            onNavigateToUri
                         )
 
                         is PlaylistCardShortcutComponent -> ShortcutComponentBinder(
-                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Playlist, xItem.title
+                            xItem.navigateUri,
+                            xItem.imageUri,
+                            PlaceholderType.Playlist,
+                            xItem.title,
+                            onNavigateToUri
                         )
 
                         is ShowCardShortcutComponent -> ShortcutComponentBinder(
-                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Podcasts, xItem.title
+                            xItem.navigateUri,
+                            xItem.imageUri,
+                            PlaceholderType.Podcasts,
+                            xItem.title,
+                            onNavigateToUri
                         )
 
                         is ArtistCardShortcutComponent -> ShortcutComponentBinder(
-                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Artist, xItem.title
+                            xItem.navigateUri, xItem.imageUri,
+                            PlaceholderType.Artist, xItem.title,
+                            onNavigateToUri
                         )
 
                         is EpisodeCardShortcutComponent -> ShortcutComponentBinder(
-                            xItem.navigateUri, xItem.imageUri, PlaceholderType.Podcasts, xItem.title
+                            xItem.navigateUri,
+                            xItem.imageUri,
+                            PlaceholderType.Podcasts,
+                            xItem.title,
+                            onNavigateToUri
                         )
                     }
                 }
@@ -72,9 +89,14 @@ fun SongsShortcutsGrid(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ShortcutComponentBinder(
-    navigateUri: String, imageUrl: String, imagePlaceholder: PlaceholderType, title: String
+    navigateUri: String,
+    imageUrl: String,
+    imagePlaceholder: PlaceholderType,
+    title: String,
+    onNavigateToUri: (String) -> Unit
 ) {
     ElevatedCard(
         colors = CardDefaults.elevatedCardColors(
@@ -82,6 +104,10 @@ private fun ShortcutComponentBinder(
                 6.dp
             )
         ),
+        onClick = {
+            Log.d("ShortcutComponentBinder", "onClick: $navigateUri")
+            onNavigateToUri(navigateUri)
+        },
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth(),
@@ -90,9 +116,7 @@ private fun ShortcutComponentBinder(
         ),
         shape = MaterialTheme.shapes.small
     ) {
-        Row(modifier = Modifier.clickable {
-/*TODO: Make it clickable to navigate*/
-        }) {
+        Row(modifier = Modifier) {
             PreviewableAsyncImage(
                 imageUrl = imageUrl,
                 placeholderType = imagePlaceholder,
@@ -110,7 +134,7 @@ private fun ShortcutComponentBinder(
                     )
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
-                fontWeight =  FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }

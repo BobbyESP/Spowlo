@@ -37,7 +37,10 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
                 },
                 onGoBack = { navController.popBackStack() },
                 fullscreen = true,
-                onNavigateToRequested = { navController.navigate(it) },
+                onNavigateToRequested = {
+                    Log.d("DAC", "Navigating to $it")
+                    navController.navigate(it)
+                },
             )
         }
         composable(Routes.SpotifyCapableUri.url, deepLinks = listOf(
@@ -50,14 +53,19 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
             val dpLinkType = it.arguments?.getString("type")
             val dpLinkTypeId = it.arguments?.getString("typeId")
             val uri = fullUrl ?: "$dpLinkType:$dpLinkTypeId"
-            DynamicSpotifyUriScreen(uri, "spotify:$uri", onBackPressed = { navController.popBackStack() })
+            DynamicSpotifyUriScreen(
+                uri,
+                "spotify:$uri",
+                onBackPressed = { navController.popBackStack() })
         }
     }
+
     private fun NavHostController.navigateToRoot() {
         navigate(Routes.DacRenderer.url) {
             popUpTo(ROOT_NAV_GRAPH_ID)
         }
     }
+
     override val bottomNavigationEntry = NavigationEntry(
         route = Routes.NavGraph,
         name = R.string.home,

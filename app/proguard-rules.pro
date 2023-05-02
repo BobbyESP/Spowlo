@@ -47,6 +47,7 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keepattributes *Annotation*
 
 -renamesourcefileattribute
 -repackageclasses
@@ -73,6 +74,14 @@
 
 # moshix issues with serialized sealed classes
 -keep class com.bobbyesp.spowlo.appModules.core.objs.** { *; }
+
+-assumenosideeffects class android.util.Log {
+    public static void d(...);
+    public static void v(...);
+    public static void i(...);
+    public static void w(...);
+    public static void e(...);
+}
 
 # genericjson gson fixes
 -keep,allowobfuscation class * extends xyz.gianlu.librespot.json.JsonWrapper { *; }
@@ -119,3 +128,11 @@
 -keep,allowobfuscation,allowshrinking interface retrofit2.Call
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# Keep specific classes and their dependencies
+-keep class com.google.auto.service.AutoService
+-keep class com.google.auto.value.AutoValue
+-keep class javax.lang.model.** { *; }
+-keep class javax.sound.sampled.** { *; }
+-keep class org.apache.logging.log4j.** { *; }
+-keep class org.slf4j.** { *; }

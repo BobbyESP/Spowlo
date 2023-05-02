@@ -52,7 +52,7 @@ fun PreviewableAsyncImage(
                     painter = painter,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = modifier
                 )
             }
         }
