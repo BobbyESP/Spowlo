@@ -2,7 +2,6 @@ package com.bobbyesp.appmodules.hub.ui.components.dac.actionCards
 
 import android.graphics.Color
 import android.os.Build
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.surfaceColorAtElevation
@@ -27,7 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.appmodules.hub.ui.components.DynamicLikeButton
 import com.bobbyesp.appmodules.hub.ui.components.DynamicPlayButton
@@ -38,6 +40,7 @@ import com.bobbyesp.uisdk.components.text.Subtext
 import com.bobbyesp.uisdk.monet.ColorToScheme
 import com.spotify.dac.player.v1.proto.PlayCommand
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediumActionCardBinder(
     title: String,
@@ -64,14 +67,15 @@ fun MediumActionCardBinder(
     MaterialTheme(
         colorScheme = colorScheme
     ) {
-        OutlinedCard(colors = CardDefaults.cardColors(
+        OutlinedCard(
+            colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                 3.dp
             )
         ), modifier = Modifier
             .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-            .clickable {
+            .fillMaxWidth(),
+            onClick = {
                 onNavigateToUri(navigateUri)
             }) {
             Box(
@@ -88,6 +92,7 @@ fun MediumActionCardBinder(
                                 blur(16.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                             } else this
                         }
+                        .alpha(0.35f)
                 )
                 Column(Modifier.padding(16.dp)) {
                     Row {
@@ -97,6 +102,7 @@ fun MediumActionCardBinder(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .size(140.dp)
+                                .clip(MaterialTheme.shapes.small)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))

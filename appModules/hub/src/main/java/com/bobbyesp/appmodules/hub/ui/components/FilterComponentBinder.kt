@@ -17,12 +17,15 @@ import com.spotify.home.dac.component.experimental.v1.proto.FilterComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterComponentBinder (
+fun FilterComponentBinder(
     component: FilterComponent,
     selectedFacet: String,
     selectFacet: (String) -> Unit,
 ) {
-    LazyRow(Modifier.padding(start = 16.dp, bottom = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyRow(
+        Modifier.padding(start = 16.dp, bottom = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(component.facetsList) { item ->
             val selected = selectedFacet == item.value
             FilterChip(selected = selected, onClick = {
