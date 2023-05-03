@@ -55,14 +55,14 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.runBlocking
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
 import javax.inject.Inject
 
 @OptIn(
-    ExperimentalMaterialNavigationApi::class,
-    ExperimentalAnimationApi::class
+    ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class
 )
 @Composable
 fun AppNavigation(
@@ -83,7 +83,7 @@ fun AppNavigation(
 
     LaunchedEffect(Unit) {
         if (navController.currentDestination?.route != "coreLoading" || viewModel.isSignedIn()) return@LaunchedEffect
-        viewModel.storeAuthInfo()
+        viewModel.storedAuthInfo()
         navController.navigateRoot(viewModel.awaitSignInAndReturnDestination())
     }
 
@@ -94,87 +94,75 @@ fun AppNavigation(
     }
     val navBarHeightDp = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val navOffset by animateDpAsState(
-        if (shouldHideNavigationBar) 80.dp + navBarHeightDp else 0.dp,
-        label = ""
+        if (shouldHideNavigationBar) 80.dp + navBarHeightDp else 0.dp, label = ""
     )
     val navOffsetReverse by animateDpAsState(
-        if (!shouldHideNavigationBar) 80.dp + navBarHeightDp else 0.dp,
-        label = ""
+        if (!shouldHideNavigationBar) 80.dp + navBarHeightDp else 0.dp, label = ""
     )
     val slideDistance = rememberSlideDistance()
 
     ModalBottomSheetLayout(
         bottomSheetNavigator = bottomSheetNavigator,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(
-            bottomStart = CornerSize(0.dp),
-            bottomEnd = CornerSize(0.dp)
+            bottomStart = CornerSize(0.dp), bottomEnd = CornerSize(0.dp)
         ),
         scrimColor = MaterialTheme.colorScheme.scrim.copy(0.5f),
         sheetBackgroundColor = MaterialTheme.colorScheme.surface
     ) {
-        Scaffold(
-            topBar = {},
-            bottomBar = {
-                fun navigateTo(dest: NavigationEntry) {
-                    navController.navigate(dest.route) {
-                        popUpTo(ROOT_NAV_GRAPH_ID) {
-                            saveState = true
-                        }
-
-                        launchSingleTop = true
-                        restoreState = true
+        Scaffold(topBar = {}, bottomBar = {
+            fun navigateTo(dest: NavigationEntry) {
+                navController.navigate(dest.route) {
+                    popUpTo(ROOT_NAV_GRAPH_ID) {
+                        saveState = true
                     }
-                }
 
-                val bottomBarItems: List<BottomBarItem> = remember(viewModel.bottomNavDestinations) {
-                    viewModel.bottomNavDestinations.filter { dest ->
-                        dest.route == "@hub"
-                    }.map { entry ->
-                        BottomBarItem.Icon(
-                            icon = entry.icon,
-                            description = entry.name,
-                            id = entry.route,
-                            onClick = {
-                                navigateTo(entry)
-                            }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+
+            val bottomBarItems: List<BottomBarItem> = remember(viewModel.bottomNavDestinations) {
+                viewModel.bottomNavDestinations.filter { dest ->
+                    dest.route == "@hub"
+                }.map { entry ->
+                    BottomBarItem.Icon(icon = entry.icon,
+                        description = entry.name,
+                        id = entry.route,
+                        onClick = {
+                            navigateTo(entry)
+                        })
+                }
+            }
+
+            val selectedItemIndex = remember(bottomBarItems, currentRootRoute) {
+                bottomBarItems.indexOfFirst { dest ->
+                    currentRootRoute.value == dest.id
+                }.coerceAtLeast(0)
+            }
+            AnimatedVisibility(
+                visible = !shouldHideNavigationBar, enter = fadeIn(), exit = fadeOut()
+            ) {
+                FloatingBottomBar(expanded = false,
+                    selectedItem = selectedItemIndex,
+                    items = bottomBarItems,
+                    modifier = Modifier.offset {
+                        IntOffset(
+                            0, navOffset.toPx().toInt()
                         )
-                    }
-                }
-
-                val selectedItemIndex = remember(bottomBarItems, currentRootRoute) {
-                    bottomBarItems.indexOfFirst { dest ->
-                        currentRootRoute.value == dest.id
-                    }.coerceAtLeast(0)
-                }
-                AnimatedVisibility(visible = !shouldHideNavigationBar, enter = fadeIn(), exit = fadeOut()) {
-                    FloatingBottomBar(
-                        expanded = false,
-                        selectedItem = selectedItemIndex,
-                        items = bottomBarItems,
-                        modifier = Modifier.offset {
-                            IntOffset(
-                                0,
-                                navOffset
-                                    .toPx()
-                                    .toInt()
-                            )
-                        }, expandedContent = {}
-                    )
-                }
-            },
-            contentWindowInsets = emptyWindowInsets
+                    },
+                    expandedContent = {})
+            }
+        }, contentWindowInsets = emptyWindowInsets
         ) { paddingValues ->
             SettingsProvider(
                 windowSizeClass.widthSizeClass,
                 windowSizeClass.heightSizeClass,
                 navOffsetReverse,
             ) {
-                AnimatedNavHost(
-                    navController = navController,
+                AnimatedNavHost(navController = navController,
                     route = ROOT_NAV_GRAPH_ID,
                     startDestination = "coreLoading",
-                    modifier = Modifier
-                        .padding(top = (paddingValues.calculateTopPadding()).let {
+                    modifier = Modifier.padding(top = (paddingValues.calculateTopPadding()).let {
                             if (it.value < 0f) {
                                 0.dp
                             } else {
@@ -186,7 +174,9 @@ fun AppNavigation(
                             EnterTransition.None
                         } else {
                             viewModel.buildAnimation(this) { forwardDirection ->
-                                materialSharedAxisXIn(forward = forwardDirection, slideDistance = slideDistance)
+                                materialSharedAxisXIn(
+                                    forward = forwardDirection, slideDistance = slideDistance
+                                )
                             }
                         }
                     },
@@ -195,7 +185,9 @@ fun AppNavigation(
                             ExitTransition.None
                         } else {
                             viewModel.buildAnimation(this) { forwardDirection ->
-                                materialSharedAxisXOut(forward = forwardDirection, slideDistance = slideDistance)
+                                materialSharedAxisXOut(
+                                    forward = forwardDirection, slideDistance = slideDistance
+                                )
                             }
                         }
                     },
@@ -204,8 +196,7 @@ fun AppNavigation(
                     },
                     popExitTransition = {
                         materialSharedAxisXOut(forward = false, slideDistance = slideDistance)
-                    }
-                ) {
+                    }) {
                     composable("coreLoading") {
                         Box(modifier = Modifier.fillMaxSize())
                     }
@@ -213,15 +204,13 @@ fun AppNavigation(
                         when (value) {
                             is ComposableAppEntry -> with(value) {
                                 composable(
-                                    navController,
-                                    viewModel.destinations
+                                    navController, viewModel.destinations
                                 )
                             }
 
                             is NestedAppEntry -> with(value) {
                                 navigation(
-                                    navController,
-                                    viewModel.destinations
+                                    navController, viewModel.destinations
                                 )
                             }
                         }
@@ -240,20 +229,27 @@ class AppNavigationViewModel @Inject constructor(
     private val spotifySessionManager: SpotifySessionManager,
     private val spotifyAuthManager: SpotifyAuthManager
 ) : ViewModel() {
-    val fullscreenDestinations = (destinations.values
-        .filterIsInstance<HasFullscreenRoutes>()
-        .map { it.fullscreenRoutes }
-        .flatten() + "coreLoading").distinct()
+    val fullscreenDestinations =
+        (destinations.values.filterIsInstance<HasFullscreenRoutes>().map { it.fullscreenRoutes }
+            .flatten() + "coreLoading").distinct()
 
     val bottomNavDestinations = listOf<BottomNavigationCapable>(
         destinations.find<HubAppModule>()
     ).map(BottomNavigationCapable::bottomNavigationEntry)
 
     fun awaitSignInAndReturnDestination(): String {
-        return if (spotifySessionManager.isSignedIn()) {
+        return if (isSignedIn()) {
             destinations.find<HubAppModule>().graphRoute
         } else {
-            destinations.find<AuthAppModule>().graphRoute
+            try {
+                runBlocking {
+                    storedAuthInfo()
+                    return@runBlocking destinations.find<HubAppModule>().graphRoute
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                destinations.find<AuthAppModule>().graphRoute
+            }
         }
     }
 
@@ -261,12 +257,15 @@ class AppNavigationViewModel @Inject constructor(
         return spotifySessionManager.isSignedIn()
     }
 
-    suspend fun storeAuthInfo() {
+    suspend fun storedAuthInfo() {
         spotifyAuthManager.authStored()
     }
 
     @OptIn(ExperimentalAnimationApi::class)
-    fun <T> buildAnimation(scope: AnimatedContentScope<NavBackStackEntry>, builder: (forwardDirection: Boolean) -> T): T {
+    fun <T> buildAnimation(
+        scope: AnimatedContentScope<NavBackStackEntry>,
+        builder: (forwardDirection: Boolean) -> T
+    ): T {
         val isRoute = getStartingRoute(scope.initialState.destination)
         val tsRoute = getStartingRoute(scope.targetState.destination)
 
