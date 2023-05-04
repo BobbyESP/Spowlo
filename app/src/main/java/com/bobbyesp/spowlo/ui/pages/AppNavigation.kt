@@ -81,8 +81,8 @@ fun AppNavigation(
     }
 
     LaunchedEffect(Unit) {
-        if (navController.currentDestination?.route != "coreLoading" || viewModel.isSignedIn()) return@LaunchedEffect
-        viewModel.storedAuthInfo()
+        if (navController.currentDestination?.route != "coreLoading") return@LaunchedEffect
+        if (viewModel.isSignedIn()) return@LaunchedEffect else viewModel.loginWithStoredAuth()
         navController.navigateRoot(viewModel.awaitSignInAndReturnDestination())
     }
 
@@ -245,10 +245,10 @@ class AppNavigationViewModel @Inject constructor(
         }
 
     fun isSignedIn(): Boolean {
-        return spotifySessionManager.isSignedIn()
+        return spotifySessionManager.isSessionValid()
     }
 
-    suspend fun storedAuthInfo() {
+    suspend fun loginWithStoredAuth() {
         spotifyAuthManager.authStored()
     }
 

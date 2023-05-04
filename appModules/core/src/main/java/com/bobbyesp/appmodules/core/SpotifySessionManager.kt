@@ -41,7 +41,14 @@ class SpotifySessionManager @Inject constructor(
             .setCacheDir(ConfigFilesDefs.getCacheDir(appContext))
             .setStoredCredentialsFile(ConfigFilesDefs.getCredentialsFile(appContext)).build()
 
-    fun isSignedIn() = _session?.isValid ?: false
+    fun isSessionValid() = _session?.isValid ?: false
+    fun getSpotifySession(): Session {
+        if (_session == null) {
+            _session = createSession().create()
+        }
+        return _session!!
+    }
+
     fun setSession(s: Session) {
         _session = s
     }
