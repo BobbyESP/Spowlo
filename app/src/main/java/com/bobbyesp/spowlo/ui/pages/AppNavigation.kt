@@ -55,7 +55,6 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.runBlocking
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
@@ -241,17 +240,9 @@ class AppNavigationViewModel @Inject constructor(
         return if (isSignedIn()) {
             destinations.find<HubAppModule>().graphRoute
         } else {
-            try {
-                runBlocking {
-                    storedAuthInfo()
-                    return@runBlocking destinations.find<HubAppModule>().graphRoute
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
                 destinations.find<AuthAppModule>().graphRoute
             }
         }
-    }
 
     fun isSignedIn(): Boolean {
         return spotifySessionManager.isSignedIn()

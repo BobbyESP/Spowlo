@@ -1,7 +1,5 @@
 package com.bobbyesp.appmodules.hub.ui.components
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,32 +35,25 @@ fun PreviewableAsyncImage(
             ImagePreview(placeholderType, modifier)
         }
     } else {
-        val painter = rememberAsyncImagePainter(
-            model = imageUrl,
-            contentScale = ContentScale.Crop,
-        )
-        Crossfade(targetState = painter.state, animationSpec = tween(400), label = "") { state ->
-            when (state) {
-                is AsyncImagePainter.State.Success -> {
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = modifier
-                    )
-                }
+        val painter = rememberAsyncImagePainter(model = imageUrl, contentScale = ContentScale.Crop)
+        val isLoaded = painter.state is AsyncImagePainter.State.Success
 
-                else -> {
-                    Box(modifier) {
-                        ImagePreview(placeholderType, Modifier.fillMaxSize())
-                        Image(
-                            painter = painter,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = modifier
-                        )
-                    }
-                }
+        if (isLoaded) {
+            Image(
+                painter = painter,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+            )
+        } else {
+            Box(modifier) {
+                ImagePreview(placeholderType, Modifier.fillMaxSize())
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
             }
         }
     }
