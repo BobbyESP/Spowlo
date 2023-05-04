@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -109,6 +110,9 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -118,7 +122,7 @@ private const val TAG = "InitialEntry"
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class
 )
 @Composable
 fun InitialEntry(
@@ -452,15 +456,34 @@ fun InitialEntry(
                             ) {*/
                             //val viewModel = hiltViewModel<DownloaderViewModel>()
 
+                            val storagePermission = rememberPermissionState(
+                                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            ) { b: Boolean ->
+                                if (b) {
+                                    downloaderViewModel.startDownloadSong()
+                                } else {
+                                    ToastUtil.makeToast(R.string.permission_denied)
+                                }
+                            }
+
                             val viewModelState =
                                 downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
                             DownloaderBottomSheet(
                                 onBackPressed,
                                 viewModelState.url,
                                 navController,
-                                onDownloadPressed = {},
-                                onRequestMetadata = {},
-                                hide = {},
+                                onDownloadPressed = {
+                                    if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
+                                    else {
+                                        storagePermission.launchPermissionRequest()
+                                    }
+                                },
+                                onRequestMetadata = {
+                                    downloaderViewModel.requestMetadata()
+                                },
+                                hide = {
+                                    navController.popBackStack()
+                                },
                                 navigateToPlaylist = { id ->
                                     navController.navigate(
                                         Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
