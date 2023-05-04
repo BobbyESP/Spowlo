@@ -37,9 +37,6 @@ object NotificationsUtil {
     private const val DEFAULT_NOTIFICATION_ID = 100
     const val SERVICE_NOTIFICATION_ID = 123
     private lateinit var serviceNotification: Notification
-
-    //    private var builder =
-//        NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_stat_seal)
     private val commandNotificationBuilder =
         NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
 

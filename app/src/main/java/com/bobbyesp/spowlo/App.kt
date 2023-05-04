@@ -64,9 +64,9 @@ class App : Application() {
                 }
             } catch (e: Exception) {
                 Looper.prepare()
+                ToastUtil.makeToast(text = e.message ?: "Unknown error")
                 e.printStackTrace()
                 clipboard.setPrimaryClip(ClipData.newPlainText(null, e.message))
-                ToastUtil.makeToast(text = e.message ?: "Unknown error")
             }
         }
         audioDownloadDir = AUDIO_DIRECTORY.getString(

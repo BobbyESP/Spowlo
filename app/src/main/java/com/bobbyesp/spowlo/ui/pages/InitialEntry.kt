@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
@@ -108,6 +110,9 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -117,7 +122,7 @@ private const val TAG = "InitialEntry"
 
 @OptIn(
     ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class
 )
 @Composable
 fun InitialEntry(
@@ -449,15 +454,53 @@ fun InitialEntry(
                                     rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true),
                                 )
                             ) {*/
-                                DownloaderBottomSheet(
-                                    onBackPressed,
-                                    downloaderViewModel,
-                                    navController
-                                ) { id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id, navOptions = navOptions {
-                                    launchSingleTop = true
-                                }) }
-                          //  }
+                            //val viewModel = hiltViewModel<DownloaderViewModel>()
 
+                            val storagePermission = rememberPermissionState(
+                                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            ) { b: Boolean ->
+                                if (b) {
+                                    downloaderViewModel.startDownloadSong()
+                                } else {
+                                    ToastUtil.makeToast(R.string.permission_denied)
+                                }
+                            }
+
+                            val viewModelState =
+                                downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
+                            DownloaderBottomSheet(
+                                onBackPressed,
+                                viewModelState.url,
+                                navController,
+                                onDownloadPressed = {
+                                    if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
+                                    else {
+                                        storagePermission.launchPermissionRequest()
+                                    }
+                                },
+                                onRequestMetadata = {
+                                    downloaderViewModel.requestMetadata()
+                                },
+                                hide = {
+                                    navController.popBackStack()
+                                },
+                                navigateToPlaylist = { id ->
+                                    navController.navigate(
+                                        Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
+                                        navOptions = navOptions {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        })
+                                },
+                                navigateToAlbum = { id ->
+                                    navController.navigate(
+                                        Route.PLAYLIST_PAGE + "/" + "album" + "/" + id,
+                                        navOptions = navOptions {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        })
+                                },
+                            )
                         }
                     }
 
@@ -487,7 +530,6 @@ fun InitialEntry(
                         val idArg = navArgument("id") {
                             type = NavType.StringType
                         }
-
 
                         //We build the route with the type of the destination and the id of it
                         val routeWithIdPattern: String =

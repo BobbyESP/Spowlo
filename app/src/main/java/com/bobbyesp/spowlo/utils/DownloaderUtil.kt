@@ -64,7 +64,6 @@ object DownloaderUtil {
         val useSyncedLyrics: Boolean = PreferencesUtil.getValue(SYNCED_LYRICS),
         val useCaching: Boolean = PreferencesUtil.getValue(USE_CACHING),
         val dontFilter: Boolean = PreferencesUtil.getValue(DONT_FILTER_RESULTS),
-        val geoBypass: Boolean = PreferencesUtil.getValue(GEO_BYPASS),
         val formatId: String = "",
         val privateMode: Boolean = PreferencesUtil.getValue(PRIVATE_MODE),
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
@@ -261,10 +260,6 @@ object DownloaderUtil {
                     addOption("--lyrics", "synced")
                 }
 
-                if (geoBypass) {
-                    addOption("--geo-bypass")
-                }
-
                 if (preserveOriginalAudio) {
                     addOption("--bitrate", "disable")
                     addAudioFormat()
@@ -422,11 +417,13 @@ object DownloaderUtil {
                 processId = taskId,
                 forceProcessDestroy = true,
                 callback = { progress, _, text ->
-                    NotificationsUtil.notifyProgress(
-                        name + " - " + context.getString(R.string.parallel_download),
+                    NotificationsUtil.makeNotificationForParallelDownloads(
                         notificationId = taskId.toNotificationId(),
+                        taskId = taskId,
                         progress = progress.toInt(),
-                        text = text
+                        text = text,
+                        extraString = name + " - " + context.getString(R.string.parallel_download),
+                        taskUrl = url,
                     )
                     Downloader.updateTaskOutput(
                         url = url, line = text, progress = progress, isPlaylist = isPlaylist
