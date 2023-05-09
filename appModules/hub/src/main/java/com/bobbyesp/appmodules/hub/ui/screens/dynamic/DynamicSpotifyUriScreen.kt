@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import com.bobbyesp.appmodules.core.utils.Log
 import com.bobbyesp.appmodules.hub.ui.screens.AlbumPage
 import com.bobbyesp.appmodules.hub.ui.screens.BlendCreateInvitationScreen
 import com.bobbyesp.appmodules.hub.ui.screens.BrowseRadioPage
@@ -23,12 +26,20 @@ import com.bobbyesp.appmodules.hub.ui.screens.settings.ConfigPage
 fun DynamicSpotifyUriScreen(
     uri: String,
     fullUri: String,
+    navController: NavHostController,
     onBackPressed : () -> Unit,
 ) {
     var uriSplits = uri.split(":")
     if (uriSplits[0] == "user" && uriSplits.size > 2) uriSplits = uriSplits.drop(2)
     val id = uriSplits.getOrElse(1) { "" }
     val argument = uriSplits.getOrElse(2) { "" }
+
+    LaunchedEffect(key1 = true) {
+        Log.d("DynamicSpotifyUriScreen", "uri: $uri")
+        Log.d("DynamicSpotifyUriScreen", "fullUri: $fullUri")
+        Log.d("DynamicSpotifyUriScreen", "id: $id")
+        Log.d("DynamicSpotifyUriScreen", "argument: $argument")
+    }
 
     when (uriSplits[0]) {
         uriCaseToString(UriCases.Genre) -> GenrePage(id, onBackPressed)

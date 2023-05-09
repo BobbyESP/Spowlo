@@ -69,9 +69,12 @@ fun HubScreen(
 
                         body.forEach { item ->
                             if (item.component.isGrid() && !item.children.isNullOrEmpty()) {
-                                items(item.children!!, key = { childrenItem -> childrenItem.id }, contentType = {
-                                    item.component.javaClass.simpleName
-                                }) { childrenUiItem ->
+                                items(
+                                    item.children!!,
+                                    key = { childrenItem -> childrenItem.id },
+                                    contentType = {
+                                        item.component.javaClass.simpleName
+                                    }) { childrenUiItem ->
                                     UIBinder(childrenUiItem)
                                 }
                             } else {

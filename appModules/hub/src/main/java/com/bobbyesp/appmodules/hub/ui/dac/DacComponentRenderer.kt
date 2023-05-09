@@ -7,8 +7,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.bobbyesp.appmodules.core.api.interalApi.SpotifyInternalApi
+import com.bobbyesp.appmodules.core.objects.ui_components.UiResponse
 import com.bobbyesp.appmodules.hub.BuildConfig
 import com.bobbyesp.appmodules.hub.ui.components.PlaceholderType
+import com.bobbyesp.appmodules.hub.ui.components.dac.RecentlyPlayedSectionComponentBinder
 import com.bobbyesp.appmodules.hub.ui.components.dac.SongsShortcutsGrid
 import com.bobbyesp.appmodules.hub.ui.components.dac.actionCards.MediumActionCardBinder
 import com.bobbyesp.appmodules.hub.ui.components.dac.actionCards.SmallActionCardBinder
@@ -27,6 +32,7 @@ import com.spotify.home.dac.component.v1.proto.ArtistCardActionsMediumComponent
 import com.spotify.home.dac.component.v1.proto.ArtistCardActionsSmallComponent
 import com.spotify.home.dac.component.v1.proto.PlaylistCardActionsMediumComponent
 import com.spotify.home.dac.component.v1.proto.PlaylistCardActionsSmallComponent
+import com.spotify.home.dac.component.v1.proto.RecentlyPlayedSectionComponent
 import com.spotify.home.dac.component.v1.proto.RecsplanationHeadingComponent
 import com.spotify.home.dac.component.v1.proto.SectionComponent
 import com.spotify.home.dac.component.v1.proto.SectionHeaderComponent
@@ -39,12 +45,15 @@ import com.spotify.planoverview.v1.MultiUserMemberComponent
 import com.spotify.planoverview.v1.SingleUserPrepaidComponent
 import com.spotify.planoverview.v1.SingleUserRecurringComponent
 import com.spotify.planoverview.v1.SingleUserTrialComponent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 @Composable
 fun DacComponentRenderer(
     item: Message,
     onNavigateToRequested: (String) -> Unit
 ) {
+    val viewModel = hiltViewModel<DacComponentRendererViewModel>()
     when (item) {
 
 
@@ -156,6 +165,7 @@ fun DacComponentRenderer(
             onNavigateToUri = onNavigateToRequested
         )
 
+        is RecentlyPlayedSectionComponent -> RecentlyPlayedSectionComponentBinder(viewModel)
 
         //////*Error component*//////
         is ErrorComponent -> {
@@ -187,5 +197,15 @@ fun DacComponentRenderer(
                 )
             }
         }
+    }
+}
+
+@HiltViewModel
+class DacComponentRendererViewModel @Inject constructor(
+    private val spotifyInternalApi: SpotifyInternalApi
+) : ViewModel() {
+
+    suspend fun getRecentlyPlayed(): UiResponse {
+        return spotifyInternalApi.getListeningHistory()
     }
 }

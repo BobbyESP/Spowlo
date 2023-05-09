@@ -126,6 +126,16 @@ private fun placeholderToIcon(type: PlaceholderType?) = when (type) {
     else -> Icons.Rounded.Audiotrack
 }
 
+fun String?.toPlaceholderType() = when (this) {
+    PlaceholderType.Artist.type -> PlaceholderType.Artist
+    PlaceholderType.Album.type -> PlaceholderType.Album
+    PlaceholderType.Podcasts.type -> PlaceholderType.Podcasts
+    PlaceholderType.Playlist.type -> PlaceholderType.Playlist
+    PlaceholderType.User.type -> PlaceholderType.User
+    PlaceholderType.Track.type -> PlaceholderType.Track
+    else -> PlaceholderType.None
+}
+
 sealed class PlaceholderType(val type: String) {
     object Artist : PlaceholderType("artist")
     object Album : PlaceholderType("album")

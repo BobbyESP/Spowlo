@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -41,7 +42,7 @@ fun HubScaffold(
     state: UiState,
     viewModel: ScreenDelegator,
     toolbarOptions: ToolbarOptions = ToolbarOptions(),
-    onBackRequested : () -> Unit,
+    onBackRequested: () -> Unit,
     reloadFunc: suspend () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -80,7 +81,8 @@ fun HubScaffold(
                                     Icon(Icons.Rounded.ArrowBack, null)
                                 }
                             },
-                            colors = if (toolbarOptions.alwaysVisible) TopAppBarDefaults.smallTopAppBarColors() else TopAppBarDefaults.smallTopAppBarColors(
+                            colors = if (toolbarOptions.alwaysVisible) topAppBarColors(
+                            ) else topAppBarColors(
                                 containerColor = Color.Transparent,
                                 scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                     3.dp
@@ -124,11 +126,13 @@ fun HubScaffold(
                 }
             }
         }
+
         is UiState.Error -> PagingErrorPage(
             exception = state.error,
             onReload = { scope.launch { reloadFunc() } },
             modifier = Modifier.fillMaxSize()
         )
+
         UiState.Loading -> PagingLoadingPage(Modifier.fillMaxSize())
     }
 }

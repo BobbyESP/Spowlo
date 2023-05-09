@@ -5,6 +5,7 @@
       <module name="Spowlo.app" target="17" />
       <module name="Spowlo.appModules.auth" target="17" />
       <module name="Spowlo.appModules.core" target="17" />
+      <module name="Spowlo.appModules.downloader" target="17" />
       <module name="Spowlo.appModules.hub" target="17" />
       <module name="Spowlo.appModules.playback" target="17" />
       <module name="Spowlo.uisdk" target="17" />

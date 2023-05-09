@@ -64,7 +64,7 @@ fun SectionComponentBinder(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 4.dp)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             state = lazyListState,
             flingBehavior = rememberSnapperFlingBehavior(

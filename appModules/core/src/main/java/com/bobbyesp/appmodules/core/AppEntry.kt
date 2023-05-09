@@ -13,7 +13,7 @@ typealias Destinations = Map<Class<out AppEntry>, @JvmSuppressWildcards AppEntry
 interface AppEntry {
 }
 
-interface ComposableAppEntry: AppEntry {
+interface ComposableAppEntry : AppEntry {
     val appRoute: String
 
     val arguments: List<NamedNavArgument>
@@ -39,12 +39,14 @@ interface ComposableAppEntry: AppEntry {
     )
 }
 
-interface NestedAppEntry: AppEntry {
+interface NestedAppEntry : AppEntry {
     val graphRoute: String
     val startDestination: String
 
     @OptIn(ExperimentalAnimationApi::class)
-    fun NavGraphBuilder.navigation(navController: NavHostController, destinations: Destinations) {
+    fun NavGraphBuilder.navigation(
+        navController: NavHostController,
+        destinations: Destinations) {
         navigation(
             route = graphRoute,
             startDestination = startDestination,
@@ -65,7 +67,9 @@ interface HasFullscreenRoutes {
         get() = emptyList()
 }
 
-inline fun <reified T : AppEntry> Destinations.find(): T = findOrNull() ?: error("Destination '${T::class.java}' is not defined.")
+inline fun <reified T : AppEntry> Destinations.find(): T =
+    findOrNull() ?: error("Destination '${T::class.java}' is not defined.")
+
 inline fun <reified T : AppEntry> Destinations.findOrNull(): T? = this[T::class.java] as? T
 
 @Stable

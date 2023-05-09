@@ -8,6 +8,7 @@ import xyz.gianlu.librespot.common.Utils
 
 object SpotifyUtils {
     const val SPOTIFY_APP_VERSION = "8.8.4.518"
+    const val APP_NAME = "ANDROID_MUSIC_APP"
 
     fun getDeviceName(appContext: Context): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

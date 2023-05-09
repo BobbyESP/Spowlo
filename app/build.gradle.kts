@@ -212,6 +212,7 @@ dependencies {
     implementation(project(":appModules:core"))
     implementation(project(":appModules:auth"))
     implementation(project(":appModules:hub"))
+    implementation(project(":appModules:downloader"))
     implementation(project(":color"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

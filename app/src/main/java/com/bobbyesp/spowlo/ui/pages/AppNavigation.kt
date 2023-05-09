@@ -45,6 +45,7 @@ import com.bobbyesp.appmodules.core.SpotifySessionManager
 import com.bobbyesp.appmodules.core.find
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.navigation.ext.navigateRoot
+import com.bobbyesp.appmodules.downloader.DownloaderAppModule
 import com.bobbyesp.appmodules.hub.HubAppModule
 import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.bobbyesp.uisdk.components.bottomBar.*
@@ -121,9 +122,7 @@ fun AppNavigation(
             }
 
             val bottomBarItems: List<BottomBarItem> = remember(viewModel.bottomNavDestinations) {
-                viewModel.bottomNavDestinations.filter { dest ->
-                    dest.route == "@hub"
-                }.map { entry ->
+                viewModel.bottomNavDestinations.map { entry ->
                     BottomBarItem.Icon(icon = entry.icon,
                         description = entry.name,
                         id = entry.route,
@@ -233,7 +232,8 @@ class AppNavigationViewModel @Inject constructor(
             .flatten() + "coreLoading").distinct()
 
     val bottomNavDestinations = listOf<BottomNavigationCapable>(
-        destinations.find<HubAppModule>()
+        destinations.find<HubAppModule>(),
+        destinations.find<DownloaderAppModule>(),
     ).map(BottomNavigationCapable::bottomNavigationEntry)
 
     fun awaitSignInAndReturnDestination(): String {

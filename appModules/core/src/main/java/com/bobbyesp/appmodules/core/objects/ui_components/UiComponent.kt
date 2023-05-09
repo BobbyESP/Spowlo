@@ -37,7 +37,6 @@ sealed class UiComponent {
   object FindCard: UiComponent(), ComponentInGrid
 
   // GLUE
-
   @TypeLabel("glue:sectionHeader")
   object GlueSectionHeader: UiComponent()
 

@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/appModules" />
             <option value="$PROJECT_DIR$/appModules/auth" />
             <option value="$PROJECT_DIR$/appModules/core" />
+            <option value="$PROJECT_DIR$/appModules/downloader" />
             <option value="$PROJECT_DIR$/appModules/hub" />
             <option value="$PROJECT_DIR$/color" />
             <option value="$PROJECT_DIR$/uisdk" />
