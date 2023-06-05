@@ -71,12 +71,11 @@ dependencies {
     implementation(libs.retrofit.moshi.converter)
 
     // Librespot
-    implementation("com.github.iTaysonLab.librespot-java:librespot-player:e95c4f0529:thin") {
+    implementation("com.github.librespot-org.librespot-java:librespot-player:v1.6.3") {
         exclude(group = "xyz.gianlu.librespot", module = "librespot-sink")
         exclude(group = "com.lmax", module = "disruptor")
         exclude(group = "org.apache.logging.log4j")
     }
-
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

@@ -2,15 +2,10 @@ package com.bobbyesp.appmodules.hub
 
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.twotone.Home
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navDeepLink
@@ -19,8 +14,8 @@ import com.bobbyesp.appmodules.core.NavigationEntry
 import com.bobbyesp.appmodules.core.api.interalApi.SpotifyInternalApi
 import com.bobbyesp.appmodules.core.navigation.ext.ROOT_NAV_GRAPH_ID
 import com.bobbyesp.appmodules.core.utils.Log
-import com.bobbyesp.appmodules.hub.ui.LocalHubScreenDelegate
-import com.bobbyesp.appmodules.hub.ui.ScreenDelegator
+import com.bobbyesp.appmodules.hub.ui.HubNavigationController
+import com.bobbyesp.appmodules.hub.ui.LocalHubNavigationController
 import com.bobbyesp.appmodules.hub.ui.dac.DacRendererPage
 import com.bobbyesp.appmodules.hub.ui.screens.dynamic.DynamicSpotifyUriScreen
 import com.google.accompanist.navigation.animation.composable
@@ -34,6 +29,7 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
         navController: NavHostController,
         destinations: Destinations,
     ) {
+        val lambdaNavController = HubNavigationController { navController }
         composable(Routes.DacRenderer.url) {
             DacRendererPage(
                 title = "",
@@ -60,37 +56,15 @@ class HubAppModuleImpl @Inject constructor() : HubAppModule() {
             val dpLinkType = it.arguments?.getString("type")
             val dpLinkTypeId = it.arguments?.getString("typeId")
             val uri = fullUrl ?: "$dpLinkType:$dpLinkTypeId"
-            DynamicSpotifyUriScreen(
-                uri,
-                "spotify:$uri",
-                navController,
-                onBackPressed = { navController.popBackStack() })
+            CompositionLocalProvider(LocalHubNavigationController provides lambdaNavController) {
+                DynamicSpotifyUriScreen(
+                    uri,
+                    "spotify:$uri",
+                    onBackPressed = { navController.popBackStack() })
+            }
         }
     }
 
-   /* fun Modifier.clickableUiItem(item: UiItem) {
-        navAndHubClickable(
-            enabled = item.events?.click != null,
-            navHostController =
-        )
-    }*/
-
-    fun Modifier.navAndHubClickable(
-        enabled: Boolean = true,
-        enableRipple: Boolean = true,
-        navHostController: NavHostController,
-        onClick: (NavHostController, ScreenDelegator) -> Unit
-    ) = composed {
-        val hubScreenDelegator = LocalHubScreenDelegate.current
-
-        Modifier.clickable(
-            enabled = enabled,
-            indication = if (enableRipple) LocalIndication.current else null,
-            interactionSource = remember { MutableInteractionSource() },
-        ) {
-            onClick(navHostController, hubScreenDelegator)
-        }
-    }
     private fun NavHostController.navigateToRoot() {
         navigate(Routes.DacRenderer.url) {
             popUpTo(ROOT_NAV_GRAPH_ID)

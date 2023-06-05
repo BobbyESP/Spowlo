@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import com.bobbyesp.appmodules.core.utils.Log
 import com.bobbyesp.appmodules.hub.ui.screens.AlbumPage
 import com.bobbyesp.appmodules.hub.ui.screens.BlendCreateInvitationScreen
@@ -26,7 +25,6 @@ import com.bobbyesp.appmodules.hub.ui.screens.settings.ConfigPage
 fun DynamicSpotifyUriScreen(
     uri: String,
     fullUri: String,
-    navController: NavHostController,
     onBackPressed : () -> Unit,
 ) {
     var uriSplits = uri.split(":")

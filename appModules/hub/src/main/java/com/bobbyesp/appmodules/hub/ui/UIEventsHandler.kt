@@ -1,10 +1,13 @@
 package com.bobbyesp.appmodules.hub.ui
 
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.Modifier
 import com.bobbyesp.appmodules.core.objects.ui_components.UiEvent
+import com.bobbyesp.appmodules.core.objects.ui_components.UiItem
+import com.bobbyesp.appmodules.hub.ui.shared.reqNavHubItem
 
 object UIEventsHandler {
-    fun handle (navController: NavHostController, delegate: ScreenDelegator, event: UiEvent) {
+    fun handle (navController: HubNavigationController, delegate: ScreenDelegator, event: UiEvent) {
         when (event) {
             is UiEvent.NavigateToUri -> {
                 if (event.data.uri.startsWith("http")) {
@@ -21,3 +24,10 @@ object UIEventsHandler {
     }
 }
 
+@Stable
+fun Modifier.clickableHubItem(item: UiItem) =
+    reqNavHubItem(
+        enabled = item.events?.click != null
+    ) { navController, delegate ->
+        UIEventsHandler.handle(navController, delegate, item.events!!.click!!)
+    }

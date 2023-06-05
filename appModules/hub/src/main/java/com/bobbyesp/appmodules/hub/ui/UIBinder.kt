@@ -11,7 +11,11 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.appmodules.core.objects.ui_components.UiComponent
 import com.bobbyesp.appmodules.core.objects.ui_components.UiItem
 import com.bobbyesp.appmodules.hub.BuildConfig
+import com.bobbyesp.appmodules.hub.ui.components.SectionHeaderComponent
+import com.bobbyesp.appmodules.hub.ui.components.ShortcutsCardComponent
+import com.bobbyesp.appmodules.hub.ui.components.ShortcutsContainerComponent
 import com.bobbyesp.appmodules.hub.ui.components.dac.HomeSectionHeader
+import com.bobbyesp.appmodules.hub.ui.components.dac.HomeSectionLargeHeader
 
 @Composable
 fun UIBinder(
@@ -20,13 +24,13 @@ fun UIBinder(
 ) {
     when (item.component) {
         UiComponent.HomeShortSectionHeader -> HomeSectionHeader(item.text!!)
-       // UiComponent.HomeLargeSectionHeader -> HomeSectionLargeHeader(item, onUiItemClick)
-        /*UiComponent.GlueSectionHeader -> SectionHeader(item.text!!)
-        UiComponent.ShortcutsContainer -> ShortcutsContainer(item.children!!)
-        UiComponent.ShortcutsCard -> ShortcutsCard(item)
-        UiComponent.FindCard -> FindCard(item)
+        UiComponent.HomeLargeSectionHeader -> HomeSectionLargeHeader(item)
+        UiComponent.GlueSectionHeader -> SectionHeaderComponent(item.text!!)
+        UiComponent.ShortcutsContainer -> ShortcutsContainerComponent(item.children!!)
+        UiComponent.ShortcutsCard -> ShortcutsCardComponent(item)
+        //UiComponent.FindCard -> FindCardComponent(item)
 
-        UiComponent.SingleFocusCard -> SingleFocusCard(item)
+        /*UiComponent.SingleFocusCard -> SingleFocusCard(item)
 
         UiComponent.Carousel -> Carousel(item)
 

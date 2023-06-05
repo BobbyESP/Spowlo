@@ -1,6 +1,5 @@
 package com.bobbyesp.appmodules.hub.ui.components.dac
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.appmodules.core.objects.ui_components.UiItem
+import com.bobbyesp.appmodules.hub.ui.clickableHubItem
 import com.bobbyesp.appmodules.hub.ui.components.PreviewableAsyncImage
 import com.bobbyesp.appmodules.hub.ui.components.toPlaceholderType
 import com.bobbyesp.uisdk.components.text.MediumText
@@ -21,14 +21,11 @@ import com.bobbyesp.uisdk.components.text.SubtextOverline
 @Composable
 fun HomeSectionLargeHeader(
     item: UiItem,
-    onClick: (UiItem) -> Unit
 ) {
     Row(
         Modifier
             .padding(vertical = 8.dp)
-            .clickable {
-                onClick(item)
-            }) {
+            .clickableHubItem(item)) {
         PreviewableAsyncImage(
             imageUrl = item.images?.main?.uri,
             placeholderType = item.images?.main?.placeholder.toPlaceholderType(),
