@@ -6,6 +6,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 
 object AssetsUtils {
-    @Composable
-    fun LocalAsset(@DrawableRes id: Int) = ImageVector.vectorResource(id = id)
+    //TODO
 }
+
+@Composable
+fun localAsset(@DrawableRes id: Int) = ImageVector.vectorResource(id = id)

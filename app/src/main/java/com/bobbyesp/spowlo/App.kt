@@ -2,23 +2,16 @@ package com.bobbyesp.spowlo
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
-import android.os.Environment
-import android.os.Looper
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
-import com.bobbyesp.spowlo.utils.AUDIO_DIRECTORY
-import com.bobbyesp.spowlo.utils.EXTRA_DIRECTORY
-import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import com.bobbyesp.spowlo.utils.ToastUtil
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -26,10 +19,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.File
+import kotlinx.coroutines.withContext
 
 @HiltAndroidApp
-class App : Application() {
+class App: Application() {
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
@@ -50,45 +43,35 @@ class App : Application() {
             try {
                 SpotDL.getInstance().init(this@App)
                 FFmpeg.init(this@App)
-                /*DownloaderUtil.getCookiesContentFromDatabase().getOrNull()?.let {
-                    FilesUtil.writeContentToFile(it, getCookiesFile())
-                }*/
             } catch (e: Exception) {
-                Looper.prepare()
-                ToastUtil.makeToast(text = e.message ?: "Unknown error")
-                e.printStackTrace()
-                clipboard.setPrimaryClip(ClipData.newPlainText(null, e.message))
+                withContext(Dispatchers.Main) {
+                    startCrashReportActivity(e)
+                }
             }
         }
-        audioDownloadDir = AUDIO_DIRECTORY.getString(
-            File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                getString(R.string.app_name)
-            ).absolutePath
-        )
-        extraDownloadDir = EXTRA_DIRECTORY.getString(
-            ""
-        )
+
+        Thread.setDefaultUncaughtExceptionHandler { _, e ->
+            startCrashReportActivity(e)
+        }
+    }
+
+    private fun startCrashReportActivity(th: Throwable) {
+        th.printStackTrace()
+        startActivity(Intent(this, CrashHandlerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra("error_report", getVersionReport() + "\n" + th.stackTraceToString())
+        })
     }
 
     companion object {
-        private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
-        lateinit var extraDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
-        val SpotDl = SpotDL.getInstance()
-        val FFMPEG = FFmpeg.getInstance()
+        private val SpotDl = SpotDL.getInstance()
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
-
-
-        fun updateDownloadDir(path: String) {
-            audioDownloadDir = path
-            PreferencesUtil.encodeString(AUDIO_DIRECTORY, path)
-        }
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
@@ -102,14 +85,13 @@ class App : Application() {
             } else {
                 Build.VERSION.RELEASE
             }
-            return StringBuilder().append("App version: $versionName ($versionCode)\n")
-                .append("Device information: Android $release (API ${Build.VERSION.SDK_INT})\n")
+            return StringBuilder().append("App version: Spowlo $versionName ($versionCode)\n")
+                .append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
+                .append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
                 .append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
         }
-
-        fun isFDroidBuild(): Boolean = packageInfo.versionName.contains("F-Droid")
 
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context

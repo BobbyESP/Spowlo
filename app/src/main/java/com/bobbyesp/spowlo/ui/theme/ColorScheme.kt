@@ -13,35 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 
-@Composable
-infix fun Color.withNight(nightColor: Color): Color {
-    return if (LocalDarkTheme.current.isDarkTheme()) nightColor else this
-}
-
-//Create a blur effect
-
-@Composable
-fun BlurEffect(
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surface,
-    content: @Composable () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(color = color)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                color = Color.Transparent,
-                shape = RoundedCornerShape(16.dp)
-            )
-    ) {
-        content()
-    }
-}
 const val DEFAULT_SEED_COLOR = 0xFF415f76.toInt()
 
 @Composable
-fun contraryColor(): Color {
+fun oppositeColor(): Color {
     return if (isSystemInDarkTheme()) Color.White else Color.Black
 }

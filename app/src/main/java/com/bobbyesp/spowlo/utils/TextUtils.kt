@@ -2,39 +2,21 @@ package com.bobbyesp.spowlo.utils
 
 import android.content.ClipboardManager
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
-import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import java.util.regex.Pattern
 
-object ToastUtil {
-    fun makeToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-    }
 
-    fun makeToastSuspend(text: String) {
-        applicationScope.launch(Dispatchers.Main) {
-            makeToast(text)
-        }
-    }
-
-    fun makeToast(stringId: Int) {
-        Toast.makeText(context, context.getString(stringId), Toast.LENGTH_SHORT).show()
-    }
-}
 
 object GeneralTextUtils {
 
     fun convertDuration(durationOfSong: Double): String {
         //First of all the duration comes with this format "146052" but it has to be "146.052"
-        var duration = 0.0
-        duration = if (durationOfSong > 100000.0){
+        val duration: Double = if (durationOfSong > 100000.0){
             durationOfSong / 1000
         } else {
             durationOfSong
@@ -82,15 +64,6 @@ fun matchUrlFromClipboard(string: String, isMatchingMultiLink: Boolean = false):
             ToastUtil.makeToast(R.string.paste_fail_msg)
         else
             ToastUtil.makeToast(R.string.paste_msg)
-        return this
-    }
-}
-
-fun matchUrlFromSharedText(s: String): String {
-    matchUrlFromString(s).run {
-        if (isEmpty())
-            ToastUtil.makeToast(R.string.share_fail_msg)
-//            else makeToast(R.string.share_success_msg)
         return this
     }
 }

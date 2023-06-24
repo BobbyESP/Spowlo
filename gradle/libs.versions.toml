@@ -1,62 +1,110 @@
 [versions]
-accompanist = "0.29.2-rc"
-androidGradlePlugin = "7.4.2"
-androidxComposeBom = "2023.01.00"
-androidxComposeCompiler = "1.4.0"
-androidxCore = "1.10.0-rc01"
-androidMaterial = "1.9.0-alpha02"
-androidxAppCompat = "1.7.0-alpha02"
-androidxActivity = "1.6.1"
-markdownDependency = "0.3.2"
-navTransitions = "0.11.0-alpha"
-androidxPaging = "3.1.1"
-paginationCompose = "1.0.0-alpha18"
+#General, lifecycle and core
+agp = "8.2.0-alpha08"
+kotlin = "1.8.21"
+appcompat = "1.7.0-alpha02"
+core-ktx = "1.10.1"
+lifecycle-runtime-ktx = "2.6.1"
+activity-compose = "1.7.2"
+compose-compiler = "1.4.7"
+ksp = "1.8.21-1.0.11"
+material = "1.9.0"
 
-androidxLifecycle = "2.6.0"
-androidxNavigation = "2.5.3"
-androidxComposeMaterial3 = "1.1.0-alpha08"
+#Compose
+compose-bom = "2023.05.01"
+androidx-compose-material3 = "1.2.0-alpha03"
+accompanist = "0.30.1"
+compose-pagination = "1.0.0-alpha20"
 
-androidxEspresso = "3.5.1"
-androidxHiltNavigationCompose = "1.0.0"
+#More UI
+androidx-paging = "3.1.1"
 
-androidxTestExt = "1.1.5"
+#Navigation
+androidx-navigation = "2.6.0"
+androidx-compose-hilt-navigation = "1.0.0"
 
-spotdlAndroidVersion = "3d8e42a3f0"
-spotifyApiKotlinVersion = "3.8.8"
+#Coroutines
+kotlinx-coroutines = "1.6.4"
 
-shimmerLibrary = "1.0.4"
-crashHandlerVersion = "2.0.2"
+#Serialization and more related
+kotlinx-datetime = "0.4.0"
+kotlinx-serializationJson = "1.5.1"
+kotlinx-collectionsImmutable = "0.3.5"
 
-coil = "2.2.2"
-hilt = "2.44.2"
-hiltExt = "1.0.0"
+#Image loading
+coil = "2.4.0"
 
-junit4 = "4.13.2"
-kotlin = "1.8.0"
-kotlinxCoroutines = "1.6.4"
-kotlinxDatetime = "0.4.0"
-kotlinxSerializationJson = "1.5.0"
+#Network
 okhttp = "5.0.0-alpha.10"
-ktor = "1.6.3"
+ktor = "2.3.1" #For me the best client
+retrofit = "2.9.0"
 
-exoplayer = "2.18.4"
+#Dependency injection
+hilt = "2.45"
+hilt-ext = "1.0.0"
+hilt-compose-nav = "1.0.0"
 
-room = "2.5.0"
+#Database
+room = "2.5.2"
 
+#High performance Key-value storage
 mmkv = "1.2.15"
 
-#chrome custom tabs
+#Chrome custom tabs
 customTabs = "1.5.0"
 
+#Markdown handler
+markdown = "0.3.3"
+
+#Spotify API
+spotify-apiHandler = "3.8.8"
+
+#Spotify Downloader
+spotdlversion = "-SNAPSHOT"
+
+#Firebase, GMS...
+firebaseAuth = "22.0.0"
+gmsPlayServicesAuth = "20.5.0"
+googleServices = "4.3.15"
+
+#Tests
+junit = "4.13.2"
+androidx-test-ext-junit = "1.1.5"
+espresso-core = "3.5.1"
+
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
-android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+#Core libraries
+core-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
+lifecycle-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
+lifecycle-compose-viewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
 
-androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
-androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+#Compose UI
+compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
+compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-material = { group = "androidx.compose.material", name = "material" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
+compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+#Paging3
+paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "compose-pagination" }
+
+#Compose UI Navigation
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
+
+#Kotlin Immutable Collections
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collectionsImmutable" }
+
+#Accompanist
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
@@ -64,90 +112,88 @@ accompanist-webview = { group = "com.google.accompanist", name = "accompanist-we
 accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-#Accompanist material component
+
+#Accompanist Material components
 accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
 
-#Paging3
-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidxPaging" }
-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paginationCompose" }
+#Image loading
+compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-
-#Markdown parser
-markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdownDependency" }
-
-
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-
-androidx-compose-material = { group = "androidx.compose.material", name = "material" }
-
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
-androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
-
+#Network
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+#Ktor (also network)
+ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
-
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
-
-androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
-
-androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
-
-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-
+#Dependency injection
+compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose-nav" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
+hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-ext" }
 
-junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
-
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-
-spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlAndroidVersion" }
-spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlAndroidVersion" }
-
-spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotifyApiKotlinVersion" }
-
+#Databases
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
+#Serialization
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serializationJson" }
+
+#Key-value storage
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
-crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmerLibrary" }
+#Markdown parser
+markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdown" }
 
-soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
-soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }
+#Spotify
+spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotify-apiHandler" }
 
-#ExoPlayer
-exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version.ref = "exoplayer" }
-exoplayer-ui = { group = "com.google.android.exoplayer", name = "exoplayer-ui", version.ref = "exoplayer" }
-exoplayer-hls = { group = "com.google.android.exoplayer", name = "exoplayer-hls", version.ref = "exoplayer" }
-exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-dash", version.ref = "exoplayer" }
-exoplayer-smoothstreaming = { group = "com.google.android.exoplayer", name = "exoplayer-smoothstreaming", version.ref = "exoplayer" }
-exoplayer-cast = { group = "com.google.android.exoplayer", name = "exoplayer-cast", version.ref = "exoplayer" }
-exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", name = "extension-mediasession", version.ref = "exoplayer" }
+#Spotify downloader
+spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlversion" }
+spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlversion" }
 
-#chrome custom tabs
-customtabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
+#Chrome Custom Tabs
+chrome-custom-tabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
+
+#Firebase and GMS
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuth" }
+gms-playservices-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "gmsPlayServicesAuth" }
+google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+
+#Compose tooling and tests
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+#Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+[bundles]
+core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
+ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]
+accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-systemuicontroller", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
+compose = ["compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-material3-windowSizeClass"]
+hilt = ["compose-hilt-navigation", "hilt-android"]
+hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
+pagination = ["paging-compose", "paging-runtime"]
+googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
+spotdl= ["spotdl-android-library", "spotdl-android-ffmpeg"]

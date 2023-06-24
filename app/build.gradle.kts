@@ -4,8 +4,9 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    kotlin("kapt")
     kotlin("plugin.serialization")
 }
 apply(plugin = "dagger.hilt.android.plugin")
@@ -42,8 +43,8 @@ sealed class Version(
 }
 
 val currentVersion: Version = Version.Stable(
-    versionMajor = 1,
-    versionMinor = 3,
+    versionMajor = 2,
+    versionMinor = 0,
     versionPatch = 0,
 )
 
@@ -66,12 +67,14 @@ android {
         }
     }
 
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
-        targetSdk = 33
-        versionCode = 10300
+        targetSdk = 34
+        versionCode = currentVersion.run {
+            versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        }
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
@@ -110,7 +113,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            packagingOptions {
+            packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
             if (keystorePropertiesFile.exists())
@@ -128,7 +131,7 @@ android {
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-            packagingOptions {
+            packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
             buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
@@ -142,12 +145,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -168,9 +171,9 @@ android {
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/*.kotlin_module"
@@ -183,78 +186,63 @@ android {
 dependencies {
 
     implementation(project(":color"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.android.material)
-    implementation(libs.androidx.activity.compose)
 
-    implementation(libs.androidx.lifecycle.runtimeCompose)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
+    //Core libs for the app
+    implementation(libs.bundles.core)
 
-    implementation(platform(libs.androidx.compose.bom))
+    //Material UI, Accompanist...
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.accompanist)
+    implementation(libs.material)
 
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material3.windowSizeClass)
-    implementation(libs.androidx.compose.foundation)
+    //Coil (For Jetpack Compose)
+    implementation(libs.compose.coil)
 
-    implementation(libs.androidx.navigation.compose)
+    //Serialization
+    implementation(libs.kotlin.serialization.json)
 
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.navigation.animation)
-    implementation(libs.accompanist.webview)
-    implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.material)
-    implementation(libs.accompanist.pager.indicators)
-    implementation(libs.paging.compose)
-    implementation(libs.paging.runtime)
+    //DI (Dependency Injection - Hilt)
+    implementation(libs.bundles.hilt)
+    kapt(libs.bundles.hilt.kapt)
 
-    implementation(libs.coil.kt.compose)
-
-    implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.ext.compiler)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-
+    //Database powered by Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
-    //spotDL library
-    implementation(libs.spotdl.android.library)
-    implementation(libs.spotdl.android.ffmpeg)
+    //Networking
+    implementation(libs.bundles.ktor)
 
-    implementation(libs.spotify.api.android)
-
-    // okhttp
-    implementation(libs.okhttp)
-    //MMKV
+    //MMKV (Key-Value storage)
     implementation(libs.mmkv)
 
+    //Spotify API wrapper
+    implementation(libs.spotify.api.android)
+
+    //Spotify downloader
+    implementation(libs.bundles.spotdl)
+
+    //Chrome Custom Tabs
+    implementation(libs.chrome.custom.tabs)
+
+    //MD Parser
     implementation(libs.markdown)
-    //Exoplayer
-//    implementation(libs.exoplayer.core)
-//    implementation(libs.exoplayer.ui)
-//    implementation(libs.exoplayer.dash)
-//    implementation(libs.exoplayer.smoothstreaming)
-//    implementation(libs.exoplayer.extension.mediasession)
 
-    implementation(libs.customtabs)
-   // implementation(libs.shimmer)
+    //Compose testing libs
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.tooling)
+    debugImplementation(libs.compose.test.manifest)
 
-    debugImplementation(libs.crash.handler)
+}
 
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.test.ext)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-//    androidTestImplementation(libs.androidx.compose.ui.test)
+class RoomSchemaArgProvider(
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    val schemaDir: File
+) : CommandLineArgumentProvider {
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
+    override fun asArguments(): Iterable<String> {
+        return listOf("room.schemaLocation=${schemaDir.path}")
+    }
 }
