@@ -47,6 +47,7 @@ class CrashHandlerActivity : ComponentActivity() {
             insets
         }
         val errorMessage: String = intent.getStringExtra("error_report").toString()
+        val versionReport: String = intent.getStringExtra("version_report").toString()
 
         setContent {
             AppLocalSettingsProvider(WindowWidthSizeClass.Compact) {
@@ -56,7 +57,10 @@ class CrashHandlerActivity : ComponentActivity() {
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
                     val clipboardManager = LocalClipboardManager.current
-                    CrashReportPage(errorMessage = errorMessage) {
+                    CrashReportPage(
+                        versionReport,
+                        errorMessage
+                    ) {
                         clipboardManager.setText(AnnotatedString(errorMessage))
                         this.finishAffinity()
                     }
@@ -74,10 +78,13 @@ class CrashHandlerActivity : ComponentActivity() {
 
 @Composable
 @Preview
-fun CrashReportPage(errorMessage: String = "ERROR_EXAMPLE", onClick: () -> Unit = {}) {
+fun CrashReportPage(
+    versionReport: String = "VERSION REPORT",
+    errorMessage: String = "ERROR_EXAMPLE",
+    onClick: () -> Unit = {}
+) {
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         HorizontalDivider()
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,11 +115,15 @@ fun CrashReportPage(errorMessage: String = "ERROR_EXAMPLE", onClick: () -> Unit 
             modifier = Modifier
                 .padding(it)
                 .verticalScroll(rememberScrollState())
+                .fillMaxSize()
         ) {
             Icon(
                 imageVector = Icons.Outlined.BugReport,
                 contentDescription = "Bug occurred",
-                modifier = Modifier.padding(start = 16.dp).padding(top = 16.dp).size(48.dp)
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .padding(top = 16.dp)
+                    .size(48.dp)
             )
             Text(
                 text = stringResource(R.string.unknown_error_title),
@@ -121,6 +132,17 @@ fun CrashReportPage(errorMessage: String = "ERROR_EXAMPLE", onClick: () -> Unit 
                     .padding(top = 16.dp, bottom = 12.dp)
                     .padding(horizontal = 16.dp)
             )
+            SelectionContainer {
+                Text(
+                    text = versionReport,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                )
+            }
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
             SelectionContainer {
                 Text(
                     text = errorMessage,

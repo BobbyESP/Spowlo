@@ -70,7 +70,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = currentVersion.run {
             versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -221,7 +221,8 @@ dependencies {
     implementation(libs.spotify.api.android)
 
     //Spotify downloader
-    implementation(libs.bundles.spotdl)
+    implementation(project(":spotdl-android"))
+    //implementation(libs.bundles.spotdl)
 
     //Chrome Custom Tabs
     implementation(libs.chrome.custom.tabs)

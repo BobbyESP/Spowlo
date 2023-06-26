@@ -6,14 +6,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
-import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
-import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.SPOTDL
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.UPDATE_CHANNEL
-import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getInt
 import com.bobbyesp.spowlo.utils.preferences.STABLE
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +58,7 @@ object UpdateUtil {
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
 
-    suspend fun updateSpotDL(): SpotDL.UpdateStatus? = withContext(Dispatchers.IO) {
+    /*suspend fun updateSpotDL(): SpotDL.UpdateStatus? = withContext(Dispatchers.IO) {
         SpotDL.getInstance().updateSpotDL(
             context
         ).apply {
@@ -70,7 +66,7 @@ object UpdateUtil {
                 PreferencesUtil.encodeString(SPOTDL, it)
             }
         }
-    }
+    }*/
 
 
     private suspend fun getLatestRelease(): LatestRelease {

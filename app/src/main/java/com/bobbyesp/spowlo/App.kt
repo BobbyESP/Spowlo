@@ -10,8 +10,6 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.bobbyesp.ffmpeg.FFmpeg
-import com.bobbyesp.library.SpotDL
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -41,8 +39,7 @@ class App: Application() {
 
         applicationScope.launch((Dispatchers.IO)) {
             try {
-                SpotDL.getInstance().init(this@App)
-                FFmpeg.init(this@App)
+
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     startCrashReportActivity(e)
@@ -59,7 +56,8 @@ class App: Application() {
         th.printStackTrace()
         startActivity(Intent(this, CrashHandlerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra("error_report", getVersionReport() + "\n" + th.stackTraceToString())
+            putExtra("version_report", getVersionReport())
+            putExtra("error_report", th.stackTraceToString())
         })
     }
 
@@ -69,12 +67,12 @@ class App: Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
-        private val SpotDl = SpotDL.getInstance()
         const val userAgentHeader =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
+            @Suppress("DEPRECATION")
             val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 packageInfo.longVersionCode
             } else {
@@ -89,7 +87,7 @@ class App: Application() {
                 .append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
                 .append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
-                .append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
+                //.append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
         }
 
