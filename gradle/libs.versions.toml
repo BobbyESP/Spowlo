@@ -104,6 +104,10 @@ compose-navigation = { group = "androidx.navigation", name = "navigation-compose
 #Kotlin Immutable Collections
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collectionsImmutable" }
 
+#Coroutines
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+
 #Accompanist
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -198,3 +202,4 @@ hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
 spotdl= ["spotdl-android-library", "spotdl-android-ffmpeg"]
+coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]

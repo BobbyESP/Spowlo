@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.PermDeviceInformation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,7 @@ import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
 import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
+import com.bobbyesp.spowlo.ui.components.cards.ExpandableElevatedCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.localAsset
@@ -58,10 +60,9 @@ class CrashHandlerActivity : ComponentActivity() {
                 ) {
                     val clipboardManager = LocalClipboardManager.current
                     CrashReportPage(
-                        versionReport,
-                        errorMessage
+                        versionReport, errorMessage
                     ) {
-                        clipboardManager.setText(AnnotatedString(errorMessage))
+                        clipboardManager.setText(AnnotatedString(versionReport).plus(AnnotatedString(errorMessage)))
                         this.finishAffinity()
                     }
                 }
@@ -75,12 +76,11 @@ class CrashHandlerActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 @Preview
 fun CrashReportPage(
     versionReport: String = "VERSION REPORT",
-    errorMessage: String = "ERROR_EXAMPLE",
+    errorMessage: String = error_report_fake,
     onClick: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
@@ -119,7 +119,7 @@ fun CrashReportPage(
         ) {
             Icon(
                 imageVector = Icons.Outlined.BugReport,
-                contentDescription = "Bug occurred",
+                contentDescription = "Bug occurred icon",
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .padding(top = 16.dp)
@@ -132,16 +132,26 @@ fun CrashReportPage(
                     .padding(top = 16.dp, bottom = 12.dp)
                     .padding(horizontal = 16.dp)
             )
-            SelectionContainer {
-                Text(
-                    text = versionReport,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                )
+            ExpandableElevatedCard(
+                modifier = Modifier.padding(16.dp),
+                title = stringResource(id = R.string.device_info),
+                subtitle = stringResource(
+                    id = R.string.device_info_subtitle
+                ),
+                icon = Icons.Outlined.PermDeviceInformation
+            ) {
+                SelectionContainer {
+                    Text(
+                        text = versionReport,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .fillMaxWidth()
+                    )
+                }
             }
+
             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
             SelectionContainer {
                 Text(
@@ -156,3 +166,15 @@ fun CrashReportPage(
         }
     }
 }
+
+private const val error_report_fake = """java.lang.Exception: Error while initializing Python interpreter: Cannot run program "" : error=2, No such file or directory
+	at com.bobbyesp.spotdl_android.SpotDL.init(SpotDL.kt:64)
+	at com.bobbyesp.spowlo.App$'$'}2.invokeSuspend(App.kt:43)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.internal.LimitedDispatcherWorker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:100)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.run(CoroutineScheduler.kt:684)"""

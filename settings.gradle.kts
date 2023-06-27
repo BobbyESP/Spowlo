@@ -18,3 +18,5 @@ rootProject.name = "Spowlo"
 include (":app")
 include(":color")
 include(":spotdl-android")
+include(":spotdl_utilities")
+include(":ffmpeg")

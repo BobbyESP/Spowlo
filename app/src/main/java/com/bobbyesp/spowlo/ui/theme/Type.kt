@@ -1,7 +1,7 @@
 package com.bobbyesp.spowlo.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -30,10 +30,10 @@ val Typography =
         )
     }
 
-@OptIn(ExperimentalTextApi::class)
 private fun TextStyle.applyLinebreak(): TextStyle = this.copy(lineBreak = LineBreak.Paragraph)
 
-@OptIn(ExperimentalTextApi::class)
+fun Color.applyAlpha(alpha: Float): Color = this.copy(alpha = alpha)
+
 val preferenceTitle = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,

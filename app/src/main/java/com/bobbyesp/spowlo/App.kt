@@ -10,6 +10,8 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
+import com.bobbyesp.ffmpeg.FFmpeg
+import com.bobbyesp.spotdl_android.SpotDL
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -39,12 +41,14 @@ class App: Application() {
 
         applicationScope.launch((Dispatchers.IO)) {
             try {
-
+                SpotDL.init(applicationContext)
+                FFmpeg.init(applicationContext)
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     startCrashReportActivity(e)
                 }
             }
+           // SpotDL.executePythonCommand()
         }
 
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
@@ -63,7 +67,6 @@ class App: Application() {
 
     companion object {
         lateinit var clipboard: ClipboardManager
-        lateinit var audioDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo

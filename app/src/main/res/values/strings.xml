@@ -13,4 +13,6 @@
     <string name="off">Off</string>
     <string name="report_github">Report on Github</string>
     <string name="onboarding">Onboarding</string>
+    <string name="device_info">Device info</string>
+    <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
 </resources>

@@ -34,9 +34,12 @@ android {
 }
 
 dependencies {
-
     implementation(libs.core.ktx)
     implementation(libs.core.appcompat)
+    implementation(libs.bundles.coroutines)
+
+    implementation(project(":spotdl_utilities"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

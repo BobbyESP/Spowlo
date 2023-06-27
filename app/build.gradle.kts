@@ -222,6 +222,7 @@ dependencies {
 
     //Spotify downloader
     implementation(project(":spotdl-android"))
+    implementation(project(":ffmpeg"))
     //implementation(libs.bundles.spotdl)
 
     //Chrome Custom Tabs
