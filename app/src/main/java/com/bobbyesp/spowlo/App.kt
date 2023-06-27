@@ -48,9 +48,7 @@ class App: Application() {
                     startCrashReportActivity(e)
                 }
             }
-           // SpotDL.executePythonCommand()
         }
-
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
             startCrashReportActivity(e)
         }

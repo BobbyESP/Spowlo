@@ -11,7 +11,7 @@ ksp = "1.8.21-1.0.11"
 material = "1.9.0"
 
 #Compose
-compose-bom = "2023.05.01"
+compose-bom = "2023.06.01"
 androidx-compose-material3 = "1.2.0-alpha03"
 accompanist = "0.30.1"
 compose-pagination = "1.0.0-alpha20"
@@ -24,7 +24,7 @@ androidx-navigation = "2.6.0"
 androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
-kotlinx-coroutines = "1.6.4"
+kotlinx-coroutines = "1.7.1"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.0"
@@ -72,6 +72,9 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 
+#Modal Bottom Sheet
+modalSheet = "1.0.0"
+
 [libraries]
 #Core libraries
 core-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -116,6 +119,9 @@ accompanist-webview = { group = "com.google.accompanist", name = "accompanist-we
 accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+
+#Modal Bottom Sheet
+modalBottomSheet = { group = "com.github.T8RIN", name = "ModalSheet", version.ref = "modalSheet" }
 
 #Accompanist Material components
 accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
@@ -196,7 +202,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
 ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-systemuicontroller", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
-compose = ["compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-material3-windowSizeClass"]
+compose = ["compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]

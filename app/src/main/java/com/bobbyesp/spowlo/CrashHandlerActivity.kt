@@ -33,7 +33,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
-import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
 import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.cards.ExpandableElevatedCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
@@ -56,7 +55,6 @@ class CrashHandlerActivity : ComponentActivity() {
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
-                    isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
                     val clipboardManager = LocalClipboardManager.current
                     CrashReportPage(

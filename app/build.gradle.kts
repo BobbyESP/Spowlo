@@ -140,6 +140,11 @@ android {
                 "CLIENT_SECRET",
                 "\"${project.properties["CLIENT_SECRET"]}\""
             )
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
+            )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
         }
@@ -223,13 +228,15 @@ dependencies {
     //Spotify downloader
     implementation(project(":spotdl-android"))
     implementation(project(":ffmpeg"))
-    //implementation(libs.bundles.spotdl)
 
     //Chrome Custom Tabs
     implementation(libs.chrome.custom.tabs)
 
     //MD Parser
     implementation(libs.markdown)
+
+    //BottomSheets
+    implementation(libs.modalBottomSheet)
 
     //Compose testing libs
     implementation(libs.compose.tooling.preview)

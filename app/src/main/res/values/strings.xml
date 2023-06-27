@@ -15,4 +15,5 @@
     <string name="onboarding">Onboarding</string>
     <string name="device_info">Device info</string>
     <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
+    <string name="home">Home</string>
 </resources>
