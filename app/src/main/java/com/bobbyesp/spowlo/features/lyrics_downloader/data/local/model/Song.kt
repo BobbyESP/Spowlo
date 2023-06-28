@@ -1,13 +1,13 @@
 package com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model
 
-import android.graphics.Bitmap
+import android.net.Uri
 
 data class Song(
     val id: Long,
     val title: String,
     val artist: String,
     val album: String,
-    val albumArt: Bitmap? = null,
+    val albumArtPath: Uri? = null,
     val duration: Int,
     val path: String
 )

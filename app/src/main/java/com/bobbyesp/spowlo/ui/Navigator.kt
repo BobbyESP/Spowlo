@@ -4,12 +4,20 @@ import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Equalizer
+import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,14 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
+import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.LyricsDownloaderPage
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.LyricsDownloaderPageViewModel
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
 private const val TAG = "Navigator"
 
@@ -47,8 +59,7 @@ fun Navigator() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val navController = rememberAnimatedNavController(bottomSheetNavigator)
+    val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val onBackPressed: () -> Unit = { navController.popBackStack() }
@@ -67,7 +78,7 @@ fun Navigator() {
         )
     }
 
-    val routesToShow: List<Route> = listOf(Route.HomeNavigator)
+    val routesToShow: List<Route> = listOf(Route.HomeNavigator, Route.UtilitiesNavigator)
 
     Box(
         modifier = Modifier
@@ -82,8 +93,6 @@ fun Navigator() {
             bottomBar = {
                 AnimatedVisibility(
                     visible = !shouldHideNavBar.value,
-//                    enter = expandVertically() + fadeIn(),
-//                    exit = shrinkVertically() + fadeOut()
                 ) {
                     NavigationBar(
                         modifier = Modifier
@@ -137,6 +146,7 @@ fun Navigator() {
                     startDestination = Route.Home.route,
                 ) {
                     composable(Route.Home.route) {
+
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -153,6 +163,87 @@ fun Navigator() {
                                     Text(text = "Tap to crash")
                                 }
                             }
+                        }
+                    }
+                }
+
+                navigation(
+                    route = Route.UtilitiesNavigator.route,
+                    startDestination = Route.Utilities.route,
+                ) {
+                    composable(Route.Utilities.route) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            Column(
+                                modifier = Modifier,
+                            ) {
+                                LazyVerticalGrid(
+                                    columns = GridCells.Adaptive(150.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    contentPadding = PaddingValues(8.dp)
+                                ) {
+                                    item {
+                                        AppUtilityCard(
+                                            utilityName = "Synced Lyrics",
+                                            icon = Icons.Default.Lyrics
+                                        ) {
+                                            navController.navigate(Route.LyricsDownloaderPage.route)
+                                        }
+                                    }
+                                    item {
+                                        AppUtilityCard(
+                                            utilityName = "Equalizer",
+                                            icon = Icons.Default.Equalizer
+                                        ) {
+                                            //navController.navigate(Route.Equalizer.route)
+                                        }
+                                    }
+                                    item {
+                                        AppUtilityCard(
+                                            utilityName = "Sleep Timer",
+                                            icon = Icons.Default.Timer
+                                        ) {
+                                            //navController.navigate(Route.SleepTimer.route)
+                                        }
+                                    }
+                                }
+//                                val localContext = LocalContext.current
+//                                val songsToShow by rememberSaveable(key = "songsToShow") {
+//                                    mutableStateOf(
+//                                        MediaStoreReceiver.getAllSongsFromMediaStore(
+//                                            localContext
+//                                        )
+//                                    )
+//                                }
+//                                LazyColumn(modifier = Modifier.fillMaxSize()) {
+//                                    items(songsToShow.size) { index ->
+//                                        if (songsToShow[index].albumArtPath != null) {
+//                                            AsyncImageImpl(
+//                                                modifier = Modifier
+//                                                    .padding(16.dp)
+//                                                    .size(84.dp)
+//                                                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+//                                                    .clip(MaterialTheme.shapes.small),
+//                                                model = songsToShow[index].albumArtPath!!,
+//                                                contentDescription = "Song cover",
+//                                                contentScale = ContentScale.Crop,
+//                                                isPreview = false
+//                                            )
+//                                        }
+//                                    }
+//                                }
+                            }
+                        }
+                    }
+                    composable(Route.LyricsDownloaderPage.route) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
+                            LyricsDownloaderPage(viewModel)
                         }
                     }
                 }

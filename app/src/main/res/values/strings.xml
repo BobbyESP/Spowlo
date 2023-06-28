@@ -16,4 +16,19 @@
     <string name="device_info">Device info</string>
     <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
     <string name="home">Home</string>
+    <string name="utilities">Utilities</string>
+    <string name="permission_not_granted">Permission not granted</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="permission_not_granted_description">To access this feature of the app is required to grant some neccesary permissions. Would you like to accept them?</string>
+    <string name="permissions_to_grant">The permissions needed are:</string>
+    <string name="read_external_storage">Read external storage</string>
+    <string name="write_external_storage">Write external storage</string>
+    <string name="internet">Internet</string>
+    <string name="access_network_state">Access network state</string>
+    <string name="access_wifi_state">Access WiFi state</string>
+    <string name="change_wifi_state">Change WiFi state</string>
+    <string name="accept_permissions">Accept permissions</string>
+    <string name="lyrics_downloader">Lyrics downloader</string>
+    <string name="grant">Grant</string>
+    <string name="permission_not_granted_rationale_desc">If you do not grant the required permissions you won\'t be able to access this app functionality.</string>
 </resources>
