@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.alertDialogs
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -90,11 +91,13 @@ fun PermissionNotGranted(
 enum class PermissionType {
     READ_EXTERNAL_STORAGE,
     WRITE_EXTERNAL_STORAGE,
+    READ_MEDIA_AUDIO,
     INTERNET,
     ACCESS_NETWORK_STATE,
     ACCESS_WIFI_STATE,
     CHANGE_WIFI_STATE;
 
+    @SuppressLint("InlinedApi")
     fun getPermissionString(): String {
         return when (this) {
             READ_EXTERNAL_STORAGE -> android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -103,6 +106,7 @@ enum class PermissionType {
             ACCESS_NETWORK_STATE -> android.Manifest.permission.ACCESS_NETWORK_STATE
             ACCESS_WIFI_STATE -> android.Manifest.permission.ACCESS_WIFI_STATE
             CHANGE_WIFI_STATE -> android.Manifest.permission.CHANGE_WIFI_STATE
+            READ_MEDIA_AUDIO -> android.Manifest.permission.READ_MEDIA_AUDIO
         }
     }
 
@@ -115,10 +119,22 @@ enum class PermissionType {
             ACCESS_NETWORK_STATE -> stringResource(R.string.access_network_state)
             ACCESS_WIFI_STATE -> stringResource(R.string.access_wifi_state)
             CHANGE_WIFI_STATE -> stringResource(R.string.change_wifi_state)
+            READ_MEDIA_AUDIO -> stringResource(R.string.read_media_audio)
         }
     }
+}
 
-
+fun String.toPermissionType(): PermissionType {
+    return when (this) {
+        android.Manifest.permission.READ_EXTERNAL_STORAGE -> PermissionType.READ_EXTERNAL_STORAGE
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE -> PermissionType.WRITE_EXTERNAL_STORAGE
+        android.Manifest.permission.INTERNET -> PermissionType.INTERNET
+        android.Manifest.permission.ACCESS_NETWORK_STATE -> PermissionType.ACCESS_NETWORK_STATE
+        android.Manifest.permission.ACCESS_WIFI_STATE -> PermissionType.ACCESS_WIFI_STATE
+        android.Manifest.permission.CHANGE_WIFI_STATE -> PermissionType.CHANGE_WIFI_STATE
+        android.Manifest.permission.READ_MEDIA_AUDIO -> PermissionType.READ_MEDIA_AUDIO
+        else -> throw IllegalArgumentException("Unknown permission string")
+    }
 }
 
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
