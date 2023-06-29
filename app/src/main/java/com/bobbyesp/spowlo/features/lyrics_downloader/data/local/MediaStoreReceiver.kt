@@ -46,7 +46,7 @@ object MediaStoreReceiver {
                 val title = cursor.getString(titleColumn)
                 val artist = cursor.getString(artistColumn)
                 val album = cursor.getString(albumColumn)
-                val duration = cursor.getInt(durationColumn)
+                val duration = cursor.getDouble(durationColumn)
                 val albumId = cursor.getLong(albumIdColumn)
                 val path = cursor.getString(pathColumn)
 

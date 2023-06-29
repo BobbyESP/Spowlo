@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.spotifyApi.data.remote
+package com.bobbyesp.spowlo.features.spotifyApi.data.remote.searching
 
 import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.SpotifyPublicUser

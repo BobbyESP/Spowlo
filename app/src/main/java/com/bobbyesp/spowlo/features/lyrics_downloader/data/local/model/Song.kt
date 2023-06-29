@@ -8,6 +8,6 @@ data class Song(
     val artist: String,
     val album: String,
     val albumArtPath: Uri? = null,
-    val duration: Int,
+    val duration: Double,
     val path: String
 )

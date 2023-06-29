@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.text
+package com.bobbyesp.spowlo.ui.components.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

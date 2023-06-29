@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.alertDialogs
+package com.bobbyesp.spowlo.ui.components.alertDialogs
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.text.DotWithText
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
+import com.bobbyesp.spowlo.ui.components.text.DotWithText
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 

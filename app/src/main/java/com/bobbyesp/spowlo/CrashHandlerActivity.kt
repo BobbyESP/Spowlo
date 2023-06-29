@@ -5,11 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -92,16 +94,17 @@ fun CrashReportPage(
             FilledButtonWithIcon(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(start = 16.dp)
                     .weight(1f),
                 onClick = onClick,
                 icon = Icons.Outlined.BugReport,
                 text = stringResource(R.string.copy_and_exit)
             )
+            Spacer(modifier = Modifier.width(12.dp))
             FilledButtonWithIcon(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(end = 16.dp)
                     .weight(1f),
                 onClick = onClick,
                 icon = localAsset(id = R.drawable.github_mark),

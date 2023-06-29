@@ -27,13 +27,11 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 fun LocalSongCard(
     modifier: Modifier = Modifier, song: Song, onClick: () -> Unit
 ) {
-    Surface(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .clickable {
-                onClick()
-            }
-    ) {
+    Surface(modifier = modifier
+        .clip(MaterialTheme.shapes.small)
+        .clickable {
+            onClick()
+        }) {
         Column(modifier = Modifier.fillMaxSize()) {
             if (song.albumArtPath != null) {
                 Column(
@@ -82,7 +80,7 @@ fun LocalSongCardPreview() {
             artist = "Imagine Dragons",
             album = "Mercury - Acts 1 & 2",
             albumArtPath = Uri.parse("https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/33/87/c8/3387c827-adaa-681d-bd10-ce7d8e888b9c/22UMGIM21054.rgb.jpg/10000x10000bb.webp"),
-            duration = 100,
+            duration = 100.0,
             path = "path"
         ), onClick = {})
     }
