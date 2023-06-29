@@ -7,7 +7,6 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        context = this.baseContext
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {

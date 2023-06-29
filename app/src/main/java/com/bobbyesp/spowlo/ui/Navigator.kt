@@ -94,7 +94,7 @@ fun Navigator() {
                     visible = !shouldHideNavBar.value,
                 ) {
                     NavigationBar(
-                        modifier = Modifier.height(72.dp)
+                        modifier = Modifier.height(80.dp)
                     ) {
                         routesToShow.forEach { route ->
                             val isSelected = currentRootRoute.value == route.route
@@ -113,7 +113,7 @@ fun Navigator() {
                                 }
                             }
                             NavigationBarItem(
-                                modifier = Modifier.padding(top = 6.dp),
+                                modifier = Modifier.padding(vertical = 12.dp),
                                 selected = isSelected,
                                 onClick = onClick,
                                 icon = {
