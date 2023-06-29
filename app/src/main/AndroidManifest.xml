@@ -36,7 +36,6 @@
             android:configChanges="orientation"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.Spowlo">
 
             <intent-filter>

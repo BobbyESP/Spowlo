@@ -32,4 +32,6 @@
     <string name="grant">Grant</string>
     <string name="permission_not_granted_rationale_desc">If you do not grant the required permissions you won\'t be able to access this app functionality.</string>
     <string name="read_media_audio">Read audio files</string>
+    <string name="back">Back</string>
+    <string name="search_for_songs">Search for songs</string>
 </resources>

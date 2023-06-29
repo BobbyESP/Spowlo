@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.common
+package com.bobbyesp.spowlo.ui.components.images
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -31,7 +31,7 @@ val imageLoader = ImageLoader.Builder(context)
     .diskCache {
         DiskCache.Builder()
             .directory(context.cacheDir.resolve("image_cache"))
-            .maxSizePercent(0.02)
+            .maxSizePercent(0.1)
             .build()
     }
     .build()

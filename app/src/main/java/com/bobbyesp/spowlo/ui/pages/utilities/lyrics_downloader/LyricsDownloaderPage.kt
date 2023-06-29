@@ -3,19 +3,60 @@ package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.annotation.SuppressLint
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.alertDialogs.PermissionNotGranted
 import com.bobbyesp.spowlo.features.lyrics_downloader.ui.components.alertDialogs.toPermissionType
+import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.components.buttons.BackButton
+import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
+import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
+import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.permissions.PermissionRequestHandler
+import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 
 @SuppressLint("InlinedApi") //Make the linter shut up kek
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LyricsDownloaderPage(
     viewModel: LyricsDownloaderPageViewModel
@@ -23,18 +64,17 @@ fun LyricsDownloaderPage(
     val currentApiVersion = Build.VERSION.SDK_INT
 
     val targetPermission = when {
-        currentApiVersion < Build.VERSION_CODES.Q ->
-            READ_EXTERNAL_STORAGE
-        currentApiVersion < Build.VERSION_CODES.S ->
-            READ_EXTERNAL_STORAGE
+        currentApiVersion < Build.VERSION_CODES.Q -> READ_EXTERNAL_STORAGE
+
+        currentApiVersion < Build.VERSION_CODES.S -> READ_EXTERNAL_STORAGE
+
         else -> READ_MEDIA_AUDIO
     }
 
     val storagePermissionState = rememberPermissionState(permission = targetPermission)
     val navController = LocalNavController.current
 
-    PermissionRequestHandler(
-        permissionState = storagePermissionState,
+    PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
             PermissionNotGranted(
                 neededPermissions = listOf(targetPermission.toPermissionType()),
@@ -42,17 +82,118 @@ fun LyricsDownloaderPage(
                     storagePermissionState.launchPermissionRequest()
                 },
                 onDismissRequest = {
-                   navController.popBackStack()
+                    navController.popBackStack()
                 },
                 shouldShowRationale = shouldShowRationale
             )
         },
         content = {
-            LyricsDownloaderPageImpl()
-        }
-    )
+            LyricsDownloaderPageImpl(viewModel = viewModel)
+        })
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LyricsDownloaderPageImpl() {
-    Text(text = "LyricsDownloaderPage")
+fun LyricsDownloaderPageImpl(
+    navController: NavController = LocalNavController.current,
+    viewModel: LyricsDownloaderPageViewModel
+) {
+    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+
+    val state = viewState.value.state
+
+    var query by rememberSaveable(key = "query") {
+        mutableStateOf("")
+    }
+
+    var activeFullscreenSearching by remember {
+        mutableStateOf(false)
+    }
+
+    Scaffold(
+        topBar = {
+            SmallTopAppBar(navigationIcon = {
+                BackButton {
+                    navController.popBackStack()
+                }
+            }, actions = {
+                //TODO: Add actions (reload button, etc)
+            }, title = {
+                Text(
+                    text = Route.LyricsDownloaderPage.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            })
+        }, modifier = Modifier.fillMaxSize()
+    ) {
+        var songs by rememberSaveable(key = "songsList") {
+            mutableStateOf<List<Song>>(emptyList())
+        }
+
+        LaunchedEffect(true) {
+            viewModel.loadMediaStoreTracks()
+        }
+
+        when(state) {
+            is LyricsDownloaderPageState.Loading -> {
+                Text(text = "Loading...")
+            }
+            is LyricsDownloaderPageState.Loaded -> {
+                songs = state.songs
+                Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ExpandableSearchBar(
+                            query = query,
+                            onQueryChange = { query = it },
+                            onSearch = {},
+                            active = activeFullscreenSearching,
+                            onActiveChange = { activeFullscreenSearching = it },
+                            placeholderText = stringResource(id = R.string.search_for_songs),
+                            leadingIcon = Icons.Default.Search,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(150.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(songs) { song ->
+                            LocalSongCard(song = song, modifier = Modifier, onClick = {})
+                        }
+                    }
+                }
+            }
+            is LyricsDownloaderPageState.Error -> {
+                Text(text = "Error")
+            }
+        }
+    }
+}
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun LyricsDownloaderPagePreview() {
+    AppLocalSettingsProvider(windowWidthSize = WindowWidthSizeClass.Expanded) {
+        SpowloTheme {
+            LyricsDownloaderPageImpl(
+                navController = rememberNavController(), viewModel = LyricsDownloaderPageViewModel()
+            )
+        }
+    }
 }
