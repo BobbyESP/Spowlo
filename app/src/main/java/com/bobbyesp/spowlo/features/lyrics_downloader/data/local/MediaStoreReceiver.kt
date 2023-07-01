@@ -31,7 +31,7 @@ object MediaStoreReceiver {
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
             // Here we can get more data from the songs, like the album cover, the year, etc...
         )
         val sortOrder = MediaStore.Audio.Media.TITLE // Sort ascending by title

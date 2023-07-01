@@ -38,4 +38,6 @@
     <string name="warning">Warning</string>
     <string name="lyrics_downloader_warning_text">We first search all the songs with similar song titles as yours to get the Spotify link so we can directly download the lyrics from their servers</string>
     <string name="showing_results_for">Showing results for %1$s by %2$s</string>
+    <string name="save_lyrics">Save lyrics</string>
+    <string name="settings">Settings</string>
 </resources>

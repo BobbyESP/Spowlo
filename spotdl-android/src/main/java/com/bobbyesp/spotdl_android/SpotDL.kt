@@ -3,6 +3,10 @@ package com.bobbyesp.spotdl_android
 import android.content.Context
 import android.util.Log
 import com.bobbyesp.spotdl_android.LibNames.androidLibName
+import com.bobbyesp.spotdl_android.data.CanceledException
+import com.bobbyesp.spotdl_android.data.SpotDLException
+import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
+import com.bobbyesp.spotdl_android.data.streams.StreamFlowStorer
 import com.bobbyesp.spotdl_utilities.FileUtils
 import com.bobbyesp.spotdl_utilities.ZipUtils
 import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
@@ -10,6 +14,7 @@ import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import java.io.File
 
 /**
@@ -88,6 +93,76 @@ object SpotDL {
             }
             PreferencesUtil.encodeString(PYTHON_VERSION, librarySize)
         }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Throws(Exception::class, SpotDLException::class, InterruptedException::class, CanceledException::class)
+    private suspend fun installWhlFile(
+        whlFile: File
+    ): Boolean {
+        val process: Process
+
+        val exitCode: Int
+
+        //STDERR and STDOUT
+        val outStrBuffer = StringBuffer() //stdout
+        val errStrBuffer = StringBuffer() //stderr
+
+        //Time on start
+        val startTime = System.currentTimeMillis()
+        /*****************************************/
+
+        //Command to execute
+        val command = mutableListOf<String>()
+        command.addAll(listOf(pythonPath.absolutePath, "-m", "pip", "install", whlFile.absolutePath))
+
+        val processBuilder = ProcessBuilder(command)
+
+        processBuilder.environment().apply {
+            put("LD_LIBRARY_PATH", ENV_LD_LIBRARY_PATH)
+            put("SSL_CERT_FILE", ENV_SSL_CERT_FILE)
+            put("PYTHONHOME", ENV_PYTHONHOME)
+            put("HOME", ENV_PYTHONHOME)
+            put("PATH", System.getenv("PATH")!! + ":" + pythonPath.absolutePath)
+        }
+
+        /**
+         * Start the process.
+         */
+        process = try {
+            processBuilder.start()
+        } catch (e: Exception) {
+            throw Exception("Error while running the process: ${e.message}")
+        }
+
+        /**
+         * Get the outputs of the process.
+         */
+        val outStream = process.inputStream //stdout
+        val errStream = process.errorStream //stderr
+
+        val stdOutProcessor = StreamDataProcessExtractor(outStrBuffer, outStream) { progress, eta, line ->
+            if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
+        }
+        val stdErrProcessor = StreamFlowStorer(errStrBuffer, errStream)
+
+        exitCode = try {
+            stdOutProcessor.start(GlobalScope)
+            stdErrProcessor.startStoring(GlobalScope)
+            process.waitFor()
+        } catch (e: InterruptedException) {
+            process.destroy()
+            throw e
+        }
+
+        val out = outStrBuffer.toString()
+        val err = errStrBuffer.toString()
+
+        if(exitCode != 0) {
+            throw SpotDLException("Error while installing the whl file: $err")
+        }
+
+        return true
     }
 
     /**

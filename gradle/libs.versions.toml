@@ -50,6 +50,9 @@ room = "2.5.2"
 #High performance Key-value storage
 mmkv = "1.2.15"
 
+#Simple Storage (SAF simplified)
+simpleStorage = "1.5.5"
+
 #Chrome custom tabs
 customTabs = "1.5.0"
 
@@ -157,6 +160,9 @@ kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-s
 
 #Key-value storage
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+
+#Simple Storage
+simple-storage = { group = "com.anggrayudi", name = "storage", version.ref = "simpleStorage" }
 
 #Markdown parser
 markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdown" }

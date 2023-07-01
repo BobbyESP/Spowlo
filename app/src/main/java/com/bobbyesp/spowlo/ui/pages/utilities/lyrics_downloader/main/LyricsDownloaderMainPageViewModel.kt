@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader
+package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 
 import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.App

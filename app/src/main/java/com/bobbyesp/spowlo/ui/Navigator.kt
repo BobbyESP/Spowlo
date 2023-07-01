@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -38,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -51,15 +54,15 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.LyricsDownloaderPage
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.LyricsDownloaderPageViewModel
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.SelectedSongLyricsPage
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.SelectedSongLyricsPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
 
 private const val TAG = "Navigator"
 
 @OptIn(
-    ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class
 )
 @Composable
 fun Navigator() {
@@ -72,11 +75,11 @@ fun Navigator() {
         )
     }
 
+    val routesToHide: List<Route> = listOf(Route.OnboardingPage, Route.SettingsNavigator)
+
     val shouldHideNavBar = remember(navBackStackEntry) {
         mutableStateOf(
-            navBackStackEntry?.destination?.route in listOf(
-                Route.OnboardingPage.route,
-            )
+            navBackStackEntry?.destination?.hierarchy?.any { it.route in routesToHide.map { it.route } } == true
         )
     }
 
@@ -94,10 +97,10 @@ fun Navigator() {
                 .align(Alignment.Center),
             bottomBar = {
                 AnimatedVisibility(
-                    visible = !shouldHideNavBar.value,
+                    visible = !shouldHideNavBar.value
                 ) {
                     NavigationBar(
-                        modifier = Modifier.height(80.dp)
+                        modifier = Modifier.height(IntrinsicSize.Min)
                     ) {
                         routesToShow.forEach { route ->
                             val isSelected = currentRootRoute.value == route.route
@@ -116,7 +119,7 @@ fun Navigator() {
                                 }
                             }
                             NavigationBarItem(
-                                modifier = Modifier.padding(vertical = 12.dp),
+                                modifier = Modifier.padding(),
                                 selected = isSelected,
                                 onClick = onClick,
                                 icon = {
@@ -136,7 +139,8 @@ fun Navigator() {
                         }
                     }
                 }
-            }) { paddingValues ->
+            },
+        ) { paddingValues ->
             NavHost(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -150,7 +154,18 @@ fun Navigator() {
                     startDestination = Route.Home.route,
                 ) {
                     composable(Route.Home.route) {
-                        HomePage()
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            HomePage()
+                        }
+                    }
+                }
+
+                navigation(
+                    route = Route.SettingsNavigator.route,
+                    startDestination = Route.Settings.route,
+                ) {
+                    composable(Route.Settings.route) {
+
                     }
                 }
 

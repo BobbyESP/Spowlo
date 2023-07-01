@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.components.text
 
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TargetBasedAnimation
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,6 +81,7 @@ fun MarqueeText(
     style: TextStyle = LocalTextStyle.current.plus(TextStyle()),
     sideGradientColor: Color = Color.Transparent,
     basicGradientColor: Color = Color.Transparent,
+    customEasing: Easing? = null,
 ) {
     val createText = @Composable { localModifier: Modifier ->
         Text(
@@ -100,7 +103,7 @@ fun MarqueeText(
             style = style,
         )
     }
-    var offset by remember { mutableStateOf(0) }
+    var offset by remember { mutableIntStateOf(0) }
     //When the text is changed, the offset is reset to 0
     LaunchedEffect(text) {
         offset = 0
@@ -109,7 +112,7 @@ fun MarqueeText(
     LaunchedEffect(textLayoutInfoState.value) {
         val textLayoutInfo = textLayoutInfoState.value ?: return@LaunchedEffect
         if (textLayoutInfo.textWidth <= textLayoutInfo.containerWidth) return@LaunchedEffect
-        val duration = 7500 * textLayoutInfo.textWidth / textLayoutInfo.containerWidth
+        val duration = 4000 * textLayoutInfo.textWidth / textLayoutInfo.containerWidth
         val delay = 500L
         do {
             val animation = TargetBasedAnimation(
@@ -117,7 +120,7 @@ fun MarqueeText(
                     animation = tween(
                         durationMillis = duration,
                         delayMillis = 1000,
-                        easing = LinearEasing,
+                        easing = customEasing ?: LinearEasing
                     ),
                     repeatMode = RepeatMode.Restart
                 ),

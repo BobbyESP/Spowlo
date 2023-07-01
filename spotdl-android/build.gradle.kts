@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -39,6 +40,10 @@ dependencies {
     implementation(libs.bundles.coroutines)
 
     implementation(project(":spotdl_utilities"))
+    implementation(libs.okhttp)
+
+    //Serialization
+    implementation(libs.kotlin.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

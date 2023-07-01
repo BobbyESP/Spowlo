@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader
+package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
@@ -6,8 +6,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -126,46 +124,59 @@ fun LyricsDownloaderPageImpl(
         mutableStateOf(false)
     }
 
+    var wantsToSearch by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         topBar = {
-            AnimatedVisibility(
-                visible = !activeFullscreenSearching,
-                enter = slideInVertically(),
-                exit = slideOutVertically()
-            ) {
-                SmallTopAppBar(navigationIcon = {
-                    BackButton {
-                        navController.popBackStack()
-                    }
-                }, actions = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                viewModel.loadMediaStoreTracks()
-                            }
-                        },
-                        enabled = state is LyricsDownloaderPageState.Loaded
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh MediaStore"
-                        )
-                    }
-                }, title = {
-                    Text(
-                        text = Route.LyricsDownloaderPage.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+            SmallTopAppBar(navigationIcon = {
+                BackButton {
+                    navController.popBackStack()
+                }
+            }, actions = {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            viewModel.loadMediaStoreTracks()
+                        }
+                    },
+                    enabled = state is LyricsDownloaderPageState.Loaded
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh MediaStore"
                     )
-                })
-            }
+                }
+                IconButton(
+                    onClick = {
+                        wantsToSearch = !wantsToSearch
+                    },
+                    enabled = true
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search for songs"
+                    )
+                }
+
+            }, title = {
+                Text(
+                    text = Route.LyricsDownloaderPage.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            })
         },
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.imePadding(),
                 onClick = { /*TODO*/ }
             ) {
-                Icon(imageVector = Icons.Outlined.Download, contentDescription = "Download all lyrics")
+                Icon(
+                    imageVector = Icons.Outlined.Download,
+                    contentDescription = "Download all lyrics"
+                )
             }
         },
         modifier = Modifier.fillMaxSize()
@@ -190,21 +201,27 @@ fun LyricsDownloaderPageImpl(
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    AnimatedVisibility(
+                        visible = wantsToSearch,
                     ) {
-                        ExpandableSearchBar(
-                            query = query,
-                            onQueryChange = { query = it },
-                            onSearch = {},
-                            active = activeFullscreenSearching,
-                            onActiveChange = { activeFullscreenSearching = it },
-                            placeholderText = stringResource(id = R.string.search_for_songs),
-                            leadingIcon = Icons.Default.Search,
-                            modifier = Modifier.fillMaxWidth()
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            ExpandableSearchBar(
+                                query = query,
+                                onQueryChange = { query = it },
+                                onSearch = {
 
+                                },
+                                active = activeFullscreenSearching,
+                                onActiveChange = { activeFullscreenSearching = it },
+                                placeholderText = stringResource(id = R.string.search_for_songs),
+                                leadingIcon = Icons.Default.Search,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -212,7 +229,7 @@ fun LyricsDownloaderPageImpl(
                     val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
 
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(150.dp),
+                        columns = GridCells.Adaptive(100.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(8.dp),

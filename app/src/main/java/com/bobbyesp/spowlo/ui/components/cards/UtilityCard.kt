@@ -36,7 +36,7 @@ fun AppUtilityCard(
     icon: ImageVector,
     onClick: () -> Unit
 ) {
-    val xOffset = cardSize.dp / 2.25f
+    val xOffset = cardSize.dp / 2.3f
     val yOffset = cardSize.dp / 5
 
     Surface(
@@ -72,7 +72,7 @@ fun AppUtilityCard(
                     modifier = Modifier.padding(12.dp),
                     text = utilityName,
                     fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.headlineLarge.fontSize
+                    fontSize = MaterialTheme.typography.headlineSmall.fontSize
                 )
             }
         }

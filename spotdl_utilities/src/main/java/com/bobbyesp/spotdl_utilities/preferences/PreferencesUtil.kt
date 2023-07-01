@@ -2,14 +2,14 @@ package com.bobbyesp.spotdl_utilities.preferences
 
 import com.tencent.mmkv.MMKV
 
+const val SPOTDL_VERSION = "spotdl_version"
 const val PYTHON_VERSION = "python_version"
 const val FFMPEG_VERSION = "ffmpeg_version"
 
-private val StringPreferenceDefaults: Map<String, String> =
-    mapOf(
-      PYTHON_VERSION to "3.11.0",
-        FFMPEG_VERSION to "5.1"
-    )
+
+private val StringPreferenceDefaults: Map<String, String> = mapOf(
+    PYTHON_VERSION to "3.11.0", FFMPEG_VERSION to "5.1", SPOTDL_VERSION to "4.1.11"
+)
 
 object PreferencesUtil {
     private val kv: MMKV = MMKV.defaultMMKV()
@@ -29,7 +29,7 @@ object PreferencesUtil {
     fun updateValue(key: String, b: Boolean) = key.updateBoolean(b)
     fun encodeInt(key: String, int: Int) = key.updateInt(int)
 
-//    fun getValue(key: String): Boolean = key.getBoolean()
+    //    fun getValue(key: String): Boolean = key.getBoolean()
     fun encodeString(key: String, string: String) = key.updateString(string)
     fun containsKey(key: String) = kv.containsKey(key)
 
