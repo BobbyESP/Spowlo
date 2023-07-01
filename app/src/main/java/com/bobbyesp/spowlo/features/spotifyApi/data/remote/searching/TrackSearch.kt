@@ -15,4 +15,16 @@ class TrackSearch(private val spotifyApi: SpotifyAppApi) {
         }
         return emptyList()
     }
+
+    suspend fun search(songName: String, artistName: String): List<Track> {
+        runCatching {
+            spotifyApi.search.searchTrack("$songName $artistName").items
+        }.onFailure {
+            it.printStackTrace()
+            return emptyList()
+        }.onSuccess {
+            return it
+        }
+        return emptyList()
+    }
 }

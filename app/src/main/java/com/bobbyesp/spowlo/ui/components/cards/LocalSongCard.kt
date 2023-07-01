@@ -2,7 +2,6 @@ package com.bobbyesp.spowlo.ui.components.cards
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,13 +24,15 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 @Composable
 fun LocalSongCard(
-    modifier: Modifier = Modifier, song: Song, onClick: () -> Unit
+    modifier: Modifier = Modifier,
+    song: Song,
+    onClick: () -> Unit
 ) {
-    Surface(modifier = modifier
-        .clip(MaterialTheme.shapes.small)
-        .clickable {
-            onClick()
-        }) {
+    Surface(
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small),
+        onClick = onClick
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             if (song.albumArtPath != null) {
                 Column(

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -57,8 +58,10 @@ import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGranted
 import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
+import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.ext.toList
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.ui.util.permissions.PermissionRequestHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -158,7 +161,10 @@ fun LyricsDownloaderPageImpl(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(
+                modifier = Modifier.imePadding(),
+                onClick = { /*TODO*/ }
+            ) {
                 Icon(imageVector = Icons.Outlined.Download, contentDescription = "Download all lyrics")
             }
         },
@@ -202,15 +208,24 @@ fun LyricsDownloaderPageImpl(
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
+
+                    val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
+
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(150.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(8.dp),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyGridState
                     ) {
                         items(songs) { song ->
-                            LocalSongCard(song = song, modifier = Modifier, onClick = {})
+                            LocalSongCard(song = song, modifier = Modifier, onClick = {
+                                val artistsList = song.artist.toList()
+                                val mainArtist = artistsList.first()
+
+                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
+                            })
                         }
                     }
                 }

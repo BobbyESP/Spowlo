@@ -41,8 +41,8 @@ class App: Application() {
 
         applicationScope.launch((Dispatchers.IO)) {
             try {
-                SpotDL.init(applicationContext)
-                FFmpeg.init(applicationContext)
+                SpotDL.init(context)
+                FFmpeg.init(context)
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     startCrashReportActivity(e)

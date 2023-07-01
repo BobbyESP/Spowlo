@@ -34,4 +34,8 @@
     <string name="read_media_audio">Read audio files</string>
     <string name="back">Back</string>
     <string name="search_for_songs">Search for songs</string>
+    <string name="select_song">Select song</string>
+    <string name="warning">Warning</string>
+    <string name="lyrics_downloader_warning_text">We first search all the songs with similar song titles as yours to get the Spotify link so we can directly download the lyrics from their servers</string>
+    <string name="showing_results_for">Showing results for %1$s by %2$s</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.components.cards
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,11 +30,11 @@ fun SpotifySongCard(
     onClick: () -> Unit,
     showSpotifyLogo: Boolean = true
 ) {
-    Surface(modifier = modifier
-        .clip(MaterialTheme.shapes.small)
-        .clickable {
-            onClick()
-        }) {
+    Surface(
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small),
+        onClick = onClick
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             track.album.images.firstOrNull()!!.url.let {
                 Column(
@@ -65,7 +64,7 @@ fun SpotifySongCard(
                                 imageVector = localAsset(id = R.drawable.spotify_logo),
                                 contentDescription = "Spotify logo",
                                 modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )
                         }
                     }

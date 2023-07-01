@@ -5,12 +5,16 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 
 object MediaStoreReceiver {
 
+    /**
+     * This function returns a list of all the songs in the device.
+     * @param applicationContext The application context.
+     * @return A list of all the songs in the device.
+     */
     fun getAllSongsFromMediaStore(applicationContext: Context): List<Song> {
         val contentResolver: ContentResolver = applicationContext.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -55,8 +59,6 @@ object MediaStoreReceiver {
                     songArtworkUri,
                     albumId
                 )
-
-                Log.i("MediaStoreReceiver", "getAllSongsFromMediaStore: imgUri = $imgUri")
 
                 val song = Song(id, title, artist, album, imgUri, duration, path)
                 songs.add(song)

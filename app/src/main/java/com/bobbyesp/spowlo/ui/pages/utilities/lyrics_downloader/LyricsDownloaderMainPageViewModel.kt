@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
     private val TAG = "LyricsDownloaderPageViewModel"
-    private val api = SpotifyApiRequests
 
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -29,7 +27,6 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
      * @return a list of songs
      */
     suspend fun loadMediaStoreTracks(): List<Song> {
-
         updateState(LyricsDownloaderPageState.Loading)
 
         val songs = withContext(Dispatchers.IO) {

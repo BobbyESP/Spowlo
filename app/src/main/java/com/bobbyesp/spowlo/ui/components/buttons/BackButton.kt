@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.components.buttons
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -16,5 +17,32 @@ fun BackButton(onClick: () -> Unit) {
             imageVector = Icons.Default.ArrowBack,
             contentDescription = stringResource(R.string.back),
         )
+    }
+}
+
+@Composable
+fun CloseButton(onClick: () -> Unit) {
+    IconButton(modifier = Modifier, onClick = onClick) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = stringResource(R.string.back),
+        )
+    }
+}
+
+//create a dynamic button that depending on a boolean has one Icon and one onClick function or another
+@Composable
+fun DynamicButton(
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit,
+    icon2: @Composable () -> Unit,
+    isIcon1: Boolean,
+) {
+    IconButton(modifier = modifier, onClick = { }) {
+        if (isIcon1) {
+            icon()
+        } else {
+            icon2()
+        }
     }
 }
