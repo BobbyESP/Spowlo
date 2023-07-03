@@ -40,4 +40,5 @@
     <string name="showing_results_for">Showing results for %1$s by %2$s</string>
     <string name="save_lyrics">Save lyrics</string>
     <string name="settings">Settings</string>
+    <string name="lyrics_downloader_subtitle">Download synced lyrics for any song from your library</string>
 </resources>

@@ -1,22 +1,23 @@
 package com.bobbyesp.spowlo.utils.notifications
 
+import android.content.Context
 import android.widget.Toast
 import com.bobbyesp.spowlo.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 object ToastUtil {
-    fun makeToast(text: String) {
-        Toast.makeText(App.context, text, Toast.LENGTH_SHORT).show()
+    fun makeToast(context: Context,text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun makeToastSuspend(text: String) {
+    fun makeToastSuspend(context: Context, text: String) {
         App.applicationScope.launch(Dispatchers.Main) {
-            makeToast(text)
+            makeToast(context, text)
         }
     }
 
-    fun makeToast(stringId: Int) {
-        Toast.makeText(App.context, App.context.getString(stringId), Toast.LENGTH_SHORT).show()
+    fun makeToast(context: Context, stringId: Int) {
+        Toast.makeText(context, context.getString(stringId), Toast.LENGTH_SHORT).show()
     }
 }

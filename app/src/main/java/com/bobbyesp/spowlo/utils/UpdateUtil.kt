@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.UPDATE_CHANNEL
@@ -73,14 +72,14 @@ object UpdateUtil {
         return suspendCoroutine { continuation ->
             client.newCall(requestForReleases).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
-                        val responseData = response.body!!.string()
+                        val responseData = response.body.string()
                         val releaseList =
                             jsonFormat.decodeFromString<List<LatestRelease>>(responseData)
                         val latestRelease =
                             releaseList.filter { if (UPDATE_CHANNEL.getInt() == STABLE) it.name.toVersion() is Version.Stable else true }
                                 .maxByOrNull { it.name.toVersion() }
                                 ?: throw Exception("null response")
-                        response.body!!.close()
+                        response.body.close()
                         continuation.resume(latestRelease)
                     }
 
@@ -91,7 +90,7 @@ object UpdateUtil {
         }
     }
 
-    suspend fun checkForUpdate(context: Context = App.context): LatestRelease? {
+    suspend fun checkForUpdate(context: Context): LatestRelease? {
         val currentVersion = context.getCurrentVersion()
         val latestRelease = getLatestRelease()
         val latestVersion = latestRelease.name.toVersion()
@@ -115,7 +114,7 @@ object UpdateUtil {
 
     private fun Context.getFileProvider() = "${packageName}.provider"
 
-    fun installLatestApk(context: Context = App.context) = context.apply {
+    fun installLatestApk(context: Context) = context.apply {
         kotlin.runCatching {
             val contentUri = FileProvider.getUriForFile(this, getFileProvider(), getLatestApk())
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -126,12 +125,12 @@ object UpdateUtil {
             startActivity(intent)
         }.onFailure { throwable: Throwable ->
             throwable.printStackTrace()
-            ToastUtil.makeToast(R.string.app_update_failed)
+            ToastUtil.makeToast(context, R.string.app_update_failed)
         }
     }
 
     suspend fun downloadApk(
-        context: Context = App.context, latestRelease: LatestRelease
+        context: Context, latestRelease: LatestRelease
     ): Flow<DownloadStatus> = withContext(Dispatchers.IO) {
         val apkVersion = context.packageManager.getPackageArchiveInfo(
             context.getLatestApk().absolutePath, 0
@@ -153,7 +152,7 @@ object UpdateUtil {
         try {
             val response = client.newCall(request).execute()
             val responseBody = response.body
-            return@withContext responseBody!!.downloadFileWithProgress(context.getLatestApk())
+            return@withContext responseBody.downloadFileWithProgress(context.getLatestApk())
         } catch (e: Exception) {
             e.printStackTrace()
         }

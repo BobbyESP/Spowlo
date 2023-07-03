@@ -17,24 +17,8 @@ import coil.compose.AsyncImagePainter
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
-import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
-
-
-val imageLoader = ImageLoader.Builder(context)
-    .memoryCache {
-        MemoryCache.Builder(context)
-            .maxSizePercent(0.25)
-            .build()
-    }
-    .diskCache {
-        DiskCache.Builder()
-            .directory(context.cacheDir.resolve("image_cache"))
-            .maxSizePercent(0.1)
-            .build()
-    }
-    .build()
 
 @Composable
 fun AsyncImageImpl(
@@ -50,6 +34,21 @@ fun AsyncImageImpl(
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     isPreview: Boolean = false
 ) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .maxSizePercent(0.25)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("image_cache"))
+                .maxSizePercent(0.1)
+                .build()
+        }
+        .build()
+
     if (isPreview) Image(
         painter = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,

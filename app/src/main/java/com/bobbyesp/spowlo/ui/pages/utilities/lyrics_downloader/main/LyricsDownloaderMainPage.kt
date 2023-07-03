@@ -40,10 +40,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -58,6 +60,7 @@ import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
 import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.toList
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
@@ -110,6 +113,8 @@ fun LyricsDownloaderPageImpl(
     navController: NavController = LocalNavController.current,
     viewModel: LyricsDownloaderPageViewModel
 ) {
+    val context = LocalContext.current
+
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     val state = viewState.value.state
@@ -138,7 +143,9 @@ fun LyricsDownloaderPageImpl(
                 IconButton(
                     onClick = {
                         scope.launch {
-                            viewModel.loadMediaStoreTracks()
+                            viewModel.loadMediaStoreTracks(
+                                context
+                            )
                         }
                     },
                     enabled = state is LyricsDownloaderPageState.Loaded
@@ -161,11 +168,23 @@ fun LyricsDownloaderPageImpl(
                 }
 
             }, title = {
-                Text(
-                    text = Route.LyricsDownloaderPage.title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = Route.LyricsDownloaderPage.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    MarqueeText(
+                        text = stringResource(id = R.string.lyrics_downloader_subtitle),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        ),
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             })
         },
         floatingActionButton = {
@@ -186,7 +205,9 @@ fun LyricsDownloaderPageImpl(
         }
 
         LaunchedEffect(true) {
-            viewModel.loadMediaStoreTracks()
+            viewModel.loadMediaStoreTracks(
+                context
+            )
         }
 
         when (state) {

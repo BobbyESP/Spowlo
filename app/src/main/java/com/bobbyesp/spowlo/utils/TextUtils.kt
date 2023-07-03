@@ -5,15 +5,12 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
-import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import java.util.regex.Pattern
 
 
-
 object GeneralTextUtils {
-
     fun convertDuration(durationOfSong: Double): String {
         //First of all the duration comes with this format "146052" but it has to be "146.052"
         val duration: Double = if (durationOfSong > 100000.0){
@@ -31,11 +28,11 @@ object GeneralTextUtils {
         }
     }
 
-    fun copyToClipboardAndNotify( string: String){
+    fun copyToClipboardAndNotify(context: Context ,string: String){
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = android.content.ClipData.newPlainText(context.getString(R.string.copied_to_clipboard), string)
         clipboard.setPrimaryClip(clip)
-        ToastUtil.makeToast(R.string.copied_to_clipboard)
+        ToastUtil.makeToast(context, R.string.copied_to_clipboard)
     }
 }
 
@@ -58,12 +55,12 @@ fun String?.toHttpsUrl(): String =
     } ?: ""
 
 
-fun matchUrlFromClipboard(string: String, isMatchingMultiLink: Boolean = false): String {
+fun matchUrlFromClipboard(context: Context, string: String, isMatchingMultiLink: Boolean = false): String {
     matchUrlFromString(string, isMatchingMultiLink).run {
         if (isEmpty())
-            ToastUtil.makeToast(R.string.paste_fail_msg)
+            ToastUtil.makeToast(context, R.string.paste_fail_msg)
         else
-            ToastUtil.makeToast(R.string.paste_msg)
+            ToastUtil.makeToast(context, R.string.paste_msg)
         return this
     }
 }

@@ -1,7 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,12 +26,14 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
      * Loads all songs from the media store db
      * @return a list of songs
      */
-    suspend fun loadMediaStoreTracks(): List<Song> {
+    suspend fun loadMediaStoreTracks(
+        context: Context
+    ): List<Song> {
         updateState(LyricsDownloaderPageState.Loading)
 
         val songs = withContext(Dispatchers.IO) {
             MediaStoreReceiver.getAllSongsFromMediaStore(
-                applicationContext = App.context,
+                applicationContext = context,
             )
         }
 

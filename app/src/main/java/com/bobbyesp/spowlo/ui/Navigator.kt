@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -62,7 +61,7 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.Selecte
 private const val TAG = "Navigator"
 
 @OptIn(
-    ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class
+    ExperimentalLayoutApi::class
 )
 @Composable
 fun Navigator() {

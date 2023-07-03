@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
@@ -12,21 +11,29 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.spotdl_android.SpotDL
+import com.bobbyesp.spowlo.ui.common.Route
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App: Application() {
+
+    @Inject
+    @ApplicationContext
+    lateinit var context: Context
+
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(this)
-        context = applicationContext
+        Route.initialize(this)
         packageInfo = packageManager.run {
             if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
                 packageName, PackageManager.PackageInfoFlags.of(0)
@@ -91,8 +98,5 @@ class App: Application() {
                 //.append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
         }
-
-        @SuppressLint("StaticFieldLeak")
-        lateinit var context: Context
     }
 }
