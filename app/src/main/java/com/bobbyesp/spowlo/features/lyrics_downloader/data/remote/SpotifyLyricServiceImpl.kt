@@ -47,7 +47,8 @@ class SpotifyLyricServiceImpl(
         val syncedLyricsResponse = StringBuilder()
 
         for (line in lines) {
-            with(syncedLyricsResponse){
+            if (line.words.isBlank()) continue
+            with(syncedLyricsResponse) {
                 append("[${line.timeTag}] ${line.words}")
                 append("\n")
             }

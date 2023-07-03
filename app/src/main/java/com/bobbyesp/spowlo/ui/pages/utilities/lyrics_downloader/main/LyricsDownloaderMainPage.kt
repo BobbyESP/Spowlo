@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -212,7 +214,14 @@ fun LyricsDownloaderPageImpl(
 
         when (state) {
             is LyricsDownloaderPageState.Loading -> {
-                Text(text = "Loading...")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.width(72.dp)
+                    )
+                }
             }
 
             is LyricsDownloaderPageState.Loaded -> {

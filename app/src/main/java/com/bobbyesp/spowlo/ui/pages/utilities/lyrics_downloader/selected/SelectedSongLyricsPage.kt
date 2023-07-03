@@ -3,16 +3,19 @@ package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.storage.StorageHelper.SaveLyricsButton
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.CloseButton
@@ -60,7 +64,6 @@ fun SelectedSongLyricsPage(
     LaunchedEffect(true) {
         searchedSongs = viewModel.searchSongOnSpotify(query)
     }
-
 
     Scaffold(
         topBar = {
@@ -161,7 +164,7 @@ fun SelectedSongLyricsPage(
                             selectedSong = viewState.selectedSong
                             viewModel.getLyrics(viewState.selectedSong!!.path)
                         }
-                        if(selectedSong != null) HorizontalSongCard(song = selectedSong!!)
+                        if(selectedSong != null) HorizontalSongCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),song = selectedSong!!)
 
                         Crossfade(
                             targetState = viewState.state,
@@ -170,7 +173,16 @@ fun SelectedSongLyricsPage(
                         ) { lyricsState ->
                             when(lyricsState){
                                 is SelectedSongLyricsPageState.Loading -> {
-                                    Text(text = "Loading...")
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        LinearProgressIndicator(
+                                            modifier = Modifier.width(200.dp)
+                                        )
+                                    }
                                 }
                                 is SelectedSongLyricsPageState.Loaded -> {
                                     LazyColumn(
@@ -181,9 +193,19 @@ fun SelectedSongLyricsPage(
                                         item {
                                             Text(text = lyricsState.lyrics, modifier = Modifier.padding(8.dp))
                                         }
-                                        item { 
-                                            Button(onClick = {  }) {
-                                                Text(text = stringResource(id = R.string.save_lyrics))
+                                        item {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                                verticalArrangement = Arrangement.Center,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                SaveLyricsButton(
+                                                    modifier = Modifier,
+                                                    song = selectedSong!!,
+                                                    lyrics = lyricsState.lyrics,
+                                                )
                                             }
                                         }
                                     }

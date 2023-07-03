@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -208,14 +207,18 @@ fun Navigator() {
                         }
                     }
 
-                    val lrcRouteWithQuery = StringBuilder().append(Route.LyricsDownloaderPage.route).append("/{name}/{artist}").toString()
-                    Log.i(TAG, "lrcRouteWithQuery: $lrcRouteWithQuery")
+                    val lrcRouteWithQuery = StringBuilder().append(Route.LyricsDownloaderPage.route)
+                        .append("/{name}/{artist}").toString()
                     slideInVerticallyComposable(
                         route = lrcRouteWithQuery,
-                        arguments = listOf(navArgument("name") { type = NavType.StringType }, navArgument("artist") { type = NavType.StringType })
-                    ){
-                        val name = it.arguments?.getString("name") ?: return@slideInVerticallyComposable
-                        val artist = it.arguments?.getString("artist") ?: return@slideInVerticallyComposable
+                        arguments = listOf(
+                            navArgument("name") { type = NavType.StringType },
+                            navArgument("artist") { type = NavType.StringType })
+                    ) {
+                        val name =
+                            it.arguments?.getString("name") ?: return@slideInVerticallyComposable
+                        val artist =
+                            it.arguments?.getString("artist") ?: return@slideInVerticallyComposable
                         val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
 
                         SelectedSongLyricsPage(viewModel, name, artist)
@@ -236,7 +239,6 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
     }
     return viewModel(parentEntry)
 }
-
 
 
 @Composable
