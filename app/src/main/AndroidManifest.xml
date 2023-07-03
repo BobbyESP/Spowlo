@@ -53,6 +53,7 @@
         <activity
             android:name=".CrashHandlerActivity"
             android:label="CrashHandlerActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.Spowlo">
         </activity>
 

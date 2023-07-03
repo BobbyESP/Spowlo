@@ -12,6 +12,7 @@ import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.spotdl_android.SpotDL
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -21,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -46,27 +48,28 @@ class App: Application() {
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
 
-        applicationScope.launch((Dispatchers.IO)) {
+        applicationScope.launch((Dispatchers.Main)) {
             try {
                 SpotDL.init(context)
                 FFmpeg.init(context)
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    startCrashReportActivity(e)
+                    val logfile = createLogFile(this@App, e.stackTraceToString())
+                    startCrashReportActivity(logfile)
                 }
             }
         }
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
-            startCrashReportActivity(e)
+            val logfile = createLogFile(this, e.stackTraceToString())
+            startCrashReportActivity(logfile)
         }
     }
 
-    private fun startCrashReportActivity(th: Throwable) {
-        th.printStackTrace()
+    private fun startCrashReportActivity(logfilePath : String) {
         startActivity(Intent(this, CrashHandlerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra("version_report", getVersionReport())
-            putExtra("error_report", th.stackTraceToString())
+            putExtra("logfile_path", logfilePath)
         })
     }
 
@@ -97,6 +100,17 @@ class App: Application() {
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
                 //.append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
+        }
+
+        fun createLogFile(context: Context, errorReport: String): String {
+            val date = TimeUtils.getDateWithTimeAsString()
+            val fileName = "log_$date.txt"
+            val logFile = File(context.filesDir, fileName)
+            if (!logFile.exists()) {
+                logFile.createNewFile()
+            }
+            logFile.appendText(errorReport)
+            return logFile.absolutePath
         }
     }
 }

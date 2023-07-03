@@ -14,6 +14,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import java.io.File
@@ -29,51 +30,43 @@ object WhlDownloader {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }
+
     @Throws(SpotDLException::class, IOException::class)
     suspend fun downloadWhl(
-        url: String,
-        onProgress: (Int) -> Unit,
-        onComplete: (File) -> Unit,
-        onError: (String) -> Unit,
+        url: String
     ): Flow<WhlDownloaderState> = withContext(Dispatchers.IO) {
         flow {
-            val request = okhttp3.Request.Builder()
+            val request = Request.Builder()
                 .url(url)
                 .build()
 
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    onError(e.message ?: "Unknown error")
+                    launch {
+                        emit(WhlDownloaderState.Error(e.message ?: "Unknown error"))
+                    }
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     launch {
-                        if (response.isSuccessful) {
-                            val body = response.body
-                            val fileToSave = File.createTempFile("spotdl", ".whl")
-                            val fileFlow = body.downloadFileWithProgress(fileToSave)
-                            fileFlow
-                                .flowOn(Dispatchers.IO)
-                                .distinctUntilChanged()
-                                .collect { state ->
-                                    when (state) {
-                                        is WhlDownloaderState.Downloading -> {
-                                            onProgress(state.progress)
-                                        }
-                                        is WhlDownloaderState.Downloaded -> {
-                                            onComplete(state.whlFile)
-                                        }
-                                        is WhlDownloaderState.Error -> {
-                                            onError(state.message)
-                                        }
-
-                                        else -> {
-
-                                        }
+                        try {
+                            if (response.isSuccessful) {
+                                val body = response.body
+                                val fileToSave = File.createTempFile("spotdl", ".whl")
+                                val fileFlow = body.downloadFileWithProgress(fileToSave)
+                                fileFlow
+                                    .flowOn(Dispatchers.IO)
+                                    .distinctUntilChanged()
+                                    .collect { state ->
+                                        emit(state)
                                     }
-                                }
-                        } else {
-                            onError("Failed to download .whl file")
+                            } else {
+                                emit(WhlDownloaderState.Error("Failed to download whl. Response code: ${response.code}"))
+                            }
+                        } catch (e: Exception) {
+                            emit(WhlDownloaderState.Error(e.message ?: "Unknown error"))
+                        } finally {
+                            response.close()
                         }
                     }
                 }
@@ -85,7 +78,7 @@ object WhlDownloader {
         projectName: String,
     ): PyPiResponse? {
         return suspendCoroutine { continuation ->
-            val request = okhttp3.Request.Builder()
+            val request = Request.Builder()
                 .url("https://pypi.org/pypi/$projectName/json")
                 .build()
 
@@ -110,6 +103,10 @@ object WhlDownloader {
                 }
             })
         }
+    }
+    fun checkVersions(newVersion: String): Boolean {
+        val currentVersion = SPOTDL_VERSION
+        return currentVersion != newVersion
     }
 
     private fun ResponseBody.downloadFileWithProgress(fileToSave: File): Flow<WhlDownloaderState> = flow {
@@ -152,15 +149,9 @@ object WhlDownloader {
             }
         }
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
-
-    fun checkVersions(newVersion: String): Boolean {
-        val currentVersion = SPOTDL_VERSION
-        return currentVersion != newVersion
-    }
 }
 
 sealed class WhlDownloaderState {
-    object NotDownloading : WhlDownloaderState()
     data class Downloading(val progress: Int) : WhlDownloaderState()
     data class Downloaded(val whlFile: File) : WhlDownloaderState()
     data class Error(val message: String) : WhlDownloaderState()

@@ -7,21 +7,27 @@ import com.bobbyesp.spotdl_android.data.CanceledException
 import com.bobbyesp.spotdl_android.data.SpotDLException
 import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
 import com.bobbyesp.spotdl_android.data.streams.StreamFlowStorer
+import com.bobbyesp.spotdl_android.feats.whl_downloader.data.model.Release
+import com.bobbyesp.spotdl_android.feats.whl_downloader.data.remote.WhlDownloader
+import com.bobbyesp.spotdl_android.feats.whl_downloader.data.remote.WhlDownloaderState
 import com.bobbyesp.spotdl_utilities.FileUtils
 import com.bobbyesp.spotdl_utilities.ZipUtils
 import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
  * The main class of the library.
  */
 object SpotDL {
-    const val TAG = "SpotDL"
+    const private val TAG = "SpotDL"
 
     private lateinit var binariesDirectory: File
     private lateinit var pythonPath: File
@@ -29,6 +35,8 @@ object SpotDL {
 
     private lateinit var pythonDirectory: File
     private lateinit var ffmpegDirectory: File
+
+    private var whlFile: File? = null  // Initialization with null value
 
     //START: MAIN ENVIRONMENT VARIABLES
     private lateinit var ENV_LD_LIBRARY_PATH: String
@@ -44,8 +52,8 @@ object SpotDL {
      *
      * @param applicationContext The application context.
      */
-    @Synchronized
-    fun init(applicationContext: Context) {
+
+    suspend fun init(applicationContext: Context) {
         if (isInitialized) return
 
         val androidLibBaseDir = File(applicationContext.noBackupFilesDir, androidLibName)
@@ -73,6 +81,51 @@ object SpotDL {
         isInitialized = true
     }
 
+
+    suspend fun downloadWhlFile() {
+        val releases: Map<String, List<Release>>? = WhlDownloader.checkForUpdate("spotdl")?.releases
+
+        val latestReleaseUrl = releases?.values
+            ?.flatten()
+            ?.filter { it.url.endsWith(".whl") }
+            ?.maxByOrNull { it.uploadTime }
+            ?.url
+
+        Log.i(TAG, "Latest spotDL .whl file url -> $latestReleaseUrl")
+
+        if (latestReleaseUrl != null) {
+            Log.i(TAG, "Started downloading .whl file")
+
+            val downloader = WhlDownloader.downloadWhl(latestReleaseUrl)
+
+            val scope = CoroutineScope(Dispatchers.Main)
+
+            scope.launch {
+                downloader.collect { state ->
+                    when (state) {
+                        is WhlDownloaderState.Downloading -> {
+                            Log.i(TAG, "Downloading... Progress: ${state.progress}")
+                        }
+                        is WhlDownloaderState.Downloaded -> {
+                            Log.i(TAG, "Download completed. Files: ${state.whlFile.absolutePath}")
+                        }
+                        is WhlDownloaderState.Error -> {
+                            Log.i(TAG, "Downloads failed. Error: ${state.message}")
+                        }
+                    }
+                }
+            }
+
+
+            Log.i(TAG, "init: .whl file downloaded")
+        }
+
+        if(whlFile != null) {
+            Log.i(TAG, "init: Installing .whl file")
+            installWhlFile(whlFile!!)
+        }
+    }
+
     /**
      * Initialize the Python interpreter.
      *
@@ -92,11 +145,17 @@ object SpotDL {
                 throw Exception("Error while decompressing Python library: ${e.message} \nInitialization of the Python interpreter failed.")
             }
             PreferencesUtil.encodeString(PYTHON_VERSION, librarySize)
+            Log.i(TAG, "Python library extracted successfully.")
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    @Throws(Exception::class, SpotDLException::class, InterruptedException::class, CanceledException::class)
+    @Throws(
+        Exception::class,
+        SpotDLException::class,
+        InterruptedException::class,
+        CanceledException::class
+    )
     private suspend fun installWhlFile(
         whlFile: File
     ): Boolean {
@@ -110,11 +169,20 @@ object SpotDL {
 
         //Time on start
         val startTime = System.currentTimeMillis()
+
         /*****************************************/
 
         //Command to execute
         val command = mutableListOf<String>()
-        command.addAll(listOf(pythonPath.absolutePath, "-m", "pip", "install", whlFile.absolutePath))
+        command.addAll(
+            listOf(
+                pythonPath.absolutePath,
+                "-m",
+                "pip",
+                "install",
+                whlFile.absolutePath
+            )
+        )
 
         val processBuilder = ProcessBuilder(command)
 
@@ -141,9 +209,10 @@ object SpotDL {
         val outStream = process.inputStream //stdout
         val errStream = process.errorStream //stderr
 
-        val stdOutProcessor = StreamDataProcessExtractor(outStrBuffer, outStream) { progress, eta, line ->
-            if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
-        }
+        val stdOutProcessor =
+            StreamDataProcessExtractor(outStrBuffer, outStream) { progress, eta, line ->
+                if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
+            }
         val stdErrProcessor = StreamFlowStorer(errStrBuffer, errStream)
 
         exitCode = try {
@@ -158,7 +227,9 @@ object SpotDL {
         val out = outStrBuffer.toString()
         val err = errStrBuffer.toString()
 
-        if(exitCode != 0) {
+        Log.i(TAG, "STDOUT: $out")
+
+        if (exitCode != 0) {
             throw SpotDLException("Error while installing the whl file: $err")
         }
 
@@ -182,7 +253,7 @@ object SpotDL {
                 }
             }
         }
-        if(isDebug) Log.i(TAG,"FILES: $files")
+        if (isDebug) Log.i(TAG, "FILES: $files")
         return files
     }
 
@@ -200,13 +271,13 @@ object SpotDL {
      * Print all the directories and paths used by the library.
      */
     private fun printAllDirectories() {
-        Log.i(TAG,"------------ DIRECTORIES ------------")
-        Log.i(TAG,"BINARIES DIRECTORY: ${binariesDirectory.absolutePath}")
-        Log.i(TAG,"PYTHON DIRECTORY: ${pythonDirectory.absolutePath}")
-        Log.i(TAG,"FFMPEG DIRECTORY: ${ffmpegDirectory.absolutePath}")
+        Log.i(TAG, "------------ DIRECTORIES ------------")
+        Log.i(TAG, "BINARIES DIRECTORY: ${binariesDirectory.absolutePath}")
+        Log.i(TAG, "PYTHON DIRECTORY: ${pythonDirectory.absolutePath}")
+        Log.i(TAG, "FFMPEG DIRECTORY: ${ffmpegDirectory.absolutePath}")
 
         Log.i(TAG, "------------ PATHS ------------")
-        Log.i(TAG,"PYTHON PATH: ${pythonPath.absolutePath}")
+        Log.i(TAG, "PYTHON PATH: ${pythonPath.absolutePath}")
         Log.i(TAG, "FFMPEG PATH: ${ffmpegPath.absolutePath}")
     }
 
@@ -215,8 +286,7 @@ object SpotDL {
      *
      * @param command The command to execute.
      */
-    @OptIn(DelicateCoroutinesApi::class)
-    suspend fun executePythonCommand() {
+    suspend fun executePythonCommand(command: String){
         TODO("Not yet implemented")
     }
 

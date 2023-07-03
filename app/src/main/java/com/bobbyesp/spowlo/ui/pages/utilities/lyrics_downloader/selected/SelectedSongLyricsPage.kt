@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,9 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,8 +43,10 @@ import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.CloseButton
 import com.bobbyesp.spowlo.ui.components.buttons.DynamicButton
+import com.bobbyesp.spowlo.ui.components.buttons.ListenOnSpotifyFilledButton
 import com.bobbyesp.spowlo.ui.components.cards.WarningCard
 import com.bobbyesp.spowlo.ui.components.cards.horizontal.HorizontalSongCard
+import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +57,8 @@ fun SelectedSongLyricsPage(
     artistName: String,
 ) {
     val navController = LocalNavController.current
+
+    val uriOpener = LocalUriHandler.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
 
@@ -67,35 +76,28 @@ fun SelectedSongLyricsPage(
 
     Scaffold(
         topBar = {
-            SmallTopAppBar(
-                navigationIcon = {
-                    DynamicButton(
-                        icon = {
-                            CloseButton {
-                                navController.popBackStack()
-                            }
-                        },
-                        icon2 = {
-                            BackButton {
-                                viewModel.clearSelectedSong()
-                            }
-                        },
-                        isIcon1 = pageStage is PageStage.Selecting
-                    )
-                }, title = {
-                    Text(
-                        text = stringResource(id = R.string.select_song),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                })
-        },
-        modifier = Modifier.fillMaxSize()
+            SmallTopAppBar(navigationIcon = {
+                DynamicButton(icon = {
+                    CloseButton {
+                        navController.popBackStack()
+                    }
+                }, icon2 = {
+                    BackButton {
+                        viewModel.clearSelectedSong()
+                    }
+                }, isIcon1 = pageStage is PageStage.Selecting
+                )
+            }, title = {
+                Text(
+                    text = stringResource(id = R.string.select_song),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            })
+        }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Crossfade(
-            targetState = pageStage,
-            animationSpec = tween(175),
-            label = "Fade between pages"
+            targetState = pageStage, animationSpec = tween(175), label = "Fade between pages"
         ) { actualPageState ->
             when (actualPageState) {
                 is PageStage.Selecting -> {
@@ -121,9 +123,7 @@ fun SelectedSongLyricsPage(
                         item {
                             Text(
                                 text = stringResource(
-                                    id = R.string.showing_results_for,
-                                    songName,
-                                    artistName
+                                    id = R.string.showing_results_for, songName, artistName
                                 ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
@@ -138,7 +138,7 @@ fun SelectedSongLyricsPage(
 
                             //while it isn't the last item, add a spacer
                             if (searchedSongs.indexOf(song) != searchedSongs.lastIndex) {
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(14.dp))
                             }
                         }
                     }
@@ -164,18 +164,15 @@ fun SelectedSongLyricsPage(
                             selectedSong = viewState.selectedSong
                             viewModel.getLyrics(viewState.selectedSong!!.path)
                         }
-                        if(selectedSong != null) HorizontalSongCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),song = selectedSong!!)
-
                         Crossfade(
                             targetState = viewState.state,
                             animationSpec = tween(175),
                             label = "Fade between lyrics states"
                         ) { lyricsState ->
-                            when(lyricsState){
+                            when (lyricsState) {
                                 is SelectedSongLyricsPageState.Loading -> {
                                     Column(
-                                        modifier = Modifier
-                                            .fillMaxSize(),
+                                        modifier = Modifier.fillMaxSize(),
                                         verticalArrangement = Arrangement.Center,
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
@@ -184,14 +181,70 @@ fun SelectedSongLyricsPage(
                                         )
                                     }
                                 }
+
                                 is SelectedSongLyricsPageState.Loaded -> {
+
+                                    var lyrics by rememberSaveable(key = "lyrics") {
+                                        mutableStateOf("")
+                                    }
+
+                                    LaunchedEffect(true) {
+                                        lyrics = lyricsState.lyrics
+                                    }
+
                                     LazyColumn(
                                         modifier = Modifier
                                             .fillMaxSize()
                                             .padding(),
                                     ) {
                                         item {
-                                            Text(text = lyricsState.lyrics, modifier = Modifier.padding(8.dp))
+                                            if (selectedSong != null) HorizontalSongCard(
+                                                modifier = Modifier.padding(
+                                                    horizontal = 16.dp,
+                                                    vertical = 8.dp
+                                                ), song = selectedSong!!
+                                            )
+                                        }
+                                        item {
+                                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp))
+                                        }
+                                        item {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.End
+                                            ) {
+                                                ListenOnSpotifyFilledButton(
+                                                    modifier = Modifier
+                                                        .padding(4.dp)
+                                                        .padding(end = 12.dp),
+                                                ) {
+                                                    uriOpener.openUri(selectedSong!!.path)
+                                                }
+                                            }
+                                        }
+
+                                        item {
+                                            OutlinedCard(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                                shape = MaterialTheme.shapes.extraSmall,
+                                                colors = CardDefaults.outlinedCardColors(
+                                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
+                                                        alpha = 0.3f
+                                                    ),
+                                                )
+                                            ) {
+                                                SelectionContainer {
+                                                    Text(
+                                                        text = lyrics,
+                                                        modifier = Modifier.padding(8.dp),
+                                                        fontWeight = FontWeight.W400
+                                                    )
+                                                }
+                                            }
+
                                         }
                                         item {
                                             Column(
@@ -202,14 +255,15 @@ fun SelectedSongLyricsPage(
                                                 horizontalAlignment = Alignment.CenterHorizontally
                                             ) {
                                                 SaveLyricsButton(
-                                                    modifier = Modifier,
+                                                    modifier = Modifier.padding(bottom = 8.dp),
                                                     song = selectedSong!!,
-                                                    lyrics = lyricsState.lyrics,
+                                                    lyrics = lyrics,
                                                 )
                                             }
                                         }
                                     }
                                 }
+
                                 is SelectedSongLyricsPageState.Error -> {
                                     Text(text = lyricsState.error)
                                 }

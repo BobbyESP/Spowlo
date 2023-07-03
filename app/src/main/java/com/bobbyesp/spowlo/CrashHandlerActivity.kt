@@ -24,8 +24,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -39,7 +46,11 @@ import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.cards.ExpandableElevatedCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.utils.files.FilesUtil
 import com.bobbyesp.spowlo.utils.localAsset
+import com.bobbyesp.spowlo.utils.notifications.ToastUtil
+import java.io.File
+import java.net.URLEncoder
 
 class CrashHandlerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +60,8 @@ class CrashHandlerActivity : ComponentActivity() {
             v.setPadding(0, 0, 0, 0)
             insets
         }
-        val errorMessage: String = intent.getStringExtra("error_report").toString()
         val versionReport: String = intent.getStringExtra("version_report").toString()
+        val logfilePath: String = intent.getStringExtra("logfile_path").toString()
 
         setContent {
             AppLocalSettingsProvider(WindowWidthSizeClass.Compact) {
@@ -59,10 +70,21 @@ class CrashHandlerActivity : ComponentActivity() {
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 ) {
                     val clipboardManager = LocalClipboardManager.current
+
+                    var log by rememberSaveable(key = "log") {
+                        mutableStateOf("")
+                    }
+
+                    LaunchedEffect(true) {
+                        val logFile = File(logfilePath)
+                        log = FilesUtil.readFile(logFile)
+                    }
+
                     CrashReportPage(
-                        versionReport, errorMessage
+                        versionReport = versionReport,
+                        errorMessage = log
                     ) {
-                        clipboardManager.setText(AnnotatedString(versionReport).plus(AnnotatedString(errorMessage)))
+                        clipboardManager.setText(AnnotatedString(logfilePath).plus(AnnotatedString(versionReport)))
                         this.finishAffinity()
                     }
                 }
@@ -83,6 +105,19 @@ fun CrashReportPage(
     errorMessage: String = error_report_fake,
     onClick: () -> Unit = {}
 ) {
+    val uriOpener = LocalUriHandler.current
+
+    val context = LocalContext.current
+
+    val clipboardManager = LocalClipboardManager.current
+
+    //cut the error message to 1000 characters
+    val errorMessageCut = if (errorMessage.length > 2000) {
+        errorMessage.substring(0, 2000) + "..."
+    } else {
+        errorMessage
+    }
+
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         HorizontalDivider()
         Row(
@@ -106,7 +141,11 @@ fun CrashReportPage(
                     .fillMaxWidth()
                     .padding(end = 16.dp)
                     .weight(1f),
-                onClick = onClick,
+                onClick = {
+                    val title = URLEncoder.encode("[App crash]", "UTF-8")
+                    ToastUtil.makeToastSuspend(context, context.getString(R.string.paste_report_github))
+                    clipboardManager.setText(AnnotatedString(errorMessageCut))
+                    uriOpener.openUri("https://github.com/BobbyESP/Spowlo/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=$title") },
                 icon = localAsset(id = R.drawable.github_mark),
                 text = stringResource(R.string.report_github)
             )

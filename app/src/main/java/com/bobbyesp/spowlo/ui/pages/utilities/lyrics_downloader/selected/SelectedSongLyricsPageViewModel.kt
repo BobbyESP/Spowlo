@@ -56,7 +56,12 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
             lyricsApi.getSyncedLyricsAsString(songUrl)
         }
 
-        updateState(SelectedSongLyricsPageState.Loaded(lyrics))
+        if(lyrics.isEmpty()) {
+            updateState(SelectedSongLyricsPageState.Error("No lyrics found"))
+            return
+        } else {
+            updateState(SelectedSongLyricsPageState.Loaded(lyrics))
+        }
     }
 
     private fun updatePageStage(pageStage: PageStage) {
