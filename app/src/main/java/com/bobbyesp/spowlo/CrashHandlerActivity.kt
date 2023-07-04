@@ -84,7 +84,7 @@ class CrashHandlerActivity : ComponentActivity() {
                         versionReport = versionReport,
                         errorMessage = log
                     ) {
-                        clipboardManager.setText(AnnotatedString(logfilePath).plus(AnnotatedString(versionReport)))
+                        clipboardManager.setText(AnnotatedString(versionReport).plus(AnnotatedString("\n")).plus(AnnotatedString(log)))
                         this.finishAffinity()
                     }
                 }
