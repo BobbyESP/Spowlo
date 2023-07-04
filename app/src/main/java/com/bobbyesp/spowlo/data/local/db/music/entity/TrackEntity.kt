@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.data.local.db.entity
+package com.bobbyesp.spowlo.data.local.db.music.entity
 
 import android.net.Uri
 import androidx.room.Entity
@@ -6,11 +6,12 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.ui.ext.getNumbers
 
 @Entity
 data class TrackEntity(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     val name: String,
     val artists: List<String>,
     val album: String,
@@ -44,7 +45,7 @@ class Converters {
 
 fun Track.toTrackEntity(): TrackEntity {
     return TrackEntity(
-        id = id,
+        id = id.getNumbers(),
         name = name,
         artists = artists.map { it.name },
         album = album.name,
@@ -56,7 +57,7 @@ fun Track.toTrackEntity(): TrackEntity {
 
 fun Song.toTrackEntity(): TrackEntity {
     return TrackEntity(
-        id = id.toString(),
+        id = id.toInt(),
         name = title,
         artists = listOf(artist),
         album = album,

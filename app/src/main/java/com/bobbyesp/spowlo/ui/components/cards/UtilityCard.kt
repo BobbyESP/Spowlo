@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +41,7 @@ fun AppUtilityCard(
     val yOffset = cardSize.dp / 5
 
     Surface(
-        modifier = modifier.aspectRatio(1.0f).clip(MaterialTheme.shapes.small),
+        modifier = modifier.aspectRatio(1.0f).clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
         onClick = onClick
     ) {
         Box(

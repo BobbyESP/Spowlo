@@ -90,3 +90,15 @@ fun List<Track>.toSongs(): List<Song> {
     }
     return songs
 }
+
+fun Track.toSong(): Song {
+    return Song(
+        id = 0,
+        title = this.name,
+        artist = this.artists.joinToString(", ") { artist -> artist.name },
+        album = this.album.name,
+        duration = this.durationMs.toDouble(),
+        path = this.externalUrls.spotify!!,
+        albumArtPath = this.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) }
+    )
+}

@@ -1,12 +1,13 @@
-package com.bobbyesp.spowlo.data.local.db.dao
+package com.bobbyesp.spowlo.data.local.db.music.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
-import com.bobbyesp.spowlo.data.local.db.entity.TrackEntity
+import com.bobbyesp.spowlo.data.local.db.music.entity.TrackEntity
 
 @Dao
 interface TrackDao {
@@ -24,6 +25,9 @@ interface TrackDao {
      */
     @Upsert
     suspend fun upsertAll(tracks: List<TrackEntity>)
+
+    @Query("SELECT * FROM TrackEntity")
+    fun pagingSource(): PagingSource<Int, TrackEntity>
 
     /**
      * Insert a track
