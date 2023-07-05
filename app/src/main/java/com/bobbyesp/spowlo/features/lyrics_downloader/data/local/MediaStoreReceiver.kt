@@ -5,6 +5,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 
@@ -74,12 +75,19 @@ object MediaStoreReceiver {
             println("MediaStoreReceiver.getAllSongsFromMediaStore: uri = $uri")
         }
 
+        Log.d("MediaStoreReceiver", "isSearchTermNullOrEmpty: ${searchTerm.isNullOrEmpty()}")
+        Log.d("MediaStoreReceiver", "isFilterTypeNull: ${filterType == null}")
+
         val selection = if (!searchTerm.isNullOrEmpty() && filterType != null) {
             when(filterType) {
                 MediaStoreFilterType.TITLE -> "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.TITLE} LIKE '%$searchTerm%'"
                 MediaStoreFilterType.ARTIST -> "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.ARTIST} LIKE '%$searchTerm%'"
             }
-        } else {
+        } else if(!searchTerm.isNullOrEmpty() && filterType == null) {
+            "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.TITLE} LIKE '%$searchTerm%'" +
+                    " OR ${MediaStore.Audio.Media.ARTIST} LIKE '%$searchTerm%'"
+        }
+        else {
             MediaStore.Audio.Media.IS_MUSIC + " != 0"
         }
 

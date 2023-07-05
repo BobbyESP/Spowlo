@@ -235,9 +235,9 @@ fun LyricsDownloaderPageImpl(
                                 onQueryChange = { query = it },
                                 onSearch = {
                                     scope.launch {
-                                        if (viewState.value.filter != null) viewModel.loadMediaStoreWithFilter(
+                                        viewModel.loadMediaStoreWithFilter(
                                             context, it
-                                        ) else viewModel.loadMediaStoreTracks(context)
+                                        )
                                     }
                                     activeFullscreenSearching = false
                                 },
@@ -254,9 +254,9 @@ fun LyricsDownloaderPageImpl(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.filters),
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(end = 8.dp)
+                                        modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
                                     )
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -296,7 +296,7 @@ fun LyricsDownloaderPageImpl(
                     val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
 
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(100.dp),
+                        columns = GridCells.Adaptive(125.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         contentPadding = PaddingValues(8.dp),

@@ -54,6 +54,9 @@ class SpotifyLyricServiceImpl(
             }
         }
 
+        //delete the last newline
+        syncedLyricsResponse.deleteCharAt(syncedLyricsResponse.length - 1)
+
         return syncedLyricsResponse.toString()
     }
 

@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected
 
+import SpotifyHorizontalSongCard
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -45,7 +46,6 @@ import com.bobbyesp.spowlo.ui.components.buttons.CloseButton
 import com.bobbyesp.spowlo.ui.components.buttons.DynamicButton
 import com.bobbyesp.spowlo.ui.components.buttons.ListenOnSpotifyFilledButton
 import com.bobbyesp.spowlo.ui.components.cards.WarningCard
-import com.bobbyesp.spowlo.ui.components.cards.horizontal.HorizontalSongCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 
@@ -132,7 +132,7 @@ fun SelectedSongLyricsPage(
                         }
 
                         items(searchedSongs) { song ->
-                            HorizontalSongCard(song = song) {
+                            SpotifyHorizontalSongCard(song = song) {
                                 viewModel.selectSong(song)
                             }
 
@@ -198,7 +198,7 @@ fun SelectedSongLyricsPage(
                                             .padding(),
                                     ) {
                                         item {
-                                            if (selectedSong != null) HorizontalSongCard(
+                                            if (selectedSong != null) SpotifyHorizontalSongCard(
                                                 modifier = Modifier.padding(
                                                     horizontal = 16.dp,
                                                     vertical = 8.dp
