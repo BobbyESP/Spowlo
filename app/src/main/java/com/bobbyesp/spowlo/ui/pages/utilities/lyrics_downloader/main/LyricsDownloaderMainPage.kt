@@ -9,6 +9,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalNavController
@@ -60,6 +62,7 @@ import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGranted
 import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
+import com.bobbyesp.spowlo.ui.components.chips.SingleChoiceChip
 import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
@@ -90,8 +93,7 @@ fun LyricsDownloaderPage(
     val storagePermissionState = rememberPermissionState(permission = targetPermission)
     val navController = LocalNavController.current
 
-    PermissionRequestHandler(
-        permissionState = storagePermissionState,
+    PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
             PermissionNotGranted(
                 neededPermissions = listOf(targetPermission.toPermissionType()),
@@ -135,78 +137,69 @@ fun LyricsDownloaderPageImpl(
         mutableStateOf(false)
     }
 
-    Scaffold(
-        topBar = {
-            SmallTopAppBar(navigationIcon = {
-                BackButton {
-                    navController.popBackStack()
-                }
-            }, actions = {
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            viewModel.loadMediaStoreTracks(
-                                context
-                            )
-                        }
-                    },
-                    enabled = state is LyricsDownloaderPageState.Loaded
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Refresh MediaStore"
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        wantsToSearch = !wantsToSearch
-                    },
-                    enabled = true
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search for songs"
-                    )
-                }
-
-            }, title = {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = Route.LyricsDownloaderPage.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    MarqueeText(
-                        text = stringResource(id = R.string.lyrics_downloader_subtitle),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        ),
-                        fontWeight = FontWeight.Normal
-                    )
-                }
-            })
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.imePadding(),
-                onClick = { /*TODO*/ }
+    Scaffold(topBar = {
+        SmallTopAppBar(navigationIcon = {
+            BackButton {
+                navController.popBackStack()
+            }
+        }, actions = {
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        viewModel.loadMediaStoreTracks(
+                            context
+                        )
+                    }
+                }, enabled = state is LyricsDownloaderPageState.Loaded
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Download,
-                    contentDescription = "Download all lyrics"
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Refresh MediaStore"
                 )
             }
-        },
-        modifier = Modifier.fillMaxSize()
+            IconButton(
+                onClick = {
+                    wantsToSearch = !wantsToSearch
+                }, enabled = true
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search, contentDescription = "Search for songs"
+                )
+            }
+
+        }, title = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = Route.LyricsDownloaderPage.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                MarqueeText(
+                    text = stringResource(id = R.string.lyrics_downloader_subtitle),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    ),
+                    fontWeight = FontWeight.Normal
+                )
+            }
+        })
+    }, floatingActionButton = {
+        FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Outlined.Download,
+                contentDescription = "Download all lyrics"
+            )
+        }
+    }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         var songs by rememberSaveable(key = "songsList") {
             mutableStateOf<List<Song>>(emptyList())
         }
 
-        LaunchedEffect(true) {
+        LaunchedEffect(viewModel) {
             viewModel.loadMediaStoreTracks(
                 context
             )
@@ -215,8 +208,7 @@ fun LyricsDownloaderPageImpl(
         when (state) {
             is LyricsDownloaderPageState.Loading -> {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     LinearProgressIndicator(
                         modifier = Modifier.width(72.dp)
@@ -242,7 +234,12 @@ fun LyricsDownloaderPageImpl(
                                 query = query,
                                 onQueryChange = { query = it },
                                 onSearch = {
-
+                                    scope.launch {
+                                        if (viewState.value.filter != null) viewModel.loadMediaStoreWithFilter(
+                                            context, it
+                                        ) else viewModel.loadMediaStoreTracks(context)
+                                    }
+                                    activeFullscreenSearching = false
                                 },
                                 active = activeFullscreenSearching,
                                 onActiveChange = { activeFullscreenSearching = it },
@@ -250,7 +247,47 @@ fun LyricsDownloaderPageImpl(
                                 leadingIcon = Icons.Default.Search,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.filters),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        val selectedFilter = viewState.value.filter
+                                        SingleChoiceChip(
+                                            selected = selectedFilter == MediaStoreFilterType.TITLE,
+                                            onClick = {
+                                                viewModel.updateFilter(MediaStoreFilterType.TITLE)
+                                                //if already selected, deselect
+                                                if (selectedFilter == MediaStoreFilterType.TITLE) {
+                                                    viewModel.updateFilter(null)
+                                                }
+                                            },
+                                            label = stringResource(id = R.string.title)
+                                        )
+                                        SingleChoiceChip(
+                                            selected = selectedFilter == MediaStoreFilterType.ARTIST,
+                                            onClick = {
+                                                viewModel.updateFilter(MediaStoreFilterType.ARTIST)
+                                                //if already selected, deselect
+                                                if (selectedFilter == MediaStoreFilterType.ARTIST) {
+                                                    viewModel.updateFilter(null)
+                                                }
+                                            },
+                                            label = stringResource(id = R.string.artist)
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -260,19 +297,22 @@ fun LyricsDownloaderPageImpl(
 
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(100.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                         contentPadding = PaddingValues(8.dp),
                         modifier = Modifier.fillMaxSize(),
                         state = lazyGridState
                     ) {
                         items(songs) { song ->
-                            LocalSongCard(song = song, modifier = Modifier, onClick = {
-                                val artistsList = song.artist.toList()
-                                val mainArtist = artistsList.first()
+                            LocalSongCard(
+                                song = song,
+                                modifier = Modifier,
+                                onClick = {
+                                    val artistsList = song.artist.toList()
+                                    val mainArtist = artistsList.first()
 
-                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
-                            })
+                                    navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
+                                })
                         }
                     }
                 }

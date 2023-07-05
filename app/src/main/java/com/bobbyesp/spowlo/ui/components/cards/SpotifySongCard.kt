@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.components.cards
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.localAsset
+import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 @Composable
 fun SpotifySongCard(
@@ -86,5 +89,15 @@ fun SpotifySongCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun SpotifySongCardPreview() {
+    SpowloTheme {
+//        SpotifySongCard(
+//        )
     }
 }

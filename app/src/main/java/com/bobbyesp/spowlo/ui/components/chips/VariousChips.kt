@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.components.chips
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -98,7 +99,7 @@ fun SingleChoiceChip(
     leadingIcon: ImageVector = Icons.Outlined.Check
 ) {
     FilterChip(
-        modifier = modifier.padding(horizontal = 4.dp),
+        modifier = modifier.padding(horizontal = 4.dp).animateContentSize(),
         selected = selected,
         onClick = onClick,
         label = {

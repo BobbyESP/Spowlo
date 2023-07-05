@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
 
     data class PageViewState(
         val state: LyricsDownloaderPageState = LyricsDownloaderPageState.Loading,
+        val filter : MediaStoreFilterType? = null
     )
     /**
      * Loads all songs from the media store db
@@ -42,6 +44,26 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
         return songs
     }
 
+    suspend fun loadMediaStoreWithFilter(
+        context: Context,
+        filter: String,
+        filterType: MediaStoreFilterType? = pageViewState.value.filter
+    ): List<Song> {
+        updateState(LyricsDownloaderPageState.Loading)
+
+        val songs = withContext(Dispatchers.IO) {
+            MediaStoreReceiver.getAllSongsFromMediaStore(
+                applicationContext = context,
+                searchTerm = filter,
+                filterType = filterType
+            )
+        }
+
+        updateState(LyricsDownloaderPageState.Loaded(songs))
+
+        return songs
+    }
+
     /**
      * Updates the state of the page
      * @param state the new state
@@ -49,6 +71,12 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
     private fun updateState(state: LyricsDownloaderPageState) {
         mutablePageViewState.update {
             it.copy(state = state)
+        }
+    }
+
+    fun updateFilter(filter: MediaStoreFilterType?) {
+        mutablePageViewState.update {
+            it.copy(filter = filter)
         }
     }
 

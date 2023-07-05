@@ -45,4 +45,7 @@
     <string name="listen_on_spotify">Listen on Spotify</string>
     <string name="paste_report_github">Paste the copied report in the marked text box in GitHub</string>
     <string name="console_output">Console output</string>
+    <string name="filters">Filters</string>
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
 </resources>

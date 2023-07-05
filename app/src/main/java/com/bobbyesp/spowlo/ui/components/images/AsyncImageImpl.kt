@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,19 +39,25 @@ fun AsyncImageImpl(
     val imageLoader = ImageLoader.Builder(context)
         .memoryCache {
             MemoryCache.Builder(context)
-                .maxSizePercent(0.25)
+                .maxSizePercent(0.05)
                 .build()
         }
         .diskCache {
             DiskCache.Builder()
                 .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.1)
+                .maxSizePercent(0.2)
                 .build()
         }
         .build()
 
+    val imageRequest = ImageRequest.Builder(context)
+        .addHeader("user-agent", userAgentHeader)
+        .data(model)
+        .crossfade(true)
+        .build()
+
     if (isPreview) Image(
-        painter = painterResource(R.drawable.ic_launcher_foreground),
+        painter = painterResource(R.drawable.bones_imaginedragons_testimage),
         contentDescription = contentDescription,
         modifier = modifier,
         alignment = alignment,
@@ -59,10 +66,7 @@ fun AsyncImageImpl(
         colorFilter = colorFilter,
     )
     else AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .addHeader("user-agent", userAgentHeader).data(model)
-            .crossfade(true)
-            .build(),
+        model = imageRequest,
         contentDescription = contentDescription,
         imageLoader = imageLoader,
         modifier = modifier,
@@ -72,6 +76,66 @@ fun AsyncImageImpl(
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
-        filterQuality = filterQuality
+        filterQuality = filterQuality,
+    )
+}
+
+@Composable
+fun AsyncImageImpl(
+    model: Any,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    error: Painter? = null,
+    placeholder: Painter? = null,
+    fallback: Painter? = null,
+    onLoading: ((AsyncImagePainter.State.Loading) -> Unit)? = null,
+    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null,
+    onError: ((AsyncImagePainter.State.Error) -> Unit)? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
+) {
+
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .maxSizePercent(0.25)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("image_cache"))
+                .maxSizePercent(0.3)
+                .build()
+        }
+        .build()
+
+    val imageRequest = ImageRequest.Builder(context)
+        .addHeader("user-agent", userAgentHeader)
+        .data(model)
+        .crossfade(true)
+        .build()
+
+    val placeholderPainter = placeholder ?: painterResource(R.drawable.ic_launcher_foreground)
+
+    AsyncImage(
+        model = imageRequest,
+        contentDescription = contentDescription,
+        imageLoader = imageLoader,
+        modifier = modifier,
+        error = error,
+        placeholder = placeholder,
+        fallback = fallback,
+        onLoading = onLoading,
+        onSuccess = onSuccess,
+        onError = onError,
+        alignment = alignment,
+        contentScale = contentScale,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        filterQuality = filterQuality,
     )
 }

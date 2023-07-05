@@ -201,8 +201,7 @@ fun Navigator() {
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            //val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
-                            val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
+                            val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
                             LyricsDownloaderPage(viewModel)
                         }
                     }
