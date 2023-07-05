@@ -45,5 +45,8 @@
    kotlinx.serialization.KSerializer serializer(...);
 }
 
+#keep database entities
+-keep class com.bobbyesp.spowlo.data.local.db.** { *; }
+
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
