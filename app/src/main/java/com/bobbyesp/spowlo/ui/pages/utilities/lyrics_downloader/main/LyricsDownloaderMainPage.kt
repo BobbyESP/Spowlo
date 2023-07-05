@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -51,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
@@ -63,6 +64,8 @@ import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
 import com.bobbyesp.spowlo.ui.components.chips.SingleChoiceChip
+import com.bobbyesp.spowlo.ui.components.db.searching.RecentSearch
+import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
@@ -72,6 +75,7 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.ui.util.permissions.PermissionRequestHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi") //Make the linter shut up kek
@@ -206,6 +210,7 @@ fun LyricsDownloaderPageImpl(
         }
 
         when (state) {
+
             is LyricsDownloaderPageState.Loading -> {
                 Column(
                     modifier = Modifier.fillMaxSize()
@@ -217,6 +222,11 @@ fun LyricsDownloaderPageImpl(
             }
 
             is LyricsDownloaderPageState.Loaded -> {
+
+                val allSearches = viewModel.allSearchesFlow().collectAsStateWithLifecycle(
+                    initialValue = emptyList()
+                ).value
+
                 songs = state.songs
                 Column(
                     modifier = Modifier
@@ -238,6 +248,9 @@ fun LyricsDownloaderPageImpl(
                                         viewModel.loadMediaStoreWithFilter(
                                             context, it
                                         )
+                                        viewModel.insertSearch(
+                                            it
+                                        ) //TODO SPOTIFY SEARCH
                                     }
                                     activeFullscreenSearching = false
                                 },
@@ -254,13 +267,15 @@ fun LyricsDownloaderPageImpl(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.filters),
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier
+                                            .padding(horizontal = 8.dp)
+                                            .padding(top = 8.dp)
                                     )
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         val selectedFilter = viewState.value.filter
@@ -285,6 +300,28 @@ fun LyricsDownloaderPageImpl(
                                                 }
                                             },
                                             label = stringResource(id = R.string.artist)
+                                        )
+                                    }
+                                }
+                                HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {
+                                    items(allSearches) { search ->
+                                        RecentSearch(
+                                            searchEntity = search,
+                                            onDeleteClick = {
+                                                scope.launch(Dispatchers.IO) {
+                                                    viewModel.deleteSearchById(search.id)
+                                                }
+                                            }, onClick = {
+                                                scope.launch {
+                                                    viewModel.loadMediaStoreWithFilter(
+                                                        context, search.search, search.filter
+                                                    )
+                                                }
+                                                activeFullscreenSearching = false
+                                            }
                                         )
                                     }
                                 }
@@ -331,9 +368,11 @@ fun LyricsDownloaderPageImpl(
 fun LyricsDownloaderPagePreview() {
     AppLocalSettingsProvider(windowWidthSize = WindowWidthSizeClass.Expanded) {
         SpowloTheme {
-            LyricsDownloaderPageImpl(
-                navController = rememberNavController(), viewModel = LyricsDownloaderPageViewModel()
-            )
+//            LyricsDownloaderPageImpl(
+//                navController = rememberNavController(), viewModel = LyricsDownloaderPageViewModel(
+//                    SearchingDbHelper()
+//                )
+//            )
         }
     }
 }

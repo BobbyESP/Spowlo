@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -201,7 +198,8 @@ fun Navigator() {
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
+//                            val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
+                            val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
                             LyricsDownloaderPage(viewModel)
                         }
                     }
@@ -238,7 +236,3 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
     }
     return viewModel(parentEntry)
 }
-
-
-@Composable
-fun localAsset(@DrawableRes id: Int) = ImageVector.vectorResource(id = id)

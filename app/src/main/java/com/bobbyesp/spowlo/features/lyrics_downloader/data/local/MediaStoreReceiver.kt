@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.bobbyesp.spowlo.BuildConfig
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 
 object MediaStoreReceiver {
@@ -140,5 +141,12 @@ object MediaStoreReceiver {
 
 enum class MediaStoreFilterType {
     TITLE,
-    ARTIST,
+    ARTIST;
+
+    fun toString(context: Context): String {
+        return when(this) {
+            TITLE -> context.getString(R.string.title)
+            ARTIST -> context.getString(R.string.artist)
+        }
+    }
 }

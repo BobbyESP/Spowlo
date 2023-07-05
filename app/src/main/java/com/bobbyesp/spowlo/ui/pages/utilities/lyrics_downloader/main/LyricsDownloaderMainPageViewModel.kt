@@ -1,10 +1,13 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.utils.databases.SearchingDbHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +17,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
+class LyricsDownloaderPageViewModel @Inject constructor(
+    private val searchesDb : SearchingDbHelper
+) : ViewModel() {
     private val TAG = "LyricsDownloaderPageViewModel"
 
     private val mutablePageViewState = MutableStateFlow(PageViewState())
@@ -44,6 +49,10 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
         return songs
     }
 
+    /**
+     * Loads all songs from the media store db
+     * @return a list of songs
+     */
     suspend fun loadMediaStoreWithFilter(
         context: Context,
         filter: String,
@@ -62,6 +71,25 @@ class LyricsDownloaderPageViewModel @Inject constructor() : ViewModel() {
         updateState(LyricsDownloaderPageState.Loaded(songs))
 
         return songs
+    }
+
+    suspend fun insertSearch(search: String, filter: MediaStoreFilterType? = pageViewState.value.filter, spotifySearch: Boolean = false) {
+        searchesDb.insertSearch(search, filter,spotifySearch)
+    }
+
+    suspend fun getAllSearches(): List<SearchEntity> {
+        return searchesDb.getAllSearches()
+    }
+
+    fun allSearchesFlow() = searchesDb.getAllSearchesWithFlow()
+
+    suspend fun getSearchById(searchId: Int): SearchEntity? {
+        return searchesDb.getSearchById(searchId)
+    }
+
+    suspend fun deleteSearchById(searchId: Int) {
+        Log.d(TAG, "deleteSearchById: $searchId")
+        searchesDb.deleteSearch(searchId)
     }
 
     /**

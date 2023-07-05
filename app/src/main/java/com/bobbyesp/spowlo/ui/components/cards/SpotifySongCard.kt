@@ -23,8 +23,8 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
-import com.bobbyesp.spowlo.ui.localAsset
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.utils.localAsset
 
 @Composable
 fun SpotifySongCard(

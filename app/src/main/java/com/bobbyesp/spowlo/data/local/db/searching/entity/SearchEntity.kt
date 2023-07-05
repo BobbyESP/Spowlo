@@ -6,8 +6,7 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilte
 
 @Entity
 data class SearchEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id : Int,
+    @PrimaryKey(autoGenerate = true) val id : Int,
     val search : String,
     val spotifySearch: Boolean,
     val date : Long,

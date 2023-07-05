@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchingDao {
@@ -23,6 +24,9 @@ interface SearchingDao {
 
     @Query("SELECT * FROM SearchEntity")
     suspend fun getAll(): List<SearchEntity>
+
+    @Query("SELECT * FROM SearchEntity")
+    fun getAllWithFlow(): Flow<List<SearchEntity>>
 
     @Query("SELECT * FROM SearchEntity WHERE id = :searchId")
     suspend fun getById(searchId: Int): SearchEntity?
