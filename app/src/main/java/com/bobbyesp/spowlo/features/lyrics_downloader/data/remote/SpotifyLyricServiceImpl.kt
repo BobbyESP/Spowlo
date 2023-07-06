@@ -50,12 +50,10 @@ class SpotifyLyricServiceImpl(
             if (line.words.isBlank()) continue
             with(syncedLyricsResponse) {
                 append("[${line.timeTag}] ${line.words}")
-                append("\n")
+                //if the line is not the last one, append a new line, else do nothing
+                if (line != lines.last()) append("\n")
             }
         }
-
-        //delete the last newline
-        syncedLyricsResponse.deleteCharAt(syncedLyricsResponse.length - 1)
 
         return syncedLyricsResponse.toString()
     }
