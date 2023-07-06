@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LyricsDownloaderPageViewModel @Inject constructor(
-    private val searchesDb : SearchingDbHelper
+    private val searchesDb: SearchingDbHelper
 ) : ViewModel() {
     private val TAG = "LyricsDownloaderPageViewModel"
 
@@ -27,8 +27,9 @@ class LyricsDownloaderPageViewModel @Inject constructor(
 
     data class PageViewState(
         val state: LyricsDownloaderPageState = LyricsDownloaderPageState.Loading,
-        val filter : MediaStoreFilterType? = null
+        val filter: MediaStoreFilterType? = null
     )
+
     /**
      * Loads all songs from the media store db
      * @return a list of songs
@@ -57,24 +58,24 @@ class LyricsDownloaderPageViewModel @Inject constructor(
         context: Context,
         filter: String,
         filterType: MediaStoreFilterType? = pageViewState.value.filter
-    ): List<Song> {
+    ) {
         updateState(LyricsDownloaderPageState.Loading)
 
         val songs = withContext(Dispatchers.IO) {
             MediaStoreReceiver.getAllSongsFromMediaStore(
-                applicationContext = context,
-                searchTerm = filter,
-                filterType = filterType
+                applicationContext = context, searchTerm = filter, filterType = filterType
             )
         }
 
         updateState(LyricsDownloaderPageState.Loaded(songs))
-
-        return songs
     }
 
-    suspend fun insertSearch(search: String, filter: MediaStoreFilterType? = pageViewState.value.filter, spotifySearch: Boolean = false) {
-        searchesDb.insertSearch(search, filter,spotifySearch)
+    suspend fun insertSearch(
+        search: String,
+        filter: MediaStoreFilterType? = pageViewState.value.filter,
+        spotifySearch: Boolean = false
+    ) {
+        searchesDb.insertSearch(search, filter, spotifySearch)
     }
 
     suspend fun getAllSearches(): List<SearchEntity> {

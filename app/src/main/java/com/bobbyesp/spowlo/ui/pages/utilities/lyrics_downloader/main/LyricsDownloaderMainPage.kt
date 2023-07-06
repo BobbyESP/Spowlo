@@ -122,12 +122,10 @@ fun LyricsDownloaderPageImpl(
     viewModel: LyricsDownloaderPageViewModel
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
-
     val state = viewState.value.state
-
-    val scope = rememberCoroutineScope()
 
     var query by rememberSaveable(key = "query") {
         mutableStateOf("")
@@ -210,7 +208,6 @@ fun LyricsDownloaderPageImpl(
         }
 
         when (state) {
-
             is LyricsDownloaderPageState.Loading -> {
                 Column(
                     modifier = Modifier.fillMaxSize()
@@ -228,6 +225,7 @@ fun LyricsDownloaderPageImpl(
                 ).value
 
                 songs = state.songs
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -243,14 +241,15 @@ fun LyricsDownloaderPageImpl(
                             ExpandableSearchBar(
                                 query = query,
                                 onQueryChange = { query = it },
-                                onSearch = {
+                                onSearch = { queryToSearch ->
                                     scope.launch {
                                         viewModel.loadMediaStoreWithFilter(
-                                            context, it
+                                            context, queryToSearch
                                         )
+
                                         viewModel.insertSearch(
-                                            it
-                                        ) //TODO SPOTIFY SEARCH
+                                            queryToSearch
+                                        )
                                     }
                                     activeFullscreenSearching = false
                                 },
@@ -260,47 +259,51 @@ fun LyricsDownloaderPageImpl(
                                 leadingIcon = Icons.Default.Search,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Column(
+                                Row(
                                     modifier = Modifier
+                                        .padding(horizontal = 16.dp)
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
                                 ) {
-                                    Text(
-                                        text = stringResource(id = R.string.filters),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.SemiBold,
+                                    Column(
                                         modifier = Modifier
-                                            .padding(horizontal = 8.dp)
-                                            .padding(top = 8.dp)
-                                    )
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        val selectedFilter = viewState.value.filter
-                                        SingleChoiceChip(
-                                            selected = selectedFilter == MediaStoreFilterType.TITLE,
-                                            onClick = {
-                                                viewModel.updateFilter(MediaStoreFilterType.TITLE)
-                                                //if already selected, deselect
-                                                if (selectedFilter == MediaStoreFilterType.TITLE) {
-                                                    viewModel.updateFilter(null)
-                                                }
-                                            },
-                                            label = stringResource(id = R.string.title)
+                                        Text(
+                                            text = stringResource(id = R.string.filters),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier
+                                                .padding(horizontal = 8.dp)
+                                                .padding(top = 8.dp)
                                         )
-                                        SingleChoiceChip(
-                                            selected = selectedFilter == MediaStoreFilterType.ARTIST,
-                                            onClick = {
-                                                viewModel.updateFilter(MediaStoreFilterType.ARTIST)
-                                                //if already selected, deselect
-                                                if (selectedFilter == MediaStoreFilterType.ARTIST) {
-                                                    viewModel.updateFilter(null)
-                                                }
-                                            },
-                                            label = stringResource(id = R.string.artist)
-                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            val selectedFilter = viewState.value.filter
+                                            SingleChoiceChip(
+                                                selected = selectedFilter == MediaStoreFilterType.TITLE,
+                                                onClick = {
+                                                    viewModel.updateFilter(MediaStoreFilterType.TITLE)
+                                                    //if already selected, deselect
+                                                    if (selectedFilter == MediaStoreFilterType.TITLE) {
+                                                        viewModel.updateFilter(null)
+                                                    }
+                                                },
+                                                label = stringResource(id = R.string.title)
+                                            )
+                                            SingleChoiceChip(
+                                                selected = selectedFilter == MediaStoreFilterType.ARTIST,
+                                                onClick = {
+                                                    viewModel.updateFilter(MediaStoreFilterType.ARTIST)
+                                                    //if already selected, deselect
+                                                    if (selectedFilter == MediaStoreFilterType.ARTIST) {
+                                                        viewModel.updateFilter(null)
+                                                    }
+                                                },
+                                                label = stringResource(id = R.string.artist)
+                                            )
+                                        }
                                     }
                                 }
                                 HorizontalDivider(Modifier.padding(vertical = 8.dp))

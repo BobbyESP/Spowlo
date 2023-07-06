@@ -107,7 +107,7 @@ fun SingleChoiceChip(
         },
         leadingIcon = {
             Row {
-                AnimatedVisibility(visible = selected) {
+                AnimatedVisibility(visible = selected, modifier = Modifier.animateContentSize()) {
                     Icon(
                         imageVector = leadingIcon,
                         contentDescription = null,

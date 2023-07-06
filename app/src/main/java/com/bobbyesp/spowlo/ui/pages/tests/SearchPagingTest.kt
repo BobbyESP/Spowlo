@@ -84,7 +84,6 @@ fun SearchPagingTestPage(
 class SearchPagingTestViewModel @Inject constructor(
 ) : ViewModel() {
     fun getTrackPagingData(query: String, market: Market?): Flow<PagingData<Track>> {
-
         return Pager(
             config = PagingConfig(pageSize = 50, enablePlaceholders = false),
             pagingSourceFactory = { TrackPagingSource(null, query, market) }

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
@@ -83,6 +84,74 @@ fun SpotifySongCard(
                 )
                 MarqueeText(
                     text = track.artists.joinToString(", ") { it.name },
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SpotifySongCard(
+    modifier: Modifier = Modifier,
+    song: Song,
+    onClick: () -> Unit,
+    showSpotifyLogo: Boolean = true
+) {
+    Surface(
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small),
+        onClick = onClick
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+           song.albumArtPath.let {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        if (it != null) {
+                            AsyncImageImpl(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(MaterialTheme.shapes.small)
+                                    .align(Alignment.Center),
+                                model = it,
+                                contentDescription = "Song cover",
+                                contentScale = ContentScale.Fit,
+                                isPreview = false
+                            )
+                        }
+                        if (showSpotifyLogo) Column(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp),
+                        ) {
+                            Icon(
+                                imageVector = localAsset(id = R.drawable.spotify_logo),
+                                contentDescription = "Spotify logo",
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
+                }
+            }
+            Column(
+                horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp)
+            ) {
+                MarqueeText(
+                    text = song.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                MarqueeText(
+                    text = song.artist,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )

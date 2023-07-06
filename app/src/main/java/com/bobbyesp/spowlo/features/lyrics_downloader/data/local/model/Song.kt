@@ -102,3 +102,7 @@ fun Track.toSong(): Song {
         albumArtPath = this.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) }
     )
 }
+
+fun Song.isFromSpotify(): Boolean {
+    return this.path.contains("spotify")
+}
