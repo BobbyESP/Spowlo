@@ -1,6 +1,7 @@
 package com.bobbyesp.miniplayer_service.service
 
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Job
@@ -67,15 +68,39 @@ class MediaServiceHandler @Inject constructor(
                 stopProgressUpdate()
             }
             is PlayerEvent.Next -> {
-                player.seekForward()
+                player.seekToNext()
             }
             is PlayerEvent.Previous -> {
-                player.seekForward()
+                player.seekToPrevious()
             }
             is PlayerEvent.UpdateProgress -> {
                 player.seekTo(playerEvent.updatedProgress)
             }
         }
+    }
+
+    fun getActualMediaItem(): MediaItem? {
+        return player.currentMediaItem
+    }
+
+    fun getActualMediaItemIndex(): Int {
+        return player.currentMediaItemIndex
+    }
+
+    fun getActualMediaItemMetadata(): MediaMetadata? {
+        return player.currentMediaItem?.mediaMetadata
+    }
+
+    fun getActualMediaItemDuration(): Long {
+        return player.duration
+    }
+
+    fun getActualMediaItemPosition(): Long {
+        return player.currentPosition
+    }
+
+    fun getActualMediaItemPositionPercentage(): Float {
+        return player.currentPosition / player.duration.toFloat()
     }
 
 

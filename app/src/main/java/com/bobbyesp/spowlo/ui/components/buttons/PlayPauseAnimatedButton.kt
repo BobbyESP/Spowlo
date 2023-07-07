@@ -37,9 +37,9 @@ fun PlayPauseAnimatedButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
     val radius = if (isPlaying || isPressed.value) {
-        10.dp
+        25.dp
     } else {
-        5.dp
+        10.dp
     }
     val cornerRadius = animateDpAsState(targetValue = radius, label = "Animated button shape")
 
@@ -51,7 +51,7 @@ fun PlayPauseAnimatedButton(
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.onTertiary)
-                .size(32.dp)
+                .size(72.dp)
                 .clip(RoundedCornerShape(cornerRadius.value))
                 .clickable(
                     interactionSource = interactionSource,

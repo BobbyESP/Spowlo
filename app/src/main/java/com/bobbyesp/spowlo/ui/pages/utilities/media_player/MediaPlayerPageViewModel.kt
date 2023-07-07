@@ -30,7 +30,7 @@ class MediaPlayerPageViewModel @Inject constructor(
             serviceHandler.mediaState.collect { mediaState ->
                 when (mediaState) {
                     is MediaState.Buffering -> calculateProgressValues(mediaState.progress)
-                    is MediaState.Playing -> mutablePageViewState.update { it.copy(isPlaying = true) }
+                    is MediaState.Playing -> mutablePageViewState.update { it.copy(isPlaying = mediaState.isPlaying) }
                     is MediaState.Idle -> mutablePageViewState.update { it.copy(uiState = PlayerState.Initial) }
                     is MediaState.Progress -> calculateProgressValues(mediaState.progress)
                     is MediaState.Ready -> {
@@ -57,7 +57,8 @@ class MediaPlayerPageViewModel @Inject constructor(
         val progress: Float = 0f,
         val progressString: String = "00:00",
         val duration: Long = 0L,
-        val isPlaying: Boolean = false
+        val isPlaying: Boolean = false,
+        val currentMediaItem: MediaItem? = null
     )
 
     fun onUIEvent(uiEvent: PlayerUiEvent) = viewModelScope.launch {
@@ -67,19 +68,17 @@ class MediaPlayerPageViewModel @Inject constructor(
             }
 
             is PlayerUiEvent.Backward -> {
+                updateCurrentMediaItem(serviceHandler.getActualMediaItem())
                 serviceHandler.onPlayerEvent(PlayerEvent.Previous)
             }
 
             is PlayerUiEvent.Forward -> {
+                updateCurrentMediaItem(serviceHandler.getActualMediaItem())
                 serviceHandler.onPlayerEvent(PlayerEvent.Next)
             }
 
             is PlayerUiEvent.UpdateSeekBar -> {
-                mutablePageViewState.update {
-                    it.copy(
-
-                    )
-                }
+                calculateProgressValues(uiEvent.newProgress)
                 serviceHandler.onPlayerEvent(PlayerEvent.UpdateProgress(uiEvent.newProgress))
             }
         }
@@ -119,9 +118,20 @@ class MediaPlayerPageViewModel @Inject constructor(
         }
     }
 
+    private fun handlePlayerPercent(progress: Float) {
+        val progressString =
+            formatDuration((progress * mutablePageViewState.value.duration).toLong())
+        mutablePageViewState.update {
+            it.copy(
+                progress = progress, progressString = progressString
+            )
+        }
+    }
+
     private fun calculateProgressValues(currentProgress: Long) {
         with(pageViewState.value) {
-            val progress = if (currentProgress > 0) (currentProgress.toFloat() / duration) else 0f
+            val progress =
+                if (currentProgress > 0) (currentProgress.toFloat() / duration.toFloat()) else 0f
             val progressString = formatDuration(currentProgress)
             mutablePageViewState.update {
                 it.copy(
@@ -131,13 +141,34 @@ class MediaPlayerPageViewModel @Inject constructor(
         }
     }
 
+
+    private fun calculateProgressValues(currentProgress: Float) {
+        with(pageViewState.value) {
+            val progress = if (currentProgress > 0) (currentProgress / duration) else 0f
+            val progressString = formatDuration((currentProgress * duration).toLong())
+            mutablePageViewState.update {
+                it.copy(
+                    progress = progress, progressString = progressString
+                )
+            }
+        }
+    }
+
+    private fun updateCurrentMediaItem(mediaItem: MediaItem?) {
+        mutablePageViewState.update {
+            it.copy(currentMediaItem = mediaItem)
+        }
+    }
+
 }
 
 sealed class PlayerUiEvent {
     object PlayPause : PlayerUiEvent()
     object Backward : PlayerUiEvent()
     object Forward : PlayerUiEvent()
-    class UpdateSeekBar(val newProgress: Long) : PlayerUiEvent()
+    class UpdateSeekBar(val newProgress: Long) : PlayerUiEvent() {
+        constructor(newProgress: Float) : this((newProgress * 1000).toLong())
+    }
 }
 
 sealed class PlayerState {

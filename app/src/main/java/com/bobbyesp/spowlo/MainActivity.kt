@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
     override fun onDestroy() {
-        super.onDestroy()
         stopService(Intent(this, SpowloMediaService::class.java))
         isServiceRunning = false
+        super.onDestroy()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
