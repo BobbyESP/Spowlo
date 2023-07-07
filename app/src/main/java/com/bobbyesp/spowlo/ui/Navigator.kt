@@ -1,21 +1,25 @@
 package com.bobbyesp.spowlo.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -29,13 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -47,12 +54,16 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
+import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
+import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.media_player.MediaPlayerPage
+import com.bobbyesp.spowlo.ui.pages.utilities.media_player.MediaPlayerPageViewModel
 
 private const val TAG = "Navigator"
 
@@ -73,19 +84,37 @@ fun Navigator() {
     val routesToHide: List<Route> = listOf(Route.OnboardingPage, Route.SettingsNavigator)
 
     val shouldHideNavBar = remember(navBackStackEntry) {
-        mutableStateOf(
-            navBackStackEntry?.destination?.hierarchy?.any { it.route in routesToHide.map { it.route } } == true
-        )
+        mutableStateOf(navBackStackEntry?.destination?.hierarchy?.any { it.route in routesToHide.map { it.route } } == true)
     }
+
+    val navigationBarHeight by animateDpAsState(
+        targetValue = if (!shouldHideNavBar.value) 80.dp else 0.dp,
+        animationSpec = NavigationBarAnimationSpec,
+        label = "Animation for navigation bar height"
+    )
+
 
     val routesToShow: List<Route> = listOf(Route.HomeNavigator, Route.UtilitiesNavigator)
 
-    Box(
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
+    val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
+    val bottomBarHeight = 80.dp
+
+    val miniplayerHeight = 40.dp
+
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
+        val playerBottomSheetState = rememberBottomSheetState(
+            dismissedBound = 0.dp,
+            collapsedBound = bottomInset + (if (!shouldHideNavBar.value) bottomBarHeight else 0.dp) + miniplayerHeight,
+            expandedBound = maxHeight,
+        )
+
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,7 +124,25 @@ fun Navigator() {
                     visible = !shouldHideNavBar.value
                 ) {
                     NavigationBar(
-                        modifier = Modifier.height(IntrinsicSize.Min)
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .offset {
+                                if (navigationBarHeight == 0.dp) {
+                                    IntOffset(
+                                        x = 0, y = (bottomInset + bottomBarHeight).roundToPx()
+                                    )
+                                } else {
+                                    val slideOffset =
+                                        (bottomInset + bottomBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                            0f, 1f
+                                        )
+                                    val hideOffset =
+                                        (bottomInset + bottomBarHeight) * (1 - navigationBarHeight / bottomBarHeight)
+                                    IntOffset(
+                                        x = 0, y = (slideOffset + hideOffset).roundToPx()
+                                    )
+                                }
+                            },
                     ) {
                         routesToShow.forEach { route ->
                             val isSelected = currentRootRoute.value == route.route
@@ -113,8 +160,7 @@ fun Navigator() {
                                     }
                                 }
                             }
-                            NavigationBarItem(
-                                modifier = Modifier.padding(),
+                            NavigationBarItem(modifier = Modifier.padding(),
                                 selected = isSelected,
                                 onClick = onClick,
                                 icon = {
@@ -123,14 +169,14 @@ fun Navigator() {
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
-                                }, label = {
+                                },
+                                label = {
                                     Text(
                                         text = route.title,
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
-                                }
-                            )
+                                })
                         }
                     }
                 }
@@ -164,64 +210,80 @@ fun Navigator() {
                     }
                 }
 
-                navigation(
-                    route = Route.UtilitiesNavigator.route,
-                    startDestination = Route.Utilities.route,
+                utilitiesNavigation(navController = navController)
+            }
+        }
+    }
+}
+
+private fun NavGraphBuilder.utilitiesNavigation(
+    navController: NavHostController
+) {
+    navigation(
+        route = Route.UtilitiesNavigator.route,
+        startDestination = Route.Utilities.route,
+    ) {
+        composable(Route.Utilities.route) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Column(
+                    modifier = Modifier,
                 ) {
-                    composable(Route.Utilities.route) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            Column(
-                                modifier = Modifier,
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(150.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        item {
+                            AppUtilityCard(
+                                utilityName = stringResource(id = R.string.lyrics_downloader),
+                                icon = Icons.Default.Lyrics
                             ) {
-                                LazyVerticalGrid(
-                                    columns = GridCells.Adaptive(150.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    contentPadding = PaddingValues(8.dp)
-                                ) {
-                                    item {
-                                        AppUtilityCard(
-                                            utilityName = stringResource(id = R.string.lyrics_downloader),
-                                            icon = Icons.Default.Lyrics
-                                        ) {
-                                            navController.navigate(Route.LyricsDownloaderPage.route)
-                                        }
-                                    }
-                                }
+                                navController.navigate(Route.LyricsDownloaderPage.route)
+                            }
+                        }
+                        item {
+                            AppUtilityCard(
+                                utilityName = stringResource(id = R.string.mediaplayer),
+                                icon = Icons.Default.MusicNote
+                            ) {
+                                navController.navigate(Route.MiniplayerPage.route)
                             }
                         }
                     }
-                    composable(Route.LyricsDownloaderPage.route) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-//                            val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
-                            val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
-                            LyricsDownloaderPage(viewModel)
-                        }
-                    }
-
-                    val lrcRouteWithQuery = StringBuilder().append(Route.LyricsDownloaderPage.route)
-                        .append("/{name}/{artist}").toString()
-                    slideInVerticallyComposable(
-                        route = lrcRouteWithQuery,
-                        arguments = listOf(
-                            navArgument("name") { type = NavType.StringType },
-                            navArgument("artist") { type = NavType.StringType })
-                    ) {
-                        val name =
-                            it.arguments?.getString("name") ?: return@slideInVerticallyComposable
-                        val artist =
-                            it.arguments?.getString("artist") ?: return@slideInVerticallyComposable
-                        val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
-
-                        SelectedSongLyricsPage(viewModel, name, artist)
-                    }
                 }
             }
+        }
+        composable(Route.LyricsDownloaderPage.route) {
+            Box(
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+            ) {
+//              val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
+                val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
+                LyricsDownloaderPage(viewModel)
+            }
+        }
+
+        val lrcRouteWithQuery =
+            StringBuilder().append(Route.LyricsDownloaderPage.route).append("/{name}/{artist}")
+                .toString()
+        slideInVerticallyComposable(
+            route = lrcRouteWithQuery,
+            arguments = listOf(navArgument("name") { type = NavType.StringType },
+                navArgument("artist") { type = NavType.StringType })
+        ) {
+            val name = it.arguments?.getString("name") ?: return@slideInVerticallyComposable
+            val artist = it.arguments?.getString("artist") ?: return@slideInVerticallyComposable
+            val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
+
+            SelectedSongLyricsPage(viewModel, name, artist)
+        }
+
+        composable(Route.MiniplayerPage.route) {
+            val viewModel = hiltViewModel<MediaPlayerPageViewModel>()
+            MediaPlayerPage(viewModel)
         }
     }
 }

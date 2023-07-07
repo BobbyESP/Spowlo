@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -99,8 +100,7 @@ fun LyricsDownloaderPage(
 
     PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
-            PermissionNotGranted(
-                neededPermissions = listOf(targetPermission.toPermissionType()),
+            PermissionNotGranted(neededPermissions = listOf(targetPermission.toPermissionType()),
                 onGrantRequest = {
                     storagePermissionState.launchPermissionRequest()
                 },
@@ -238,8 +238,7 @@ fun LyricsDownloaderPageImpl(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            ExpandableSearchBar(
-                                query = query,
+                            ExpandableSearchBar(query = query,
                                 onQueryChange = { query = it },
                                 onSearch = { queryToSearch ->
                                     scope.launch {
@@ -308,24 +307,23 @@ fun LyricsDownloaderPageImpl(
                                 }
                                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
                                 LazyColumn(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .animateContentSize(),
                                 ) {
                                     items(allSearches) { search ->
-                                        RecentSearch(
-                                            searchEntity = search,
-                                            onDeleteClick = {
-                                                scope.launch(Dispatchers.IO) {
-                                                    viewModel.deleteSearchById(search.id)
-                                                }
-                                            }, onClick = {
-                                                scope.launch {
-                                                    viewModel.loadMediaStoreWithFilter(
-                                                        context, search.search, search.filter
-                                                    )
-                                                }
-                                                activeFullscreenSearching = false
+                                        RecentSearch(searchEntity = search, onDeleteClick = {
+                                            scope.launch(Dispatchers.IO) {
+                                                viewModel.deleteSearchById(search.id)
                                             }
-                                        )
+                                        }, onClick = {
+                                            scope.launch {
+                                                viewModel.loadMediaStoreWithFilter(
+                                                    context, search.search, search.filter
+                                                )
+                                            }
+                                            activeFullscreenSearching = false
+                                        })
                                     }
                                 }
                             }
@@ -344,15 +342,12 @@ fun LyricsDownloaderPageImpl(
                         state = lazyGridState
                     ) {
                         items(songs) { song ->
-                            LocalSongCard(
-                                song = song,
-                                modifier = Modifier,
-                                onClick = {
-                                    val artistsList = song.artist.toList()
-                                    val mainArtist = artistsList.first()
+                            LocalSongCard(song = song, modifier = Modifier, onClick = {
+                                val artistsList = song.artist.toList()
+                                val mainArtist = artistsList.first()
 
-                                    navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
-                                })
+                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
+                            })
                         }
                     }
                 }

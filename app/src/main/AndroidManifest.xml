@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage"/>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -56,6 +59,8 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.Spowlo">
         </activity>
+
+        <service android:name="com.bobbyesp.miniplayer_service.service.SpowloMediaService" android:foregroundServiceType="mediaPlayback"/>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

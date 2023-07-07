@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalPlay
@@ -25,8 +26,13 @@ sealed class Route(
 
     //ROUTES
     object Home : Route("home", "", Icons.Outlined.Home)
-    object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
-    object LyricsDownloaderPage : Route("lyrics_downloader_page", "", Icons.Default.Lyrics)
+
+        //UTILITIES NAVIGATOR
+        object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
+        object LyricsDownloaderPage : Route("lyrics_downloader_page", "", Icons.Default.Lyrics)
+        object MiniplayerPage : Route("miniplayer_page", "", Icons.Default.MusicNote)
+
+
     object OnboardingPage : Route("onboarding_page", "")
     object Settings : Route("settings_page", "", Icons.Default.Settings)
 
@@ -52,6 +58,7 @@ sealed class Route(
             Home.title = stringUtils.getStringWithContext(R.string.home)
             Utilities.title = stringUtils.getStringWithContext(R.string.utilities)
             LyricsDownloaderPage.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
+            MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
             OnboardingPage.title = stringUtils.getStringWithContext(R.string.onboarding)
             Settings.title = stringUtils.getStringWithContext(R.string.settings)
         }

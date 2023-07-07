@@ -1,12 +1,17 @@
 package com.bobbyesp.spowlo
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.bobbyesp.miniplayer_service.service.SpowloMediaService
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -15,6 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private var isServiceRunning = false
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
+            LaunchedEffect(true) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startMediaPlayerService()
+                }
+            }
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(
@@ -36,7 +49,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, SpowloMediaService::class.java))
+        isServiceRunning = false
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun startMediaPlayerService() {
+        if (!isServiceRunning) {
+            startForegroundService(Intent(this, SpowloMediaService::class.java))
+            isServiceRunning = true
+        }
+    }
 
     companion object {
 

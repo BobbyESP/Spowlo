@@ -231,6 +231,10 @@ dependencies {
     implementation(project(":spotdl-android"))
     implementation(project(":ffmpeg"))
 
+    //Miniplayer service
+    implementation(libs.media3.session)
+    implementation(project(":miniplayer_service"))
+
     //Chrome Custom Tabs
     implementation(libs.chrome.custom.tabs)
 

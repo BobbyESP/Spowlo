@@ -51,4 +51,6 @@
     <string name="source">Source</string>
     <string name="device">Device</string>
     <string name="spotify" translatable="false">Spotify</string>
+    <string name="mediaplayer">Mediaplayer</string>
+    <string name="miniplayer">Mediaplayer</string>
 </resources>
