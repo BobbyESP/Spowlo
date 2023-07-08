@@ -62,7 +62,7 @@ customTabs = "1.5.0"
 markdown = "0.3.3"
 
 #Spotify API
-spotify-apiHandler = "3.8.8"
+spotify-apiHandler = "4.0.2"
 
 #Spotify Downloader
 spotdlversion = "-SNAPSHOT"

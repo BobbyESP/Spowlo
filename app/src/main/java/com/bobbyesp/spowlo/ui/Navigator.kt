@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -62,8 +61,6 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownl
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
-import com.bobbyesp.spowlo.ui.pages.utilities.media_player.MediaPlayerPage
-import com.bobbyesp.spowlo.ui.pages.utilities.media_player.MediaPlayerPageViewModel
 
 private const val TAG = "Navigator"
 
@@ -244,14 +241,6 @@ private fun NavGraphBuilder.utilitiesNavigation(
                                 navController.navigate(Route.LyricsDownloaderPage.route)
                             }
                         }
-                        item {
-                            AppUtilityCard(
-                                utilityName = stringResource(id = R.string.mediaplayer),
-                                icon = Icons.Default.MusicNote
-                            ) {
-                                navController.navigate(Route.MiniplayerPage.route)
-                            }
-                        }
                     }
                 }
             }
@@ -282,8 +271,7 @@ private fun NavGraphBuilder.utilitiesNavigation(
         }
 
         composable(Route.MiniplayerPage.route) {
-            val viewModel = hiltViewModel<MediaPlayerPageViewModel>()
-            MediaPlayerPage(viewModel)
+            TODO()
         }
     }
 }
