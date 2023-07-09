@@ -57,6 +57,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
+import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
@@ -192,8 +193,9 @@ fun Navigator() {
                     startDestination = Route.Home.route,
                 ) {
                     composable(Route.Home.route) {
+                        val viewModel = hiltViewModel<HomePageViewModel>()
                         Box(modifier = Modifier.fillMaxSize()) {
-                            HomePage()
+                            HomePage(viewModel)
                         }
                     }
                 }

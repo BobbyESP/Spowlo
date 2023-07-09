@@ -62,6 +62,20 @@
 
         <service android:name="com.bobbyesp.miniplayer_service.service.SpowloMediaService" android:foregroundServiceType="mediaPlayback"/>
 
+        <activity android:name="com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl"
+            android:launchMode="singleTop"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="spowlo" android:host="spotify-pkce"/>
+            </intent-filter>
+        </activity>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
