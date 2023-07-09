@@ -33,14 +33,17 @@ suspend fun <T> checkSpotifyApiIsValid(
         } catch (e: SpotifyException) {
             e.printStackTrace()
             val apiCredentials = CredentialsStorer(activity.applicationContext).provideCredentials()
+
             if (!alreadyTriedToReauthenticate) {
                 val api = apiCredentials.getSpotifyClientPkceApi()!!
                 try {
                     api.refreshToken()
                     apiCredentials.spotifyToken = api.token
+
                     block(api)
                 } catch (e: SpotifyException.ReAuthenticationNeededException) {
                     e.printStackTrace()
+
                     return@runBlocking checkSpotifyApiIsValid(
                         activity,
                         true,

@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -158,7 +159,8 @@ fun Navigator() {
                                     }
                                 }
                             }
-                            NavigationBarItem(modifier = Modifier.padding(),
+                            NavigationBarItem(
+                                modifier = Modifier.animateContentSize(),
                                 selected = isSelected,
                                 onClick = onClick,
                                 icon = {
@@ -174,7 +176,8 @@ fun Navigator() {
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     )
-                                })
+                                }, alwaysShowLabel = false
+                            )
                         }
                     }
                 }

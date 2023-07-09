@@ -249,6 +249,9 @@ dependencies {
     debugImplementation(libs.compose.tooling)
     debugImplementation(libs.compose.test.manifest)
 
+    //Memory leaks detection
+    debugImplementation(libs.leakcanary)
+
 }
 
 class RoomSchemaArgProvider(

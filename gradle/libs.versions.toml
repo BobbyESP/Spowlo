@@ -10,7 +10,8 @@ activity-compose = "1.7.2"
 compose-compiler = "1.4.7"
 ksp = "1.8.21-1.0.11"
 material = "1.9.0"
-media3 = "1.0.1"
+media3 = "1.1.0"
+leakcanary = "2.12"
 
 #Compose
 compose-bom = "2023.06.01"
@@ -159,6 +160,8 @@ media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", versi
 media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 
+#LeakCanary
+leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 #Databases
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }

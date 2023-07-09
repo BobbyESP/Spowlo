@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -23,8 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.adamratzman.spotify.models.PagingObject
+import com.adamratzman.spotify.models.SimplePlaylist
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkIfLoggedIn
+import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
@@ -40,8 +45,18 @@ fun HomePage(
         mutableStateOf(checkIfLoggedIn())
     }
 
+    var playlists by remember {
+        mutableStateOf<PagingObject<SimplePlaylist>?>(null)
+    }
+
     LaunchedEffect(Unit) {
         loggedIn = checkIfLoggedIn()
+    }
+
+    LaunchedEffect(true) {
+        checkSpotifyApiIsValid(MainActivity.getActivity()) { api ->
+            playlists = api.playlists.getClientPlaylists()
+        }
     }
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
@@ -80,6 +95,12 @@ fun HomePage(
                     MainActivity.startPkceLoginFlow()
                 }) {
                     Text(text = "Launch PKCE Auth flow")
+                }
+            } else if (playlists != null) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(playlists!!.items) { playlist ->
+                        Text(text = playlist.name)
+                    }
                 }
             } else {
                 Column {

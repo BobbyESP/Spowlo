@@ -100,7 +100,8 @@ fun LyricsDownloaderPage(
 
     PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
-            PermissionNotGranted(neededPermissions = listOf(targetPermission.toPermissionType()),
+            PermissionNotGranted(
+                neededPermissions = listOf(targetPermission.toPermissionType()),
                 onGrantRequest = {
                     storagePermissionState.launchPermissionRequest()
                 },
