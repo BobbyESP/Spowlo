@@ -13,7 +13,6 @@ import androidx.core.view.WindowCompat
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.notifications.SpotifyBroadcastReceiver
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -52,8 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     override fun onDestroy() {
-        stopService(Intent(this, SpowloMediaService::class.java))
-        isServiceRunning = false
+
         super.onDestroy()
     }
 
@@ -73,10 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
         fun startPkceLoginFlow() {
             activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
-        }
-
-        fun startSpotifyBroadcastReceiver() {
-            activity.startService(Intent(activity, SpotifyBroadcastReceiver::class.java))
         }
     }
 }

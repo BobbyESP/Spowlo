@@ -59,6 +59,8 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
+import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
+import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
@@ -93,7 +95,7 @@ fun Navigator() {
     )
 
 
-    val routesToShow: List<Route> = listOf(Route.HomeNavigator, Route.UtilitiesNavigator)
+    val routesToShow: List<Route> = listOf(Route.HomeNavigator, Route.UtilitiesNavigator, Route.ProfileNavigator)
 
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -202,7 +204,6 @@ fun Navigator() {
                         }
                     }
                 }
-
                 navigation(
                     route = Route.SettingsNavigator.route,
                     startDestination = Route.Settings.route,
@@ -212,6 +213,15 @@ fun Navigator() {
                     }
                 }
 
+                navigation(
+                    route = Route.ProfileNavigator.route,
+                    startDestination = Route.Profile.route,
+                ) {
+                    composable(Route.Profile.route) {
+                        val viewModel = hiltViewModel<ProfilePageViewModel>()
+                        ProfilePage(viewModel = viewModel)
+                    }
+                }
                 utilitiesNavigation(navController = navController)
             }
         }

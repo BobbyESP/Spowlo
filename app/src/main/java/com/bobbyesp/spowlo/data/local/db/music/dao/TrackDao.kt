@@ -26,6 +26,10 @@ interface TrackDao {
     @Upsert
     suspend fun upsertAll(tracks: List<TrackEntity>)
 
+    /**
+     * Get all tracks from the database
+     * @return [PagingSource] of [TrackEntity]
+     */
     @Query("SELECT * FROM TrackEntity")
     fun pagingSource(): PagingSource<Int, TrackEntity>
 

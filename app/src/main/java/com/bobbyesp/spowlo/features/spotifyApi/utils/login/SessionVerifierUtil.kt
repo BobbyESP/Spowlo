@@ -8,7 +8,8 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Checks if the Spotify API is valid (using PKCE authentication), and if not, re-authenticates the user.
@@ -24,41 +25,42 @@ suspend fun <T> checkSpotifyApiIsValid(
 ): T? {
     val classToGoBackTo: Class<out Activity> = activity::class.java
 
-    return runBlocking {
-        try {
-            val apiCredentials = CredentialsStorer(activity.applicationContext).provideCredentials()
+    try {
+        val apiCredentials = withContext(Dispatchers.Main) {
+            CredentialsStorer(activity.applicationContext).provideCredentials()
+        }
+        val api = apiCredentials.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
+
+        return block(api)
+    } catch (e: SpotifyException) {
+        e.printStackTrace()
+        val apiCredentials = withContext(Dispatchers.Main) {
+            CredentialsStorer(activity.applicationContext).provideCredentials()
+        }
+
+        if (!alreadyTriedToReauthenticate) {
             val api = apiCredentials.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
+            return try {
+                api.refreshToken()
+                apiCredentials.spotifyToken = api.token
 
-            block(api)
-        } catch (e: SpotifyException) {
-            e.printStackTrace()
-            val apiCredentials = CredentialsStorer(activity.applicationContext).provideCredentials()
+                block(api)
+            } catch (e: SpotifyException.ReAuthenticationNeededException) {
+                e.printStackTrace()
 
-            if (!alreadyTriedToReauthenticate) {
-                val api = apiCredentials.getSpotifyClientPkceApi()!!
-                try {
-                    api.refreshToken()
-                    apiCredentials.spotifyToken = api.token
-
-                    block(api)
-                } catch (e: SpotifyException.ReAuthenticationNeededException) {
-                    e.printStackTrace()
-
-                    return@runBlocking checkSpotifyApiIsValid(
-                        activity,
-                        true,
-                        block
-                    )
-                }
-            } else {
-                pkceClassBackTo = classToGoBackTo
-                activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
-                null
+                checkSpotifyApiIsValid(
+                    activity,
+                    true,
+                    block
+                )
             }
+        } else {
+            pkceClassBackTo = classToGoBackTo
+            activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
+            return null
         }
     }
 }
-
 fun checkIfLoggedIn(): Boolean {
     val apiCredentials = CredentialsStorer(MainActivity.getActivity().applicationContext).provideCredentials()
     return apiCredentials.getSpotifyClientPkceApi() != null

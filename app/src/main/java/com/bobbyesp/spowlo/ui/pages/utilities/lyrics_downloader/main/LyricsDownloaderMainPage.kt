@@ -63,9 +63,9 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGranted
 import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
-import com.bobbyesp.spowlo.ui.components.cards.LocalSongCard
+import com.bobbyesp.spowlo.ui.components.cards.songs.LocalSongCard
 import com.bobbyesp.spowlo.ui.components.chips.SingleChoiceChip
-import com.bobbyesp.spowlo.ui.components.db.searching.RecentSearch
+import com.bobbyesp.spowlo.ui.components.others.db.searching.RecentSearch
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar

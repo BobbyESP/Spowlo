@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.db.searching
+package com.bobbyesp.spowlo.ui.components.others.db.searching
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable

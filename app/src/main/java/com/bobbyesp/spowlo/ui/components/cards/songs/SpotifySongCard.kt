@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.cards
+package com.bobbyesp.spowlo.ui.components.cards.songs
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box

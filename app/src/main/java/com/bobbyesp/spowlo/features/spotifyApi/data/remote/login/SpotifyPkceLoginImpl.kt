@@ -9,11 +9,13 @@ import com.adamratzman.spotify.auth.pkce.AbstractSpotifyPkceLoginActivity
 import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 internal var pkceClassBackTo: Class<out Activity>? = MainActivity::class.java //null or other
 
 class SpotifyPkceLoginImpl: AbstractSpotifyPkceLoginActivity() {
 
+    @ApplicationContext
     private val context: Context = MainActivity.getActivity().applicationContext
 
     override val clientId: String = BuildConfig.CLIENT_ID

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.cards.horizontal
+package com.bobbyesp.spowlo.ui.components.cards.songs.horizontal
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
