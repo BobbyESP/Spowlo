@@ -68,7 +68,7 @@ object SpotifyApiRequests {
     // Performs Spotify database query for queries related to track information.
     suspend fun searchAllTypes(searchQuery: String): SpotifySearchResult {
         kotlin.runCatching {
-            provideSpotifyApi().search.searchAllTypes(searchQuery, limit = 50, offset = 1, market = Market.ES)
+            provideSpotifyApi().search.searchAllTypes(searchQuery, limit = 50, offset = 0, market = Market.ES)
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return SpotifySearchResult()

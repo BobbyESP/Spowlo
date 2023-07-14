@@ -607,6 +607,7 @@ fun InitialEntry(
             }.onFailure {
                 it.printStackTrace()
                 ToastUtil.makeToastSuspend(context.getString(R.string.update_check_failed))
+                return@launch
             }
         }
     }
