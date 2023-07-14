@@ -1,3 +1,4 @@
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -5,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -29,7 +31,7 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
-import com.bobbyesp.spowlo.ui.components.others.EqualizerAnimatedIcon
+import com.bobbyesp.spowlo.ui.components.others.PlayingIndicator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.utils.localAsset
 
@@ -60,7 +62,7 @@ fun SpotifyHorizontalSongCard(
                         if (albumArtPath != null) {
                             AsyncImageImpl(
                                 modifier = Modifier
-                                    .size(84.dp)
+                                    .size(90.dp)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
                                     .clip(MaterialTheme.shapes.small),
                                 model = albumArtPath,
@@ -126,9 +128,9 @@ fun SpotifyHorizontalSongCard(
                         }
                     }
                     AnimatedVisibility(visible = isPlaying) {
-                        EqualizerAnimatedIcon(
-                            modifier = Modifier.padding(end = 6.dp),
-                            lineColor = MaterialTheme.colorScheme.onSurface,
+                        PlayingIndicator(
+                            modifier = Modifier.height(24.dp).padding(end = 12.dp),
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }

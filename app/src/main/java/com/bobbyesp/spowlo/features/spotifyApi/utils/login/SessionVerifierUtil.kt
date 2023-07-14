@@ -1,10 +1,10 @@
 package com.bobbyesp.spowlo.features.spotifyApi.utils.login
 
 import android.app.Activity
+import android.content.Context
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
-import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
  */
 suspend fun <T> checkSpotifyApiIsValid(
     activity: Activity,
+    applicationContext: Context,
     alreadyTriedToReauthenticate: Boolean = false,
     block: suspend (api: SpotifyClientApi) -> T
 ): T? {
@@ -27,7 +28,7 @@ suspend fun <T> checkSpotifyApiIsValid(
 
     try {
         val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer(activity.applicationContext).provideCredentials()
+            CredentialsStorer(applicationContext).provideCredentials()
         }
         val api = apiCredentials.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
 
@@ -35,7 +36,7 @@ suspend fun <T> checkSpotifyApiIsValid(
     } catch (e: SpotifyException) {
         e.printStackTrace()
         val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer(activity.applicationContext).provideCredentials()
+            CredentialsStorer(applicationContext).provideCredentials()
         }
 
         if (!alreadyTriedToReauthenticate) {
@@ -50,6 +51,7 @@ suspend fun <T> checkSpotifyApiIsValid(
 
                 checkSpotifyApiIsValid(
                     activity,
+                    applicationContext,
                     true,
                     block
                 )
@@ -61,7 +63,7 @@ suspend fun <T> checkSpotifyApiIsValid(
         }
     }
 }
-fun checkIfLoggedIn(): Boolean {
-    val apiCredentials = CredentialsStorer(MainActivity.getActivity().applicationContext).provideCredentials()
+fun checkIfLoggedIn(applicationContext: Context): Boolean {
+    val apiCredentials = CredentialsStorer(applicationContext).provideCredentials()
     return apiCredentials.getSpotifyClientPkceApi() != null
 }

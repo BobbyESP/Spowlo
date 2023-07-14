@@ -42,6 +42,21 @@ fun <T> List<T>.mutate(fn: MutableList<T>.() -> Unit): List<T> {
     return out.toList()
 }
 
+/**
+ * Returns the second element, or `null` if the list has less than 2 elements.
+ */
+fun <T> List<T>.secondOrNull(): T? {
+    return if (isEmpty()) null else this[1]
+}
+
+/**
+ * Returns the third element, or `null` if the list has less than 3 elements.
+ */
+fun <T> List<T>.thirdOrNull(): T? {
+    return if (size < 3) null else this[2]
+}
+
+
 class ConcurrentList<T> : MutableList<T> {
     private val list = mutableListOf<T>()
     private val lock = ReentrantReadWriteLock()

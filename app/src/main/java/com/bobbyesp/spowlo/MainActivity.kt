@@ -45,7 +45,9 @@ class MainActivity : AppCompatActivity() {
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 ) {
-                    Navigator()
+                    Navigator(
+                        this
+                    )
                 }
             }
         }

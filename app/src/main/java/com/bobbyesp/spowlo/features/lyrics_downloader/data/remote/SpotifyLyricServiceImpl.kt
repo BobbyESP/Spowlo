@@ -62,21 +62,21 @@ class SpotifyLyricServiceImpl(
         when (e) {
             is RedirectResponseException -> {
                 // 3XX - Responses
-                Log.e("KayakGoServiceImpl", "Error: ${e.response.status.description}")
+                Log.e("SpotifyLyricServiceImpl", "Error: ${e.response.status.description}")
             }
 
             is ClientRequestException -> {
                 // 4XX - Responses
-                Log.e("KayakGoServiceImpl", "Error: ${e.response.status.description}")
+                Log.e("SpotifyLyricServiceImpl", "Error: ${e.response.status.description}")
             }
 
             is ServerResponseException -> {
                 // 5XX - Responses
-                Log.e("KayakGoServiceImpl", "Error: ${e.response.status.description}")
+                Log.e("SpotifyLyricServiceImpl", "Error: ${e.response.status.description}")
             }
 
             else -> {
-                Log.e("KayakGoServiceImpl", "Error: ${e.message}")
+                Log.e("SpotifyLyricServiceImpl", "Error: ${e.message}")
             }
         }
     }
