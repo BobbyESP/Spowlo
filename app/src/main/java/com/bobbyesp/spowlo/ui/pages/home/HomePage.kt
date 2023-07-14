@@ -15,8 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ui.common.LocalNavController
@@ -29,13 +31,13 @@ fun HomePage(
     viewModel: HomePageViewModel
 ) {
     val navController = LocalNavController.current
-
-//    var playlists by remember {
-//        mutableStateOf<PagingObject<SimplePlaylist>?>(null)
-//    }
-
+    val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.checkSpotifyApiIsValid(context)
+    }
 
     Scaffold(
         topBar = {
@@ -66,10 +68,16 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = {
-                MainActivity.startPkceLoginFlow()
-            }) {
-                Text(text = "Launch PKCE Auth flow")
+            if (viewState.value.loggedIn) {
+                Text(text = "Logged in")
+            } else {
+                Text(text = "Not logged in")
+                Button(
+                    onClick = {
+                        MainActivity.startPkceLoginFlow()
+                    }) {
+                    Text(text = "Launch PKCE Auth flow")
+                }
             }
         }
     }
