@@ -21,7 +21,7 @@ androidxHiltNavigationCompose = "1.0.0"
 
 androidxTestExt = "1.1.5"
 
-spotdlAndroidVersion = "0.1.10"
+spotdlAndroidVersion = "4e49ca9ba5"
 spotifyApiKotlinVersion = "3.8.8"
 
 shimmerLibrary = "1.0.4"

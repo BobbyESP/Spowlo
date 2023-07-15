@@ -37,8 +37,8 @@
         android:localeConfig="@xml/locales_config"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        tools:targetApi="tiramisu">
-        <!--        android:largeHeap="true" -->
+        tools:targetApi="tiramisu"
+        android:largeHeap="true">
 
         <activity
             android:name=".MainActivity"

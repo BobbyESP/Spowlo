@@ -55,7 +55,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
@@ -100,8 +99,6 @@ import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import com.bobbyesp.spowlo.utils.SPOTDL
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -116,7 +113,6 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
@@ -623,20 +619,20 @@ fun InitialEntry(
             }
     }
 
-    LaunchedEffect(Unit) {
-        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
-        kotlin.runCatching {
-            withContext(Dispatchers.IO) {
-                val result = UpdateUtil.updateSpotDL()
-                if (result == SpotDL.UpdateStatus.DONE) {
-                    ToastUtil.makeToastSuspend(
-                        App.context.getString(R.string.spotdl_update_success)
-                            .format(SPOTDL.getString())
-                    )
-                }
-            }
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
+//        kotlin.runCatching {
+//            withContext(Dispatchers.IO) {
+//                val result = UpdateUtil.updateSpotDL()
+//                if (result == SpotDL.UpdateStatus.DONE) {
+//                    ToastUtil.makeToastSuspend(
+//                        App.context.getString(R.string.spotdl_update_success)
+//                            .format(SPOTDL.getString())
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     if (showUpdateDialog) {
         UpdaterBottomDrawer(latestRelease = latestRelease)

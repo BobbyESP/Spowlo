@@ -327,4 +327,6 @@
     <string name="metadata_viewer">Metadata viewer</string>
     <string name="albums">Albums</string>
     <string name="see_album">See album</string>
+    <string name="updates_blocked">SpotDL updates blocked</string>
+    <string name="updates_blocked_description">We have blocked the SpotDL updates. This is because we can be focused on the next version of Spowlo, the 2.0.0 (will come with big changes)!</string>
 </resources>

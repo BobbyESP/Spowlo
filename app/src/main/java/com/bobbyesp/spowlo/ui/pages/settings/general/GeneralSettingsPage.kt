@@ -38,6 +38,7 @@ import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
+import com.bobbyesp.spowlo.ui.components.WarningCard
 import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
 import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
@@ -46,10 +47,6 @@ import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
-import com.bobbyesp.spowlo.utils.SPOTDL
-import com.bobbyesp.spowlo.utils.ToastUtil
-import com.bobbyesp.spowlo.utils.UpdateUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -127,24 +124,17 @@ fun GeneralSettingsPage(
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
                 item {
+                    WarningCard(
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        title = stringResource(id = R.string.updates_blocked),
+                        warningText = stringResource(
+                            id = R.string.updates_blocked_description
+                        )
+                    )
+                }
+                item {
                     ElevatedSettingsCard {
                         SettingsItemNew(
-                            onClick = {
-                                scope.launch {
-                                    runCatching {
-                                        isUpdatingLib = true
-                                        UpdateUtil.updateSpotDL()
-                                        spotDLVersion = SPOTDL.getString()
-                                    }.onFailure {
-                                        ToastUtil.makeToastSuspend(App.context.getString(R.string.spotdl_update_failed))
-                                    }.onSuccess {
-                                        ToastUtil.makeToastSuspend(
-                                            App.context.getString(R.string.spotdl_update_success)
-                                                .format(spotDLVersion)
-                                        )
-                                    }
-                                }
-                            },
                             title = {
                                 Text(
                                     text = stringResource(id = R.string.spotdl_version),
@@ -152,7 +142,8 @@ fun GeneralSettingsPage(
                                 )
                             },
                             icon = Icons.Outlined.Info,
-                            description = { Text(text = spotDLVersion) })
+                            description = { Text(text = spotDLVersion) }
+                        )
 
                         SettingsSwitch(
                             onCheckedChange = {
