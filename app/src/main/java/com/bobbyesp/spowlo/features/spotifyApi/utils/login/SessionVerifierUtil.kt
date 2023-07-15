@@ -28,19 +28,21 @@ suspend fun <T> checkSpotifyApiIsValid(
 
     try {
         val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer(applicationContext).provideCredentials()
+            CredentialsStorer().provideCredentials(applicationContext)
         }
-        val api = apiCredentials.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
+        val api = apiCredentials.getSpotifyClientPkceApi()
+            ?: throw SpotifyException.ReAuthenticationNeededException()
 
         return block(api)
     } catch (e: SpotifyException) {
         e.printStackTrace()
         val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer(applicationContext).provideCredentials()
+            CredentialsStorer().provideCredentials(applicationContext)
         }
 
         if (!alreadyTriedToReauthenticate) {
-            val api = apiCredentials.getSpotifyClientPkceApi() ?: throw SpotifyException.ReAuthenticationNeededException()
+            val api = apiCredentials.getSpotifyClientPkceApi()
+                ?: throw SpotifyException.ReAuthenticationNeededException()
             return try {
                 api.refreshToken()
                 apiCredentials.spotifyToken = api.token
@@ -63,7 +65,14 @@ suspend fun <T> checkSpotifyApiIsValid(
         }
     }
 }
+
 fun checkIfLoggedIn(applicationContext: Context): Boolean {
-    val apiCredentials = CredentialsStorer(applicationContext).provideCredentials()
-    return apiCredentials.getSpotifyClientPkceApi() != null
+    val apiCredentials = CredentialsStorer().provideCredentials(applicationContext)
+    return try {
+        apiCredentials.getSpotifyClientPkceApi()
+            ?: throw SpotifyException.ReAuthenticationNeededException()
+        true
+    } catch (e: SpotifyException.ReAuthenticationNeededException) {
+        false
+    }
 }

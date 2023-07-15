@@ -9,6 +9,8 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/app/release
+/githubpasskey.jks
 /captures
 .externalNativeBuild
 .cxx

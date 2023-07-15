@@ -15,12 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
@@ -34,10 +32,6 @@ fun HomePage(
     val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(true) {
-        viewModel.checkSpotifyApiIsValid(context)
-    }
 
     Scaffold(
         topBar = {
@@ -74,7 +68,7 @@ fun HomePage(
                 Text(text = "Not logged in")
                 Button(
                     onClick = {
-                        MainActivity.startPkceLoginFlow()
+                        viewModel.login()
                     }) {
                     Text(text = "Launch PKCE Auth flow")
                 }

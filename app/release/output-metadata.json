@@ -1,0 +1,64 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.bobbyesp.spowlo",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 10300,
+      "versionName": "1.3.3",
+      "outputFile": "Spowlo-1.3.3-x86_64-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 10300,
+      "versionName": "1.3.3",
+      "outputFile": "Spowlo-1.3.3-arm64-v8a-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 10300,
+      "versionName": "1.3.3",
+      "outputFile": "Spowlo-1.3.3-x86-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 10300,
+      "versionName": "1.3.3",
+      "outputFile": "Spowlo-1.3.3-armeabi-v7a-release.apk"
+    }
+  ],
+  "elementType": "File"
+}
