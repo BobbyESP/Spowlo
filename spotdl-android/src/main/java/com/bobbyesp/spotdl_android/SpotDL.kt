@@ -6,28 +6,20 @@ import com.bobbyesp.spotdl_android.LibNames.androidLibName
 import com.bobbyesp.spotdl_android.data.CanceledException
 import com.bobbyesp.spotdl_android.data.SpotDLException
 import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
-import com.bobbyesp.spotdl_android.data.streams.StreamFlowStorer
-import com.bobbyesp.spotdl_android.feats.whl_downloader.data.model.Release
-import com.bobbyesp.spotdl_android.feats.whl_downloader.data.remote.WhlDownloader
-import com.bobbyesp.spotdl_android.feats.whl_downloader.data.remote.WhlDownloaderState
+import com.bobbyesp.spotdl_android.data.streams.StreamGobbler
 import com.bobbyesp.spotdl_utilities.FileUtils
 import com.bobbyesp.spotdl_utilities.ZipUtils
 import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
 
 /**
  * The main class of the library.
  */
 object SpotDL {
-    const private val TAG = "SpotDL"
+    private const val TAG = "SpotDL"
 
     private lateinit var binariesDirectory: File
     private lateinit var pythonPath: File
@@ -36,7 +28,8 @@ object SpotDL {
     private lateinit var pythonDirectory: File
     private lateinit var ffmpegDirectory: File
 
-    private var whlFile: File? = null  // Initialization with null value
+    private lateinit var pipZipDirectory: File
+    private lateinit var pipZip: File  // Initialization with null value
 
     //START: MAIN ENVIRONMENT VARIABLES
     private lateinit var ENV_LD_LIBRARY_PATH: String
@@ -53,10 +46,13 @@ object SpotDL {
      * @param applicationContext The application context.
      */
 
-    suspend fun init(applicationContext: Context) {
+    fun init(applicationContext: Context) {
         if (isInitialized) return
 
         val androidLibBaseDir = File(applicationContext.noBackupFilesDir, androidLibName)
+
+        pipZipDirectory = File(androidLibBaseDir, LibNames.pipDirName)
+        pipZip = File(pipZipDirectory, LibNames.pipZipName)
 
         if (!androidLibBaseDir.exists()) {
             androidLibBaseDir.mkdirs()
@@ -76,54 +72,9 @@ object SpotDL {
 
         if (isDebug) printAllDirectories()
 
-        initializePython(pythonDirectory)
+        initializePython(applicationContext, pythonDirectory)
 
         isInitialized = true
-    }
-
-
-    suspend fun downloadWhlFile() {
-        val releases: Map<String, List<Release>>? = WhlDownloader.checkForUpdate("spotdl")?.releases
-
-        val latestReleaseUrl = releases?.values
-            ?.flatten()
-            ?.filter { it.url.endsWith(".whl") }
-            ?.maxByOrNull { it.uploadTime }
-            ?.url
-
-        Log.i(TAG, "Latest spotDL .whl file url -> $latestReleaseUrl")
-
-        if (latestReleaseUrl != null) {
-            Log.i(TAG, "Started downloading .whl file")
-
-            val downloader = WhlDownloader.downloadWhl(latestReleaseUrl)
-
-            val scope = CoroutineScope(Dispatchers.Main)
-
-            scope.launch {
-                downloader.collect { state ->
-                    when (state) {
-                        is WhlDownloaderState.Downloading -> {
-                            Log.i(TAG, "Downloading... Progress: ${state.progress}")
-                        }
-                        is WhlDownloaderState.Downloaded -> {
-                            Log.i(TAG, "Download completed. Files: ${state.whlFile.absolutePath}")
-                        }
-                        is WhlDownloaderState.Error -> {
-                            Log.i(TAG, "Downloads failed. Error: ${state.message}")
-                        }
-                    }
-                }
-            }
-
-
-            Log.i(TAG, "init: .whl file downloaded")
-        }
-
-        if(whlFile != null) {
-            Log.i(TAG, "init: Installing .whl file")
-            installWhlFile(whlFile!!)
-        }
     }
 
     /**
@@ -131,7 +82,7 @@ object SpotDL {
      *
      * @param pythonDirectory The directory where the Python interpreter is located.
      */
-    private fun initializePython(pythonDirectory: File) {
+    private fun initializePython(context: Context, pythonDirectory: File) {
         val pythonLibPath = File(binariesDirectory, LibNames.pythonLibraryName)
         val librarySize = pythonLibPath.length().toString() //We are gonna use this a checksum
 
@@ -147,17 +98,43 @@ object SpotDL {
             PreferencesUtil.encodeString(PYTHON_VERSION, librarySize)
             Log.i(TAG, "Python library extracted successfully.")
         }
+        try {
+            setupPip(context)
+        } catch (e: Exception) {
+            FileUtils.deleteFileSilently(pipZipDirectory)
+            throw Exception("Error while decompressing pip library: ${e.message} \nInitialization of pip failed.")
+        }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @Throws(SpotDLException::class)
+    fun setupPip(context: Context): Boolean {
+        if(!pipZipDirectory.exists()) {
+            pipZipDirectory.mkdirs()
+            Log.i(TAG, "Pip directory created successfully.")
+        }
+
+        if(!pipZip.exists()) {
+            return try {
+                val zipFileId = R.raw.pip
+                val outputFile = pipZip.absoluteFile
+                FileUtils.copyInputStreamToFile(context.resources.openRawResource(zipFileId), outputFile)
+                Log.i(TAG, "Pip library extracted successfully.")
+                true
+            } catch (e: Exception) {
+                FileUtils.deleteFileSilently(pipZipDirectory)
+                throw SpotDLException("Error while decompressing pip library: ${e.message} \nInitialization of the pip failed.")
+            }
+        }
+        return true
+    }
+
     @Throws(
         Exception::class,
         SpotDLException::class,
         InterruptedException::class,
         CanceledException::class
     )
-    private suspend fun installWhlFile(
-        whlFile: File
+    private fun installSpotDL(
     ): Boolean {
         val process: Process
 
@@ -177,10 +154,8 @@ object SpotDL {
         command.addAll(
             listOf(
                 pythonPath.absolutePath,
-                "-m",
-                "pip",
-                "install",
-                whlFile.absolutePath
+                "${'"'}${pipZip.absolutePath}${'"'}",
+                "--help"
             )
         )
 
@@ -198,9 +173,10 @@ object SpotDL {
          * Start the process.
          */
         process = try {
+            Log.i(TAG, "Running the process: $processBuilder")
             processBuilder.start()
         } catch (e: Exception) {
-            throw Exception("Error while running the process: ${e.message}")
+             throw Exception("Error while running the process: ${e.message}")
         }
 
         /**
@@ -213,24 +189,29 @@ object SpotDL {
             StreamDataProcessExtractor(outStrBuffer, outStream) { progress, eta, line ->
                 if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
             }
-        val stdErrProcessor = StreamFlowStorer(errStrBuffer, errStream)
+        val stdErrProcessor = StreamGobbler(errStrBuffer, errStream)
 
         exitCode = try {
-            stdOutProcessor.start(GlobalScope)
-            stdErrProcessor.startStoring(GlobalScope)
+            stdOutProcessor.start()
+            stdErrProcessor.start()
             process.waitFor()
+            Log.i(TAG, "Process finished with exit code: ${process.exitValue()}")
         } catch (e: InterruptedException) {
             process.destroy()
             throw e
+        } catch (e: Exception) {
+            throw Exception("Error while waiting for the process: ${e.message}")
         }
 
         val out = outStrBuffer.toString()
         val err = errStrBuffer.toString()
 
         Log.i(TAG, "STDOUT: $out")
+        Log.i(TAG, "STDERR: $err")
 
         if (exitCode != 0) {
-            throw SpotDLException("Error while installing the whl file: $err")
+            Log.e(TAG, err)
+            throw SpotDLException("Error while installing SpotDL: $err")
         }
 
         return true
@@ -262,7 +243,7 @@ object SpotDL {
      */
     private fun setupEnvironmentVariables() {
         ENV_LD_LIBRARY_PATH =
-            pythonDirectory.absolutePath + "/usr/lib" + ":" + ffmpegDirectory.absolutePath
+            pythonDirectory.absolutePath + "/usr/lib" + ":" + ffmpegDirectory.absolutePath + "/usr/lib"
         ENV_SSL_CERT_FILE = pythonDirectory.absolutePath + LibNames.certificatePath
         ENV_PYTHONHOME = pythonDirectory.absolutePath + "/usr"
     }
@@ -279,6 +260,10 @@ object SpotDL {
         Log.i(TAG, "------------ PATHS ------------")
         Log.i(TAG, "PYTHON PATH: ${pythonPath.absolutePath}")
         Log.i(TAG, "FFMPEG PATH: ${ffmpegPath.absolutePath}")
+
+        Log.i(TAG, "------------ PIP ------------")
+        Log.i(TAG, "PIP DIRECTORY: ${pipZipDirectory.absolutePath}")
+        Log.i(TAG, "PIP PATH: ${pipZip.absolutePath}")
     }
 
     /**
