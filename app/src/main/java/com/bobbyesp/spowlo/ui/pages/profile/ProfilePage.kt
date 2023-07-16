@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -34,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,11 +60,13 @@ import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfilePage(
     viewModel: ProfilePageViewModel
 ) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current.applicationContext
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
     var recompositions by remember { mutableIntStateOf(0) }
@@ -86,7 +91,14 @@ fun ProfilePage(
             }
 
             is ProfilePageState.Error -> {
-                ErrorPage()
+                ErrorPage(
+                    error = state.exception.message ?: stringResource(id = R.string.unknown),
+                    onRetry = {
+                        scope.launch {
+                            viewModel.loadPage(context)
+                        }
+                    }
+                )
             }
 
             is ProfilePageState.Loaded -> {
@@ -291,14 +303,22 @@ private fun LoadingPage() {
 }
 
 @Composable
-private fun ErrorPage() {
+private fun ErrorPage(
+    modifier: Modifier = Modifier,
+    error: String,
+    onRetry: () -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Error")
+        Text(text = error)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onRetry) {
+            Text(text = "Retry")
+        }
     }
 }

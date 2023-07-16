@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(0, 0, 0, 0)
             insets
         }
-        activity = this
+                activity = this
 
         setContent {
 //            LaunchedEffect(true) {
@@ -52,11 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    override fun onDestroy() {
-
-        super.onDestroy()
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun startMediaPlayerService() {
         if (!isServiceRunning) {

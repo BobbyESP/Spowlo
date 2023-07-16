@@ -75,9 +75,15 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
 
     suspend fun loadPage(context: Context) {
         updateState(ProfilePageState.Loading)
-        loadUserData(context)
-        loadMostListenedArtists(context)
-        loadMostListenedSongs(context)
+        try {
+            loadUserData(context)
+            loadMostListenedArtists(context)
+            loadMostListenedSongs(context)
+        } catch (e: Exception) {
+            Log.e(TAG, "loadPage: ", e)
+            updateState(ProfilePageState.Error(e))
+            return
+        }
         updateState(ProfilePageState.Loaded)
     }
 
@@ -204,5 +210,5 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
 sealed class ProfilePageState {
     object Loading : ProfilePageState()
     object Loaded : ProfilePageState()
-    object Error : ProfilePageState()
+    data class Error(val exception: Exception) : ProfilePageState()
 }
