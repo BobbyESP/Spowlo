@@ -71,7 +71,7 @@ fun ModernModalBottomSheet(
 
 /**
  * Bottom Sheet
- * Modified from [ViMusic](https://github.com/vfsfitvnm/ViMusic)
+ * Gotten from InnerTune
  */
 @Composable
 fun BottomSheet(

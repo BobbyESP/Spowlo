@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -53,8 +54,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
+import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
@@ -117,12 +120,14 @@ private fun PageImplementation(
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val bottomSheetMenu = LocalBottomSheetMenuState.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     val pageState = viewState.value
     val mostPlayedArtists = pageState.mostPlayedArtists.collectAsLazyPagingItems()
     val mostListenedSongs = pageState.mostPlayedSongs.collectAsLazyPagingItems()
+    val recentlyPlayedSongs = pageState.recentlyPlayedSongs
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
@@ -141,7 +146,9 @@ private fun PageImplementation(
         canScroll = { true },
     )
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
         }, topBar = {
             LargeTopAppBar(
@@ -211,7 +218,6 @@ private fun PageImplementation(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
         ) {
@@ -273,7 +279,7 @@ private fun PageImplementation(
                         val item = mostListenedSongs[it]
                         SmallSpotifySongCard(
                             track = item!!,
-                            modifier = Modifier.width(100.dp),
+                            modifier = Modifier.width(110.dp),
                             showSpotifyLogo = false,
                             number = it + 1,
                             onClick = {
@@ -283,6 +289,23 @@ private fun PageImplementation(
                     }
                     loadStateContent(mostListenedSongs)
                     loadStateContent(mostPlayedArtists)
+                }
+            }
+            item {
+                CategoryTitle(text = stringResource(id = R.string.recently_played))
+            }
+            items(recentlyPlayedSongs) { item ->
+                RecentlyPlayedSongCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    playHistoryItem = item
+                ) {
+//                    bottomSheetMenu.show {
+//                        Text(text = item.playedAt)
+//                    }
+                }
+                //while it isnt the last item, add a spacer
+                if (item != recentlyPlayedSongs.last()) {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }

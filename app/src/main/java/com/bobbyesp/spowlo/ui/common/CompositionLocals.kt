@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenuState
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
@@ -28,6 +29,7 @@ val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
 val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller provided") }
+val LocalBottomSheetMenuState = compositionLocalOf { BottomSheetMenuState() }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -52,6 +54,7 @@ fun AppLocalSettingsProvider(
             else Color(seedColor).toTonalPalettes(
                 paletteStyles.getOrElse(paletteStyleIndex) { PaletteStyle.TonalSpot }
             ), // Tells the app what is the current palette to use
+            LocalBottomSheetMenuState provides BottomSheetMenuState()
         ) {
             content() //The content of the app
         }

@@ -52,9 +52,11 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
+import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenu
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.AppUtilityCard
@@ -66,11 +68,12 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownl
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 
 private const val TAG = "Navigator"
 
 @OptIn(
-    ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterialNavigationApi::class
 )
 @Composable
 fun Navigator(
@@ -113,6 +116,9 @@ fun Navigator(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
+        val bottomSheetMenuState = LocalBottomSheetMenuState.current
+
+
         val playerBottomSheetState = rememberBottomSheetState(
             dismissedBound = 0.dp,
             collapsedBound = bottomInset + (if (!shouldHideNavBar.value) bottomBarHeight else 0.dp) + miniplayerHeight,
@@ -228,6 +234,10 @@ fun Navigator(
                 utilitiesNavigation(navController = navController)
             }
         }
+        BottomSheetMenu(
+            state = bottomSheetMenuState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
 }
 

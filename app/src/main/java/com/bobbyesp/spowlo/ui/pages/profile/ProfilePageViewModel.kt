@@ -10,6 +10,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.adamratzman.spotify.models.Artist
+import com.adamratzman.spotify.models.PlayHistory
 import com.adamratzman.spotify.models.SpotifyUserInformation
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
@@ -67,6 +68,7 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
         val actualTrack: Track? = null,
         val mostPlayedArtists: Flow<PagingData<Artist>> = emptyFlow(),
         val mostPlayedSongs: Flow<PagingData<Track>> = emptyFlow(),
+        val recentlyPlayedSongs: List<PlayHistory> = emptyList(),
         val broadcasts: MutableList<SpotifyBroadcastEventData> = mutableStateListOf(),
         val metadataState: SpotifyMetadataChangedData? = null,
         val playbackState: SpotifyPlaybackStateChangedData? = null,
@@ -76,9 +78,12 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
     suspend fun loadPage(context: Context) {
         updateState(ProfilePageState.Loading)
         try {
-            loadUserData(context)
-            loadMostListenedArtists(context)
-            loadMostListenedSongs(context)
+            with(context) {
+                loadUserData(this)
+                loadMostListenedArtists(this)
+                loadMostListenedSongs(this)
+                loadRecentlyPlayedSongs(this)
+            }
         } catch (e: Exception) {
             Log.e(TAG, "loadPage: ", e)
             updateState(ProfilePageState.Error(e))
@@ -144,6 +149,16 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
                             )
                         }
                     ).flow.cachedIn(viewModelScope)
+                )
+            }
+        }
+    }
+
+    private suspend fun loadRecentlyPlayedSongs(context: Context): Unit? {
+        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+            mutablePageViewState.update {
+                it.copy(
+                    recentlyPlayedSongs = api.player.getRecentlyPlayed(limit = 25).items
                 )
             }
         }

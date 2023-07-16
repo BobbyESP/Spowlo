@@ -58,4 +58,5 @@
     <string name="listening_now">Listening now</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_songs">Most played songs</string>
+    <string name="recently_played">Recently played</string>
 </resources>

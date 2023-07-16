@@ -126,7 +126,7 @@ fun SmallSpotifySongCard(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.extraSmall)
                     .fillMaxWidth()
-                    .size(100.dp)
+                    .size(110.dp)
                     .aspectRatio(1f),
             ) {
                 if (albumArtPath != null) {
