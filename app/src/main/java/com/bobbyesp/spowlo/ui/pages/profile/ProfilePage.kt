@@ -299,11 +299,9 @@ private fun PageImplementation(
                     modifier = Modifier.fillMaxWidth(),
                     playHistoryItem = item
                 ) {
-//                    bottomSheetMenu.show {
-//                        Text(text = item.playedAt)
-//                    }
+                    bottomSheetMenu.show {
+                    }
                 }
-                //while it isnt the last item, add a spacer
                 if (item != recentlyPlayedSongs.last()) {
                     Spacer(modifier = Modifier.height(8.dp))
                 }

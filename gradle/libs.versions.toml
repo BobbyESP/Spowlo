@@ -17,6 +17,7 @@ leakcanary = "2.12"
 compose-bom = "2023.06.01"
 constraintLayout = "1.1.0-alpha07"
 androidx-compose-material3 = "1.2.0-alpha03"
+compose-util = "1.4.3"
 accompanist = "0.31.4-beta"
 compose-pagination = "1.0.0-alpha20"
 
@@ -101,6 +102,7 @@ compose-material-iconsExtended = { group = "androidx.compose.material", name = "
 compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-material = { group = "androidx.compose.material", name = "material" }
+compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose-util" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
@@ -224,7 +226,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
 ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-systemuicontroller", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
-compose = ["compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
+compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
