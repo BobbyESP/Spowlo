@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.2.0-alpha09"
+agp = "8.2.0-alpha12"
 kotlin = "1.8.21"
 appcompat = "1.7.0-alpha02"
 core-ktx = "1.10.1"
@@ -30,7 +30,7 @@ androidx-navigation = "2.6.0"
 androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
-kotlinx-coroutines = "1.7.1"
+kotlinx-coroutines = "1.7.2"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.0"
@@ -46,7 +46,7 @@ ktor = "2.3.1" #For me the best client
 retrofit = "2.9.0"
 
 #Dependency injection
-hilt = "2.45"
+hilt = "2.46.1"
 hilt-ext = "1.0.0"
 hilt-compose-nav = "1.0.0"
 

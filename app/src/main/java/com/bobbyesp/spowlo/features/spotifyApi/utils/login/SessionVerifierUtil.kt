@@ -5,23 +5,27 @@ import android.content.Context
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
+import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 
 /**
  * Checks if the Spotify API is valid (using PKCE authentication), and if not, re-authenticates the user.
  * @param activity The activity to use for the authentication
  * @param alreadyTriedToReauthenticate Whether or not the function has already tried to re-authenticate the user
+ * @param onNetworkError If the API calls fails because of a network error, this will be triggered
  * @param block The block to run if the API is valid
  * @return The result of the block, or null if the API is invalid and the user has already been re-authenticated
  */
 suspend fun <T> checkSpotifyApiIsValid(
-    activity: Activity,
+    activity: Activity = MainActivity.getActivity(),
     applicationContext: Context,
     alreadyTriedToReauthenticate: Boolean = false,
+    onNetworkError: (error: Exception) -> Unit = {},
     block: suspend (api: SpotifyClientApi) -> T
 ): T? {
     val classToGoBackTo: Class<out Activity> = activity::class.java
@@ -55,6 +59,7 @@ suspend fun <T> checkSpotifyApiIsValid(
                     activity,
                     applicationContext,
                     true,
+                    onNetworkError,
                     block
                 )
             }
@@ -63,6 +68,10 @@ suspend fun <T> checkSpotifyApiIsValid(
             activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
             return null
         }
+    } catch (e: UnknownHostException) {
+        e.printStackTrace()
+        onNetworkError(e)
+        return null
     }
 }
 

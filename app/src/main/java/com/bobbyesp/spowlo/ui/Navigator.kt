@@ -61,6 +61,7 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownl
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
+import com.bobbyesp.spowlo.ui.player.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.util.Constants.AppBarHeight
 import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.ui.util.Constants.NavigationBarHeight
@@ -176,7 +177,7 @@ fun Navigator() {
                 }
                 utilitiesNavigation(navController = navController)
             }
-
+            PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
             NavigationBar(
                 modifier = Modifier

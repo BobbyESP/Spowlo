@@ -36,8 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 @Stable
 class BottomSheetMenuState(
@@ -105,12 +103,7 @@ fun BottomSheetMenu(
                 )
                 .background(background)
         ) {
-            SpowloTheme(
-                darkTheme = LocalDarkTheme.current.isDarkTheme(),
-                isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
-            ) {
-                state.content(this)
-            }
+            state.content(this)
         }
     }
 
