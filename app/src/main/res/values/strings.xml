@@ -59,4 +59,5 @@
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_songs">Most played songs</string>
     <string name="recently_played">Recently played</string>
+    <string name="copy_lyrics">Copy lyrics</string>
 </resources>

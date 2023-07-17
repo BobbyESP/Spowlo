@@ -15,8 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -32,11 +33,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.storage.StorageHelper.SaveLyricsButton
@@ -45,9 +50,12 @@ import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.CloseButton
 import com.bobbyesp.spowlo.ui.components.buttons.DynamicButton
 import com.bobbyesp.spowlo.ui.components.buttons.ListenOnSpotifyFilledButton
+import com.bobbyesp.spowlo.ui.components.cards.CardListItem
 import com.bobbyesp.spowlo.ui.components.cards.WarningCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,19 +67,16 @@ fun SelectedSongLyricsPage(
     val navController = LocalNavController.current
 
     val uriOpener = LocalUriHandler.current
+    val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-
     val pageStage = viewModel.pageViewState.collectAsStateWithLifecycle().value.pageStage
+    val paginatedTracks = viewState.tracks.collectAsLazyPagingItems()
 
     val query = "$songName $artistName"
 
-    var searchedSongs by rememberSaveable(query) {
-        mutableStateOf<List<Song>>(emptyList())
-    }
-
     LaunchedEffect(true) {
-        searchedSongs = viewModel.searchSongOnSpotify(query)
+        viewModel.getTrackPagingData(query, null)
     }
 
     Scaffold(
@@ -131,18 +136,20 @@ fun SelectedSongLyricsPage(
                             )
                         }
 
-                        items(searchedSongs) { song ->
-                            SpotifyHorizontalSongCard(song = song) {
-                                viewModel.selectSong(song)
+                        items(
+                            count = paginatedTracks.itemCount,
+                            key = paginatedTracks.itemKey(),
+                            contentType = paginatedTracks.itemContentType(
+                            )
+                        ) { index ->
+                            val item = paginatedTracks[index]
+                            SpotifyHorizontalSongCard(song = item) {
+                                viewModel.selectSong(item!!)
                             }
-
-                            //while it isn't the last item, add a spacer
-                            if (searchedSongs.indexOf(song) != searchedSongs.lastIndex) {
-                                Spacer(modifier = Modifier.height(14.dp))
-                            }
+                            Spacer(modifier = Modifier.height(14.dp))
                         }
+                        loadStateContent(paginatedTracks)
                     }
-
                 }
 
                 is PageStage.Selected -> {
@@ -206,7 +213,12 @@ fun SelectedSongLyricsPage(
                                             )
                                         }
                                         item {
-                                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp))
+                                            HorizontalDivider(
+                                                modifier = Modifier.padding(
+                                                    vertical = 4.dp,
+                                                    horizontal = 12.dp
+                                                )
+                                            )
                                         }
                                         item {
                                             Row(
@@ -247,23 +259,36 @@ fun SelectedSongLyricsPage(
 
                                         }
                                         item {
-                                            Column(
+                                            Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .padding(8.dp),
-                                                verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center
                                             ) {
                                                 SaveLyricsButton(
-                                                    modifier = Modifier.padding(bottom = 8.dp),
+                                                    modifier = Modifier.weight(0.5f),
                                                     song = selectedSong!!,
                                                     lyrics = lyrics,
                                                 )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                CardListItem(
+                                                    modifier = Modifier.weight(0.5f),
+                                                    leadingContentIcon = Icons.Default.CopyAll,
+                                                    headlineContentText = stringResource(id = R.string.copy_lyrics)
+                                                ) {
+                                                    GeneralTextUtils.copyToClipboardAndNotify(
+                                                        context,
+                                                        lyrics
+                                                    )
+                                                }
                                             }
+                                        }
+                                        item {
+                                            Spacer(modifier = Modifier.height(16.dp))
                                         }
                                     }
                                 }
-
                                 is SelectedSongLyricsPageState.Error -> {
                                     Text(text = lyricsState.error)
                                 }
