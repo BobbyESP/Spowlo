@@ -19,6 +19,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +46,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenu
@@ -62,12 +65,14 @@ import com.bobbyesp.spowlo.ui.util.Constants.AppBarHeight
 import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.ui.util.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.util.appBarScrollBehavior
+import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
 
     val windowsInsets = WindowInsets.systemBars
     val density = LocalDensity.current
@@ -130,109 +135,114 @@ fun Navigator() {
             }
         )
 
-        NavHost(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            navController = navController,
-            startDestination = Route.HomeNavigator.route,
-            route = Route.MainHost.route,
+        CompositionLocalProvider(
+            LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
         ) {
-            navigation(
-                route = Route.HomeNavigator.route,
-                startDestination = Route.Home.route,
+
+            NavHost(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                navController = navController,
+                startDestination = Route.HomeNavigator.route,
+                route = Route.MainHost.route,
             ) {
-                composable(Route.Home.route) {
-                    val viewModel = hiltViewModel<HomePageViewModel>()
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        HomePage(viewModel)
-                    }
-                }
-            }
-            navigation(
-                route = Route.SettingsNavigator.route,
-                startDestination = Route.Settings.route,
-            ) {
-                composable(Route.Settings.route) {
-
-                }
-            }
-
-            navigation(
-                route = Route.ProfileNavigator.route,
-                startDestination = Route.Profile.route,
-            ) {
-                composable(Route.Profile.route) {
-                    val viewModel = hiltViewModel<ProfilePageViewModel>()
-                    ProfilePage(viewModel = viewModel)
-                }
-            }
-            utilitiesNavigation(navController = navController)
-        }
-
-        //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
-        NavigationBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset {
-                    if (navigationBarHeight == 0.dp) {
-                        IntOffset(
-                            x = 0, y = (bottomInset + NavigationBarHeight).roundToPx()
-                        )
-                    } else {
-                        val slideOffset =
-                            (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
-                                0f, 1f
-                            )
-                        val hideOffset =
-                            (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                        IntOffset(
-                            x = 0, y = (slideOffset + hideOffset).roundToPx()
-                        )
-                    }
-                },
-        ) {
-            routesToShowInBottomBar.forEach { route ->
-                val isSelected = currentRootRoute.value == route.route
-
-                val onClick = remember(isSelected, navController, route.route) {
-                    {
-                        if (!isSelected) {
-                            navController.navigate(route.route) {
-                                popUpTo(Route.MainHost.route) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                navigation(
+                    route = Route.HomeNavigator.route,
+                    startDestination = Route.Home.route,
+                ) {
+                    composable(Route.Home.route) {
+                        val viewModel = hiltViewModel<HomePageViewModel>()
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            HomePage(viewModel)
                         }
                     }
                 }
-                NavigationBarItem(
-                    modifier = Modifier.animateContentSize(),
-                    selected = isSelected,
-                    onClick = onClick,
-                    icon = {
-                        Icon(
-                            imageVector = route.icon ?: return@NavigationBarItem,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = route.title,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }, alwaysShowLabel = false
-                )
-            }
-        }
+                navigation(
+                    route = Route.SettingsNavigator.route,
+                    startDestination = Route.Settings.route,
+                ) {
+                    composable(Route.Settings.route) {
 
-        //--------------------------------- Bottom Sheet Menu ---------------------------------//
-        BottomSheetMenu(
-            state = LocalBottomSheetMenuState.current,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+                    }
+                }
+
+                navigation(
+                    route = Route.ProfileNavigator.route,
+                    startDestination = Route.Profile.route,
+                ) {
+                    composable(Route.Profile.route) {
+                        val viewModel = hiltViewModel<ProfilePageViewModel>()
+                        ProfilePage(viewModel = viewModel)
+                    }
+                }
+                utilitiesNavigation(navController = navController)
+            }
+
+            //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
+            NavigationBar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset {
+                        if (navigationBarHeight == 0.dp) {
+                            IntOffset(
+                                x = 0, y = (bottomInset + NavigationBarHeight).roundToPx()
+                            )
+                        } else {
+                            val slideOffset =
+                                (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                    0f, 1f
+                                )
+                            val hideOffset =
+                                (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                            IntOffset(
+                                x = 0, y = (slideOffset + hideOffset).roundToPx()
+                            )
+                        }
+                    },
+            ) {
+                routesToShowInBottomBar.forEach { route ->
+                    val isSelected = currentRootRoute.value == route.route
+
+                    val onClick = remember(isSelected, navController, route.route) {
+                        {
+                            if (!isSelected) {
+                                navController.navigate(route.route) {
+                                    popUpTo(Route.MainHost.route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    }
+                    NavigationBarItem(
+                        modifier = Modifier.animateContentSize(),
+                        selected = isSelected,
+                        onClick = onClick,
+                        icon = {
+                            Icon(
+                                imageVector = route.icon ?: return@NavigationBarItem,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = route.title,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }, alwaysShowLabel = false
+                    )
+                }
+            }
+
+            //--------------------------------- Bottom Sheet Menu ---------------------------------//
+            BottomSheetMenu(
+                state = LocalBottomSheetMenuState.current,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }
 

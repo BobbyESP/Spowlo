@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.adamratzman.spotify.SpotifyClientApi
@@ -23,7 +24,7 @@ class ClientPlaylistsPagingSource(
 
         return try {
             val response = spotifyApi.playlists.getClientPlaylists(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
             )
 
@@ -58,7 +59,7 @@ class ClientSavedTracksPagingSource(
 
         return try {
             val response = spotifyApi.library.getSavedTracks(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
                 market = market
             )
@@ -94,7 +95,7 @@ class ClientSavedAlbumsPagingSource(
 
         return try {
             val response = spotifyApi.library.getSavedAlbums(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
                 market = market
             )
@@ -130,7 +131,7 @@ class ClientSavedEpisodesPagingSource(
 
         return try {
             val response = spotifyApi.library.getSavedEpisodes(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
                 market = market
             )
@@ -165,7 +166,7 @@ class ClientSavedShowsPagingSource(
 
         return try {
             val response = spotifyApi.library.getSavedShows(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
             )
 
@@ -192,6 +193,7 @@ class ClientSavedShowsPagingSource(
 
 class ClientMostListenedArtistsPagingSource(
     private var spotifyApi: SpotifyClientApi,
+    private var timeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm,
 ): PagingSource<Int, Artist>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Artist> {
@@ -199,9 +201,9 @@ class ClientMostListenedArtistsPagingSource(
 
         return try {
             val response = spotifyApi.personalization.getTopArtists(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
-                timeRange = ClientPersonalizationApi.TimeRange.ShortTerm
+                timeRange = timeRange
             )
 
             if (response.isNotEmpty()) {
@@ -227,16 +229,17 @@ class ClientMostListenedArtistsPagingSource(
 
 class ClientMostListenedSongsPagingSource(
     private var spotifyApi: SpotifyClientApi,
+    private var timeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm,
 ): PagingSource<Int, Track>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Track> {
         val offset = params.key ?: 0
-
+        Log.i("ClientMostListenedSongsPagingSource", "load: offset: $offset, limit: ${params.loadSize}")
         return try {
             val response = spotifyApi.personalization.getTopTracks(
-                limit = 25,
+                limit = params.loadSize,
                 offset = offset,
-                timeRange = ClientPersonalizationApi.TimeRange.ShortTerm
+                timeRange = timeRange
             )
 
             if (response.isNotEmpty()) {

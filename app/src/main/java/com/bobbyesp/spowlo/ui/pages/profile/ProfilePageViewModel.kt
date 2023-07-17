@@ -9,6 +9,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.adamratzman.spotify.endpoints.client.ClientPersonalizationApi
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.PlayHistory
 import com.adamratzman.spotify.models.SpotifyUserInformation
@@ -73,6 +74,7 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
         val metadataState: SpotifyMetadataChangedData? = null,
         val playbackState: SpotifyPlaybackStateChangedData? = null,
         val queueState: SpotifyQueueChangedData? = null,
+        val actualTimeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm,
     )
 
     suspend fun loadPage(context: Context) {
@@ -90,6 +92,28 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
             return
         }
         updateState(ProfilePageState.Loaded)
+    }
+
+    private suspend fun reloadAfterTimeRangeChange(context: Context) {
+        try {
+            with(context) {
+                loadMostListenedArtists(this)
+                loadMostListenedSongs(this)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "reload: ", e)
+            updateState(ProfilePageState.Error(e))
+            return
+        }
+    }
+
+    suspend fun updateTimeRange(timeRange: ClientPersonalizationApi.TimeRange, context: Context) {
+        mutablePageViewState.update {
+            it.copy(
+                actualTimeRange = timeRange,
+            )
+        }
+        reloadAfterTimeRangeChange(context)
     }
 
     private suspend fun loadUserData(context: Context) {
@@ -125,7 +149,8 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
                         ),
                         pagingSourceFactory = {
                             ClientMostListenedArtistsPagingSource(
-                                api
+                                api,
+                                timeRange = it.actualTimeRange
                             )
                         }
                     ).flow.cachedIn(viewModelScope)
@@ -145,7 +170,8 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
                         ),
                         pagingSourceFactory = {
                             ClientMostListenedSongsPagingSource(
-                                api
+                                api,
+                                timeRange = it.actualTimeRange
                             )
                         }
                     ).flow.cachedIn(viewModelScope)
@@ -168,10 +194,10 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
         checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
             val apiPlayingSong = api.player.getCurrentlyPlaying()
             val apiPlayingSongId = apiPlayingSong?.item?.id?.getId()
-            Log.i(TAG, "sameSongAsBroadcastVerifier: $apiPlayingSongId")
+            Log.i(TAG, "sameSongAsBroadcastVerifier: Song ID from API request -> $apiPlayingSongId")
 
             val actualSongId = mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
-            Log.i(TAG, "sameSongAsBroadcastVerifier: $actualSongId")
+            Log.i(TAG, "sameSongAsBroadcastVerifier: Song ID from broadcast -> $actualSongId")
             if (apiPlayingSongId == actualSongId) {
                 Log.i(TAG, "sameSongAsBroadcastVerifier: Same song, doing nothing")
             } else {

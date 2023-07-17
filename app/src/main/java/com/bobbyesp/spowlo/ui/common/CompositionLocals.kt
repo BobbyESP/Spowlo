@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.common
 
 import android.os.Build
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
 val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller provided") }
 val LocalBottomSheetMenuState = compositionLocalOf { BottomSheetMenuState() }
+val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable

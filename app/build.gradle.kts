@@ -241,6 +241,9 @@ dependencies {
     //MD Parser
     implementation(libs.markdown)
 
+    //Shimmer
+    implementation(libs.shimmer)
+
     //BottomSheets
     implementation(libs.modalBottomSheet)
 

@@ -23,6 +23,7 @@ compose-pagination = "1.0.0-alpha20"
 
 #More UI
 androidx-paging = "3.1.1"
+shimmer = "1.0.3"
 
 #Navigation
 androidx-navigation = "2.6.0"
@@ -130,6 +131,9 @@ accompanist-webview = { group = "com.google.accompanist", name = "accompanist-we
 accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+
+#Shimmer
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 
 #Modal Bottom Sheet
 modalBottomSheet = { group = "com.github.T8RIN", name = "ModalSheet", version.ref = "modalSheet" }

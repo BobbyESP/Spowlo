@@ -1,16 +1,14 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
 import SpotifyHorizontalSongCard
-import android.util.Log
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,18 +25,13 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,12 +48,14 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
+import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
+import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import kotlinx.coroutines.launch
@@ -71,20 +66,17 @@ fun ProfilePage(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current.applicationContext
+    val bottomInsetsAsPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
-    var recompositions by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(true) {
         viewModel.loadPage(context)
     }
 
-    LaunchedEffect(Unit) {
-        //recomposition count
-        recompositions++
-        Log.d("ProfilePage", "Recompositions: $recompositions")
-    }
-
     Crossfade(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = bottomInsetsAsPadding),
         targetState = viewState.value.state,
         label = "Main Crossfade Profile Page"
     ) { state ->
@@ -151,7 +143,7 @@ private fun PageImplementation(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
         }, topBar = {
-            LargeTopAppBar(
+            SmallTopAppBar(
                 title = {
                     Row(
                         modifier = Modifier
@@ -179,11 +171,10 @@ private fun PageImplementation(
                             )
                         }
                         if (userInfo?.images?.isNotEmpty() == true) {
-                            val imageSize =
-                                if (scrollBehavior.state.collapsedFraction in 0.7f..1f) 32.dp else 48.dp
+                            val imageSize = 48.dp
                             Box(
                                 modifier = Modifier
-                                    .animateContentSize(animationSpec = TweenSpec(300))
+                                    .padding(top = 16.dp)
                                     .size(imageSize)
                                     .clip(CircleShape)
                             ) {
