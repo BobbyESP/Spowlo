@@ -60,6 +60,7 @@ class App: Application() {
             }
         }
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
+//            if (e is UnknownHostException) //TODO
             val logfile = createLogFile(this, e.stackTraceToString())
             startCrashReportActivity(logfile)
         }

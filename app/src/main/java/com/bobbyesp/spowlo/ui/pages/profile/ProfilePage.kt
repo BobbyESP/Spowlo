@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +61,7 @@ import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,7 +70,8 @@ fun ProfilePage(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current.applicationContext
-    val bottomInsetsAsPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
+    val bottomInsetsAsPadding =
+        LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -105,7 +110,7 @@ fun ProfilePage(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun PageImplementation(
     viewModel: ProfilePageViewModel
@@ -113,6 +118,7 @@ private fun PageImplementation(
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val bottomSheetMenu = LocalBottomSheetMenuState.current
+    val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
@@ -120,6 +126,13 @@ private fun PageImplementation(
     val mostPlayedArtists = pageState.mostPlayedArtists.collectAsLazyPagingItems()
     val mostListenedSongs = pageState.mostPlayedSongs.collectAsLazyPagingItems()
     val recentlyPlayedSongs = pageState.recentlyPlayedSongs
+    val isRefreshingPage = pageState.isRefreshing
+
+    val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshingPage, onRefresh = {
+        scope.launch(Dispatchers.IO) {
+            viewModel.reloadPage(context)
+        }
+    })
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
@@ -206,6 +219,7 @@ private fun PageImplementation(
                 scrollBehavior = scrollBehavior,
             )
         }) { paddingValues ->
+//        PullRefreshIndicator(state = pullRefreshState, refreshing = isRefreshingPage)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -306,11 +320,16 @@ private fun LoadingPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .systemBarsPadding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterHorizontally)
+        )
     }
 }
 

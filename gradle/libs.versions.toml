@@ -67,6 +67,7 @@ markdown = "0.3.3"
 
 #Spotify API
 spotify-apiHandler = "4.0.2"
+spotify-appRemote = "0.8.0"
 
 #Spotify Downloader
 spotdlversion = "-SNAPSHOT"
@@ -191,6 +192,7 @@ markdown = { group = "com.github.jeziellago", name = "compose-markdown", version
 
 #Spotify
 spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotify-apiHandler" }
+spotify-app-remote = { group = "com.spotify", name = "spotify-app-remote", version.ref = "spotify-appRemote" }
 
 #Spotify downloader
 spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlversion" }

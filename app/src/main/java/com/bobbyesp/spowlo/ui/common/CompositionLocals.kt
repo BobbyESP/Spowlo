@@ -1,6 +1,10 @@
 package com.bobbyesp.spowlo.ui.common
 
 import android.os.Build
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -23,6 +27,25 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
+import com.valentinilk.shimmer.LocalShimmerTheme
+import com.valentinilk.shimmer.defaultShimmerTheme
+
+
+val shimmerEffect = defaultShimmerTheme.copy(
+    animationSpec = infiniteRepeatable(
+        animation = tween(
+            durationMillis = 800,
+            easing = LinearEasing,
+            delayMillis = 250,
+        ),
+        repeatMode = RepeatMode.Restart
+    ),
+    shaderColors = listOf(
+        Color.Unspecified.copy(alpha = 0.25f),
+        Color.Unspecified.copy(alpha = 0.50f),
+        Color.Unspecified.copy(alpha = 0.25f),
+    ),
+)
 
 val LocalDarkTheme = compositionLocalOf { DarkThemePreference() }
 val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR }
@@ -56,7 +79,8 @@ fun AppLocalSettingsProvider(
             else Color(seedColor).toTonalPalettes(
                 paletteStyles.getOrElse(paletteStyleIndex) { PaletteStyle.TonalSpot }
             ), // Tells the app what is the current palette to use
-            LocalBottomSheetMenuState provides BottomSheetMenuState()
+            LocalBottomSheetMenuState provides BottomSheetMenuState(),
+            LocalShimmerTheme provides shimmerEffect
         ) {
             content() //The content of the app
         }

@@ -28,14 +28,22 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientM
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
 import com.bobbyesp.spowlo.ui.ext.getId
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcastObserver {
+@HiltViewModel
+class ProfilePageViewModel @Inject constructor(
+    @ApplicationContext context: Context
+) : ViewModel(), SpotifyBroadcastObserver {
     private val TAG = this::class.java.simpleName
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -56,8 +64,7 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
     init {
         activityWrapper.execute {
             registerSpotifyBroadcastReceiver(
-                spotifyBroadcastReceiver,
-                *SpotifyBroadcastType.values()
+                spotifyBroadcastReceiver, *SpotifyBroadcastType.values()
             )
         }
         spotifyBroadcastReceiver.addObserver(this)
@@ -65,6 +72,7 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
 
     data class PageViewState(
         val state: ProfilePageState = ProfilePageState.Loading,
+        val isRefreshing: Boolean = false,
         val userInformation: SpotifyUserInformation? = null,
         val actualTrack: Track? = null,
         val mostPlayedArtists: Flow<PagingData<Artist>> = emptyFlow(),
@@ -79,19 +87,39 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
 
     suspend fun loadPage(context: Context) {
         updateState(ProfilePageState.Loading)
-        try {
+        runCatching {
+                with(context) {
+                    loadUserData(this)
+                    loadMostListenedArtists(this)
+                    loadMostListenedSongs(this)
+                    loadRecentlyPlayedSongs(this)
+                }
+        }.onFailure { e ->
+            Log.e(TAG, "loadPage: ", e)
+            updateState(ProfilePageState.Error(e))
+            return
+
+        }.onSuccess {
+            updateState(ProfilePageState.Loaded)
+        }
+    }
+
+    suspend fun reloadPage(context: Context) {
+        updateIsRefreshing(true)
+        runCatching {
             with(context) {
-                loadUserData(this)
                 loadMostListenedArtists(this)
                 loadMostListenedSongs(this)
                 loadRecentlyPlayedSongs(this)
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "loadPage: ", e)
+        }.onFailure { e ->
+            Log.e(TAG, "reloadPage: ", e)
             updateState(ProfilePageState.Error(e))
             return
+
+        }.onSuccess {
+            updateIsRefreshing(false)
         }
-        updateState(ProfilePageState.Loaded)
     }
 
     private suspend fun reloadAfterTimeRangeChange(context: Context) {
@@ -118,96 +146,99 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
 
     private suspend fun loadUserData(context: Context) {
         checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            val userInformation = api.users.getClientProfile()
-            mutablePageViewState.update {
-                it.copy(
-                    userInformation = userInformation,
-                )
+            viewModelScope.launch(Dispatchers.IO) {
+                val userInformation = api.users.getClientProfile()
+                mutablePageViewState.update {
+                    it.copy(
+                        userInformation = userInformation,
+                    )
+                }
             }
         }
     }
 
     suspend fun searchSongById(context: Context, id: String) {
         checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            val track = api.tracks.getTrack(id)
-            mutablePageViewState.update {
-                it.copy(
-                    actualTrack = track,
-                )
+            viewModelScope.launch(Dispatchers.IO) {
+                val track = api.tracks.getTrack(id)
+                mutablePageViewState.update {
+                    it.copy(
+                        actualTrack = track,
+                    )
+                }
             }
         }
     }
 
-    private suspend fun loadMostListenedArtists(context: Context): Unit? {
+    private suspend fun loadMostListenedArtists(context: Context): Job? {
         return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            mutablePageViewState.update {
-                it.copy(
-                    mostPlayedArtists = Pager(
-                        config = PagingConfig(
-                            pageSize = 10,
-                            enablePlaceholders = false,
-                        ),
-                        pagingSourceFactory = {
-                            ClientMostListenedArtistsPagingSource(
-                                api,
-                                timeRange = it.actualTimeRange
-                            )
-                        }
-                    ).flow.cachedIn(viewModelScope)
-                )
+            viewModelScope.launch {
+                mutablePageViewState.update {
+                    it.copy(mostPlayedArtists = Pager(config = PagingConfig(
+                        pageSize = 10,
+                        enablePlaceholders = false,
+                    ), pagingSourceFactory = {
+                        ClientMostListenedArtistsPagingSource(
+                            api, timeRange = it.actualTimeRange
+                        )
+                    }).flow.cachedIn(viewModelScope))
+                }
+            }
+
+        }
+    }
+
+    private suspend fun loadMostListenedSongs(context: Context): Job? {
+        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+            viewModelScope.launch(Dispatchers.IO) {
+                mutablePageViewState.update {
+                    it.copy(mostPlayedSongs = Pager(config = PagingConfig(
+                        pageSize = 10,
+                        enablePlaceholders = false,
+                    ), pagingSourceFactory = {
+                        ClientMostListenedSongsPagingSource(
+                            api, timeRange = it.actualTimeRange
+                        )
+                    }).flow.cachedIn(viewModelScope))
+                }
             }
         }
     }
 
-    private suspend fun loadMostListenedSongs(context: Context): Unit? {
+    private suspend fun loadRecentlyPlayedSongs(context: Context): Job? {
         return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            mutablePageViewState.update {
-                it.copy(
-                    mostPlayedSongs = Pager(
-                        config = PagingConfig(
-                            pageSize = 10,
-                            enablePlaceholders = false,
-                        ),
-                        pagingSourceFactory = {
-                            ClientMostListenedSongsPagingSource(
-                                api,
-                                timeRange = it.actualTimeRange
-                            )
-                        }
-                    ).flow.cachedIn(viewModelScope)
-                )
-            }
-        }
-    }
-
-    private suspend fun loadRecentlyPlayedSongs(context: Context): Unit? {
-        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            mutablePageViewState.update {
-                it.copy(
-                    recentlyPlayedSongs = api.player.getRecentlyPlayed(limit = 25).items
-                )
+            viewModelScope.launch(Dispatchers.IO) {
+                mutablePageViewState.update {
+                    it.copy(
+                        recentlyPlayedSongs = api.player.getRecentlyPlayed(limit = 25).items
+                    )
+                }
             }
         }
     }
 
     suspend fun sameSongAsBroadcastVerifier(context: Context) {
         checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
-            val apiPlayingSong = api.player.getCurrentlyPlaying()
-            val apiPlayingSongId = apiPlayingSong?.item?.id?.getId()
-            Log.i(TAG, "sameSongAsBroadcastVerifier: Song ID from API request -> $apiPlayingSongId")
-
-            val actualSongId = mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
-            Log.i(TAG, "sameSongAsBroadcastVerifier: Song ID from broadcast -> $actualSongId")
-            if (apiPlayingSongId == actualSongId) {
-                Log.i(TAG, "sameSongAsBroadcastVerifier: Same song, doing nothing")
-            } else {
-                if (apiPlayingSongId != null) {
-                    searchSongById(context, apiPlayingSongId)
+            viewModelScope.launch(Dispatchers.IO) {
+                val apiPlayingSong = api.player.getCurrentlyPlaying()
+                val apiPlayingSongId = apiPlayingSong?.item?.id?.getId()
+                Log.i(
+                    TAG,
+                    "sameSongAsBroadcastVerifier: Song ID from API request -> $apiPlayingSongId"
+                )
+                val actualSongId =
+                    mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
+                Log.i(TAG, "sameSongAsBroadcastVerifier: Song ID from broadcast -> $actualSongId")
+                if (apiPlayingSongId == actualSongId) {
+                    Log.i(TAG, "sameSongAsBroadcastVerifier: Same song, doing nothing")
                 } else {
-                    Log.i(TAG, "sameSongAsBroadcastVerifier: No song playing")
+                    if (apiPlayingSongId != null) {
+                        searchSongById(context, apiPlayingSongId)
+                    } else {
+                        Log.i(TAG, "sameSongAsBroadcastVerifier: No song playing")
+                    }
                 }
             }
-
         }
     }
 
@@ -246,10 +277,16 @@ class ProfilePageViewModel @Inject constructor() : ViewModel(), SpotifyBroadcast
             it.copy(state = state)
         }
     }
+
+    private fun updateIsRefreshing(isRefreshing: Boolean) {
+        mutablePageViewState.update {
+            it.copy(isRefreshing = isRefreshing)
+        }
+    }
 }
 
 sealed class ProfilePageState {
     object Loading : ProfilePageState()
     object Loaded : ProfilePageState()
-    data class Error(val exception: Exception) : ProfilePageState()
+    data class Error(val exception: Throwable) : ProfilePageState()
 }
