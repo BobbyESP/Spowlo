@@ -48,5 +48,12 @@
 #keep database entities
 -keep class com.bobbyesp.spowlo.data.local.db.** { *; }
 
+-keep class org.slf4j.** { *; }
+-keep class org.slf4j.impl.** { *; }
+
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+-dontwarn org.slf4j.impl.StaticMDCBinder
+-dontwarn org.slf4j.impl.StaticMarkerBinder
+
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault

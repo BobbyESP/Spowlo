@@ -119,11 +119,20 @@ android {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
             //add client id and secret to build config
-            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField(
+                "String",
+                "CLIENT_ID",
+                "\"${project.properties["CLIENT_ID"]}\""
+            )
             buildConfigField(
                 "String",
                 "CLIENT_SECRET",
                 "\"${project.properties["CLIENT_SECRET"]}\""
+            )
+            buildConfigField(
+                "String",
+                "SPOTIFY_REDIRECT_URI_PKCE",
+                "\"spowlo://spotify-pkce\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
