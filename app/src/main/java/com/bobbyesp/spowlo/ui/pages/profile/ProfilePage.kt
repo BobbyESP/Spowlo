@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -105,7 +104,7 @@ fun ProfilePage(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PageImplementation(
     viewModel: ProfilePageViewModel
@@ -113,7 +112,6 @@ private fun PageImplementation(
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val bottomSheetMenu = LocalBottomSheetMenuState.current
-    val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
@@ -121,7 +119,6 @@ private fun PageImplementation(
     val mostPlayedArtists = pageState.mostPlayedArtists.collectAsLazyPagingItems()
     val mostListenedSongs = pageState.mostPlayedSongs.collectAsLazyPagingItems()
     val recentlyPlayedSongs = pageState.recentlyPlayedSongs
-    val isRefreshingPage = pageState.isRefreshing
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()

@@ -70,7 +70,7 @@ fun SelectedSongLyricsPage(
     val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val pageStage = viewModel.pageViewState.collectAsStateWithLifecycle().value.pageStage
+    val pageStage = viewModel.pageViewState.collectAsStateWithLifecycle().value.lyricsDownloaderPageStage
     val paginatedTracks = viewState.tracks.collectAsLazyPagingItems()
 
     val query = "$songName $artistName"
@@ -90,7 +90,7 @@ fun SelectedSongLyricsPage(
                     BackButton {
                         viewModel.clearSelectedSong()
                     }
-                }, isIcon1 = pageStage is PageStage.Selecting
+                }, isIcon1 = pageStage is LyricsDownloaderPageStage.Selecting
                 )
             }, title = {
                 Text(
@@ -105,7 +105,7 @@ fun SelectedSongLyricsPage(
             targetState = pageStage, animationSpec = tween(175), label = "Fade between pages"
         ) { actualPageState ->
             when (actualPageState) {
-                is PageStage.Selecting -> {
+                is LyricsDownloaderPageStage.Selecting -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -152,7 +152,7 @@ fun SelectedSongLyricsPage(
                     }
                 }
 
-                is PageStage.Selected -> {
+                is LyricsDownloaderPageStage.Selected -> {
                     BackHandler {
                         viewModel.clearSelectedSong()
                     }

@@ -68,7 +68,8 @@ fun LocalSongCard(
                 PlaceholderCreator(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f),
+                        .aspectRatio(1f)
+                        .clip(MaterialTheme.shapes.small),
                     icon = Icons.Default.MusicNote,
                     colorful = false,
                     contentDescription = "Song cover"

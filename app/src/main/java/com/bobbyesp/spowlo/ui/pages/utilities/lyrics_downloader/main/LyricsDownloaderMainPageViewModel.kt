@@ -3,7 +3,6 @@ package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
@@ -78,15 +77,7 @@ class LyricsDownloaderPageViewModel @Inject constructor(
         searchesDb.insertSearch(search, filter, spotifySearch)
     }
 
-    suspend fun getAllSearches(): List<SearchEntity> {
-        return searchesDb.getAllSearches()
-    }
-
     fun allSearchesFlow() = searchesDb.getAllSearchesWithFlow()
-
-    suspend fun getSearchById(searchId: Int): SearchEntity? {
-        return searchesDb.getSearchById(searchId)
-    }
 
     suspend fun deleteSearchById(searchId: Int) {
         Log.d(TAG, "deleteSearchById: $searchId")
@@ -116,6 +107,6 @@ class LyricsDownloaderPageViewModel @Inject constructor(
  */
 sealed class LyricsDownloaderPageState {
     object Loading : LyricsDownloaderPageState()
-    class Loaded(val songs: List<Song>) : LyricsDownloaderPageState()
+    class Loaded(val mediaStoreSongs: List<Song>) : LyricsDownloaderPageState()
     object Error : LyricsDownloaderPageState()
 }

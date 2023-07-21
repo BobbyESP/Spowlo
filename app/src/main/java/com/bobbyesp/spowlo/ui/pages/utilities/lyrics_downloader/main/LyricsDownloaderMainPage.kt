@@ -198,7 +198,7 @@ fun LyricsDownloaderPageImpl(
         }
     }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        var songs by rememberSaveable(key = "songsList") {
+        var mediaStoreSongs by rememberSaveable(key = "songsList") {
             mutableStateOf<List<Song>>(emptyList())
         }
 
@@ -224,18 +224,20 @@ fun LyricsDownloaderPageImpl(
                     initialValue = emptyList()
                 ).value
 
-                songs = state.songs
+                mediaStoreSongs = state.mediaStoreSongs
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
                     AnimatedVisibility(
+                        modifier = Modifier.fillMaxWidth(),
                         visible = wantsToSearch,
                     ) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
                         ) {
                             ExpandableSearchBar(query = query,
                                 onQueryChange = { query = it },
@@ -340,12 +342,12 @@ fun LyricsDownloaderPageImpl(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyGridState
                     ) {
-                        items(songs) { song ->
+                        items(mediaStoreSongs) { song ->
                             LocalSongCard(song = song, modifier = Modifier, onClick = {
                                 val artistsList = song.artist.toList()
                                 val mainArtist = artistsList.first()
 
-                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}")
+                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}") //Navigate to lyrics downloader page with song title and artist for search
                             })
                         }
                     }

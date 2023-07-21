@@ -8,11 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.toSongs
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.TrackAsSongPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.searching.TrackSearch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,33 +33,26 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
 
     data class PageViewState(
         val state: SelectedSongLyricsPageState = SelectedSongLyricsPageState.Loading,
-        val pageStage: PageStage = PageStage.Selecting,
+        val lyricsDownloaderPageStage: LyricsDownloaderPageStage = LyricsDownloaderPageStage.Selecting,
         val tracks: Flow<PagingData<Song>> = emptyFlow(),
         val selectedSong: Song? = null
     )
 
     fun selectSong(song: Song) {
         mutablePageViewState.update {
-            it.copy(selectedSong = song, pageStage = PageStage.Selected)
+            it.copy(selectedSong = song)
         }
+        updatePageStage(LyricsDownloaderPageStage.Selected)
     }
 
     fun clearSelectedSong() {
         mutablePageViewState.update {
             it.copy(
                 selectedSong = null,
-                pageStage = PageStage.Selecting,
                 state = SelectedSongLyricsPageState.Loading
             )
         }
-    }
-
-    suspend fun searchSongOnSpotify(query: String): List<Song> {
-        val songs = withContext(Dispatchers.IO) {
-            TrackSearch(api.provideSpotifyApi()).search(query).toSongs()
-        }
-
-        return songs
+        updatePageStage(LyricsDownloaderPageStage.Selecting)
     }
 
     fun getTrackPagingData(query: String, market: Market?) {
@@ -92,9 +83,9 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
         }
     }
 
-    private fun updatePageStage(pageStage: PageStage) {
+    private fun updatePageStage(lyricsDownloaderPageStage: LyricsDownloaderPageStage) {
         mutablePageViewState.update {
-            it.copy(pageStage = pageStage)
+            it.copy(lyricsDownloaderPageStage = lyricsDownloaderPageStage)
         }
     }
 
@@ -111,8 +102,7 @@ sealed class SelectedSongLyricsPageState {
     data class Error(val error: String) : SelectedSongLyricsPageState()
 }
 
-sealed class PageStage {
-    object Selecting : PageStage()
-    object Selected : PageStage()
-
+sealed class LyricsDownloaderPageStage {
+    object Selecting : LyricsDownloaderPageStage()
+    object Selected : LyricsDownloaderPageStage()
 }

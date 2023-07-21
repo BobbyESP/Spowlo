@@ -74,14 +74,3 @@ suspend fun <T> checkSpotifyApiIsValid(
         return null
     }
 }
-
-fun checkIfLoggedIn(applicationContext: Context): Boolean {
-    val apiCredentials = CredentialsStorer().provideCredentials(applicationContext)
-    return try {
-        apiCredentials.getSpotifyClientPkceApi()
-            ?: throw SpotifyException.ReAuthenticationNeededException()
-        true
-    } catch (e: SpotifyException.ReAuthenticationNeededException) {
-        false
-    }
-}

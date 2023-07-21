@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
@@ -29,7 +28,6 @@ fun HomePage(
     viewModel: HomePageViewModel
 ) {
     val navController = LocalNavController.current
-    val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
