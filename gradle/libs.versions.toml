@@ -72,6 +72,9 @@ spotify-appRemote = "0.8.0"
 #Spotify Downloader
 spotdlversion = "-SNAPSHOT"
 
+#Metadata manager
+kyantTaglib = "2023.7.5"
+
 #Firebase, GMS...
 firebaseAuth = "22.0.0"
 gmsPlayServicesAuth = "20.5.0"
@@ -198,6 +201,9 @@ spotify-app-remote = { group = "com.spotify", name = "spotify-app-remote", versi
 spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlversion" }
 spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlversion" }
 
+# Metadata manager
+metadata-manager = { group = "com.github.Kyant0", name = "tag", version.ref = "kyantTaglib" }
+
 #Chrome Custom Tabs
 chrome-custom-tabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
 
@@ -220,6 +226,7 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

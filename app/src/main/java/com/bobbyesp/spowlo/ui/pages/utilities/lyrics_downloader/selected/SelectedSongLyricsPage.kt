@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CopyAll
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -43,6 +44,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.storage.StorageHelper.SaveLyricsButton
 import com.bobbyesp.spowlo.ui.common.LocalNavController
@@ -61,8 +63,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 @Composable
 fun SelectedSongLyricsPage(
     viewModel: SelectedSongLyricsPageViewModel,
-    songName: String,
-    artistName: String,
+    selectedSong : SelectedSong,
 ) {
     val navController = LocalNavController.current
 
@@ -70,10 +71,11 @@ fun SelectedSongLyricsPage(
     val context = LocalContext.current
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val pageStage = viewModel.pageViewState.collectAsStateWithLifecycle().value.lyricsDownloaderPageStage
+    val pageStage =
+        viewModel.pageViewState.collectAsStateWithLifecycle().value.lyricsDownloaderPageStage
     val paginatedTracks = viewState.tracks.collectAsLazyPagingItems()
 
-    val query = "$songName $artistName"
+    val query = "${selectedSong.name} ${selectedSong.mainArtist}"
 
     LaunchedEffect(true) {
         viewModel.getTrackPagingData(query, null)
@@ -128,7 +130,7 @@ fun SelectedSongLyricsPage(
                         item {
                             Text(
                                 text = stringResource(
-                                    id = R.string.showing_results_for, songName, artistName
+                                    id = R.string.showing_results_for, selectedSong.name, selectedSong.mainArtist
                                 ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
@@ -163,7 +165,7 @@ fun SelectedSongLyricsPage(
                         viewModel.clearSelectedSong()
                     }
 
-                    var selectedSong by rememberSaveable(key = "selectedSong") {
+                    var spotifySelectedSong by rememberSaveable(key = "spotifySelectedSong") {
                         mutableStateOf<Song?>(null)
                     }
 
@@ -174,7 +176,7 @@ fun SelectedSongLyricsPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         LaunchedEffect(true) {
-                            selectedSong = viewState.selectedSong
+                            spotifySelectedSong = viewState.selectedSong
                             viewModel.getLyrics(viewState.selectedSong!!.path)
                         }
                         Crossfade(
@@ -211,11 +213,11 @@ fun SelectedSongLyricsPage(
                                             .padding(),
                                     ) {
                                         item {
-                                            if (selectedSong != null) SpotifyHorizontalSongCard(
+                                            if (spotifySelectedSong != null) SpotifyHorizontalSongCard(
                                                 modifier = Modifier.padding(
                                                     horizontal = 16.dp,
                                                     vertical = 8.dp
-                                                ), song = selectedSong!!
+                                                ), song = spotifySelectedSong!!
                                             )
                                         }
                                         item {
@@ -237,7 +239,7 @@ fun SelectedSongLyricsPage(
                                                         .padding(4.dp)
                                                         .padding(end = 12.dp),
                                                 ) {
-                                                    uriOpener.openUri(selectedSong!!.path)
+                                                    uriOpener.openUri(spotifySelectedSong!!.path)
                                                 }
                                             }
                                         }
@@ -265,28 +267,44 @@ fun SelectedSongLyricsPage(
 
                                         }
                                         item {
-                                            Row(
+                                            Column(
                                                 modifier = Modifier
+                                                    .padding(8.dp)
                                                     .fillMaxWidth()
-                                                    .padding(8.dp),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center
                                             ) {
-                                                SaveLyricsButton(
-                                                    modifier = Modifier.weight(0.5f),
-                                                    song = selectedSong!!,
-                                                    lyrics = lyrics,
-                                                )
-                                                Spacer(modifier = Modifier.width(8.dp))
                                                 CardListItem(
                                                     modifier = Modifier.weight(0.5f),
-                                                    leadingContentIcon = Icons.Default.CopyAll,
-                                                    headlineContentText = stringResource(id = R.string.copy_lyrics)
+                                                    leadingContentIcon = Icons.Default.UploadFile,
+                                                    headlineContentText = stringResource(id = R.string.embed_lyrics_file)
                                                 ) {
                                                     GeneralTextUtils.copyToClipboardAndNotify(
                                                         context,
                                                         lyrics
                                                     )
+                                                }
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth(),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    SaveLyricsButton(
+                                                        modifier = Modifier.weight(0.5f),
+                                                        song = spotifySelectedSong!!,
+                                                        lyrics = lyrics,
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    CardListItem(
+                                                        modifier = Modifier.weight(0.5f),
+                                                        leadingContentIcon = Icons.Default.CopyAll,
+                                                        headlineContentText = stringResource(id = R.string.copy_lyrics)
+                                                    ) {
+                                                        GeneralTextUtils.copyToClipboardAndNotify(
+                                                            context,
+                                                            lyrics
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -295,6 +313,7 @@ fun SelectedSongLyricsPage(
                                         }
                                     }
                                 }
+
                                 is SelectedSongLyricsPageState.Error -> {
                                     Text(text = lyricsState.error)
                                 }

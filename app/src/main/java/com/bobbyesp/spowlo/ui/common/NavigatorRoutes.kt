@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.common
 
 import android.content.Context
+import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
@@ -11,6 +12,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalPlay
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 sealed class Route(
     val route: String,
@@ -30,6 +34,9 @@ sealed class Route(
     object Home : Route("home", "", Icons.Outlined.Home)
     object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
         object LyricsDownloaderPage : Route("lyrics_downloader_page", "", Icons.Default.Lyrics)
+            object SelectedSongLyricsPage : Route("selected_song_page/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
+                fun createRoute(selectedSong: SelectedSong) = "selected_song_page/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
+            }
         object MiniplayerPage : Route("miniplayer_page", "", Icons.Default.MusicNote)
 
     object Profile : Route("profile", "", Icons.Default.Person)
@@ -75,3 +82,6 @@ sealed class Route(
     }
 }
 
+enum class NavArgs(val key: String) {
+    SelectedSong(key = "selectedSong")
+}

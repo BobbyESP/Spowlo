@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
@@ -351,7 +352,17 @@ fun LyricsDownloaderPageImpl(
                                 val artistsList = song.artist.toList()
                                 val mainArtist = artistsList.first()
 
-                                navController.navigate(Route.LyricsDownloaderPage.route + "/${song.title}/${mainArtist}") //Navigate to lyrics downloader page with song title and artist for search
+                                val selectedSongParcel = SelectedSong(
+                                    name = song.title,
+                                    mainArtist = mainArtist,
+                                    localSongPath = song.path,
+                                )
+
+                                navController.navigate(
+                                    Route.SelectedSongLyricsPage.createRoute(
+                                        selectedSongParcel
+                                    )
+                                ) //Navigate to lyrics page with the parcelable
                             })
                         }
                     }

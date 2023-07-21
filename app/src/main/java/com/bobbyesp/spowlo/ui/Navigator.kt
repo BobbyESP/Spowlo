@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui
 
+import android.os.Build
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -38,16 +39,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.spowlo.ui.common.NavArgs
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.common.SelectedSongParamType
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenu
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
@@ -261,25 +264,25 @@ private fun NavGraphBuilder.utilitiesNavigation(
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-//              val viewModel = it.sharedViewModel<LyricsDownloaderPageViewModel>(navController = navController)
                 val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
                 LyricsDownloaderPage(viewModel)
             }
         }
 
-        val lrcRouteWithQuery =
-            StringBuilder().append(Route.LyricsDownloaderPage.route).append("/{name}/{artist}")
-                .toString()
         slideInVerticallyComposable(
-            route = lrcRouteWithQuery,
-            arguments = listOf(navArgument("name") { type = NavType.StringType },
-                navArgument("artist") { type = NavType.StringType })
+            route = Route.SelectedSongLyricsPage.route,
+            arguments = listOf(navArgument(NavArgs.SelectedSong.key) { type = SelectedSongParamType})
         ) {
-            val name = it.arguments?.getString("name") ?: return@slideInVerticallyComposable
-            val artist = it.arguments?.getString("artist") ?: return@slideInVerticallyComposable
+
+            val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.arguments?.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
+            } else {
+                it.arguments?.getParcelable<SelectedSong>(NavArgs.SelectedSong.key)
+            }
+
             val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
 
-            SelectedSongLyricsPage(viewModel, name, artist)
+            SelectedSongLyricsPage(viewModel, selectedSongParcelable!!)
         }
 
         composable(Route.MiniplayerPage.route) {

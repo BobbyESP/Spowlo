@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("kapt")
     kotlin("plugin.serialization")
+    id("kotlin-parcelize")
 }
 apply(plugin = "dagger.hilt.android.plugin")
 
@@ -255,6 +256,9 @@ dependencies {
 
     //BottomSheets
     implementation(libs.modalBottomSheet)
+
+    //Metadata editor
+    implementation(libs.metadata.manager)
 
     //Compose testing libs
     implementation(libs.compose.tooling.preview)
