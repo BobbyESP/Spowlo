@@ -21,7 +21,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,14 +68,12 @@ import com.bobbyesp.spowlo.ui.util.Constants.AppBarHeight
 import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.ui.util.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.util.appBarScrollBehavior
-import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
 
     val windowsInsets = WindowInsets.systemBars
     val density = LocalDensity.current
@@ -274,10 +271,11 @@ private fun NavGraphBuilder.utilitiesNavigation(
             arguments = listOf(navArgument(NavArgs.SelectedSong.key) { type = SelectedSongParamType})
         ) {
 
+            @Suppress("DEPRECATION")
             val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 it.arguments?.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
             } else {
-                it.arguments?.getParcelable<SelectedSong>(NavArgs.SelectedSong.key)
+                it.arguments?.getParcelable(NavArgs.SelectedSong.key)
             }
 
             val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()

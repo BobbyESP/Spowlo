@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,17 +59,19 @@ import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectedSongLyricsPage(
     viewModel: SelectedSongLyricsPageViewModel,
-    selectedSong : SelectedSong,
+    selectedSong: SelectedSong,
 ) {
     val navController = LocalNavController.current
 
     val uriOpener = LocalUriHandler.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val pageStage =
@@ -130,7 +133,9 @@ fun SelectedSongLyricsPage(
                         item {
                             Text(
                                 text = stringResource(
-                                    id = R.string.showing_results_for, selectedSong.name, selectedSong.mainArtist
+                                    id = R.string.showing_results_for,
+                                    selectedSong.name,
+                                    selectedSong.mainArtist
                                 ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
@@ -273,14 +278,17 @@ fun SelectedSongLyricsPage(
                                                     .fillMaxWidth()
                                             ) {
                                                 CardListItem(
-                                                    modifier = Modifier.weight(0.5f),
+                                                    modifier = Modifier.fillMaxWidth(),
                                                     leadingContentIcon = Icons.Default.UploadFile,
                                                     headlineContentText = stringResource(id = R.string.embed_lyrics_file)
                                                 ) {
-                                                    GeneralTextUtils.copyToClipboardAndNotify(
-                                                        context,
-                                                        lyrics
-                                                    )
+                                                    scope.launch {
+                                                        viewModel.embedLyricsFile(
+                                                            context,
+                                                            selectedSong,
+                                                            lyrics
+                                                        )
+                                                    }
                                                 }
                                                 Spacer(modifier = Modifier.height(8.dp))
                                                 Row(

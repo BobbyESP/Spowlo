@@ -61,4 +61,6 @@
     <string name="recently_played">Recently played</string>
     <string name="copy_lyrics">Copy lyrics</string>
     <string name="embed_lyrics_file">Embed lyrics to song file</string>
+    <string name="lyrics_embedded_success">Lyrics embedded successfully</string>
+    <string name="lyrics_embedded_error">An error occurred while trying to embed the lyrics</string>
 </resources>
