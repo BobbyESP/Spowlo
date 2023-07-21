@@ -154,8 +154,7 @@ object SpotDL {
         command.addAll(
             listOf(
                 pythonPath.absolutePath,
-                "${'"'}${pipZip.absolutePath}${'"'}",
-                "--help"
+                "--version"
             )
         )
 

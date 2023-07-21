@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +60,7 @@ import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
-import kotlinx.coroutines.Dispatchers
+import com.bobbyesp.spowlo.utils.pages.PageStateWithThrowable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,23 +73,19 @@ fun ProfilePage(
         LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.loadPage(context)
-    }
-
     Crossfade(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = bottomInsetsAsPadding),
         targetState = viewState.value.state,
-        label = "Main Crossfade Profile Page"
+        label = "Main crossfade Profile Page"
     ) { state ->
         when (state) {
-            is ProfilePageState.Loading -> {
+            is PageStateWithThrowable.Loading -> {
                 LoadingPage()
             }
 
-            is ProfilePageState.Error -> {
+            is PageStateWithThrowable.Error -> {
                 ErrorPage(
                     error = state.exception.message ?: stringResource(id = R.string.unknown),
                     onRetry = {
@@ -101,7 +96,7 @@ fun ProfilePage(
                 )
             }
 
-            is ProfilePageState.Loaded -> {
+            is PageStateWithThrowable.Success -> {
                 PageImplementation(viewModel)
             }
         }
@@ -127,12 +122,6 @@ private fun PageImplementation(
     val mostListenedSongs = pageState.mostPlayedSongs.collectAsLazyPagingItems()
     val recentlyPlayedSongs = pageState.recentlyPlayedSongs
     val isRefreshingPage = pageState.isRefreshing
-
-    val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshingPage, onRefresh = {
-        scope.launch(Dispatchers.IO) {
-            viewModel.reloadPage(context)
-        }
-    })
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
@@ -219,7 +208,6 @@ private fun PageImplementation(
                 scrollBehavior = scrollBehavior,
             )
         }) { paddingValues ->
-//        PullRefreshIndicator(state = pullRefreshState, refreshing = isRefreshingPage)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SearchingDbHelper @Inject constructor(
-    private val searchDb: SearchingHistoryDatabase
+    searchDb: SearchingHistoryDatabase
 ) {
 
     private val dao = searchDb.searchingDao()
