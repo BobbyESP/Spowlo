@@ -140,63 +140,66 @@ fun LyricsDownloaderPageImpl(
         mutableStateOf(false)
     }
 
-    Scaffold(topBar = {
-        SmallTopAppBar(navigationIcon = {
-            BackButton {
-                navController.popBackStack()
-            }
-        }, actions = {
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        viewModel.loadMediaStoreTracks(
-                            context
+    Scaffold(
+        topBar = {
+            SmallTopAppBar(
+                navigationIcon = {
+                    BackButton {
+                        navController.popBackStack()
+                    }
+                }, actions = {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                viewModel.loadMediaStoreTracks(
+                                    context
+                                )
+                            }
+                        }, enabled = state is LyricsDownloaderPageState.Loaded
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Refresh MediaStore"
                         )
                     }
-                }, enabled = state is LyricsDownloaderPageState.Loaded
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Refresh MediaStore"
-                )
-            }
-            IconButton(
-                onClick = {
-                    wantsToSearch = !wantsToSearch
-                }, enabled = true
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search, contentDescription = "Search for songs"
-                )
-            }
+                    IconButton(
+                        onClick = {
+                            wantsToSearch = !wantsToSearch
+                        }, enabled = true
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search for songs"
+                        )
+                    }
 
-        }, title = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = Route.LyricsDownloaderPage.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                MarqueeText(
-                    text = stringResource(id = R.string.lyrics_downloader_subtitle),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    ),
-                    fontWeight = FontWeight.Normal
+                }, title = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = Route.LyricsDownloaderPage.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        MarqueeText(
+                            text = stringResource(id = R.string.lyrics_downloader_subtitle),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            ),
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+                })
+        }, floatingActionButton = {
+            FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Outlined.Download,
+                    contentDescription = "Download all lyrics"
                 )
             }
-        })
-    }, floatingActionButton = {
-        FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Outlined.Download,
-                contentDescription = "Download all lyrics"
-            )
-        }
-    }, modifier = Modifier.fillMaxSize()
+        }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         var mediaStoreSongs by rememberSaveable(key = "songsList") {
             mutableStateOf<List<Song>>(emptyList())
@@ -239,7 +242,8 @@ fun LyricsDownloaderPageImpl(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Top
                         ) {
-                            ExpandableSearchBar(query = query,
+                            ExpandableSearchBar(
+                                query = query,
                                 onQueryChange = { query = it },
                                 onSearch = { queryToSearch ->
                                     scope.launch {

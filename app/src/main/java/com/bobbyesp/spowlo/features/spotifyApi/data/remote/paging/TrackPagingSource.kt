@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.adamratzman.spotify.SpotifyAppApi
@@ -80,8 +79,6 @@ class TrackAsSongPagingSource(
                 offset = offset,
                 market = market
             )
-
-            Log.i("TrackAsSongPagingSource", "response: $response")
 
             if (response.isNotEmpty()) {
                 val tracks = response.items

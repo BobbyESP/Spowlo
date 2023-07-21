@@ -9,7 +9,6 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.TrackAsSongPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectedSongLyricsPageViewModel @Inject constructor(
-    private val lyricsApi: SpotifyLyricService
+    private val lyricsApi: SpotifyLyricService,
 ) : ViewModel() {
-
-    private val api = SpotifyApiRequests
-
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 

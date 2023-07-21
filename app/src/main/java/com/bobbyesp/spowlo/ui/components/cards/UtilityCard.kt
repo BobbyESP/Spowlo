@@ -13,12 +13,11 @@ import androidx.compose.material.icons.outlined.AirplaneTicket
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,9 +39,10 @@ fun AppUtilityCard(
     val xOffset = cardSize.dp / 2.3f
     val yOffset = cardSize.dp / 5
 
-    Surface(
-        modifier = modifier.aspectRatio(1.0f).clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
-        onClick = onClick
+    OutlinedCard(
+        modifier = modifier.aspectRatio(1.0f).background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
+        onClick = onClick,
+        shape = MaterialTheme.shapes.small,
     ) {
         Box(
             modifier = Modifier

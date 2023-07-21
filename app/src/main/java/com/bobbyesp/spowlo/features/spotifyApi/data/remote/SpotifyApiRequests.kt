@@ -14,13 +14,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SpotifyApiRequests {
+    private val isDebug = BuildConfig.DEBUG
     private const val clientId = BuildConfig.CLIENT_ID
     private const val clientSecret = BuildConfig.CLIENT_SECRET
     private var api: SpotifyAppApi? = null
     private var token: Token? = null
 
     private suspend fun buildApi() {
-        Log.d(
+        if(isDebug) Log.d(
             "SpotifyApiRequests",
             "Building API with client ID: $clientId and client secret: $clientSecret"
         )
