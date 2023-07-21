@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.utils.pages
+package com.bobbyesp.spowlo.ui.util.pages
 
 sealed class PageState() {
     object Loading : PageState()

@@ -60,7 +60,7 @@ import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
-import com.bobbyesp.spowlo.utils.pages.PageStateWithThrowable
+import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
 import kotlinx.coroutines.launch
 
 @Composable
