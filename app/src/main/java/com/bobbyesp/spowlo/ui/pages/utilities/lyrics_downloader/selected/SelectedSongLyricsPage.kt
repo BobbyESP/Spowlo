@@ -148,7 +148,13 @@ fun SelectedSongLyricsPage(
                             }
                             Spacer(modifier = Modifier.height(14.dp))
                         }
-                        loadStateContent(paginatedTracks)
+                        loadStateContent(paginatedTracks) {
+                            LinearProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                        }
                     }
                 }
 

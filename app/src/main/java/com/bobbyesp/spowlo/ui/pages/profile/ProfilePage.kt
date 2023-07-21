@@ -55,6 +55,7 @@ import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
+import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
@@ -277,8 +278,14 @@ private fun PageImplementation(
                             }
                         )
                     }
-                    loadStateContent(mostListenedSongs)
-                    loadStateContent(mostPlayedArtists)
+                    loadStateContent(mostListenedSongs) {
+                        SmallSongCardShimmer()
+                    }
+                    loadStateContent(mostPlayedArtists) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 }
             }
             item {

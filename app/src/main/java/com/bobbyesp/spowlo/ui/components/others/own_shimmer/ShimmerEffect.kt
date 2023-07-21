@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.others
+package com.bobbyesp.spowlo.ui.components.others.own_shimmer
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

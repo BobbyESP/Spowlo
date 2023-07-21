@@ -1,28 +1,29 @@
 package com.bobbyesp.spowlo.ui.ext
 
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.bobbyesp.spowlo.BuildConfig
 
 fun <T: Any> LazyListScope.loadStateContent(
-    items: LazyPagingItems<T>
+    items: LazyPagingItems<T>,
+    loadingContent: @Composable () -> Unit
 ) {
     items.apply {
         when {
             loadState.refresh is LoadState.Loading -> {
-                item {
+                items(7) {
                     // Render a loading indicator while refreshing
-                    CircularProgressIndicator()
+                    loadingContent()
                 }
             }
 
             loadState.append is LoadState.Loading -> {
-                item {
+                items(7) {
                     // Render a loading indicator at the end while loading more items
-                    CircularProgressIndicator()
+                    loadingContent()
                 }
             }
 
