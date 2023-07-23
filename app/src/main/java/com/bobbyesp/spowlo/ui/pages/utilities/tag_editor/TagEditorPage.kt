@@ -1,9 +1,7 @@
-package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
+package com.bobbyesp.spowlo.ui.pages.utilities.tag_editor
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_AUDIO
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,16 +23,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,7 +51,6 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
-import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGranted
@@ -74,7 +66,7 @@ import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.toList
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageState
 import com.bobbyesp.spowlo.ui.util.permissions.PermissionRequestHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -84,17 +76,17 @@ import kotlinx.coroutines.launch
 @SuppressLint("InlinedApi") //Make the linter shut up kek
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LyricsDownloaderPage(
-    viewModel: LyricsDownloaderPageViewModel
+fun TagEditorPage(
+    viewModel: TagEditorPageViewModel
 ) {
     val currentApiVersion = Build.VERSION.SDK_INT
 
     val targetPermission = when {
-        currentApiVersion < Build.VERSION_CODES.Q -> READ_EXTERNAL_STORAGE
+        currentApiVersion < Build.VERSION_CODES.Q -> Manifest.permission.READ_EXTERNAL_STORAGE
 
-        currentApiVersion < Build.VERSION_CODES.S -> READ_EXTERNAL_STORAGE
+        currentApiVersion < Build.VERSION_CODES.S -> Manifest.permission.READ_EXTERNAL_STORAGE
 
-        else -> READ_MEDIA_AUDIO
+        else -> Manifest.permission.READ_MEDIA_AUDIO
     }
 
     val storagePermissionState = rememberPermissionState(permission = targetPermission)
@@ -114,15 +106,15 @@ fun LyricsDownloaderPage(
             )
         },
         content = {
-            LyricsDownloaderPageImpl(viewModel = viewModel)
+            TagEditorImplementationPage(viewModel = viewModel)
         })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LyricsDownloaderPageImpl(
-    navController: NavController = LocalNavController.current,
-    viewModel: LyricsDownloaderPageViewModel
+private fun TagEditorImplementationPage(
+    viewModel: TagEditorPageViewModel,
+    navController: NavController = LocalNavController.current
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -180,13 +172,13 @@ fun LyricsDownloaderPageImpl(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = Route.LyricsDownloader.title,
+                            text = Route.TagEditor.title,
                             style = MaterialTheme.typography.bodyLarge,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
                         MarqueeText(
-                            text = stringResource(id = R.string.lyrics_downloader_subtitle),
+                            text = stringResource(id = R.string.tag_editor_subtitle),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             ),
@@ -194,13 +186,6 @@ fun LyricsDownloaderPageImpl(
                         )
                     }
                 })
-        }, floatingActionButton = {
-            FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Outlined.Download,
-                    contentDescription = "Download all lyrics"
-                )
-            }
         }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         var mediaStoreSongs by rememberSaveable(key = "songsList") {
@@ -355,13 +340,14 @@ fun LyricsDownloaderPageImpl(
                                     name = song.title,
                                     mainArtist = mainArtist,
                                     localSongPath = song.path,
+                                    artworkPath = song.albumArtPath,
                                 )
 
                                 navController.navigate(
-                                    Route.SelectedSongLyrics.createRoute(
+                                    Route.TagEditor.Editor.createRoute(
                                         selectedSongParcel
                                     )
-                                ) //Navigate to lyrics page with the parcelable
+                                )
                             })
                         }
                     }
@@ -371,21 +357,6 @@ fun LyricsDownloaderPageImpl(
             is MediaStorePageState.Error -> {
                 Text(text = "Error")
             }
-        }
-    }
-}
-
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun LyricsDownloaderPagePreview() {
-    AppLocalSettingsProvider(windowWidthSize = WindowWidthSizeClass.Expanded) {
-        SpowloTheme {
-//            LyricsDownloaderPageImpl(
-//                navController = rememberNavController(), viewModel = LyricsDownloaderPageViewModel(
-//                    SearchingDbHelper()
-//                )
-//            )
         }
     }
 }

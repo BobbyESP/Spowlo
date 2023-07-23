@@ -1,11 +1,11 @@
-package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
+package com.bobbyesp.spowlo.ui.pages.utilities.tag_editor
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageState
 import com.bobbyesp.spowlo.utils.databases.SearchingDbHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +16,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LyricsDownloaderPageViewModel @Inject constructor(
+class TagEditorPageViewModel @Inject constructor(
     private val searchesDb: SearchingDbHelper
-) : ViewModel() {
-    private val TAG = "LyricsDownloaderPageViewModel"
-
+): ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
@@ -80,7 +78,6 @@ class LyricsDownloaderPageViewModel @Inject constructor(
     fun allSearchesFlow() = searchesDb.getAllSearchesWithFlow()
 
     suspend fun deleteSearchById(searchId: Int) {
-        Log.d(TAG, "deleteSearchById: $searchId")
         searchesDb.deleteSearch(searchId)
     }
 
@@ -99,14 +96,4 @@ class LyricsDownloaderPageViewModel @Inject constructor(
             it.copy(filter = filter)
         }
     }
-
-}
-
-/**
- * The state of the page
- */
-sealed class MediaStorePageState {
-    object Loading : MediaStorePageState()
-    class Loaded(val mediaStoreSongs: List<Song>) : MediaStorePageState()
-    object Error : MediaStorePageState()
 }

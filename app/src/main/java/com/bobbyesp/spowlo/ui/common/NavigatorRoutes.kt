@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
@@ -33,11 +34,16 @@ sealed class Route(
     //ROUTES
     object Home : Route("home", "", Icons.Outlined.Home)
     object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
-        object LyricsDownloaderPage : Route("lyrics_downloader_page", "", Icons.Default.Lyrics)
-            object SelectedSongLyricsPage : Route("selected_song_page/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
-                fun createRoute(selectedSong: SelectedSong) = "selected_song_page/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
+        object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
+            object SelectedSongLyrics : Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
+                fun createRoute(selectedSong: SelectedSong) = "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
             }
-        object MiniplayerPage : Route("miniplayer_page", "", Icons.Default.MusicNote)
+        object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
+            object Editor : Route("tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}", "", Icons.Default.Edit) {
+                fun createRoute(selectedSong: SelectedSong) = "tag_editor/editor/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
+            }
+        }
+        object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
 
     object Profile : Route("profile", "", Icons.Default.Person)
 
@@ -69,7 +75,7 @@ sealed class Route(
             Home.title = stringUtils.getStringWithContext(R.string.home)
 
             Utilities.title = stringUtils.getStringWithContext(R.string.utilities)
-            LyricsDownloaderPage.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
+            LyricsDownloader.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
             MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
 
             OnboardingPage.title = stringUtils.getStringWithContext(R.string.onboarding)
@@ -78,10 +84,13 @@ sealed class Route(
 
             ProfileNavigator.title = stringUtils.getStringWithContext(R.string.profile)
             Profile.title = stringUtils.getStringWithContext(R.string.profile)
+
+            TagEditor.title = stringUtils.getStringWithContext(R.string.id3_tag_editor)
         }
     }
 }
 
 enum class NavArgs(val key: String) {
-    SelectedSong(key = "selectedSong")
+    SelectedSong(key = "selectedSong"),
+    TagEditorSelectedSong(key = "tagEditorSelectedSong")
 }

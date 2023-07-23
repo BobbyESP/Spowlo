@@ -108,8 +108,8 @@ fun SelectedSongLyricsPage(
     ) { paddingValues ->
         Crossfade(
             targetState = pageStage, animationSpec = tween(175), label = "Fade between pages"
-        ) { actualPageState ->
-            when (actualPageState) {
+        ) { actualPageStage ->
+            when (actualPageStage) {
                 is LyricsDownloaderPageStage.Selecting -> {
                     LazyColumn(
                         modifier = Modifier

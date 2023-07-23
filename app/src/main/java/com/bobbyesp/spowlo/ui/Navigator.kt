@@ -63,6 +63,10 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownl
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.spowlo.ui.player.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.util.Constants.AppBarHeight
 import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
@@ -257,7 +261,7 @@ private fun NavGraphBuilder.utilitiesNavigation(
         composable(Route.Utilities.route) {
             UtilitiesPage()
         }
-        composable(Route.LyricsDownloaderPage.route) {
+        composable(Route.LyricsDownloader.route) {
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
@@ -267,7 +271,7 @@ private fun NavGraphBuilder.utilitiesNavigation(
         }
 
         slideInVerticallyComposable(
-            route = Route.SelectedSongLyricsPage.route,
+            route = Route.SelectedSongLyrics.route,
             arguments = listOf(navArgument(NavArgs.SelectedSong.key) { type = SelectedSongParamType})
         ) {
 
@@ -281,6 +285,28 @@ private fun NavGraphBuilder.utilitiesNavigation(
             val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
 
             SelectedSongLyricsPage(viewModel, selectedSongParcelable!!)
+        }
+
+        composable(Route.TagEditor.route) {
+            val viewModel = hiltViewModel<TagEditorPageViewModel>()
+
+            TagEditorPage(viewModel)
+        }
+
+        slideInVerticallyComposable(
+            route = Route.TagEditor.Editor.route,
+            arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) { type = SelectedSongParamType})
+        ) {
+            @Suppress("DEPRECATION")
+            val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key, SelectedSong::class.java)
+            } else {
+                it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key)
+            }
+
+            val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
+
+            ID3MetadataEditorPage(viewModel = viewModel, selectedSong = selectedSongParcelable!!)
         }
 
         composable(Route.MiniplayerPage.route) {

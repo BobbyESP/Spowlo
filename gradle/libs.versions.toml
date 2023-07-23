@@ -73,7 +73,7 @@ spotify-appRemote = "0.8.0"
 spotdlversion = "-SNAPSHOT"
 
 #Metadata manager
-kyantTaglib = "2023.7.5"
+kyantTaglib = "2023.7.6"
 
 #Firebase, GMS...
 firebaseAuth = "22.0.0"

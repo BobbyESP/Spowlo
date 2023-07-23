@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,7 +50,15 @@ fun UtilitiesPage() {
                             utilityName = stringResource(id = R.string.lyrics_downloader),
                             icon = Icons.Default.Lyrics
                         ) {
-                            navController.navigate(Route.LyricsDownloaderPage.route)
+                            navController.navigate(Route.LyricsDownloader.route)
+                        }
+                    }
+                    item {
+                        AppUtilityCard(
+                            utilityName = stringResource(id = R.string.id3_tag_editor),
+                            icon = Icons.Default.Edit
+                        ) {
+                            navController.navigate(Route.TagEditor.route)
                         }
                     }
                 }

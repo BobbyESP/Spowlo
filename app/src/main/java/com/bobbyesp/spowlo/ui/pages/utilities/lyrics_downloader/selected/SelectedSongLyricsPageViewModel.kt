@@ -1,7 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +15,7 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.TrackAsSongPagingSource
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
-import com.kyant.tag.Tag
+import com.kyant.tag.Metadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -93,9 +92,9 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
                     "Embedding lyrics to file with path: ${selectedSong.localSongPath}"
                 )
                 selectedSong.localSongPath?.let { songPath ->
-                    Tag.saveLyrics(
-                        context.contentResolver,
-                        Uri.parse(songPath), lyrics
+                    Metadata.saveLyrics(
+                        songPath,
+                        lyrics
                     )
                 }
                 ToastUtil.makeToastSuspend(

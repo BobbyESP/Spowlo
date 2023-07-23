@@ -68,7 +68,7 @@ class ProfilePageViewModel @Inject constructor(
             )
         }
         spotifyBroadcastReceiver.addObserver(this)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             loadPage(context)
         }
     }

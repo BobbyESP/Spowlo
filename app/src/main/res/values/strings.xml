@@ -63,4 +63,6 @@
     <string name="embed_lyrics_file">Embed lyrics to song file</string>
     <string name="lyrics_embedded_success">Lyrics embedded successfully</string>
     <string name="lyrics_embedded_error">An error occurred while trying to embed the lyrics</string>
+    <string name="id3_tag_editor">ID3 Tag editor</string>
+    <string name="tag_editor_subtitle">Select the song you want to see or edit the metadata</string>
 </resources>
