@@ -70,6 +70,14 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
+    suspend fun saveMetadata(newMetadata: Metadata, path: String) {
+
+    }
+
+    fun sameMetadata(oldMetadata: Metadata, newMetadata: Metadata): Boolean {
+        return oldMetadata == newMetadata
+    }
+
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {
             PageViewState(

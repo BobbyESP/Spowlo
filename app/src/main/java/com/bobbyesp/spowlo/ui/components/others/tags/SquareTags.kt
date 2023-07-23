@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components.others
+package com.bobbyesp.spowlo.ui.components.others.tags
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

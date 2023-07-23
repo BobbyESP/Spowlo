@@ -56,6 +56,24 @@ fun <T> List<T>.thirdOrNull(): T? {
     return if (size < 3) null else this[2]
 }
 
+/**
+ * Returns all the elements, or `null` if the list has no elements.
+ */
+fun <T> List<T>.allOrNull(): List<T>? {
+    return ifEmpty { null }
+}
+
+/**
+ * Returns all the elements in a single string, or `null` if the list has no elements.
+ */
+fun <T> List<T>.joinOrNullToString(
+    separator: CharSequence = ", ",
+    prefix: CharSequence = "",
+    postfix: CharSequence = ""
+): String? {
+    return ifEmpty { null }?.joinToString(separator, prefix, postfix)
+}
+
 
 class ConcurrentList<T> : MutableList<T> {
     private val list = mutableListOf<T>()

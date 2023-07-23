@@ -26,6 +26,7 @@ fun CardListItem(
     modifier: Modifier = Modifier,
     leadingContentIcon: ImageVector,
     headlineContentText: String,
+    applySemiBoldFontWeight: Boolean = true,
     onClick: () -> Unit,
 ) {
     Card(
@@ -42,7 +43,7 @@ fun CardListItem(
                 contentDescription = "Leading content icon"
             )
         }, headlineContent = {
-            Text(text = headlineContentText, fontWeight = FontWeight.SemiBold)
+            Text(text = headlineContentText, fontWeight = if(applySemiBoldFontWeight) FontWeight.SemiBold else FontWeight.Normal)
         }, modifier = Modifier.clickable(onClick = onClick),
             colors = ListItemDefaults.colors(
                 leadingIconColor = MaterialTheme.colorScheme.primary,

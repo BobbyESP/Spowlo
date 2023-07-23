@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
-import com.bobbyesp.spowlo.ui.components.others.FilterTag
+import com.bobbyesp.spowlo.ui.components.others.tags.FilterTag
 import com.bobbyesp.spowlo.ui.ext.toDate
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.localAsset

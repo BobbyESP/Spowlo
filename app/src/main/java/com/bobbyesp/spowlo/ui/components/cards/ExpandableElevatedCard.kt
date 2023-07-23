@@ -103,7 +103,7 @@ fun ExpandableElevatedCard(
 @Composable
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
-fun ExpandableElevatedCardPreview() {
+private fun ExpandableElevatedCardPreview() {
     SpowloTheme {
         ExpandableElevatedCard(
             title = "Title",

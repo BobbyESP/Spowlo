@@ -64,7 +64,7 @@ fun RecentlyPlayedSongCard(
                                 modifier = Modifier
                                     .size(60.dp)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
-                                    .clip(MaterialTheme.shapes.small),
+                                    .clip(MaterialTheme.shapes.extraSmall),
                                 model = albumArtPath,
                                 onState = { state ->
                                     //if it was successful, don't show the placeholder, else show it
