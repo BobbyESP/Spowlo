@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.components.images
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -15,40 +16,50 @@ import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
+import okhttp3.OkHttpClient
 
 @Composable
 fun AsyncImageImpl(
     model: Any,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
-    onState: ((AsyncImagePainter.State) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
+    transform: (AsyncImagePainter.State) -> AsyncImagePainter.State = AsyncImagePainter.DefaultTransform,
+    onState: ((AsyncImagePainter.State) -> Unit)? = null,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     isPreview: Boolean = false
 ) {
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .memoryCache {
-            MemoryCache.Builder(context)
-                .maxSizePercent(0.05)
-                .build()
-        }
-        .diskCache {
-            DiskCache.Builder()
-                .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.2)
-                .build()
-        }
-        .build()
+
+    // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .memoryCache {
+                MemoryCache.Builder(context)
+                    .maxSizePercent(0.05)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.2)
+                    .build()
+            }
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .build()
+            }
+            .build()
+    }
 
     val imageRequest = ImageRequest.Builder(context)
         .addHeader("user-agent", userAgentHeader)
@@ -56,29 +67,38 @@ fun AsyncImageImpl(
         .crossfade(true)
         .build()
 
-    if (isPreview) Image(
-        painter = painterResource(R.drawable.bones_imaginedragons_testimage),
-        contentDescription = contentDescription,
-        modifier = modifier,
-        alignment = alignment,
-        contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-    )
-    else AsyncImage(
-        model = imageRequest,
-        contentDescription = contentDescription,
-        imageLoader = imageLoader,
-        modifier = modifier,
-        transform = transform,
-        onState = onState,
-        alignment = alignment,
-        contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        filterQuality = filterQuality,
-    )
+    if (isPreview) {
+        Image(
+            painter = painterResource(R.drawable.bones_imaginedragons_testimage),
+            contentDescription = contentDescription,
+            modifier = modifier,
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter,
+        )
+    } else {
+        val painter = rememberAsyncImagePainter(
+            model = imageRequest,
+            imageLoader = imageLoader,
+            onState = onState,
+            filterQuality = filterQuality,
+            transform = transform,
+            contentScale = contentScale,
+        )
+
+        Image(
+            painter = painter,
+            contentDescription = contentDescription,
+            modifier = modifier,
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter,
+        )
+    }
 }
+
 
 @Composable
 fun AsyncImageImpl(
