@@ -23,7 +23,7 @@ class MediaStorePageViewModel @Inject constructor(
     private val searchesDb: SearchingDbHelper,
     @ApplicationContext applicationContext: Context
 ) : ViewModel() {
-    private val TAG = "LyricsDownloaderPageViewModel"
+    private val TAG = "MediaStorePageViewModel"
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

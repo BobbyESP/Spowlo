@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.adamratzman.spotify.SpotifyClientApi
@@ -234,7 +233,7 @@ class ClientMostListenedSongsPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Track> {
         val offset = params.key ?: 0
-        Log.i("ClientMostListenedSongsPagingSource", "load: offset: $offset, limit: ${params.loadSize}")
+
         return try {
             val response = spotifyApi.personalization.getTopTracks(
                 limit = params.loadSize,
@@ -291,5 +290,4 @@ class SpotifyCustomPagingSource<T : Any>(
             LoadResult.Error(exception)
         }
     }
-
 }

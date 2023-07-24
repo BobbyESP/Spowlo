@@ -20,9 +20,7 @@ object MediaStoreReceiver {
     fun getAllSongsFromMediaStore(applicationContext: Context): List<Song> {
         val contentResolver: ContentResolver = applicationContext.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        if(BuildConfig.DEBUG) {
-            println("MediaStoreReceiver.getAllSongsFromMediaStore: uri = $uri")
-        }
+
         val selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0"
         val songs = mutableListOf<Song>()
 
