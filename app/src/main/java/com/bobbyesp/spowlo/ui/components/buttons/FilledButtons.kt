@@ -46,6 +46,7 @@ fun FilledButtonWithIcon(
     }
 }
 
+
 @Composable
 fun OpenInSpotifyFilledButton(
     modifier: Modifier = Modifier,
@@ -70,6 +71,30 @@ fun OpenInSpotifyFilledButton(
             modifier = Modifier.padding(start = 8.dp),
             text = stringResource(id = R.string.open_in_spotify),
             style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+@Composable
+fun FilledTonalButtonWithIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    icon: ImageVector,
+    text: String
+) {
+    FilledTonalButton(
+        modifier = modifier,
+        onClick = onClick,
+        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+    )
+    {
+        Icon(
+            modifier = Modifier.size(18.dp),
+            imageVector = icon,
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = text
         )
     }
 }
@@ -102,7 +127,7 @@ fun ListenOnSpotifyFilledButton(
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun OpenInSpotifyFilledButtonPreview() {
+private fun OpenInSpotifyFilledButtonPreview() {
     SpowloTheme {
         OpenInSpotifyFilledButton(onClick = {})
     }
@@ -111,7 +136,7 @@ fun OpenInSpotifyFilledButtonPreview() {
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun ListenOnSpotifyFilledButtonPreview() {
+private fun ListenOnSpotifyFilledButtonPreview() {
     SpowloTheme {
         ListenOnSpotifyFilledButton(onClick = {})
     }

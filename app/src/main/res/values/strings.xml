@@ -91,4 +91,8 @@
     <string name="duration">Duration</string>
     <string name="no_songs_found">No songs found in your library!</string>
     <string name="refresh">Refresh</string>
+    <string name="changelog">Changelog</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_version_available">New version available!</string>
 </resources>
