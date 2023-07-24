@@ -89,4 +89,6 @@
     <string name="sample_rate">Sample rate</string>
     <string name="channels">Channels</string>
     <string name="duration">Duration</string>
+    <string name="no_songs_found">No songs found in your library!</string>
+    <string name="refresh">Refresh</string>
 </resources>

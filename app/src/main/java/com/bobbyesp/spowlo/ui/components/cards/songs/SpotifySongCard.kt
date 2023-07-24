@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
@@ -107,6 +109,7 @@ fun SpotifySongCard(
 @Composable
 fun SmallSpotifySongCard(
     modifier: Modifier = Modifier,
+    size: Dp = 110.dp,
     track: Track,
     onClick: () -> Unit,
     number: Int? = null,
@@ -116,6 +119,7 @@ fun SmallSpotifySongCard(
 
     Box(
         modifier
+            .width(size)
             .clip(MaterialTheme.shapes.extraSmall)
             .clickable(onClick = onClick)
     ) {
@@ -126,7 +130,7 @@ fun SmallSpotifySongCard(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.extraSmall)
                     .fillMaxWidth()
-                    .size(110.dp)
+                    .size(size)
                     .aspectRatio(1f),
             ) {
                 if (albumArtPath != null) {
@@ -174,7 +178,7 @@ fun SmallSpotifySongCard(
                     )
                 }
                 Column(
-                    horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp)
+                    horizontalAlignment = Alignment.Start, modifier = Modifier.padding(vertical = 8.dp).padding(start = 2.dp, end = 8.dp)
                 ) {
                     MarqueeText(
                         text = track.name,

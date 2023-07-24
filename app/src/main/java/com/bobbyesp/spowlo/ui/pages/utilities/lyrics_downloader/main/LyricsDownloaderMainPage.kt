@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -99,7 +100,8 @@ fun LyricsDownloaderPage(
     val storagePermissionState = rememberPermissionState(permission = targetPermission)
     val navController = LocalNavController.current
 
-    PermissionRequestHandler(permissionState = storagePermissionState,
+    PermissionRequestHandler(
+        permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
             PermissionNotGrantedDialog(
                 neededPermissions = listOf(targetPermission.toPermissionType()),
@@ -255,7 +257,31 @@ fun MediaStorePage(
                 ).value
 
                 mediaStoreSongs = state.mediaStoreSongs
-                Column(
+
+                if (mediaStoreSongs.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.no_songs_found),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Button(onClick = {
+                            scope.launch {
+                                viewModel.loadMediaStoreTracks(
+                                    context
+                                )
+                            }
+                        }) {
+                            Text(text = stringResource(id = R.string.refresh))
+                        }
+                    }
+                } else Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()

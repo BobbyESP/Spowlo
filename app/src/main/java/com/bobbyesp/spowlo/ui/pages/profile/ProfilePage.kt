@@ -29,14 +29,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -57,7 +55,6 @@ import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
-import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
@@ -133,85 +130,77 @@ private fun PageImplementation(
     }
 
     val userInfo = viewState.value.userInformation
-
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        canScroll = { true },
-    )
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        bottomBar = {
-        }, topBar = {
-            SmallTopAppBar(
-                title = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = userInfo?.displayName
-                                    ?: stringResource(id = R.string.unknown),
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = if (userInfo?.id != null) "@${userInfo.id}" else stringResource(
-                                    id = R.string.unknown
-                                ),
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                        alpha = 0.6f
-                                    )
-                                ),
-                            )
-                        }
-                        if (userInfo?.images?.isNotEmpty() == true) {
-                            val imageSize = 48.dp
-                            Box(
-                                modifier = Modifier
-                                    .padding(top = 16.dp)
-                                    .size(imageSize)
-                                    .clip(CircleShape)
-                            ) {
-                                AsyncImageImpl(
-                                    modifier = Modifier.fillMaxSize(),
-                                    model = userInfo.images.lastIndex.let { userInfo.images[it].url },
-                                    contentDescription = "Song cover",
-                                    contentScale = ContentScale.Crop,
-                                )
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                            ) {
-                                PlaceholderCreator(
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .padding(end = 16.dp)
-                                        .clip(CircleShape),
-                                    icon = Icons.Default.Person,
-                                    colorful = true
-                                )
-                            }
-                        }
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        }) { paddingValues ->
+            .fillMaxSize())
+    { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
+            userScrollEnabled = true,
         ) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = userInfo?.displayName
+                                ?: stringResource(id = R.string.unknown),
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = if (userInfo?.id != null) "@${userInfo.id}" else stringResource(
+                                id = R.string.unknown
+                            ),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                    alpha = 0.6f
+                                )
+                            ),
+                        )
+                    }
+                    if (userInfo?.images?.isNotEmpty() == true) {
+                        val imageSize = 48.dp
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .size(imageSize)
+                                .clip(CircleShape)
+                        ) {
+                            AsyncImageImpl(
+                                modifier = Modifier.fillMaxSize(),
+                                model = userInfo.images.lastIndex.let { userInfo.images[it].url },
+                                contentDescription = "Song cover",
+                                contentScale = ContentScale.Fit,
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .size(48.dp)
+                                .clip(CircleShape)
+                        ) {
+                            PlaceholderCreator(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center),
+                                icon = Icons.Default.Person,
+                                colorful = true
+                            )
+                        }
+                    }
+                }
+            }
             if (pageState.actualTrack != null) {
                 item {
                     CategoryTitle(text = stringResource(id = R.string.listening_now))
@@ -270,7 +259,8 @@ private fun PageImplementation(
                         val item = mostListenedSongs[it]
                         SmallSpotifySongCard(
                             track = item!!,
-                            modifier = Modifier.width(110.dp),
+                            modifier = Modifier,
+                            size = 110.dp,
                             showSpotifyLogo = false,
                             number = it + 1,
                             onClick = {

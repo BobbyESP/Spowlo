@@ -79,6 +79,8 @@ class MediaStorePageViewModel @Inject constructor(
         updateState(MediaStorePageState.Loaded(songs))
     }
 
+    fun isLoadedAndSongsAreEmpty() = pageViewState.value.state is MediaStorePageState.Loaded && (pageViewState.value.state as MediaStorePageState.Loaded).mediaStoreSongs.isEmpty()
+
     suspend fun insertSearch(
         search: String,
         filter: MediaStoreFilterType? = pageViewState.value.filter,

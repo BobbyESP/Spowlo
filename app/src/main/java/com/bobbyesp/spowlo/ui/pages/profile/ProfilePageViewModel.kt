@@ -225,14 +225,18 @@ class ProfilePageViewModel @Inject constructor(
     suspend fun sameSongAsBroadcastVerifier(context: Context) {
         checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
             viewModelScope.launch(Dispatchers.IO) {
-                val apiPlayingSong = api.player.getCurrentlyPlaying()
+                val apiPlayingSong = try {
+                    api.player.getCurrentlyPlaying()
+                } catch (e: Exception) {
+                    Log.e(TAG, "sameSongAsBroadcastVerifier: ", e)
+                    null
+                }
                 val apiPlayingSongId = apiPlayingSong?.item?.id?.getId()
                 Log.i(
                     TAG,
                     "sameSongAsBroadcastVerifier: Song ID from API request -> $apiPlayingSongId"
                 )
-                val actualSongId =
-                    mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
+                val actualSongId = mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
                 Log.i(
                     TAG,
                     "sameSongAsBroadcastVerifier: Song ID from broadcast -> $actualSongId"

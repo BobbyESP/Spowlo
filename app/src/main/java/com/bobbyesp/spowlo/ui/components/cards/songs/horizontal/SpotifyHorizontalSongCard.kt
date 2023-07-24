@@ -1,4 +1,3 @@
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,7 +58,7 @@ fun SpotifyHorizontalSongCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box {
-                        if (albumArtPath != null) {
+                        if (albumArtPath != null && showArtwork) {
                             AsyncImageImpl(
                                 modifier = Modifier
                                     .size(90.dp)
@@ -129,7 +128,9 @@ fun SpotifyHorizontalSongCard(
                     }
                     AnimatedVisibility(visible = isPlaying) {
                         PlayingIndicator(
-                            modifier = Modifier.height(24.dp).padding(end = 12.dp),
+                            modifier = Modifier
+                                .height(24.dp)
+                                .padding(end = 12.dp),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
