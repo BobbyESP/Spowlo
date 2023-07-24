@@ -59,6 +59,7 @@ import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
+import com.bobbyesp.spowlo.utils.lyrics.LyricsUtil.embedLyricsFile
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -283,7 +284,7 @@ fun SelectedSongLyricsPage(
                                                     headlineContentText = stringResource(id = R.string.embed_lyrics_file)
                                                 ) {
                                                     scope.launch {
-                                                        viewModel.embedLyricsFile(
+                                                        embedLyricsFile(
                                                             context,
                                                             selectedSong,
                                                             lyrics

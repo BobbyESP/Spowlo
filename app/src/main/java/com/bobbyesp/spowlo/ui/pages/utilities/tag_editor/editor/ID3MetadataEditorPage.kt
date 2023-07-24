@@ -55,6 +55,7 @@ import com.bobbyesp.spowlo.ui.components.text.PreConfiguredOutlinedTextField
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.joinOrNullToString
 import com.bobbyesp.spowlo.ui.ext.toMinutes
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.alertDialogs.MediaStoreInfoDialog
 import com.kyant.tag.Metadata
 import com.kyant.tag.Tags
 import com.kyant.tag.Tags.Companion.toTags
@@ -147,6 +148,7 @@ fun EditMetadataPage(
 ) {
     val artworkUri = selectedSong.artworkPath
     var showArtwork by remember { mutableStateOf(true) }
+    var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -157,7 +159,6 @@ fun EditMetadataPage(
     ) {
         Box(
             modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
                 .size(250.dp)
                 .padding(8.dp)
                 .padding(bottom = 8.dp)
@@ -168,6 +169,7 @@ fun EditMetadataPage(
                 AsyncImageImpl(
                     modifier = Modifier
                         .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small)
                         .align(Alignment.Center),
                     model = artworkUri,
                     onState = { state ->
@@ -181,6 +183,7 @@ fun EditMetadataPage(
                 PlaceholderCreator(
                     modifier = Modifier
                         .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small)
                         .align(Alignment.Center),
                     icon = Icons.Default.MusicNote,
                     colorful = false
@@ -199,7 +202,7 @@ fun EditMetadataPage(
                 headlineContentText = stringResource(
                 id = R.string.mediastore_info
             )) {
-                TODO()
+                showMediaStoreInfoDialog = true
             }
             Spacer(modifier = Modifier.width(8.dp))
             CardListItem(
@@ -231,8 +234,8 @@ fun EditMetadataPage(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
             ) {
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.bitrate), metadata = metadata.bitrate.toString())
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.sample_rate), metadata = metadata.sampleRate.toString())
+                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.bitrate), metadata = metadata.bitrate.toString() + " kbps")
+                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.sample_rate), metadata = metadata.sampleRate.toString() + " Hz")
             }
             Row(
                 modifier = Modifier
@@ -429,5 +432,13 @@ fun EditMetadataPage(
                 )
             }
         }
+    }
+
+    if(showMediaStoreInfoDialog) {
+        MediaStoreInfoDialog(
+            onDismissRequest = {
+                showMediaStoreInfoDialog = false
+            }
+        )
     }
 }

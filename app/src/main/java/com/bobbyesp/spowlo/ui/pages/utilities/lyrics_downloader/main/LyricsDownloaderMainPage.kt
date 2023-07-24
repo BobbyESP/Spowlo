@@ -37,7 +37,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,7 +60,7 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
-import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGranted
+import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGrantedDialog
 import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.songs.LocalSongCard
@@ -85,7 +84,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LyricsDownloaderPage(
-    viewModel: LyricsDownloaderPageViewModel
+    viewModel: MediaStorePageViewModel
 ) {
     val currentApiVersion = Build.VERSION.SDK_INT
 
@@ -102,7 +101,7 @@ fun LyricsDownloaderPage(
 
     PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
-            PermissionNotGranted(
+            PermissionNotGrantedDialog(
                 neededPermissions = listOf(targetPermission.toPermissionType()),
                 onGrantRequest = {
                     storagePermissionState.launchPermissionRequest()
@@ -114,15 +113,63 @@ fun LyricsDownloaderPage(
             )
         },
         content = {
-            LyricsDownloaderPageImpl(viewModel = viewModel)
+            MediaStorePage(
+                viewModel = viewModel,
+                navController = navController,
+                title = {
+                    Text(
+                        text = Route.LyricsDownloader.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                subtitle = {
+                    MarqueeText(
+                        text = stringResource(id = R.string.lyrics_downloader_subtitle),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        ),
+                        fontWeight = FontWeight.Normal
+                    )
+                },
+                fabs = {
+                    FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Download,
+                            contentDescription = "Download all lyrics"
+                        )
+                    }
+                },
+                onItemClicked = { song ->
+                    val artistsList = song.artist.toList()
+                    val mainArtist = artistsList.first()
+
+                    val selectedSongParcel = SelectedSong(
+                        name = song.title,
+                        mainArtist = mainArtist,
+                        localSongPath = song.path,
+                    )
+
+                    navController.navigate(
+                        Route.SelectedSongLyrics.createRoute(
+                            selectedSongParcel
+                        )
+                    ) //Navigate to lyrics page with the parcelable
+                }
+            )
         })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LyricsDownloaderPageImpl(
+fun MediaStorePage(
     navController: NavController = LocalNavController.current,
-    viewModel: LyricsDownloaderPageViewModel
+    viewModel: MediaStorePageViewModel,
+    title: @Composable () -> Unit = {},
+    subtitle: @Composable () -> Unit = {},
+    fabs: @Composable () -> Unit = {},
+    onItemClicked: (Song) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -179,38 +226,16 @@ fun LyricsDownloaderPageImpl(
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = Route.LyricsDownloader.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        MarqueeText(
-                            text = stringResource(id = R.string.lyrics_downloader_subtitle),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            ),
-                            fontWeight = FontWeight.Normal
-                        )
+                        title()
+                        subtitle()
                     }
                 })
         }, floatingActionButton = {
-            FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Outlined.Download,
-                    contentDescription = "Download all lyrics"
-                )
-            }
+            fabs()
         }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         var mediaStoreSongs by rememberSaveable(key = "songsList") {
             mutableStateOf<List<Song>>(emptyList())
-        }
-
-        LaunchedEffect(viewModel) {
-            viewModel.loadMediaStoreTracks(
-                context
-            )
         }
 
         when (state) {
@@ -348,20 +373,7 @@ fun LyricsDownloaderPageImpl(
                     ) {
                         items(mediaStoreSongs) { song ->
                             LocalSongCard(song = song, modifier = Modifier, onClick = {
-                                val artistsList = song.artist.toList()
-                                val mainArtist = artistsList.first()
-
-                                val selectedSongParcel = SelectedSong(
-                                    name = song.title,
-                                    mainArtist = mainArtist,
-                                    localSongPath = song.path,
-                                )
-
-                                navController.navigate(
-                                    Route.SelectedSongLyrics.createRoute(
-                                        selectedSongParcel
-                                    )
-                                ) //Navigate to lyrics page with the parcelable
+                                onItemClicked(song)
                             })
                         }
                     }

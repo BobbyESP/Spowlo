@@ -1,7 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -9,13 +7,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
-import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.TrackAsSongPagingSource
-import com.bobbyesp.spowlo.utils.notifications.ToastUtil
-import com.kyant.tag.Metadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -81,33 +75,6 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
             return
         } else {
             updateState(SelectedSongLyricsPageState.Loaded(lyrics))
-        }
-    }
-
-    suspend fun embedLyricsFile(context: Context, selectedSong: SelectedSong, lyrics: String) {
-        withContext(Dispatchers.IO) {
-            try {
-                Log.i(
-                    "SelectedSongLyricsPageViewModel",
-                    "Embedding lyrics to file with path: ${selectedSong.localSongPath}"
-                )
-                selectedSong.localSongPath?.let { songPath ->
-                    Metadata.saveLyrics(
-                        songPath,
-                        lyrics
-                    )
-                }
-                ToastUtil.makeToastSuspend(
-                    context,
-                    context.getString(R.string.lyrics_embedded_success)
-                )
-            } catch (e: Exception) {
-                Log.e("SelectedSongLyricsPageViewModel", "Error while trying to embed lyrics: ${e.message}")
-                ToastUtil.makeToastSuspend(
-                    context,
-                    context.getString(R.string.lyrics_embedded_error)
-                )
-            }
         }
     }
 

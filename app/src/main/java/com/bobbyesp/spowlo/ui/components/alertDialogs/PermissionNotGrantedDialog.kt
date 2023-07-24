@@ -24,7 +24,7 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 
 @Composable
-fun PermissionNotGranted(
+fun PermissionNotGrantedDialog(
     modifier: Modifier = Modifier,
     neededPermissions: List<PermissionType>,
     shouldShowRationale: Boolean = false,
@@ -142,7 +142,7 @@ fun String.toPermissionType(): PermissionType {
 @Composable
 fun PermissionNotGrantedPreview() {
     SpowloTheme {
-        PermissionNotGranted(
+        PermissionNotGrantedDialog(
             onGrantRequest = {},
             onDismissRequest = {},
             neededPermissions = listOf(

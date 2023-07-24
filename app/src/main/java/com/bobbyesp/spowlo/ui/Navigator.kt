@@ -33,9 +33,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -60,11 +57,10 @@ import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.UtilitiesPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
-import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.spowlo.ui.player.PlayerAsBottomSheet
@@ -94,6 +90,8 @@ fun Navigator() {
             Route.Profile,
             )
     }
+
+    val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
@@ -179,7 +177,7 @@ fun Navigator() {
                         ProfilePage(viewModel = viewModel)
                     }
                 }
-                utilitiesNavigation(navController = navController)
+                utilitiesNavigation(navController = navController, mediaStorePageViewModel = mediaStoreViewModel)
             }
             PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
@@ -252,7 +250,8 @@ fun Navigator() {
 }
 
 private fun NavGraphBuilder.utilitiesNavigation(
-    navController: NavHostController
+    navController: NavHostController,
+    mediaStorePageViewModel: MediaStorePageViewModel
 ) {
     navigation(
         route = Route.UtilitiesNavigator.route,
@@ -265,8 +264,8 @@ private fun NavGraphBuilder.utilitiesNavigation(
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-                val viewModel = hiltViewModel<LyricsDownloaderPageViewModel>()
-                LyricsDownloaderPage(viewModel)
+
+                LyricsDownloaderPage(mediaStorePageViewModel)
             }
         }
 
@@ -288,15 +287,15 @@ private fun NavGraphBuilder.utilitiesNavigation(
         }
 
         composable(Route.TagEditor.route) {
-            val viewModel = hiltViewModel<TagEditorPageViewModel>()
 
-            TagEditorPage(viewModel)
+            TagEditorPage(mediaStorePageViewModel)
         }
 
         slideInVerticallyComposable(
             route = Route.TagEditor.Editor.route,
             arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) { type = SelectedSongParamType})
         ) {
+
             @Suppress("DEPRECATION")
             val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key, SelectedSong::class.java)
@@ -313,15 +312,4 @@ private fun NavGraphBuilder.utilitiesNavigation(
             TODO()
         }
     }
-}
-
-@Composable
-inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
-    navController: NavHostController,
-): T {
-    val navGraphRoute = destination.parent?.route ?: return viewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-    return viewModel(parentEntry)
 }

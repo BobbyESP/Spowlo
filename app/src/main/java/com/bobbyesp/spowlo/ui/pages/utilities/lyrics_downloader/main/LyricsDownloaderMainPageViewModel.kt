@@ -3,23 +3,33 @@ package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.utils.databases.SearchingDbHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LyricsDownloaderPageViewModel @Inject constructor(
-    private val searchesDb: SearchingDbHelper
+class MediaStorePageViewModel @Inject constructor(
+    private val searchesDb: SearchingDbHelper,
+    @ApplicationContext applicationContext: Context
 ) : ViewModel() {
     private val TAG = "LyricsDownloaderPageViewModel"
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            loadMediaStoreTracks(applicationContext)
+        }
+    }
 
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
