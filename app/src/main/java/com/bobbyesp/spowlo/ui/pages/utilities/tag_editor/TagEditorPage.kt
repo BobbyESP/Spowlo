@@ -16,7 +16,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.alertDialogs.PermissionNotGrantedDialog
 import com.bobbyesp.spowlo.ui.components.alertDialogs.toPermissionType
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePage
+import com.bobbyesp.spowlo.ui.pages.utilities.MediaStorePage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageViewModel
 import com.bobbyesp.spowlo.ui.util.permissions.PermissionRequestHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
