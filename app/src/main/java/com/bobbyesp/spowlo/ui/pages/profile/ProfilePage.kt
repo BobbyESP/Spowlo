@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.profile
 
 import SpotifyHorizontalSongCard
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,6 +55,7 @@ import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
+import com.bobbyesp.spowlo.ui.components.others.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
@@ -132,7 +135,34 @@ private fun PageImplementation(
     val userInfo = viewState.value.userInformation
     Scaffold(
         modifier = Modifier
-            .fillMaxSize())
+            .fillMaxSize(),
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                SegmentedControl(
+                    items = listOf(
+                        stringResource(id = R.string.four_weeks),
+                        stringResource(id = R.string.six_months),
+                        stringResource(id = R.string.all_time)
+                    ),
+                    onItemSelection = {
+                        viewModel.updateTimeRangeAndReload(it, context)
+                    },
+                    cornerRadius = 50,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .align(
+                            Alignment.CenterHorizontally
+                        ),
+                )
+            }
+        }
+    )
     { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -331,7 +361,7 @@ private fun ErrorPage(
         Text(text = error)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text(text = "Retry")
+            Text(text = stringResource(id = R.string.retry))
         }
     }
 }

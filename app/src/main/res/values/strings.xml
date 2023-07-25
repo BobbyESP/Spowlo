@@ -96,4 +96,9 @@
     <string name="cancel">Cancel</string>
     <string name="new_version_available">New version available!</string>
     <string name="search">Search</string>
+    <string name="retry">Retry</string>
+    <string name="what_would_like_to_download">What would you like to download?</string>
+    <string name="four_weeks">4 weeks</string>
+    <string name="six_months">6 months</string>
+    <string name="all_time">All time</string>
 </resources>

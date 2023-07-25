@@ -33,6 +33,7 @@ import androidx.compose.ui.zIndex
  */
 @Composable
 fun SegmentedControl(
+    modifier: Modifier = Modifier,
     items: List<String>,
     defaultSelectedItemIndex: Int = 0,
     useFixedWidth: Boolean = false,
@@ -44,7 +45,7 @@ fun SegmentedControl(
     val selectedIndex = remember { mutableStateOf(defaultSelectedItemIndex) }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
     ) {
         items.forEachIndexed { index, item ->
             OutlinedButton(

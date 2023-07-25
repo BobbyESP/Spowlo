@@ -28,6 +28,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientM
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
 import com.bobbyesp.spowlo.ui.ext.getId
+import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -147,12 +148,26 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    fun updateTimeRange(timeRange: ClientPersonalizationApi.TimeRange, context: Context) {
+    fun updateTimeRange(timeRange: Int) {
+        val selectedTimeRange = when(timeRange) {
+            0 -> ClientPersonalizationApi.TimeRange.ShortTerm
+            1 -> ClientPersonalizationApi.TimeRange.MediumTerm
+            2 -> ClientPersonalizationApi.TimeRange.LongTerm
+            else -> ClientPersonalizationApi.TimeRange.ShortTerm
+        }
+
         mutablePageViewState.update {
             it.copy(
-                actualTimeRange = timeRange,
+                actualTimeRange = selectedTimeRange,
             )
         }
+    }
+
+    fun updateTimeRangeAndReload(timeRange: Int, context: Context) {
+        if(timeRange == mutablePageViewState.value.actualTimeRange.toInt()) {
+            return
+        }
+        updateTimeRange(timeRange)
         reloadAfterTimeRangeChange(context)
     }
 

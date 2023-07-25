@@ -55,6 +55,8 @@ import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
+import com.bobbyesp.spowlo.ui.pages.search.SearchPage
+import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.UtilitiesPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageViewModel
@@ -80,18 +82,17 @@ fun Navigator() {
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val routesToShowInBottomBar: List<Route> = remember {
-        listOf(Route.HomeNavigator, Route.UtilitiesNavigator, Route.ProfileNavigator)
+        listOf(Route.HomeNavigator, Route.SearchNavigator, Route.UtilitiesNavigator, Route.ProfileNavigator)
     }
 
     val routesToShowNavBar = remember {
         listOf(
             Route.Home,
+            Route.Search,
             Route.Utilities,
             Route.Profile,
             )
     }
-
-    val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
@@ -104,6 +105,7 @@ fun Navigator() {
                 routesToShowNavBar.fastAny { it.route == navBackStackEntry?.destination?.route }
     }
 
+    val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -159,14 +161,18 @@ fun Navigator() {
                         }
                     }
                 }
-                navigation(
-                    route = Route.SettingsNavigator.route,
-                    startDestination = Route.Settings.route,
-                ) {
-                    composable(Route.Settings.route) {
 
+                navigation(
+                    route = Route.SearchNavigator.route,
+                    startDestination = Route.Search.route,
+                ) {
+                    composable(Route.Search.route) {
+                        val viewModel = hiltViewModel<SearchViewModel>()
+                        SearchPage(viewModel = viewModel)
                     }
                 }
+
+                utilitiesNavigation(navController = navController, mediaStorePageViewModel = mediaStoreViewModel)
 
                 navigation(
                     route = Route.ProfileNavigator.route,
@@ -177,7 +183,6 @@ fun Navigator() {
                         ProfilePage(viewModel = viewModel)
                     }
                 }
-                utilitiesNavigation(navController = navController, mediaStorePageViewModel = mediaStoreViewModel)
             }
             PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
@@ -309,6 +314,17 @@ private fun NavGraphBuilder.utilitiesNavigation(
         }
 
         composable(Route.MiniplayerPage.route) {
+            TODO()
+        }
+    }
+}
+
+private fun NavGraphBuilder.settingsNavigation() {
+    navigation(
+        route = Route.SettingsNavigator.route,
+        startDestination = Route.Settings.route,
+    ) {
+        composable(Route.Settings.route) {
             TODO()
         }
     }
