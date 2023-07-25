@@ -5,9 +5,11 @@ import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalPlay
@@ -26,7 +28,8 @@ sealed class Route(
     object MainHost : Route("main_host", "")
 
     //NAVIGATORS
-    object HomeNavigator : Route("home_navigator", "", Icons.Outlined.Home)
+    object HomeNavigator : Route("home_navigator", "", Icons.Default.Home)
+    object SearchNavigator : Route("search_navigator", "", Icons.Default.Search)
     object UtilitiesNavigator : Route("utilities_navigator", "", Icons.Outlined.LocalPlay)
     object ProfileNavigator : Route("profile_navigator", "", Icons.Default.Person)
     object SettingsNavigator : Route("settings_navigator", "", Icons.Default.Settings)
@@ -44,7 +47,7 @@ sealed class Route(
             }
         }
         object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
-
+    object Search : Route("search", "", Icons.Default.Search)
     object Profile : Route("profile", "", Icons.Default.Person)
 
 
@@ -66,26 +69,26 @@ sealed class Route(
             this.applicationContext = applicationContext
             val stringUtils = StringUtils(applicationContext)
 
+            OnboardingPage.title = stringUtils.getStringWithContext(R.string.onboarding)
+
             MainHost.title = stringUtils.getStringWithContext(R.string.app_name)
 
             HomeNavigator.title = stringUtils.getStringWithContext(R.string.home)
+            SearchNavigator.title = stringUtils.getStringWithContext(R.string.search)
             UtilitiesNavigator.title = stringUtils.getStringWithContext(R.string.utilities)
             SettingsNavigator.title = stringUtils.getStringWithContext(R.string.settings)
-
-            Home.title = stringUtils.getStringWithContext(R.string.home)
-
-            Utilities.title = stringUtils.getStringWithContext(R.string.utilities)
-            LyricsDownloader.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
-            MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
-
-            OnboardingPage.title = stringUtils.getStringWithContext(R.string.onboarding)
+            ProfileNavigator.title = stringUtils.getStringWithContext(R.string.profile)
 
             Settings.title = stringUtils.getStringWithContext(R.string.settings)
 
-            ProfileNavigator.title = stringUtils.getStringWithContext(R.string.profile)
+            Home.title = stringUtils.getStringWithContext(R.string.home)
+            Search.title = stringUtils.getStringWithContext(R.string.search)
+            Utilities.title = stringUtils.getStringWithContext(R.string.utilities)
+                LyricsDownloader.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
+                MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
+                TagEditor.title = stringUtils.getStringWithContext(R.string.id3_tag_editor)
             Profile.title = stringUtils.getStringWithContext(R.string.profile)
 
-            TagEditor.title = stringUtils.getStringWithContext(R.string.id3_tag_editor)
         }
     }
 }
