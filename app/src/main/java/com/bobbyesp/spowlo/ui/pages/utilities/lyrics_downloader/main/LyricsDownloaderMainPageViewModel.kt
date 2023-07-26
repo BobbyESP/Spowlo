@@ -79,7 +79,8 @@ class MediaStorePageViewModel @Inject constructor(
         updateState(MediaStorePageState.Loaded(songs))
     }
 
-    fun isLoadedAndSongsAreEmpty() = pageViewState.value.state is MediaStorePageState.Loaded && (pageViewState.value.state as MediaStorePageState.Loaded).mediaStoreSongs.isEmpty()
+    fun isLoadedAndSongsAreEmpty() =
+        pageViewState.value.state is MediaStorePageState.Loaded && (pageViewState.value.state as MediaStorePageState.Loaded).mediaStoreSongs.isEmpty()
 
     suspend fun insertSearch(
         search: String,
@@ -107,8 +108,14 @@ class MediaStorePageViewModel @Inject constructor(
     }
 
     fun updateFilter(filter: MediaStoreFilterType?) {
-        mutablePageViewState.update {
-            it.copy(filter = filter)
+        if (filter == pageViewState.value.filter) {
+            mutablePageViewState.update {
+                it.copy(filter = null)
+            }
+        } else {
+            mutablePageViewState.update {
+                it.copy(filter = filter)
+            }
         }
     }
 

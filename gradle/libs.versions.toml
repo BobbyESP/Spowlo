@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.2.0-alpha13"
+agp = "8.2.0-alpha14"
 kotlin = "1.8.21"
 appcompat = "1.7.0-alpha02"
 core-ktx = "1.10.1"
@@ -73,7 +73,7 @@ spotify-appRemote = "0.8.0"
 spotdlversion = "-SNAPSHOT"
 
 #Metadata manager
-kyantTaglib = "2023.7.6"
+kyantTaglib = "2023.7.7"
 
 #Firebase, GMS...
 firebaseAuth = "22.0.0"

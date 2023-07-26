@@ -113,9 +113,14 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    fun reloadPage(context: Context) {
+    suspend fun reloadPage(context: Context) {
         updateIsRefreshing(true)
         runCatching {
+            if (mutablePageViewState.value.userInformation == null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    loadUserData(context)
+                }.join()
+            }
             viewModelScope.launch(Dispatchers.IO) {
                 with(context) {
                     loadMostListenedArtists(this)
@@ -149,7 +154,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     fun updateTimeRange(timeRange: Int) {
-        val selectedTimeRange = when(timeRange) {
+        val selectedTimeRange = when (timeRange) {
             0 -> ClientPersonalizationApi.TimeRange.ShortTerm
             1 -> ClientPersonalizationApi.TimeRange.MediumTerm
             2 -> ClientPersonalizationApi.TimeRange.LongTerm
@@ -164,7 +169,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     fun updateTimeRangeAndReload(timeRange: Int, context: Context) {
-        if(timeRange == mutablePageViewState.value.actualTimeRange.toInt()) {
+        if (timeRange == mutablePageViewState.value.actualTimeRange.toInt()) {
             return
         }
         updateTimeRange(timeRange)
@@ -251,7 +256,8 @@ class ProfilePageViewModel @Inject constructor(
                     TAG,
                     "sameSongAsBroadcastVerifier: Song ID from API request -> $apiPlayingSongId"
                 )
-                val actualSongId = mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
+                val actualSongId =
+                    mutablePageViewState.value.metadataState?.playableUri?.id?.getId()
                 Log.i(
                     TAG,
                     "sameSongAsBroadcastVerifier: Song ID from broadcast -> $actualSongId"

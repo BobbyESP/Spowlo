@@ -42,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
@@ -134,10 +135,6 @@ fun MediaStorePage(
             fabs()
         }, modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        var mediaStoreSongs by rememberSaveable(key = "songsList") {
-            mutableStateOf<List<Song>>(emptyList())
-        }
-
         when (state) {
             is MediaStorePageState.Loading -> {
                 Column(
@@ -154,9 +151,7 @@ fun MediaStorePage(
                     initialValue = emptyList()
                 ).value
 
-                mediaStoreSongs = state.mediaStoreSongs
-
-                if (mediaStoreSongs.isEmpty()) {
+                if (state.mediaStoreSongs.isEmpty()) {
                     Column(
                         modifier = Modifier
                             .padding(paddingValues)
@@ -197,7 +192,7 @@ fun MediaStorePage(
                                 query = query,
                                 onQueryChange = { query = it },
                                 onSearch = { queryToSearch ->
-                                    scope.launch {
+                                    viewModel.viewModelScope.launch {
                                         viewModel.loadMediaStoreWithFilter(
                                             context, queryToSearch
                                         )
@@ -238,10 +233,6 @@ fun MediaStorePage(
                                                 selected = selectedFilter == MediaStoreFilterType.TITLE,
                                                 onClick = {
                                                     viewModel.updateFilter(MediaStoreFilterType.TITLE)
-                                                    //if already selected, deselect
-                                                    if (selectedFilter == MediaStoreFilterType.TITLE) {
-                                                        viewModel.updateFilter(null)
-                                                    }
                                                 },
                                                 label = stringResource(id = R.string.title)
                                             )
@@ -249,10 +240,6 @@ fun MediaStorePage(
                                                 selected = selectedFilter == MediaStoreFilterType.ARTIST,
                                                 onClick = {
                                                     viewModel.updateFilter(MediaStoreFilterType.ARTIST)
-                                                    //if already selected, deselect
-                                                    if (selectedFilter == MediaStoreFilterType.ARTIST) {
-                                                        viewModel.updateFilter(null)
-                                                    }
                                                 },
                                                 label = stringResource(id = R.string.artist)
                                             )
@@ -295,7 +282,7 @@ fun MediaStorePage(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyGridState
                     ) {
-                        items(mediaStoreSongs) { song ->
+                        items(state.mediaStoreSongs) { song ->
                             LocalSongCard(song = song, modifier = Modifier, onClick = {
                                 onItemClicked(song)
                             })

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -71,9 +72,12 @@ fun ID3MetadataEditorPage(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val pageStage = viewState.state
     val navController = LocalNavController.current
+    val viewModelScope = viewModel.viewModelScope
 
     LaunchedEffect(true) {
-        viewModel.loadTrackMetadata(selectedSong.localSongPath!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            viewModel.loadTrackMetadata(selectedSong.localSongPath!!)
+        }
     }
 
     Scaffold(
@@ -192,7 +196,8 @@ fun EditMetadataPage(
         }
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .heightIn(max = 60.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             CardListItem(
@@ -200,8 +205,9 @@ fun EditMetadataPage(
                 leadingContentIcon = Icons.Default.Info,
                 applySemiBoldFontWeight = true,
                 headlineContentText = stringResource(
-                id = R.string.mediastore_info
-            )) {
+                    id = R.string.mediastore_info
+                )
+            ) {
                 showMediaStoreInfoDialog = true
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -234,16 +240,32 @@ fun EditMetadataPage(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
             ) {
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.bitrate), metadata = metadata.bitrate.toString() + " kbps")
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.sample_rate), metadata = metadata.sampleRate.toString() + " Hz")
+                MetadataTag(
+                    modifier = Modifier.weight(0.5f),
+                    typeOfMetadata = stringResource(id = R.string.bitrate),
+                    metadata = metadata.bitrate.toString() + " kbps"
+                )
+                MetadataTag(
+                    modifier = Modifier.weight(0.5f),
+                    typeOfMetadata = stringResource(id = R.string.sample_rate),
+                    metadata = metadata.sampleRate.toString() + " Hz"
+                )
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
             ) {
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.channels), metadata = metadata.channels.toString())
-                MetadataTag(modifier = Modifier.weight(0.5f),typeOfMetadata = stringResource(id = R.string.duration), metadata = metadata.lengthInMilliseconds.toMinutes())
+                MetadataTag(
+                    modifier = Modifier.weight(0.5f),
+                    typeOfMetadata = stringResource(id = R.string.channels),
+                    metadata = metadata.channels.toString()
+                )
+                MetadataTag(
+                    modifier = Modifier.weight(0.5f),
+                    typeOfMetadata = stringResource(id = R.string.duration),
+                    metadata = metadata.lengthInMilliseconds.toMinutes()
+                )
             }
         }
 
@@ -434,7 +456,7 @@ fun EditMetadataPage(
         }
     }
 
-    if(showMediaStoreInfoDialog) {
+    if (showMediaStoreInfoDialog) {
         MediaStoreInfoDialog(
             onDismissRequest = {
                 showMediaStoreInfoDialog = false

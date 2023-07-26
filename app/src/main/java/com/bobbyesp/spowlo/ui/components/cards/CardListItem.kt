@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
@@ -38,13 +39,17 @@ fun CardListItem(
     ) {
         ListItem(
             leadingContent = {
-            Icon(
-                imageVector = leadingContentIcon,
-                contentDescription = "Leading content icon"
-            )
-        }, headlineContent = {
-            Text(text = headlineContentText, fontWeight = if(applySemiBoldFontWeight) FontWeight.SemiBold else FontWeight.Normal)
-        }, modifier = Modifier.clickable(onClick = onClick),
+                Icon(
+                    imageVector = leadingContentIcon,
+                    contentDescription = "Leading content icon"
+                )
+            }, headlineContent = {
+                Text(
+                    text = headlineContentText,
+                    fontWeight = if (applySemiBoldFontWeight) FontWeight.SemiBold else FontWeight.Normal,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }, modifier = Modifier.clickable(onClick = onClick),
             colors = ListItemDefaults.colors(
                 leadingIconColor = MaterialTheme.colorScheme.primary,
                 containerColor = Color.Transparent,

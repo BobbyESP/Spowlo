@@ -64,7 +64,8 @@ class MediaServiceHandler @Inject constructor(
                 }
             }
             is PlayerEvent.Stop -> {
-//                player.stop()
+                /**THIS KILLS THE PLAYER**/
+                player.stop()
                 stopProgressUpdate()
             }
             is PlayerEvent.Next -> {

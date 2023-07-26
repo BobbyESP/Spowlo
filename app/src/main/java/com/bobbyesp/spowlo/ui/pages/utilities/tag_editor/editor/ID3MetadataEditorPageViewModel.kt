@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
     @ApplicationContext context: Context
-): ViewModel() {
+) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
@@ -29,34 +29,38 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     suspend fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
 
+        val metadata: Metadata?
+
         try {
-            val metadata = withContext(Dispatchers.IO) {
+            metadata = withContext(Dispatchers.IO) {
                 Metadata.getMetadata(path)
             }
+
             Log.i("Metadata", metadata.toString())
 
-            if(metadata == null) {
+            if (metadata == null) {
                 updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
                 return
             }
 
-            getSongEmbeddedLyrics(path)
+            withContext(Dispatchers.IO) {
+                getSongEmbeddedLyrics(path)
+            }
 
             updateState(ID3MetadataEditorPageState.Success(metadata))
         } catch (e: Exception) {
             updateState(ID3MetadataEditorPageState.Error(e))
-            return
         }
     }
+
 
     private suspend fun getSongEmbeddedLyrics(path: String) {
         try {
             val lyrics = withContext(Dispatchers.IO) {
                 getLyrics(path)
             }
-            Log.i("Lyrics", lyrics.toString())
 
-            if(lyrics.isNullOrEmpty()) {
+            if (lyrics.isNullOrEmpty()) {
                 return
             } else {
                 mutablePageViewState.update {
@@ -88,7 +92,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 }
 
 sealed class ID3MetadataEditorPageState {
-    object Loading: ID3MetadataEditorPageState()
-    data class Success(val metadata: Metadata): ID3MetadataEditorPageState()
-    data class Error(val throwable: Throwable): ID3MetadataEditorPageState()
+    object Loading : ID3MetadataEditorPageState()
+    data class Success(val metadata: Metadata) : ID3MetadataEditorPageState()
+    data class Error(val throwable: Throwable) : ID3MetadataEditorPageState()
 }
