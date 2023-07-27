@@ -2,7 +2,7 @@ package com.bobbyesp.spowlo.data.local.db.searching.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
+import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
 
 @Entity
 data class SearchEntity(

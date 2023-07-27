@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.lyrics_downloader.data.local
+package com.bobbyesp.spowlo.data.local
 
 import android.content.ContentResolver
 import android.content.ContentUris

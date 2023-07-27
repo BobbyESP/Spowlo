@@ -1,8 +1,8 @@
 package com.bobbyesp.spowlo.utils.databases
 
+import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.data.local.db.searching.SearchingHistoryDatabase
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.MediaStoreFilterType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
