@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.TrackAsSongPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackAsSongPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -55,7 +55,7 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
         mutablePageViewState.update {
             it.copy(
                 tracks = Pager(
-                    config = PagingConfig(pageSize = 25, enablePlaceholders = false),
+                    config = PagingConfig(pageSize = 25, enablePlaceholders = false, initialLoadSize = 30),
                     pagingSourceFactory = { TrackAsSongPagingSource(null, query, market) }
                 ).flow.cachedIn(viewModelScope)
             )

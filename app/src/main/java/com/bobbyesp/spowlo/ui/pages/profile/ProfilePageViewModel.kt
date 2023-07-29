@@ -177,7 +177,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadUserData(context: Context) {
-        checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        checkSpotifyApiIsValid(applicationContext = context) { api ->
             val userInformation = api.users.getClientProfile()
             mutablePageViewState.update {
                 it.copy(
@@ -188,7 +188,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     suspend fun searchSongById(context: Context, id: String) {
-        checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        checkSpotifyApiIsValid(applicationContext = context) { api ->
             val track = api.tracks.getTrack(id)
             mutablePageViewState.update {
                 it.copy(
@@ -199,7 +199,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadMostListenedArtists(context: Context): Unit? {
-        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        return checkSpotifyApiIsValid(applicationContext = context) { api ->
             mutablePageViewState.update {
                 it.copy(
                     mostPlayedArtists = Pager(config = PagingConfig(
@@ -216,10 +216,11 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadMostListenedSongs(context: Context): Unit? {
-        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        return checkSpotifyApiIsValid(applicationContext = context) { api ->
             mutablePageViewState.update {
                 it.copy(
-                    mostPlayedSongs = Pager(config = PagingConfig(
+                    mostPlayedSongs = Pager(
+                        config = PagingConfig(
                         pageSize = 10,
                         enablePlaceholders = false,
                     ), pagingSourceFactory = {
@@ -233,7 +234,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadRecentlyPlayedSongs(context: Context): Unit? {
-        return checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        return checkSpotifyApiIsValid(applicationContext = context) { api ->
             mutablePageViewState.update {
                 it.copy(
                     recentlyPlayedSongs = api.player.getRecentlyPlayed(limit = 25).items
@@ -243,7 +244,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     suspend fun sameSongAsBroadcastVerifier(context: Context) {
-        checkSpotifyApiIsValid(MainActivity.getActivity(), context) { api ->
+        checkSpotifyApiIsValid(applicationContext = context) { api ->
             viewModelScope.launch(Dispatchers.IO) {
                 val apiPlayingSong = try {
                     api.player.getCurrentlyPlaying()

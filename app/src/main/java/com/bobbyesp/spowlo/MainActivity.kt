@@ -34,11 +34,6 @@ class MainActivity : AppCompatActivity() {
                 activity = this
 
         setContent {
-//            LaunchedEffect(true) {
-//                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    startMediaPlayerService()
-//                }
-//            }
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(

@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.features.spotifyApi.utils.login
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
@@ -35,7 +36,7 @@ suspend fun <T> checkSpotifyApiIsValid(
             CredentialsStorer().provideCredentials(applicationContext)
         }
         val api = apiCredentials.getSpotifyClientPkceApi()
-            ?: throw SpotifyException.ReAuthenticationNeededException()
+            ?: throw SpotifyException.ReAuthenticationNeededException() //CAUTION HERE
 
         return block(api)
     } catch (e: SpotifyException) {
@@ -45,6 +46,7 @@ suspend fun <T> checkSpotifyApiIsValid(
         }
 
         if (!alreadyTriedToReauthenticate) {
+            Log.i("SessionVerifierUtil", "checkSpotifyApiIsValid: Trying to refresh user token")
             val api = apiCredentials.getSpotifyClientPkceApi()
                 ?: throw SpotifyException.ReAuthenticationNeededException()
             return try {

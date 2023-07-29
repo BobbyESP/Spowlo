@@ -101,4 +101,9 @@
     <string name="four_weeks">4 weeks</string>
     <string name="six_months">6 months</string>
     <string name="all_time">All time</string>
+    <string name="tracks">Tracks</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artists</string>
+    <string name="playlists">Playlists</string>
+    <string name="single">Single</string>
 </resources>

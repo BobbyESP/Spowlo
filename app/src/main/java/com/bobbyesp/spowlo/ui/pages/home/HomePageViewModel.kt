@@ -1,8 +1,10 @@
 package com.bobbyesp.spowlo.ui.pages.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.spowlo.MainActivity
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.ui.util.pages.PageState
@@ -27,5 +29,9 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
         activityWrapper.execute {
             startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
         }
+    }
+
+    fun deleteEncryptedSharedPrefs(context: Context) {
+        CredentialsStorer().deleteCredentials(context)
     }
 }
