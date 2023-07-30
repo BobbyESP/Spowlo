@@ -47,9 +47,9 @@ suspend fun <T> checkSpotifyApiIsValid(
 
         if (!alreadyTriedToReauthenticate) {
             Log.i("SessionVerifierUtil", "checkSpotifyApiIsValid: Trying to refresh user token")
-            val api = apiCredentials.getSpotifyClientPkceApi()
-                ?: throw SpotifyException.ReAuthenticationNeededException()
             return try {
+                val api = apiCredentials.getSpotifyClientPkceApi()
+                    ?: throw SpotifyException.ReAuthenticationNeededException()
                 api.refreshToken()
                 apiCredentials.spotifyToken = api.token
 
@@ -75,4 +75,9 @@ suspend fun <T> checkSpotifyApiIsValid(
         onNetworkError(e)
         return null
     }
+}
+
+fun isLogged(applicationContext: Context): Boolean {
+    val apiCredentials = CredentialsStorer().provideCredentials(applicationContext)
+    return apiCredentials.spotifyToken != null
 }

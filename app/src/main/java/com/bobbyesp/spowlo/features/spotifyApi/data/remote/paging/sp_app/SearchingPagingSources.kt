@@ -34,7 +34,6 @@ class TrackPagingSource(
                 limit = params.loadSize,
                 offset = offset,
                 market = market,
-                filters = filters,
             )
 
 
