@@ -4,10 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -31,20 +29,21 @@ fun SearchingResult(
     artworkUrl: String,
     name: String,
     artists: String,
-    type : String = stringResource(id = R.string.single),
+    type : String = stringResource(id = R.string.track),
+    insideModifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Column(
         modifier
             .clickable { onClick() }) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = insideModifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically, //This makes all go to the center
         ) {
             AsyncImageImpl(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-                    .size(56.dp)
+                    .padding(horizontal = 12.dp)
+                    .size(48.dp)
                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
                     .clip(MaterialTheme.shapes.extraSmall),
                 model = artworkUrl,
@@ -60,7 +59,7 @@ fun SearchingResult(
                 Column(
                     modifier = Modifier
                         .padding(6.dp)
-                        .weight(1f), //Weight is to make the time not go away from the screen
+                        .weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -73,24 +72,36 @@ fun SearchingResult(
                             color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 15.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             basicGradientColor = MaterialTheme.colorScheme.surface.copy(
                                 alpha = 0.8f
                             ),
                         )
                     }
-                    Spacer(Modifier.height(6.dp))
-                    MarqueeText(
-                        text = "$artists • $type",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 10.sp,
-                        basicGradientColor = MaterialTheme.colorScheme.surface.copy(
-                            alpha = 0.8f
-                        ),
-                    )
+                    if(artists.isNotEmpty()) {
+                        MarqueeText(
+                            text = "$type • $artists",
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 12.sp,
+                            basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.8f
+                            ),
+                        )
+                    } else {
+                        MarqueeText(
+                            text = type,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 12.sp,
+                            basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.8f
+                            ),
+                        )
+                    }
                 }
             }
         }

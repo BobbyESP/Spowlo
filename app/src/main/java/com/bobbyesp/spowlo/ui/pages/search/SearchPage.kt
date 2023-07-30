@@ -2,19 +2,27 @@ package com.bobbyesp.spowlo.ui.pages.search
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -32,10 +41,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.adamratzman.spotify.models.Track
+import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.others.SearchingResult
+import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.searchBar.QueryTextBox
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
@@ -50,6 +61,7 @@ fun SearchPage(
         LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     val (query, onValueChange) = remember {
         mutableStateOf("")
@@ -61,27 +73,27 @@ fun SearchPage(
 
     val types = listOf(
         SearchType(
-            searchType = SearchTypes.TRACKS,
+            searchType = SpotifyItemType.TRACKS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SearchTypes.TRACKS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.TRACKS, context)
             }
         ),
         SearchType(
-            searchType = SearchTypes.ALBUMS,
+            searchType = SpotifyItemType.ALBUMS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SearchTypes.ALBUMS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ALBUMS, context)
             }
         ),
         SearchType(
-            searchType = SearchTypes.ARTISTS,
+            searchType = SpotifyItemType.ARTISTS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SearchTypes.ARTISTS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ARTISTS, context)
             }
         ),
         SearchType(
-            searchType = SearchTypes.PLAYLISTS,
+            searchType = SpotifyItemType.PLAYLISTS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SearchTypes.PLAYLISTS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.PLAYLISTS, context)
             }
         ),
     )
@@ -139,55 +151,96 @@ fun SearchPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 with(viewState) {
-                    when(this.searchViewState) {
+                    when (this.searchViewState) {
                         is SearchViewState.Idle -> {
                             IdlePage()
                         }
+
                         is SearchViewState.Loading -> {
                             CircularProgressIndicator()
                         }
+
                         is SearchViewState.Success -> {
                             Crossfade(
                                 modifier = Modifier.fillMaxSize(),
                                 targetState = activeSearchType, label = ""
                             ) { searchType ->
-                                when(searchType) {
-                                    SearchTypes.TRACKS -> {
-                                        TracksList(
+                                when (searchType) {
+                                    SpotifyItemType.TRACKS -> {
+                                        ResultsList(
                                             modifier = Modifier.fillMaxSize(),
-                                            paginatedTracks = paginatedTracks,
+                                            paginatedItems = paginatedTracks,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item -> item.album.images.secondOrNull()?.url ?: "" },
+                                            itemType = SpotifyItemType.TRACKS,
+                                            onItemClick = { track ->
+                                                track.externalUrls.spotify?.let { url ->
+                                                    uriHandler.openUri(
+                                                        url
+                                                    )
+                                                }
+                                            }
                                         )
                                     }
-                                    SearchTypes.ALBUMS -> {
-//                                        AlbumsList(
-//                                            modifier = Modifier.fillMaxSize(),
-//                                            paginatedAlbums = paginatedAlbums,
-//                                            onAlbumClick = {
-//                                                viewModel.onAlbumClick(it)
-//                                            }
-//                                        )
+
+                                    SpotifyItemType.ALBUMS -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedAlbums,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item -> item.images.secondOrNull()?.url ?: "" },
+                                            itemType = SpotifyItemType.ALBUMS,
+                                            onItemClick = { album ->
+                                                album.externalUrls.spotify?.let { url ->
+                                                    uriHandler.openUri(
+                                                        url
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
-                                    SearchTypes.ARTISTS -> {
-//                                        ArtistsList(
-//                                            modifier = Modifier.fillMaxSize(),
-//                                            paginatedArtists = paginatedArtists,
-//                                            onArtistClick = {
-//                                                viewModel.onArtistClick(it)
-//                                            }
-//                                        )
+
+                                    SpotifyItemType.ARTISTS -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedArtists,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { _ -> "" },
+                                            itemArtworkUrl = { item -> item.images.secondOrNull()?.url ?: "" },
+                                            itemType = SpotifyItemType.ARTISTS,
+                                            onItemClick = { artist ->
+                                                artist.externalUrls.spotify?.let { url ->
+                                                    uriHandler.openUri(
+                                                        url
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
-                                    SearchTypes.PLAYLISTS -> {
-//                                        PlaylistsList(
-//                                            modifier = Modifier.fillMaxSize(),
-//                                            paginatedPlaylists = paginatedPlaylists,
-//                                            onPlaylistClick = {
-//                                                viewModel.onPlaylistClick(it)
-//                                            }
-//                                        )
+
+                                    SpotifyItemType.PLAYLISTS -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedPlaylists,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.owner.displayName ?: "" },
+                                            itemArtworkUrl = { item -> item.images.firstOrNull()?.url ?: "" },
+                                            itemType = SpotifyItemType.PLAYLISTS,
+                                            onItemClick = { playlist ->
+                                                playlist.externalUrls.spotify?.let { url ->
+                                                    uriHandler.openUri(
+                                                        url
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
+
                         is SearchViewState.Error -> {
                             Text(text = "Error")
                         }
@@ -198,55 +251,85 @@ fun SearchPage(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TracksList(
+fun <T : Any> ResultsList(
     modifier: Modifier,
-    paginatedTracks: LazyPagingItems<Track>
+    paginatedItems: LazyPagingItems<T>,
+    itemName: (T) -> String,
+    itemArtists: (T) -> String,
+    itemArtworkUrl: (T) -> String,
+    itemType: SpotifyItemType,
+    onItemClick: (T) -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
-
     LazyColumn(
         modifier = modifier
     ) {
+        stickyHeader {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = paginatedItems.itemCount.toString() + " " + stringResource(id = R.string.results),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = "Filter"
+                        )
+                    }
+                }
+            }
+        }
         items(
-            count = paginatedTracks.itemCount,
-            key = paginatedTracks.itemKey(),
-            contentType = paginatedTracks.itemContentType()
+            count = paginatedItems.itemCount,
+            key = paginatedItems.itemKey(),
+            contentType = paginatedItems.itemContentType()
         ) { index ->
-            val item = paginatedTracks[index]
+            val item = paginatedItems[index] as T
             SearchingResult(
                 modifier = Modifier
                     .fillMaxWidth(),
-                name = item?.name ?: "",
-                artists = item?.artists?.joinToString(", ") { it.name } ?: "",
-                artworkUrl = item?.album?.images?.secondOrNull()?.url ?: "",
+                insideModifier = Modifier.padding(vertical = 6.dp),
+                name = itemName(item),
+                artists = itemArtists(item),
+                artworkUrl = itemArtworkUrl(item),
                 onClick = {
-                    uriHandler.openUri( item?.externalUrls?.spotify ?: "")
-                }
+                    onItemClick(item)
+                },
+                type = itemType.toComposableStringSingular()
             )
         }
-        loadStateContent(paginatedTracks) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
+        loadStateContent(paginatedItems) {
+            HorizontalSongCardShimmer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
             )
         }
     }
 }
 
-@Composable
-fun <T : Any> PaginatedSearchList(
-    modifier: Modifier = Modifier,
-    paginatedItems: LazyPagingItems<T>,
-    onClick: () -> Unit,
-    content: @Composable () -> Unit
-) {
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchTypeChip(
     modifier: Modifier,
-    searchType: SearchTypes,
+    searchType: SpotifyItemType,
     isActive: Boolean,
     onClick: () -> Unit
 ) {
@@ -255,12 +338,12 @@ fun SearchTypeChip(
         selected = isActive,
         onClick = onClick,
         label = {
-            Text(text = searchType.toComposableString())
+            Text(text = searchType.toComposableStringPlural())
         },
     )
 }
 
 private data class SearchType(
-    val searchType: SearchTypes,
+    val searchType: SpotifyItemType,
     val onClick: () -> Unit
 )

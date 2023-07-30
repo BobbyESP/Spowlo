@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.adamratzman.spotify.SpotifyClientApi
@@ -27,7 +26,6 @@ class SearchTracksClientPagingSource(
                 offset = offset,
                 limit = params.loadSize,
             )
-            Log.i("SearchTracksClientPagingSource", "load: response = ${response.items}")
             LoadResult.Page(
                 data = response.items,
                 prevKey = if (offset > 0) offset - params.loadSize else null,

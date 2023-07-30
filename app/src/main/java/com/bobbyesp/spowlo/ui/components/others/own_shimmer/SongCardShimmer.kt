@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.components.others.own_shimmer
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +57,60 @@ fun SmallSongCardShimmer(
                     .shimmerEffect()
             )
         }
+    }
+}
+
+@Composable
+fun HorizontalSongCardShimmer(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            Modifier
+                .width(48.dp)
+                .height(48.dp)
+                .aspectRatio(1f)
+                .clip(MaterialTheme.shapes.extraSmall)
+                .shimmerEffect()
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
+                .padding(start = 8.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(18.dp)
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect()
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(12.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .shimmerEffect()
+            )
+        }
+    }
+}
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun HorizontalSongCardShimmerPreview() {
+    SpowloTheme {
+        HorizontalSongCardShimmer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
     }
 }
 

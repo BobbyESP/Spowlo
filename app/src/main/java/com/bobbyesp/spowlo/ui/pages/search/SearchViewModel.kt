@@ -2,8 +2,6 @@ package com.bobbyesp.spowlo.ui.pages.search
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -14,7 +12,7 @@ import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
-import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchArtistsClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimpleAlbumsClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimplePlaylistsClientPagingSource
@@ -43,50 +41,50 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     data class PageViewState(
         val searchViewState: SearchViewState = SearchViewState.Idle,
         val query: String = "",
-        val activeSearchType: SearchTypes = SearchTypes.TRACKS,
+        val activeSearchType: SpotifyItemType = SpotifyItemType.TRACKS,
         val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
         val searchedAlbums: Flow<PagingData<SimpleAlbum>> = emptyFlow(),
         val searchedArtists: Flow<PagingData<Artist>> = emptyFlow(),
         val searchedPlaylists: Flow<PagingData<SimplePlaylist>> = emptyFlow(),
     )
 
-    private fun chooseSearchType(searchTypes: SearchTypes) {
+    private fun chooseSearchType(spotifyItemType: SpotifyItemType) {
         val actualFilter = pageViewState.value.activeSearchType
-        if (actualFilter == searchTypes) {
+        if (actualFilter == spotifyItemType) {
             return
         } else {
-            mutablePageViewState.value = pageViewState.value.copy(activeSearchType = searchTypes)
+            mutablePageViewState.value = pageViewState.value.copy(activeSearchType = spotifyItemType)
         }
     }
 
-    fun chooseSearchTypeAndSearch(searchType: SearchTypes, context: Context) {
+    fun chooseSearchTypeAndSearch(searchType: SpotifyItemType, context: Context) {
         chooseSearchType(searchType)
         viewModelScope.launch {
-            search(searchType = searchType, context = context)
+            if(pageViewState.value.query.isNotEmpty()) search(searchType = searchType, context = context)
         }
     }
 
-    suspend fun search(searchType: SearchTypes = pageViewState.value.activeSearchType, context: Context) {
+    suspend fun search(searchType: SpotifyItemType = pageViewState.value.activeSearchType, context: Context) {
         val query = pageViewState.value.query
         searchJob?.cancel()
         updateViewState(SearchViewState.Loading)
         searchJob = viewModelScope.launch {
             try {
                 when (searchType) {
-                    SearchTypes.TRACKS -> {
+                    SpotifyItemType.TRACKS -> {
                         Log.i("SearchViewModel", "search: $query")
                         getTracksPaginatedData(context = context, query = query)
                     }
 
-                    SearchTypes.ALBUMS -> {
+                    SpotifyItemType.ALBUMS -> {
                         getAlbumsPaginatedData(context = context, query = query)
                     }
 
-                    SearchTypes.ARTISTS -> {
+                    SpotifyItemType.ARTISTS -> {
                         getArtistsPaginatedData(context = context, query = query)
                     }
 
-                    SearchTypes.PLAYLISTS -> {
+                    SpotifyItemType.PLAYLISTS -> {
                         getSimplePaginatedData(context = context, query = query)
                     }
                 }
@@ -238,21 +236,4 @@ sealed class SearchViewState {
     object Loading : SearchViewState()
     object Success : SearchViewState()
     data class Error(val error: Exception) : SearchViewState()
-}
-
-enum class SearchTypes {
-    TRACKS,
-    ALBUMS,
-    ARTISTS,
-    PLAYLISTS;
-
-    @Composable
-    fun toComposableString(): String {
-        return when (this) {
-            TRACKS -> stringResource(id = R.string.tracks)
-            ALBUMS -> stringResource(id = R.string.albums)
-            ARTISTS -> stringResource(id = R.string.artists)
-            PLAYLISTS -> stringResource(id = R.string.playlists)
-        }
-    }
 }

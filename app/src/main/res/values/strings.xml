@@ -106,4 +106,7 @@
     <string name="artists">Artists</string>
     <string name="playlists">Playlists</string>
     <string name="single">Single</string>
+    <string name="results">results</string>
+    <string name="playlist">Playlist</string>
+    <string name="track">Track</string>
 </resources>
