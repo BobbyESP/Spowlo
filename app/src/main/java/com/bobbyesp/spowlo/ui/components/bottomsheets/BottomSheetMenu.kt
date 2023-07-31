@@ -101,7 +101,6 @@ fun BottomSheetMenu(
                         bottomEnd = CornerSize(0.dp)
                     )
                 )
-                .background(background)
         ) {
             state.content(this)
         }

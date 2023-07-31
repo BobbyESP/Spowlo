@@ -53,8 +53,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.spowlo.ui.components.bottomsheets.ModernModalBottomSheet
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
@@ -67,7 +67,7 @@ import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
 import kotlinx.coroutines.launch
-
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ProfilePage(
     viewModel: ProfilePageViewModel
@@ -106,8 +106,6 @@ fun ProfilePage(
             }
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -117,11 +115,12 @@ private fun PageImplementation(
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    val bottomSheetMenu = LocalBottomSheetMenuState.current
+    val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
-
+    val sheetState = viewState.value.sheetState
     val pageState = viewState.value
+
     val mostPlayedArtists = pageState.mostPlayedArtists.collectAsLazyPagingItems()
     val mostListenedSongs = pageState.mostPlayedSongs.collectAsLazyPagingItems()
     val recentlyPlayedSongs = pageState.recentlyPlayedSongs
@@ -132,7 +131,6 @@ private fun PageImplementation(
             viewModel.reloadPage(context)
         }
     })
-
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
@@ -330,7 +328,8 @@ private fun PageImplementation(
                         modifier = Modifier.fillMaxWidth(),
                         playHistoryItem = item
                     ) {
-                        bottomSheetMenu.show {
+                        scope.launch {
+                            sheetState.show()
                         }
                     }
                     if (item != recentlyPlayedSongs.last()) {
@@ -345,6 +344,14 @@ private fun PageImplementation(
                 backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+
+        ModernModalBottomSheet(modalSheetState = sheetState, onDismiss = {
+            scope.launch {
+                sheetState.hide()
+            }
+        }) {
+
         }
     }
 }

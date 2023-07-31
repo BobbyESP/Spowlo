@@ -2,6 +2,8 @@ package com.bobbyesp.spowlo.ui.pages.profile
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +32,8 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsVali
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
+import com.t8rin.modalsheet.ModalBottomSheetValue
+import com.t8rin.modalsheet.ModalSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +46,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+@ExperimentalMaterialApi
+@ExperimentalMaterial3Api
 class ProfilePageViewModel @Inject constructor(
     @ApplicationContext context: Context
 ) : ViewModel(), SpotifyBroadcastObserver {
@@ -76,6 +82,7 @@ class ProfilePageViewModel @Inject constructor(
 
     data class PageViewState(
         val state: PageStateWithThrowable = PageStateWithThrowable.Loading,
+        val sheetState: ModalSheetState = ModalSheetState(initialValue = ModalBottomSheetValue.Hidden),
         val isRefreshing: Boolean = false,
         val userInformation: SpotifyUserInformation? = null,
         val actualTrack: Track? = null,
@@ -153,7 +160,7 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    fun updateTimeRange(timeRange: Int) {
+    private fun updateTimeRange(timeRange: Int) {
         val selectedTimeRange = when (timeRange) {
             0 -> ClientPersonalizationApi.TimeRange.ShortTerm
             1 -> ClientPersonalizationApi.TimeRange.MediumTerm
@@ -221,13 +228,13 @@ class ProfilePageViewModel @Inject constructor(
                 it.copy(
                     mostPlayedSongs = Pager(
                         config = PagingConfig(
-                        pageSize = 10,
-                        enablePlaceholders = false,
-                    ), pagingSourceFactory = {
-                        ClientMostListenedSongsPagingSource(
-                            api, timeRange = it.actualTimeRange
-                        )
-                    }).flow.cachedIn(viewModelScope)
+                            pageSize = 10,
+                            enablePlaceholders = false,
+                        ), pagingSourceFactory = {
+                            ClientMostListenedSongsPagingSource(
+                                api, timeRange = it.actualTimeRange
+                            )
+                        }).flow.cachedIn(viewModelScope)
                 )
             }
         }

@@ -74,7 +74,7 @@ fun ModernModalBottomSheet(
  * Gotten from InnerTune
  */
 @Composable
-fun BottomSheet(
+fun NavBarBottomSheet(
     state: BottomSheetState,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,

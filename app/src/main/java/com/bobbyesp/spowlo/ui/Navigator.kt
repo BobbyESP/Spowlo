@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,14 +42,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
-import com.bobbyesp.spowlo.ui.common.LocalBottomSheetMenuState
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.NavArgs
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.SelectedSongParamType
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
-import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenu
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
@@ -71,7 +70,7 @@ import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.ui.util.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.util.appBarScrollBehavior
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
@@ -143,7 +142,6 @@ fun Navigator() {
         CompositionLocalProvider(
             LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
         ) {
-
             NavHost(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 navController = navController,
@@ -244,12 +242,6 @@ fun Navigator() {
                     )
                 }
             }
-
-            //--------------------------------- Bottom Sheet Menu ---------------------------------//
-            BottomSheetMenu(
-                state = LocalBottomSheetMenuState.current,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
         }
     }
 }

@@ -6,6 +6,8 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -17,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetMenuState
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
@@ -53,10 +54,11 @@ val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
 val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller provided") }
-val LocalBottomSheetMenuState = compositionLocalOf { BottomSheetMenuState() }
+@OptIn(ExperimentalMaterial3Api::class)
+val LocalBottomSheetMenuState = compositionLocalOf<BottomSheetScaffoldState> { error("No BottomSheetScaffoldState provided") }
 val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
@@ -65,6 +67,7 @@ fun AppLocalSettingsProvider(
     val appSettingsState = AppSettingsStateFlow.collectAsState().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
+
     appSettingsState.run {
         CompositionLocalProvider(
             LocalDarkTheme provides darkTheme, //Tells the app if it should use dark theme or not
@@ -79,7 +82,6 @@ fun AppLocalSettingsProvider(
             else Color(seedColor).toTonalPalettes(
                 paletteStyles.getOrElse(paletteStyleIndex) { PaletteStyle.TonalSpot }
             ), // Tells the app what is the current palette to use
-            LocalBottomSheetMenuState provides BottomSheetMenuState(),
             LocalShimmerTheme provides shimmerEffect
         ) {
             content() //The content of the app

@@ -7,8 +7,8 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheetState
+import com.bobbyesp.spowlo.ui.components.bottomsheets.NavBarBottomSheet
 
 @Composable
 fun PlayerAsBottomSheet(
@@ -16,7 +16,7 @@ fun PlayerAsBottomSheet(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    BottomSheet(
+    NavBarBottomSheet(
         state = state,
         modifier = modifier,
         backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),

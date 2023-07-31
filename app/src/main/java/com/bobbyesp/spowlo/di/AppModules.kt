@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.bobbyesp.spowlo.data.local.db.music.MusicAppDatabase
 import com.bobbyesp.spowlo.data.local.db.searching.SearchingHistoryDatabase
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.LyricsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +34,16 @@ object AppModules {
             context,
             SearchingHistoryDatabase::class.java,
             "searching_history_app_database.db"
+        ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLyricsDatabase(@ApplicationContext context: Context): LyricsDatabase {
+        return Room.databaseBuilder(
+            context,
+            LyricsDatabase::class.java,
+            "lyrics_app_database.db"
         ).build()
     }
 
