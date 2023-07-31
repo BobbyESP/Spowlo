@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.features.lyrics_downloader.data.remote
 import android.util.Log
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.HttpRoutes
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.dto.SyncedLinesResponse
+import com.bobbyesp.spowlo.ui.ext.toLyricsString
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -13,8 +14,7 @@ import kotlinx.serialization.json.Json
 
 class SpotifyLyricServiceImpl(
     private val client: HttpClient
-) : SpotifyLyricService {
-
+): SpotifyLyricService {
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
@@ -42,20 +42,7 @@ class SpotifyLyricServiceImpl(
     override suspend fun getSyncedLyricsAsString(songUrl: String): String {
         val response = getSyncedLyrics(songUrl)
 
-        val lines = response.lines
-
-        val syncedLyricsResponse = StringBuilder()
-
-        for (line in lines) {
-            if (line.words.isBlank()) continue
-            with(syncedLyricsResponse) {
-                append("[${line.timeTag}] ${line.words}")
-                //if the line is not the last one, append a new line, else do nothing
-                if (line != lines.last()) append("\n")
-            }
-        }
-
-        return syncedLyricsResponse.toString()
+        return response.toLyricsString()
     }
 
     private fun manageError(e: Exception) {

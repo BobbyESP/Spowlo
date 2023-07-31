@@ -7,9 +7,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.LyricsDatabase
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.entity.LyricsEntity
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackAsSongPagingSource
+import com.bobbyesp.spowlo.ui.ext.toLyricsString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,11 +25,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectedSongLyricsPageViewModel @Inject constructor(
-    private val lyricsApi: SpotifyLyricService
+    private val lyricsApi: SpotifyLyricService,
+    lyricsDb : LyricsDatabase
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
+    private val lyricsDao = lyricsDb.lyricsDao()
     data class PageViewState(
         val state: SelectedSongLyricsPageState = SelectedSongLyricsPageState.Loading,
         val lyricsDownloaderPageStage: LyricsDownloaderPageStage = LyricsDownloaderPageStage.Selecting,
@@ -44,8 +49,7 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
     fun clearSelectedSong() {
         mutablePageViewState.update {
             it.copy(
-                selectedSong = null,
-                state = SelectedSongLyricsPageState.Loading
+                selectedSong = null, state = SelectedSongLyricsPageState.Loading
             )
         }
         updatePageStage(LyricsDownloaderPageStage.Selecting)
@@ -53,21 +57,24 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
 
     fun getTrackPagingData(query: String, market: Market?) {
         mutablePageViewState.update {
-            it.copy(
-                tracks = Pager(
-                    config = PagingConfig(pageSize = 25, enablePlaceholders = false, initialLoadSize = 30),
-                    pagingSourceFactory = { TrackAsSongPagingSource(null, query, market) }
-                ).flow.cachedIn(viewModelScope)
-            )
+            it.copy(tracks = Pager(config = PagingConfig(
+                pageSize = 25, enablePlaceholders = false, initialLoadSize = 30
+            ),
+                pagingSourceFactory = {
+                    TrackAsSongPagingSource(
+                        null,
+                        query,
+                        market
+                    )
+                }).flow.cachedIn(viewModelScope))
         }
     }
 
     suspend fun getLyrics(songUrl: String) {
-
         updateState(SelectedSongLyricsPageState.Loading)
 
         val lyrics = withContext(Dispatchers.IO) {
-            lyricsApi.getSyncedLyricsAsString(songUrl)
+            getLyricsFromDbOrApi(songUrl)
         }
 
         if (lyrics.isEmpty()) {
@@ -75,6 +82,24 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
             return
         } else {
             updateState(SelectedSongLyricsPageState.Loaded(lyrics))
+        }
+    }
+
+    private suspend fun getLyricsFromDbOrApi(songUrl: String): String {
+        val cachedResponse = lyricsDao.getByUrl(songUrl)
+
+        return if (cachedResponse.firstOrNull() != null) {
+            // If there's a response in the database, return it.
+            cachedResponse.first().lyricsResponse.toLyricsString()
+        } else {
+            // If there's no response in the database, get it from the API.
+            val lyrics = lyricsApi.getSyncedLyrics(songUrl)
+
+            // If the API returns a response, cache it in the database.
+            if (lyrics.lines.isNotEmpty()) {
+                lyricsDao.insert(LyricsEntity(id = 0, url = songUrl, lyricsResponse = lyrics))
+            }
+            lyrics.toLyricsString()
         }
     }
 

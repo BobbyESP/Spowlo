@@ -47,6 +47,4 @@ interface LyricsDao {
 
     @Query("SELECT * FROM LyricsEntity WHERE lyricsResponse = :lyricsResponse")
     suspend fun getByLyricsResponse(lyricsResponse: String): List<LyricsEntity>
-
-
 }

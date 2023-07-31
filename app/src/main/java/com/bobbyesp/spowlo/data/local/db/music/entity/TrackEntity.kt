@@ -24,7 +24,7 @@ data class TrackEntity(
     val spotifyId : String? = null
 )
 
-class Converters {
+class TrackEntityConverters {
     @TypeConverter
     fun fromString(value: String?): List<String>? {
         return value?.split(",")
