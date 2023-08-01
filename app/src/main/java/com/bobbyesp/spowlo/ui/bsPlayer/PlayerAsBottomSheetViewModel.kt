@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.player
+package com.bobbyesp.spowlo.ui.bsPlayer
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

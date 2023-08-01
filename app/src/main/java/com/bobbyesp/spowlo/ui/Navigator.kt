@@ -42,6 +42,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.ui.bsPlayer.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.NavArgs
@@ -64,11 +65,10 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.Selecte
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
-import com.bobbyesp.spowlo.ui.player.PlayerAsBottomSheet
-import com.bobbyesp.spowlo.ui.util.Constants.AppBarHeight
-import com.bobbyesp.spowlo.ui.util.Constants.MiniPlayerHeight
-import com.bobbyesp.spowlo.ui.util.Constants.NavigationBarHeight
-import com.bobbyesp.spowlo.ui.util.appBarScrollBehavior
+import com.bobbyesp.spowlo.utils.ui.Constants.AppBarHeight
+import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
+import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
+import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable

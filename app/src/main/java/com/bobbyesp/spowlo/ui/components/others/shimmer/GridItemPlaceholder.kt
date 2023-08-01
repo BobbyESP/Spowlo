@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.ui.util.Constants.GridThumbnailHeight
-import com.bobbyesp.spowlo.ui.util.Constants.ThumbnailCornerRadius
+import com.bobbyesp.spowlo.utils.ui.Constants.GridThumbnailHeight
+import com.bobbyesp.spowlo.utils.ui.Constants.ThumbnailCornerRadius
 
 @Composable
 fun GridItemPlaceHolder(

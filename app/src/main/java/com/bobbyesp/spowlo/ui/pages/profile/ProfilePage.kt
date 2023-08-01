@@ -65,7 +65,7 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
-import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
+import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable

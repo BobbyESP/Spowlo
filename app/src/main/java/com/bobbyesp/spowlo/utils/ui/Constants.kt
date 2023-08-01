@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.util
+package com.bobbyesp.spowlo.utils.ui
 
 import androidx.compose.ui.unit.dp
 

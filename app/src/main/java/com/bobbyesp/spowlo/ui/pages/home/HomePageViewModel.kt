@@ -7,7 +7,7 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
-import com.bobbyesp.spowlo.ui.util.pages.PageState
+import com.bobbyesp.spowlo.utils.ui.pages.PageState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

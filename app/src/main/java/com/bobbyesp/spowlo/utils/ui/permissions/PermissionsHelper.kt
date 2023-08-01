@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.util.permissions
+package com.bobbyesp.spowlo.utils.ui.permissions
 
 import androidx.compose.runtime.Composable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

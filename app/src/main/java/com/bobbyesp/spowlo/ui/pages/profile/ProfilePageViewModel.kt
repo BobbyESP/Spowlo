@@ -31,7 +31,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortene
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
-import com.bobbyesp.spowlo.ui.util.pages.PageStateWithThrowable
+import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import com.t8rin.modalsheet.ModalBottomSheetValue
 import com.t8rin.modalsheet.ModalSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel

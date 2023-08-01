@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.ui.util.Constants.ListItemHeight
-import com.bobbyesp.spowlo.ui.util.Constants.ListThumbnailSize
-import com.bobbyesp.spowlo.ui.util.Constants.ThumbnailCornerRadius
+import com.bobbyesp.spowlo.utils.ui.Constants.ListItemHeight
+import com.bobbyesp.spowlo.utils.ui.Constants.ListThumbnailSize
+import com.bobbyesp.spowlo.utils.ui.Constants.ThumbnailCornerRadius
 
 @Composable
 fun ListItemPlaceHolder(

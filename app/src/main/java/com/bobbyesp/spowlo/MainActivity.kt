@@ -10,9 +10,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -58,9 +56,6 @@ class MainActivity : AppCompatActivity() {
         private lateinit var activity: MainActivity
         fun getActivity(): MainActivity {
             return activity
-        }
-        fun startPkceLoginFlow() {
-            activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
         }
     }
 }

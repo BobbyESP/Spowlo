@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.player
+package com.bobbyesp.spowlo.ui.bsPlayer
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
