@@ -2,7 +2,7 @@
 #General, lifecycle and core
 agp = "8.2.0-alpha14"
 kotlin = "1.8.21"
-appcompat = "1.7.0-alpha02"
+appcompat = "1.7.0-alpha03"
 core-ktx = "1.10.1"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.6.1"
@@ -15,14 +15,14 @@ leakcanary = "2.12"
 
 #Compose
 compose-bom = "2023.06.01"
-constraintLayout = "1.1.0-alpha07"
-androidx-compose-material3 = "1.2.0-alpha03"
+constraintLayout = "1.1.0-alpha11"
+androidx-compose-material3 = "1.2.0-alpha04"
 compose-util = "1.4.3"
 accompanist = "0.31.4-beta"
 compose-pagination = "1.0.0-alpha20"
 
 #More UI
-androidx-paging = "3.1.1"
+androidx-paging = "3.2.0"
 shimmer = "1.0.3"
 palette = "1.0.0"
 
@@ -77,8 +77,8 @@ spotdlversion = "-SNAPSHOT"
 kyantTaglib = "2023.7.7"
 
 #Firebase, GMS...
-firebaseAuth = "22.0.0"
-gmsPlayServicesAuth = "20.5.0"
+firebaseAuth = "22.1.0"
+gmsPlayServicesAuth = "20.6.0"
 googleServices = "4.3.15"
 
 #Tests
