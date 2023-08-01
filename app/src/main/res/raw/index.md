@@ -94,14 +94,17 @@ python -m spotdl [urls]
 
 ## Music sourcing and audio quality
 
-Our app downloads music from YouTube as a source for music downloads. This method is used to avoid any issues related to downloading music from Spotify.
+Our app downloads music from YouTube as a source for music downloads. This method is used to avoid
+any issues related to downloading music from Spotify.
 
 > **Note**
-> Users are responsible for their actions and potential legal consequences. We do not support unauthorized downloading of copyrighted material and take no responsibility for user actions.
+> Users are responsible for their actions and potential legal consequences. We do not support
+> unauthorized downloading of copyrighted material and take no responsibility for user actions.
 
 ### Audio quality
 
-Spotdl downloads music from YouTube and is designed to always download the highest possible bitrate, which is 128 kbps for regular users and 256 kbps for YouTube Music premium users.
+Spotdl downloads music from YouTube and is designed to always download the highest possible bitrate,
+which is 128 kbps for regular users and 256 kbps for YouTube Music premium users.
 
 Check [Audio Formats](USAGE#audio-formats-and-quality) page for more info.
 
@@ -112,4 +115,5 @@ resources around contributing along with a guide on how to set up a development 
 
 ## License
 
-This project is Licensed under the [MIT](https://github.com/spotDL/spotify-downloader/blob/master/LICENSE) License.
+This project is Licensed under
+the [MIT](https://github.com/spotDL/spotify-downloader/blob/master/LICENSE) License.

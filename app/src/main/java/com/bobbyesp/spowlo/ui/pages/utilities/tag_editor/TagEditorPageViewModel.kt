@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.data.local.MediaStoreReceiver
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageState
+import com.bobbyesp.spowlo.ui.pages.utilities.MediaStorePageState
 import com.bobbyesp.spowlo.utils.databases.SearchingDbHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

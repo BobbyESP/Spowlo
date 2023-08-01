@@ -58,6 +58,7 @@ import com.bobbyesp.spowlo.ui.components.cards.WarningCard
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel.Companion
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import com.bobbyesp.spowlo.utils.lyrics.LyricsUtil.embedLyricsFile
 import kotlinx.coroutines.launch
@@ -96,7 +97,7 @@ fun SelectedSongLyricsPage(
                     BackButton {
                         viewModel.clearSelectedSong()
                     }
-                }, isIcon1 = pageStage is LyricsDownloaderPageStage.Selecting
+                }, isIcon1 = pageStage is Companion.LyricsDownloaderPageStage.Selecting
                 )
             }, title = {
                 Text(
@@ -111,7 +112,7 @@ fun SelectedSongLyricsPage(
             targetState = pageStage, animationSpec = tween(175), label = "Fade between pages"
         ) { actualPageStage ->
             when (actualPageStage) {
-                is LyricsDownloaderPageStage.Selecting -> {
+                is Companion.LyricsDownloaderPageStage.Selecting -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -166,7 +167,7 @@ fun SelectedSongLyricsPage(
                     }
                 }
 
-                is LyricsDownloaderPageStage.Selected -> {
+                is Companion.LyricsDownloaderPageStage.Selected -> {
                     BackHandler {
                         viewModel.clearSelectedSong()
                     }
@@ -191,7 +192,7 @@ fun SelectedSongLyricsPage(
                             label = "Fade between lyrics states"
                         ) { lyricsState ->
                             when (lyricsState) {
-                                is SelectedSongLyricsPageState.Loading -> {
+                                is Companion.SelectedSongLyricsPageState.Loading -> {
                                     Column(
                                         modifier = Modifier.fillMaxSize(),
                                         verticalArrangement = Arrangement.Center,
@@ -203,7 +204,7 @@ fun SelectedSongLyricsPage(
                                     }
                                 }
 
-                                is SelectedSongLyricsPageState.Loaded -> {
+                                is Companion.SelectedSongLyricsPageState.Loaded -> {
 
                                     var lyrics by rememberSaveable(key = "lyrics") {
                                         mutableStateOf("")
@@ -323,7 +324,7 @@ fun SelectedSongLyricsPage(
                                     }
                                 }
 
-                                is SelectedSongLyricsPageState.Error -> {
+                                is Companion.SelectedSongLyricsPageState.Error -> {
                                     Text(text = lyricsState.error)
                                 }
                             }

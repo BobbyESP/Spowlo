@@ -26,7 +26,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltAndroidApp
-class App: Application() {
+class App : Application() {
 
     @Inject
     @ApplicationContext
@@ -66,7 +66,7 @@ class App: Application() {
         }
     }
 
-    private fun startCrashReportActivity(logfilePath : String) {
+    private fun startCrashReportActivity(logfilePath: String) {
         startActivity(Intent(this, CrashHandlerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra("version_report", getVersionReport())
@@ -84,6 +84,7 @@ class App: Application() {
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
+
             @Suppress("DEPRECATION")
             val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 packageInfo.longVersionCode

@@ -89,10 +89,11 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             )
         }
     }
-}
-
-sealed class ID3MetadataEditorPageState {
-    object Loading : ID3MetadataEditorPageState()
-    data class Success(val metadata: Metadata) : ID3MetadataEditorPageState()
-    data class Error(val throwable: Throwable) : ID3MetadataEditorPageState()
+    companion object {
+        sealed class ID3MetadataEditorPageState {
+            object Loading : ID3MetadataEditorPageState()
+            data class Success(val metadata: Metadata) : ID3MetadataEditorPageState()
+            data class Error(val throwable: Throwable) : ID3MetadataEditorPageState()
+        }
+    }
 }

@@ -58,16 +58,17 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
 
     fun getTrackPagingData(query: String, market: Market?) {
         mutablePageViewState.update {
-            it.copy(tracks = Pager(config = PagingConfig(
-                pageSize = 25, enablePlaceholders = false, initialLoadSize = 30
-            ),
-                pagingSourceFactory = {
-                    TrackAsSongPagingSource(
-                        null,
-                        query,
-                        market
-                    )
-                }).flow.cachedIn(viewModelScope)
+            it.copy(
+                tracks = Pager(config = PagingConfig(
+                    pageSize = 25, enablePlaceholders = false, initialLoadSize = 30
+                ),
+                    pagingSourceFactory = {
+                        TrackAsSongPagingSource(
+                            null,
+                            query,
+                            market
+                        )
+                    }).flow.cachedIn(viewModelScope)
             )
         }
     }
@@ -116,15 +117,18 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
             it.copy(state = state)
         }
     }
+
+    companion object {
+        sealed class SelectedSongLyricsPageState {
+            object Loading : SelectedSongLyricsPageState()
+            data class Loaded(val lyrics: String) : SelectedSongLyricsPageState()
+            data class Error(val error: String) : SelectedSongLyricsPageState()
+        }
+
+        sealed class LyricsDownloaderPageStage {
+            object Selecting : LyricsDownloaderPageStage()
+            object Selected : LyricsDownloaderPageStage()
+        }
+    }
 }
 
-sealed class SelectedSongLyricsPageState {
-    object Loading : SelectedSongLyricsPageState()
-    data class Loaded(val lyrics: String) : SelectedSongLyricsPageState()
-    data class Error(val error: String) : SelectedSongLyricsPageState()
-}
-
-sealed class LyricsDownloaderPageStage {
-    object Selecting : LyricsDownloaderPageStage()
-    object Selected : LyricsDownloaderPageStage()
-}

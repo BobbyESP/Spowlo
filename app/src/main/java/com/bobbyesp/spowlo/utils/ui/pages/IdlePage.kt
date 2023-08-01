@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.others
+package com.bobbyesp.spowlo.utils.ui.pages
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

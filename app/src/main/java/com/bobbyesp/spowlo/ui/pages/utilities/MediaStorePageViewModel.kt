@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main
+package com.bobbyesp.spowlo.ui.pages.utilities
 
 import android.content.Context
 import android.util.Log

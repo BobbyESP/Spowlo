@@ -59,7 +59,7 @@ import com.bobbyesp.spowlo.ui.pages.search.SearchPage
 import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.UtilitiesPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
-import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.MediaStorePageViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.MediaStorePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.SelectedSongLyricsPageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage

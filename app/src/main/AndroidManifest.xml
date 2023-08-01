@@ -6,18 +6,21 @@
 
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage"/>
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <queries>
         <intent>
@@ -59,22 +62,26 @@
             android:name=".CrashHandlerActivity"
             android:label="CrashHandlerActivity"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Spowlo">
-        </activity>
+            android:theme="@style/Theme.Spowlo"></activity>
 
-        <service android:name="com.bobbyesp.miniplayer_service.service.SpowloMediaService" android:foregroundServiceType="mediaPlayback"/>
+        <service
+            android:name="com.bobbyesp.miniplayer_service.service.SpowloMediaService"
+            android:foregroundServiceType="mediaPlayback" />
 
-        <activity android:name="com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl"
+        <activity
+            android:name="com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl"
             android:launchMode="singleTop"
             android:exported="true"
             android:theme="@style/Theme.AppCompat">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="spowlo" android:host="spotify-pkce"/>
+                <data
+                    android:scheme="spowlo"
+                    android:host="spotify-pkce" />
             </intent-filter>
         </activity>
 

@@ -84,7 +84,13 @@ class CrashHandlerActivity : ComponentActivity() {
                         versionReport = versionReport,
                         errorMessage = log
                     ) {
-                        clipboardManager.setText(AnnotatedString(versionReport).plus(AnnotatedString("\n")).plus(AnnotatedString(log)))
+                        clipboardManager.setText(
+                            AnnotatedString(versionReport).plus(
+                                AnnotatedString(
+                                    "\n"
+                                )
+                            ).plus(AnnotatedString(log))
+                        )
                         this.finishAffinity()
                     }
                 }
@@ -143,9 +149,13 @@ fun CrashReportPage(
                     .weight(1f),
                 onClick = {
                     val title = URLEncoder.encode("[App crash]", "UTF-8")
-                    ToastUtil.makeToastSuspend(context, context.getString(R.string.paste_report_github))
+                    ToastUtil.makeToastSuspend(
+                        context,
+                        context.getString(R.string.paste_report_github)
+                    )
                     clipboardManager.setText(AnnotatedString(errorMessageCut))
-                    uriOpener.openUri("https://github.com/BobbyESP/Spowlo/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=$title") },
+                    uriOpener.openUri("https://github.com/BobbyESP/Spowlo/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=$title")
+                },
                 icon = localAsset(id = R.drawable.github_mark),
                 text = stringResource(R.string.report_github)
             )
@@ -207,7 +217,8 @@ fun CrashReportPage(
     }
 }
 
-private const val error_report_fake = """java.lang.Exception: Error while initializing Python interpreter: Cannot run program "" : error=2, No such file or directory
+private const val error_report_fake =
+    """java.lang.Exception: Error while initializing Python interpreter: Cannot run program "" : error=2, No such file or directory
 	at com.bobbyesp.spotdl_android.SpotDL.init(SpotDL.kt:64)
 	at com.bobbyesp.spowlo.App$'$'}2.invokeSuspend(App.kt:43)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)

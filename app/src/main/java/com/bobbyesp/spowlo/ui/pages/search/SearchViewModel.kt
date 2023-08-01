@@ -237,11 +237,13 @@ class SearchViewModel @Inject constructor() : ViewModel() {
             )
         }
     }
-}
 
-sealed class SearchViewState {
-    object Idle : SearchViewState()
-    object Loading : SearchViewState()
-    object Success : SearchViewState()
-    data class Error(val error: Exception) : SearchViewState()
+    companion object {
+        sealed class SearchViewState {
+            object Idle : SearchViewState()
+            object Loading : SearchViewState()
+            object Success : SearchViewState()
+            data class Error(val error: Exception) : SearchViewState()
+        }
+    }
 }

@@ -56,6 +56,7 @@ import com.bobbyesp.spowlo.ui.components.text.PreConfiguredOutlinedTextField
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.joinOrNullToString
 import com.bobbyesp.spowlo.ui.ext.toMinutes
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel.Companion
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.alertDialogs.MediaStoreInfoDialog
 import com.kyant.tag.Metadata
 import com.kyant.tag.Tags
@@ -114,11 +115,11 @@ fun ID3MetadataEditorPage(
                 .padding(paddingValues)
         ) { actualPageState ->
             when (actualPageState) {
-                is ID3MetadataEditorPageState.Loading -> {
+                is Companion.ID3MetadataEditorPageState.Loading -> {
                     CircularProgressIndicator()
                 }
 
-                is ID3MetadataEditorPageState.Success -> {
+                is Companion.ID3MetadataEditorPageState.Success -> {
                     val metadataCopyState =
                         remember { mutableStateOf(actualPageState.metadata.toTags().copy()) }
 
@@ -134,7 +135,7 @@ fun ID3MetadataEditorPage(
                     }
                 }
 
-                is ID3MetadataEditorPageState.Error -> {
+                is Companion.ID3MetadataEditorPageState.Error -> {
                     Text(text = actualPageState.throwable.message ?: "Unknown error")
                 }
             }

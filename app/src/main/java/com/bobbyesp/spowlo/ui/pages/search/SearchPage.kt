@@ -50,7 +50,8 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardSh
 import com.bobbyesp.spowlo.ui.components.searchBar.QueryTextBox
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
-import com.bobbyesp.spowlo.ui.pages.others.IdlePage
+import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel.Companion
+import com.bobbyesp.spowlo.utils.ui.pages.IdlePage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -152,15 +153,15 @@ fun SearchPage(
             ) {
                 with(viewState) {
                     when (this.searchViewState) {
-                        is SearchViewState.Idle -> {
+                        is Companion.SearchViewState.Idle -> {
                             IdlePage()
                         }
 
-                        is SearchViewState.Loading -> {
+                        is Companion.SearchViewState.Loading -> {
                             CircularProgressIndicator()
                         }
 
-                        is SearchViewState.Success -> {
+                        is Companion.SearchViewState.Success -> {
                             Crossfade(
                                 modifier = Modifier.fillMaxSize(),
                                 targetState = activeSearchType, label = ""
@@ -249,7 +250,7 @@ fun SearchPage(
                             }
                         }
 
-                        is SearchViewState.Error -> {
+                        is Companion.SearchViewState.Error -> {
                             Text(text = "Error")
                         }
                     }

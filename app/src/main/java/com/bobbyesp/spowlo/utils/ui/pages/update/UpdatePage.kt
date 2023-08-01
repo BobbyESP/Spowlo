@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.others.update
+package com.bobbyesp.spowlo.utils.ui.pages.update
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
