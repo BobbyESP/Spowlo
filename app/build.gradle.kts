@@ -27,17 +27,12 @@ sealed class Version(
 
     class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
         Version(versionMajor, versionMinor, versionPatch) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}"
+        override fun toVersionName(): String = "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
     class ReleaseCandidate(
-        versionMajor: Int,
-        versionMinor: Int,
-        versionPatch: Int,
-        versionBuild: Int
-    ) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+        versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
+    ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
         override fun toVersionName(): String =
             "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
     }
@@ -49,7 +44,7 @@ val currentVersion: Version = Version.Stable(
     versionPatch = 0,
 )
 
-val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
 
 val splitApks = !project.hasProperty("noSplits")
 
@@ -58,8 +53,7 @@ android {
         val keystoreProperties = Properties()
         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
         signingConfigs {
-            getByName("debug")
-            {
+            getByName("debug") {
                 keyAlias = keystoreProperties["keyAlias"].toString()
                 keyPassword = keystoreProperties["keyPassword"].toString()
                 storeFile = file(keystoreProperties["storeFile"]!!)
@@ -85,28 +79,23 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-            correctErrorTypes = true
+        ksp {
+           arg("room.schemaLocation", "$projectDir/schemas")
         }
-        if (!splitApks)
-            ndk {
-                (properties["ABI_FILTERS"] as String).split(';').forEach {
-                    abiFilters.add(it)
-                }
+        if (!splitApks) ndk {
+            (properties["ABI_FILTERS"] as String).split(';').forEach {
+                abiFilters.add(it)
             }
+        }
     }
-    if (splitApks)
-        splits {
-            abi {
-                isEnable = !project.hasProperty("noSplits")
-                reset()
-                include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-                isUniversalApk = false
-            }
+    if (splitApks) splits {
+        abi {
+            isEnable = !project.hasProperty("noSplits")
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            isUniversalApk = false
         }
+    }
 
     buildTypes {
         release {
@@ -117,43 +106,31 @@ android {
             packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
-            if (keystorePropertiesFile.exists())
-                signingConfig = signingConfigs.getByName("debug")
+            if (keystorePropertiesFile.exists()) signingConfig = signingConfigs.getByName("debug")
             //add client id and secret to build config
             buildConfigField(
-                "String",
-                "CLIENT_ID",
-                "\"${project.properties["CLIENT_ID"]}\""
+                "String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\""
             )
             buildConfigField(
-                "String",
-                "CLIENT_SECRET",
-                "\"${project.properties["CLIENT_SECRET"]}\""
+                "String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\""
             )
             buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_PKCE",
-                "\"spowlo://spotify-pkce\""
+                "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
         }
         debug {
-            if (keystorePropertiesFile.exists())
-                signingConfig = signingConfigs.getByName("debug")
+            if (keystorePropertiesFile.exists()) signingConfig = signingConfigs.getByName("debug")
             packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
             buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
             buildConfigField(
-                "String",
-                "CLIENT_SECRET",
-                "\"${project.properties["CLIENT_SECRET"]}\""
+                "String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\""
             )
             buildConfigField(
-                "String",
-                "SPOTIFY_REDIRECT_URI_PKCE",
-                "\"spowlo://spotify-pkce\""
+                "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
@@ -272,9 +249,7 @@ dependencies {
 }
 
 class RoomSchemaArgProvider(
-    @get:InputDirectory
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    val schemaDir: File
+    @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE) val schemaDir: File
 ) : CommandLineArgumentProvider {
 
     override fun asArguments(): Iterable<String> {

@@ -94,9 +94,7 @@ fun ProfilePage(
                 ErrorPage(
                     error = state.exception.message ?: stringResource(id = R.string.unknown),
                     onRetry = {
-                        scope.launch {
-                            viewModel.loadPage()
-                        }
+                        viewModel.reloadPage()
                     }
                 )
             }

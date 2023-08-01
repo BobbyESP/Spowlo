@@ -117,7 +117,6 @@ class ProfilePageViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     loadRecentlyPlayedSongs()
                 }
-
                 updateState(PageStateWithThrowable.Success)
             } catch (e: Exception) {
                 Log.e(tag, "loadPage: ", e)
