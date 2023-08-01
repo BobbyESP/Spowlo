@@ -31,7 +31,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -61,7 +60,6 @@ fun SearchPage(
     val bottomInsetsAsPadding =
         LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
     val (query, onValueChange) = remember {
@@ -76,25 +74,25 @@ fun SearchPage(
         SearchType(
             searchType = SpotifyItemType.TRACKS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.TRACKS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.TRACKS)
             }
         ),
         SearchType(
             searchType = SpotifyItemType.ALBUMS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ALBUMS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ALBUMS)
             }
         ),
         SearchType(
             searchType = SpotifyItemType.ARTISTS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ARTISTS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ARTISTS)
             }
         ),
         SearchType(
             searchType = SpotifyItemType.PLAYLISTS,
             onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.PLAYLISTS, context)
+                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.PLAYLISTS)
             }
         ),
     )
@@ -123,7 +121,7 @@ fun SearchPage(
                 onValueChange = onValueChange,
                 onSearchCallback = {
                     viewModel.viewModelScope.launch {
-                        viewModel.search(context = context)
+                        viewModel.search()
                     }
                 }
             )

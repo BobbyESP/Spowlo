@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -139,7 +141,8 @@ fun SmallSpotifySongCard(
                             .fillMaxSize()
                             .align(Alignment.Center),
                         model = albumArtPath,
-                        contentDescription = "Album Artwork"
+                        contentDescription = "Album Artwork",
+                        contentScale = ContentScale.Crop
                     )
                 } else {
                     PlaceholderCreator(
@@ -183,16 +186,20 @@ fun SmallSpotifySongCard(
                         .padding(vertical = 8.dp)
                         .padding(start = 2.dp, end = 8.dp)
                 ) {
-                    MarqueeText(
+                    Text(
                         text = track.name,
                         style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
-                    MarqueeText(
+                    Text(
                         text = track.artists.joinToString(", ") { it.name },
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
+                        ),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
                 }
             }

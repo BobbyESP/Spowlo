@@ -15,20 +15,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +63,8 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
+import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import kotlinx.coroutines.launch
 
@@ -74,7 +74,6 @@ fun ProfilePage(
     viewModel: ProfilePageViewModel
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current.applicationContext
     val bottomInsetsAsPadding =
         LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
@@ -96,7 +95,7 @@ fun ProfilePage(
                     error = state.exception.message ?: stringResource(id = R.string.unknown),
                     onRetry = {
                         scope.launch {
-                            viewModel.loadPage(context)
+                            viewModel.loadPage()
                         }
                     }
                 )
@@ -114,7 +113,6 @@ fun ProfilePage(
 private fun PageImplementation(
     viewModel: ProfilePageViewModel
 ) {
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val scope = rememberCoroutineScope()
 
@@ -129,19 +127,19 @@ private fun PageImplementation(
 
     val pullRefreshState = rememberPullRefreshState(refreshing, {
         viewModel.viewModelScope.launch {
-            viewModel.reloadPage(context)
+            viewModel.reloadPage()
         }
     })
 
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
         if (id != null) {
-            viewModel.searchSongById(context, id)
+            viewModel.searchSongById(id)
         }
     }
 
     LaunchedEffect(Unit) {
-        viewModel.sameSongAsBroadcastVerifier(context)
+        viewModel.sameSongAsBroadcastVerifier()
     }
 
     val userInfo = viewState.value.userInformation
@@ -163,7 +161,7 @@ private fun PageImplementation(
                         stringResource(id = R.string.all_time)
                     ),
                     onItemSelection = {
-                        viewModel.updateTimeRangeAndReload(it, context)
+                        viewModel.updateTimeRangeAndReload(it)
                     },
                     cornerRadius = 50,
                     modifier = Modifier
@@ -353,45 +351,6 @@ private fun PageImplementation(
             }
         }) {
 
-        }
-    }
-}
-
-@Composable
-private fun LoadingPage() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .systemBarsPadding(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Composable
-private fun ErrorPage(
-    modifier: Modifier = Modifier,
-    error: String,
-    onRetry: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = error)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Text(text = stringResource(id = R.string.retry))
         }
     }
 }

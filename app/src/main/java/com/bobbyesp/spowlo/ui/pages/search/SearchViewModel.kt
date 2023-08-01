@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.search
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackPa
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.utils.createPager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +33,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@SuppressLint("StaticFieldLeak")
 @HiltViewModel
-class SearchViewModel @Inject constructor() : ViewModel() {
+class SearchViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
@@ -58,19 +63,17 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun chooseSearchTypeAndSearch(searchType: SpotifyItemType, context: Context) {
+    fun chooseSearchTypeAndSearch(searchType: SpotifyItemType) {
         chooseSearchType(searchType)
         viewModelScope.launch {
             if (pageViewState.value.query.isNotEmpty()) search(
-                searchType = searchType,
-                context = context
+                searchType = searchType
             )
         }
     }
 
     suspend fun search(
         searchType: SpotifyItemType = pageViewState.value.activeSearchType,
-        context: Context
     ) {
         val query = pageViewState.value.query
         searchJob?.cancel()
@@ -80,19 +83,19 @@ class SearchViewModel @Inject constructor() : ViewModel() {
                 when (searchType) {
                     SpotifyItemType.TRACKS -> {
                         Log.i("SearchViewModel", "search: $query")
-                        getTracksPaginatedData(context = context, query = query)
+                        getTracksPaginatedData(query = query)
                     }
 
                     SpotifyItemType.ALBUMS -> {
-                        getAlbumsPaginatedData(context = context, query = query)
+                        getAlbumsPaginatedData(query = query)
                     }
 
                     SpotifyItemType.ARTISTS -> {
-                        getArtistsPaginatedData(context = context, query = query)
+                        getArtistsPaginatedData(query = query)
                     }
 
                     SpotifyItemType.PLAYLISTS -> {
-                        getSimplePaginatedData(context = context, query = query)
+                        getSimplePaginatedData(query = query)
                     }
                 }
 
@@ -104,7 +107,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     }
 
     //********************* CLIENT ***********************//
-    private suspend fun getTracksPaginatedData(context: Context, query: String) {
+    private suspend fun getTracksPaginatedData(query: String) {
         val tracksPager = createPager(
             context = context,
             pagingSourceFactory = { api ->
@@ -128,7 +131,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private suspend fun getAlbumsPaginatedData(context: Context, query: String) {
+    private suspend fun getAlbumsPaginatedData(query: String) {
         try {
             checkSpotifyApiIsValid(applicationContext = context) { api ->
                 mutablePageViewState.update {
@@ -175,7 +178,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private suspend fun getSimplePaginatedData(context: Context, query: String) {
+    private suspend fun getSimplePaginatedData(query: String) {
         checkSpotifyApiIsValid(applicationContext = context) { api ->
             mutablePageViewState.update {
                 it.copy(
@@ -197,7 +200,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private suspend fun getArtistsPaginatedData(context: Context, query: String) {
+    private suspend fun getArtistsPaginatedData(query: String) {
         checkSpotifyApiIsValid(applicationContext = context) { api ->
             mutablePageViewState.update {
                 it.copy(
@@ -218,9 +221,6 @@ class SearchViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
-
-    //********************* SPOTIFY APP SEARCH ***********************//
-
 
     private fun updateViewState(searchViewState: SearchViewState) {
         mutablePageViewState.update {
