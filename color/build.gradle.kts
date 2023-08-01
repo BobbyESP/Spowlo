@@ -45,4 +45,7 @@ dependencies {
     api(libs.core.ktx)
     api(libs.compose.foundation)
     api(libs.compose.material3)
+
+    api(libs.coil)
+    api(libs.palette)
 }

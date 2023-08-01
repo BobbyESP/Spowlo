@@ -24,6 +24,7 @@ compose-pagination = "1.0.0-alpha20"
 #More UI
 androidx-paging = "3.1.1"
 shimmer = "1.0.3"
+palette = "1.0.0"
 
 #Navigation
 androidx-navigation = "2.6.0"
@@ -112,6 +113,7 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 
 #Paging3
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
