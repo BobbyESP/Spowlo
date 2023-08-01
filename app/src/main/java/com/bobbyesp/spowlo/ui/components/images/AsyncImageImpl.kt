@@ -14,7 +14,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.disk.DiskCache
@@ -119,19 +118,27 @@ fun AsyncImageImpl(
 ) {
 
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .memoryCache {
-            MemoryCache.Builder(context)
-                .maxSizePercent(0.25)
-                .build()
-        }
-        .diskCache {
-            DiskCache.Builder()
-                .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.3)
-                .build()
-        }
-        .build()
+
+    // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .memoryCache {
+                MemoryCache.Builder(context)
+                    .maxSizePercent(0.05)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.2)
+                    .build()
+            }
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .build()
+            }
+            .build()
+    }
 
     val imageRequest = ImageRequest.Builder(context)
         .addHeader("user-agent", userAgentHeader)
@@ -141,21 +148,27 @@ fun AsyncImageImpl(
 
     val placeholderPainter = placeholder ?: painterResource(R.drawable.ic_launcher_foreground)
 
-    AsyncImage(
+    val painter = rememberAsyncImagePainter(
         model = imageRequest,
-        contentDescription = contentDescription,
         imageLoader = imageLoader,
-        modifier = modifier,
-        error = error,
-        placeholder = placeholder,
-        fallback = fallback,
+        filterQuality = filterQuality,
+        contentScale = contentScale,
+        onError = onError,
         onLoading = onLoading,
         onSuccess = onSuccess,
-        onError = onError,
+        fallback = fallback,
+        error = error,
+        placeholder = placeholderPainter,
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = modifier,
         alignment = alignment,
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
-        filterQuality = filterQuality,
+
     )
 }
