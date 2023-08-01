@@ -9,6 +9,6 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.entity.Lyric
 
 @Database(entities = [LyricsEntity::class], version = 1)
 @TypeConverters(LyricsEntityConverters::class)
-abstract class LyricsDatabase: RoomDatabase() {
+abstract class LyricsDatabase : RoomDatabase() {
     abstract fun lyricsDao(): LyricsDao
 }

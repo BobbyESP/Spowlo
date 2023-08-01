@@ -11,10 +11,11 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerAsBottomSheetViewModel @Inject constructor(
     @ApplicationContext context: Context,
-): ViewModel() {
+) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
+
     data class PageViewState(
-        val playing : Boolean = false,
+        val playing: Boolean = false,
     )
 }

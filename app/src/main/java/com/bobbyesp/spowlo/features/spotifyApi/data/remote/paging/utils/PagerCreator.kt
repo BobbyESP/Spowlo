@@ -16,7 +16,7 @@ suspend inline fun <T : Any> createPager(
     context: Context,
     crossinline pagingSourceFactory: (api: SpotifyClientApi) -> PagingSource<Int, T>,
     crossinline authFailedPagingSource: () -> PagingSource<Int, T>,
-    coroutineScope : CoroutineScope
+    coroutineScope: CoroutineScope
 ): Flow<PagingData<T>>? {
     return try {
         checkSpotifyApiIsValid(applicationContext = context) { api ->

@@ -31,7 +31,7 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 @Composable
 fun AppUtilityCard(
     modifier: Modifier = Modifier,
-    cardSize : Int = 200,
+    cardSize: Int = 200,
     utilityName: String,
     icon: ImageVector,
     onClick: () -> Unit
@@ -40,7 +40,9 @@ fun AppUtilityCard(
     val yOffset = cardSize.dp / 5
 
     OutlinedCard(
-        modifier = modifier.aspectRatio(1.0f).background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
+        modifier = modifier
+            .aspectRatio(1.0f)
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
         onClick = onClick,
         shape = MaterialTheme.shapes.small,
     ) {

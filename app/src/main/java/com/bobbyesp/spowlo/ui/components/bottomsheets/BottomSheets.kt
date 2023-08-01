@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 fun ModernModalBottomSheet(
     modifier: Modifier = Modifier,
     modalSheetState: ModalSheetState,
-    onDismiss : () -> Unit,
+    onDismiss: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalSheet(
@@ -246,6 +246,7 @@ class BottomSheetState(
                         collapse()
                     }
                 }
+
                 in l1..l2 -> collapse()
                 in l2..l3 -> expand()
                 else -> Unit

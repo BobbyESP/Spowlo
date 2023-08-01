@@ -125,9 +125,9 @@ private fun ArtistCardPreview() {
     val genres: List<String> = listOf("Pop", "Rock", "Electronic")
 
     val images: List<SpotifyImage> = listOf(
-        SpotifyImage( 640,"https://example.com/image1.jpg", 640),
-        SpotifyImage( 300,"https://example.com/image2.jpg", 300),
-        SpotifyImage( 64,"https://example.com/image3.jpg", 64)
+        SpotifyImage(640, "https://example.com/image1.jpg", 640),
+        SpotifyImage(300, "https://example.com/image2.jpg", 300),
+        SpotifyImage(64, "https://example.com/image3.jpg", 64)
     )
 
     val name: String = "Fake Artist"

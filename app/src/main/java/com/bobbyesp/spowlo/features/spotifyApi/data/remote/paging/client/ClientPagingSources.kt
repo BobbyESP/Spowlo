@@ -193,7 +193,7 @@ class ClientSavedShowsPagingSource(
 class ClientMostListenedArtistsPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var timeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm,
-): PagingSource<Int, Artist>() {
+) : PagingSource<Int, Artist>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Artist> {
         val offset = params.key ?: 0
@@ -229,7 +229,7 @@ class ClientMostListenedArtistsPagingSource(
 class ClientMostListenedSongsPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var timeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm,
-): PagingSource<Int, Track>() {
+) : PagingSource<Int, Track>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Track> {
         val offset = params.key ?: 0
@@ -264,7 +264,7 @@ class ClientMostListenedSongsPagingSource(
 
 class SpotifyCustomPagingSource<T : Any>(
     private val request: suspend (offset: Int, limit: Int) -> PagingObject<T>,
-): PagingSource<Int, T>() {
+) : PagingSource<Int, T>() {
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition
     }

@@ -26,12 +26,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectedSongLyricsPageViewModel @Inject constructor(
     private val lyricsApi: SpotifyLyricService,
-    lyricsDb : LyricsDatabase
+    lyricsDb: LyricsDatabase
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
     private val lyricsDao = lyricsDb.lyricsDao()
+
     data class PageViewState(
         val state: SelectedSongLyricsPageState = SelectedSongLyricsPageState.Loading,
         val lyricsDownloaderPageStage: LyricsDownloaderPageStage = LyricsDownloaderPageStage.Selecting,
@@ -66,7 +67,8 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
                         query,
                         market
                     )
-                }).flow.cachedIn(viewModelScope))
+                }).flow.cachedIn(viewModelScope)
+            )
         }
     }
 

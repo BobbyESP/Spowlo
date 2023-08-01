@@ -6,6 +6,6 @@ import com.bobbyesp.spowlo.data.local.db.searching.dao.SearchingDao
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
 
 @Database(entities = [SearchEntity::class], version = 1)
-abstract class SearchingHistoryDatabase: RoomDatabase() {
+abstract class SearchingHistoryDatabase : RoomDatabase() {
     abstract fun searchingDao(): SearchingDao
 }

@@ -22,7 +22,7 @@ data class Song(
     @Serializable(with = UriSerializer::class) val albumArtPath: Uri? = null,
     val duration: Double,
     val path: String
-): Parcelable {
+) : Parcelable {
     constructor(parcel: android.os.Parcel) : this(
         parcel.readLong(),
         parcel.readString()!!,
@@ -61,7 +61,8 @@ data class Song(
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = Uri::class)
 object UriSerializer : KSerializer<Uri> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Uri) {
         encoder.encodeString(value.toString())

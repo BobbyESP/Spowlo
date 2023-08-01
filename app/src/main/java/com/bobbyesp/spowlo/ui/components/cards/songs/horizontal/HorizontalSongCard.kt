@@ -54,7 +54,10 @@ fun HorizontalSongCard(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
-                            horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp).weight(1f)
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
                         ) {
                             MarqueeText(
                                 text = song.title,
@@ -62,7 +65,8 @@ fun HorizontalSongCard(
                                 fontWeight = FontWeight.Bold
                             )
                             MarqueeText(
-                                text = song.artist, style = MaterialTheme.typography.bodyMedium.copy(
+                                text = song.artist,
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                             )
@@ -105,7 +109,10 @@ fun HorizontalSongCard(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
-                            horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp).weight(1f)
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f)
                         ) {
                             MarqueeText(
                                 text = song.title,
@@ -113,7 +120,8 @@ fun HorizontalSongCard(
                                 fontWeight = FontWeight.Bold
                             )
                             MarqueeText(
-                                text = song.artist, style = MaterialTheme.typography.bodyMedium.copy(
+                                text = song.artist,
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                             )

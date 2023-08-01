@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.bobbyesp.spowlo.BuildConfig
 
-fun <T: Any> LazyListScope.loadStateContent(
+fun <T : Any> LazyListScope.loadStateContent(
     items: LazyPagingItems<T>,
     loadingContent: @Composable () -> Unit
 ) {

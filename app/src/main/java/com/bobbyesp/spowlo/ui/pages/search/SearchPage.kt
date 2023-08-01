@@ -172,7 +172,9 @@ fun SearchPage(
                                             paginatedItems = paginatedTracks,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                            itemArtworkUrl = { item -> item.album.images.secondOrNull()?.url ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.album.images.secondOrNull()?.url ?: ""
+                                            },
                                             itemType = SpotifyItemType.TRACKS,
                                             onItemClick = { track ->
                                                 track.externalUrls.spotify?.let { url ->
@@ -190,7 +192,9 @@ fun SearchPage(
                                             paginatedItems = paginatedAlbums,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                            itemArtworkUrl = { item -> item.images.secondOrNull()?.url ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.images.secondOrNull()?.url ?: ""
+                                            },
                                             itemType = SpotifyItemType.ALBUMS,
                                             onItemClick = { album ->
                                                 album.externalUrls.spotify?.let { url ->
@@ -208,7 +212,9 @@ fun SearchPage(
                                             paginatedItems = paginatedArtists,
                                             itemName = { item -> item.name },
                                             itemArtists = { _ -> "" },
-                                            itemArtworkUrl = { item -> item.images.secondOrNull()?.url ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.images.secondOrNull()?.url ?: ""
+                                            },
                                             itemType = SpotifyItemType.ARTISTS,
                                             onItemClick = { artist ->
                                                 artist.externalUrls.spotify?.let { url ->
@@ -226,7 +232,9 @@ fun SearchPage(
                                             paginatedItems = paginatedPlaylists,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.owner.displayName ?: "" },
-                                            itemArtworkUrl = { item -> item.images.firstOrNull()?.url ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.images.firstOrNull()?.url ?: ""
+                                            },
                                             itemType = SpotifyItemType.PLAYLISTS,
                                             onItemClick = { playlist ->
                                                 playlist.externalUrls.spotify?.let { url ->

@@ -26,7 +26,7 @@ import com.bobbyesp.spowlo.ui.theme.applyAlpha
 fun WarningCard(
     modifier: Modifier = Modifier,
     title: String,
-    warningText : String,
+    warningText: String,
 ) {
     OutlinedCard(
         modifier = modifier,

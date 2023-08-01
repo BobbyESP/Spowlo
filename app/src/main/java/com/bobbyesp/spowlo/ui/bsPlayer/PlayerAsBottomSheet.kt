@@ -21,7 +21,7 @@ fun PlayerAsBottomSheet(
         modifier = modifier,
         backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
         onDismiss = {
-                    
+
         },
         collapsedContent = {
             Text(text = "Test lmao")

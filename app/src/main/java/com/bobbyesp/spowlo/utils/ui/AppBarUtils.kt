@@ -39,7 +39,11 @@ class AppBarScrollBehavior(
 ) : TopAppBarScrollBehavior {
     override val isPinned: Boolean = true
     override var nestedScrollConnection = object : NestedScrollConnection {
-        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource
+        ): Offset {
             if (!canScroll()) return Offset.Zero
             state.contentOffset += consumed.y
             if (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit) {

@@ -67,7 +67,11 @@ object MediaStoreReceiver {
         return songs
     }
 
-    fun getAllSongsFromMediaStore(applicationContext: Context, searchTerm: String?, filterType: MediaStoreFilterType?): List<Song> {
+    fun getAllSongsFromMediaStore(
+        applicationContext: Context,
+        searchTerm: String?,
+        filterType: MediaStoreFilterType?
+    ): List<Song> {
         val contentResolver: ContentResolver = applicationContext.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         if (BuildConfig.DEBUG) {
@@ -78,15 +82,14 @@ object MediaStoreReceiver {
         Log.d("MediaStoreReceiver", "isFilterTypeNull: ${filterType == null}")
 
         val selection = if (!searchTerm.isNullOrEmpty() && filterType != null) {
-            when(filterType) {
+            when (filterType) {
                 MediaStoreFilterType.TITLE -> "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.TITLE} LIKE '%$searchTerm%'"
                 MediaStoreFilterType.ARTIST -> "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.ARTIST} LIKE '%$searchTerm%'"
             }
-        } else if(!searchTerm.isNullOrEmpty() && filterType == null) {
+        } else if (!searchTerm.isNullOrEmpty() && filterType == null) {
             "${MediaStore.Audio.Media.IS_MUSIC} != 0 AND ${MediaStore.Audio.Media.TITLE} LIKE '%$searchTerm%'" +
                     " OR ${MediaStore.Audio.Media.ARTIST} LIKE '%$searchTerm%'"
-        }
-        else {
+        } else {
             MediaStore.Audio.Media.IS_MUSIC + " != 0"
         }
 
@@ -142,7 +145,7 @@ enum class MediaStoreFilterType {
     ARTIST;
 
     fun toString(context: Context): String {
-        return when(this) {
+        return when (this) {
             TITLE -> context.getString(R.string.title)
             ARTIST -> context.getString(R.string.artist)
         }

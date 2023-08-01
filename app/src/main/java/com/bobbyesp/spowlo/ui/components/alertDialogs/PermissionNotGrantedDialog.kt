@@ -45,12 +45,12 @@ fun PermissionNotGrantedDialog(
         },
         text = {
             Column {
-                if(shouldShowRationale) {
+                if (shouldShowRationale) {
                     Text(
                         text = stringResource(id = R.string.permission_not_granted_rationale_desc),
                         textAlign = TextAlign.Justify
                     )
-                }else {
+                } else {
                     Text(
                         text = stringResource(id = R.string.permission_not_granted_description),
                         textAlign = TextAlign.Justify

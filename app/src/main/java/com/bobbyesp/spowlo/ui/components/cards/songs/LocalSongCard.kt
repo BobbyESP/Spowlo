@@ -57,7 +57,8 @@ fun LocalSongCard(
                         model = song.albumArtPath,
                         onState = { state ->
                             //if it was successful, don't show the placeholder, else show it
-                            showArtwork = state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
+                            showArtwork =
+                                state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
                         },
                         contentDescription = "Song cover",
                         contentScale = ContentScale.Fit,

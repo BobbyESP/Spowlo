@@ -81,7 +81,12 @@ fun Navigator() {
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val routesToShowInBottomBar: List<Route> = remember {
-        listOf(Route.HomeNavigator, Route.SearchNavigator, Route.UtilitiesNavigator, Route.ProfileNavigator)
+        listOf(
+            Route.HomeNavigator,
+            Route.SearchNavigator,
+            Route.UtilitiesNavigator,
+            Route.ProfileNavigator
+        )
     }
 
     val routesToShowNavBar = remember {
@@ -90,7 +95,7 @@ fun Navigator() {
             Route.Search,
             Route.Utilities,
             Route.Profile,
-            )
+        )
     }
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
@@ -170,7 +175,10 @@ fun Navigator() {
                     }
                 }
 
-                utilitiesNavigation(navController = navController, mediaStorePageViewModel = mediaStoreViewModel)
+                utilitiesNavigation(
+                    navController = navController,
+                    mediaStorePageViewModel = mediaStoreViewModel
+                )
 
                 navigation(
                     route = Route.ProfileNavigator.route,
@@ -268,15 +276,18 @@ private fun NavGraphBuilder.utilitiesNavigation(
 
         slideInVerticallyComposable(
             route = Route.SelectedSongLyrics.route,
-            arguments = listOf(navArgument(NavArgs.SelectedSong.key) { type = SelectedSongParamType})
+            arguments = listOf(navArgument(NavArgs.SelectedSong.key) {
+                type = SelectedSongParamType
+            })
         ) {
 
             @Suppress("DEPRECATION")
-            val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.arguments?.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
-            } else {
-                it.arguments?.getParcelable(NavArgs.SelectedSong.key)
-            }
+            val selectedSongParcelable =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.arguments?.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
+                } else {
+                    it.arguments?.getParcelable(NavArgs.SelectedSong.key)
+                }
 
             val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
 
@@ -290,15 +301,21 @@ private fun NavGraphBuilder.utilitiesNavigation(
 
         slideInVerticallyComposable(
             route = Route.TagEditor.Editor.route,
-            arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) { type = SelectedSongParamType})
+            arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) {
+                type = SelectedSongParamType
+            })
         ) {
 
             @Suppress("DEPRECATION")
-            val selectedSongParcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key, SelectedSong::class.java)
-            } else {
-                it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key)
-            }
+            val selectedSongParcelable =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.arguments?.getParcelable(
+                        NavArgs.TagEditorSelectedSong.key,
+                        SelectedSong::class.java
+                    )
+                } else {
+                    it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key)
+                }
 
             val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 

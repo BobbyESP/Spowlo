@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TagEditorPageViewModel @Inject constructor(
     private val searchesDb: SearchingDbHelper
-): ViewModel() {
+) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 

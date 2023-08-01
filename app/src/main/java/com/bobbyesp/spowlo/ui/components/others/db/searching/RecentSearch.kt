@@ -78,10 +78,10 @@ fun RecentSearch(
             modifier = Modifier.padding(end = 8.dp)
         ) {
             Row {
-                if(searchEntity.filter != null) {
+                if (searchEntity.filter != null) {
                     FilterTag(text = searchEntity.filter.toString(context))
                 }
-                if(searchEntity.filter != null && searchEntity.spotifySearch) {
+                if (searchEntity.filter != null && searchEntity.spotifySearch) {
                     Spacer(modifier = Modifier.width(6.dp))
                 }
                 if (searchEntity.spotifySearch) {

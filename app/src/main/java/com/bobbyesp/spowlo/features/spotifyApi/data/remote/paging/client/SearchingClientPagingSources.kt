@@ -9,6 +9,7 @@ import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.utils.Market
+
 class SearchTracksClientPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var query: String,

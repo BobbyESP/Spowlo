@@ -21,7 +21,7 @@ object SpotifyApiRequests {
     private var token: Token? = null
 
     private suspend fun buildApi() {
-        if(isDebug) Log.d(
+        if (isDebug) Log.d(
             "SpotifyApiRequests",
             "Building API with client ID: $clientId and client secret: $clientSecret"
         )
@@ -30,6 +30,7 @@ object SpotifyApiRequests {
             automaticRefresh = true
         }.build()
     }
+
     @Provides
     @Singleton
     suspend fun provideSpotifyApi(): SpotifyAppApi {

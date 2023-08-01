@@ -21,7 +21,7 @@ data class TrackEntity(
     val durationMs: Int,
     val url: String? = null,
     val artworkUri: Uri? = null,
-    val spotifyId : String? = null
+    val spotifyId: String? = null
 )
 
 class TrackEntityConverters {

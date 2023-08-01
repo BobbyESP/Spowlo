@@ -6,9 +6,9 @@ import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
 
 @Entity
 data class SearchEntity(
-    @PrimaryKey(autoGenerate = true) val id : Int,
-    val search : String,
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val search: String,
     val spotifySearch: Boolean,
-    val date : Long,
+    val date: Long,
     val filter: MediaStoreFilterType? = null,
 )

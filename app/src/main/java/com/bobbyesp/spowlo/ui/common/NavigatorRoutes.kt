@@ -37,16 +37,25 @@ sealed class Route(
     //ROUTES
     object Home : Route("home", "", Icons.Outlined.Home)
     object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
-        object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
-            object SelectedSongLyrics : Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
-                fun createRoute(selectedSong: SelectedSong) = "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
-            }
-        object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
-            object Editor : Route("tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}", "", Icons.Default.Edit) {
-                fun createRoute(selectedSong: SelectedSong) = "tag_editor/editor/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
-            }
+    object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
+    object SelectedSongLyrics :
+        Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
+        fun createRoute(selectedSong: SelectedSong) =
+            "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
+    }
+
+    object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
+        object Editor : Route(
+            "tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}",
+            "",
+            Icons.Default.Edit
+        ) {
+            fun createRoute(selectedSong: SelectedSong) =
+                "tag_editor/editor/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
         }
-        object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
+    }
+
+    object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
     object Search : Route("search", "", Icons.Default.Search)
     object Profile : Route("profile", "", Icons.Default.Person)
 
@@ -84,9 +93,9 @@ sealed class Route(
             Home.title = stringUtils.getStringWithContext(R.string.home)
             Search.title = stringUtils.getStringWithContext(R.string.search)
             Utilities.title = stringUtils.getStringWithContext(R.string.utilities)
-                LyricsDownloader.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
-                MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
-                TagEditor.title = stringUtils.getStringWithContext(R.string.id3_tag_editor)
+            LyricsDownloader.title = stringUtils.getStringWithContext(R.string.lyrics_downloader)
+            MiniplayerPage.title = stringUtils.getStringWithContext(R.string.miniplayer)
+            TagEditor.title = stringUtils.getStringWithContext(R.string.id3_tag_editor)
             Profile.title = stringUtils.getStringWithContext(R.string.profile)
 
         }

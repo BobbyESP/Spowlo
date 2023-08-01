@@ -14,8 +14,10 @@ import androidx.compose.ui.draw.clip
 fun ButtonPlaceholder(
     modifier: Modifier = Modifier,
 ) {
-    Spacer(modifier
-        .height(ButtonDefaults.MinHeight)
-        .clip(RoundedCornerShape(50))
-        .background(MaterialTheme.colorScheme.onSurface))
+    Spacer(
+        modifier
+            .height(ButtonDefaults.MinHeight)
+            .clip(RoundedCornerShape(50))
+            .background(MaterialTheme.colorScheme.onSurface)
+    )
 }

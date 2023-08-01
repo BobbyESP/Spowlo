@@ -52,11 +52,16 @@ val LocalDarkTheme = compositionLocalOf { DarkThemePreference() }
 val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR }
 val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
-val LocalWindowWidthState = staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
-val LocalNavController = compositionLocalOf<NavHostController> { error("No nav controller provided") }
+val LocalWindowWidthState =
+    staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
+val LocalNavController =
+    compositionLocalOf<NavHostController> { error("No nav controller provided") }
+
 @OptIn(ExperimentalMaterial3Api::class)
-val LocalBottomSheetMenuState = compositionLocalOf<BottomSheetScaffoldState> { error("No BottomSheetScaffoldState provided") }
-val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
+val LocalBottomSheetMenuState =
+    compositionLocalOf<BottomSheetScaffoldState> { error("No BottomSheetScaffoldState provided") }
+val LocalPlayerAwareWindowInsets =
+    compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
 @Composable

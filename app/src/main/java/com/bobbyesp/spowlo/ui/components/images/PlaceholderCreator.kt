@@ -22,7 +22,7 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 @Stable
 @Composable
-fun PlaceholderCreator (
+fun PlaceholderCreator(
     modifier: Modifier = Modifier,
     icon: ImageVector?,
     colorful: Boolean,
@@ -36,10 +36,13 @@ fun PlaceholderCreator (
         if (icon != null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(
-                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
                     imageVector = icon,
                     contentDescription = contentDescription,
-                    tint = if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, )
+                    tint = if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                )
             }
         }
     }
@@ -51,7 +54,9 @@ fun PlaceholderCreator (
 private fun PlaceholderCreatorPreview() {
     SpowloTheme {
         PlaceholderCreator(
-            modifier = Modifier.width(200.dp).aspectRatio(1f),
+            modifier = Modifier
+                .width(200.dp)
+                .aspectRatio(1f),
             icon = Icons.Default.Lyrics,
             colorful = true,
             contentDescription = "Song cover"
@@ -65,7 +70,9 @@ private fun PlaceholderCreatorPreview() {
 private fun PlaceholderCreatorPreviewNonColourful() {
     SpowloTheme {
         PlaceholderCreator(
-            modifier = Modifier.width(200.dp).aspectRatio(1f),
+            modifier = Modifier
+                .width(200.dp)
+                .aspectRatio(1f),
             icon = Icons.Default.Lyrics,
             colorful = false,
             contentDescription = "Song cover"

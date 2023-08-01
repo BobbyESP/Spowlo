@@ -28,7 +28,8 @@ import javax.inject.Inject
 fun SearchPagingTestPage(
     viewModel: SearchPagingTestViewModel = hiltViewModel<SearchPagingTestViewModel>()
 ) {
-    val tracks = viewModel.getTrackPagingData("Imagine Dragons", Market.FROM_TOKEN).collectAsLazyPagingItems()
+    val tracks = viewModel.getTrackPagingData("Imagine Dragons", Market.FROM_TOKEN)
+        .collectAsLazyPagingItems()
 
     LazyColumn {
         this.items(

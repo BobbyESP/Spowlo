@@ -14,7 +14,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 @Composable
 fun MetadataTag(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     typeOfMetadata: String,
     metadata: String = "Unknown",
 ) {

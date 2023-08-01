@@ -41,7 +41,10 @@ interface SearchingDao {
     suspend fun getBySearch(search: String): List<SearchEntity>
 
     @Query("SELECT * FROM SearchEntity WHERE search LIKE :search AND spotifySearch = :spotifySearch")
-    suspend fun getBySearchAndSpotifySearch(search: String, spotifySearch: Boolean): List<SearchEntity>
+    suspend fun getBySearchAndSpotifySearch(
+        search: String,
+        spotifySearch: Boolean
+    ): List<SearchEntity>
 
     @Query("SELECT * FROM SearchEntity WHERE spotifySearch = :spotifySearch")
     suspend fun getBySpotifySearch(spotifySearch: Boolean): List<SearchEntity>

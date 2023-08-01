@@ -10,7 +10,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 
 @Composable
 fun RowScope.AnimatedNavigationItem( //TODO
-    isSelected : Boolean,
+    isSelected: Boolean,
     route: Route,
     onClick: () -> Unit
 ) {

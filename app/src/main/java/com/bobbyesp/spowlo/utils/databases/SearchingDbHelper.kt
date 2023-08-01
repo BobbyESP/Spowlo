@@ -12,7 +12,11 @@ class SearchingDbHelper @Inject constructor(
 
     private val dao = searchDb.searchingDao()
 
-    suspend fun insertSearch(search: String, filterType: MediaStoreFilterType?, spotifySearch: Boolean = false) {
+    suspend fun insertSearch(
+        search: String,
+        filterType: MediaStoreFilterType?,
+        spotifySearch: Boolean = false
+    ) {
         val searchEntity = SearchEntity(
             id = 0,
             search = search,
@@ -27,6 +31,7 @@ class SearchingDbHelper @Inject constructor(
     suspend fun getAllSearches(): List<SearchEntity> {
         return dao.getAll()
     }
+
     fun getAllSearchesWithFlow(): Flow<List<SearchEntity>> {
         return dao.getAllWithFlow()
     }
@@ -47,7 +52,10 @@ class SearchingDbHelper @Inject constructor(
         return dao.getBySearch(search)
     }
 
-    suspend fun getSearchesBySearchAndSpotifySearch(search: String, spotifySearch: Boolean): List<SearchEntity> {
+    suspend fun getSearchesBySearchAndSpotifySearch(
+        search: String,
+        spotifySearch: Boolean
+    ): List<SearchEntity> {
         return dao.getBySearchAndSpotifySearch(search, spotifySearch)
     }
 }

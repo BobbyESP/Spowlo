@@ -1,12 +1,13 @@
 package com.bobbyesp.spowlo.utils.preferences
 
 object PreferencesStrings {
-  //------------SPOTDL---------------
+    //------------SPOTDL---------------
     const val SPOTDL = "spotdl"
 
-  //------------APP------------------
+    //------------APP------------------
     const val UPDATE_CHANNEL = "update_channel"
-  //------------THEME----------------
+
+    //------------THEME----------------
     const val DARK_THEME_VALUE = "dark_theme_value"
     const val HIGH_CONTRAST = "high_contrast"
     const val THEME_COLOR = "theme_color"

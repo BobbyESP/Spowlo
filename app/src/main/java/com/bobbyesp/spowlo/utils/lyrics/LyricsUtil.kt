@@ -40,7 +40,10 @@ object LyricsUtil {
                     context.getString(R.string.lyrics_embedded_success)
                 )
             } catch (e: Exception) {
-                Log.e("SelectedSongLyricsPageViewModel", "Error while trying to embed lyrics: ${e.message}")
+                Log.e(
+                    "SelectedSongLyricsPageViewModel",
+                    "Error while trying to embed lyrics: ${e.message}"
+                )
                 ToastUtil.makeToastSuspend(
                     context,
                     context.getString(R.string.lyrics_embedded_error)

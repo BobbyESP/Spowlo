@@ -5,7 +5,7 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.entity.Lyric
 import javax.inject.Inject
 
 class LyricsDbHelper @Inject constructor(
-    lyricsDb : LyricsDatabase
+    lyricsDb: LyricsDatabase
 ) {
     val lyricsDao = lyricsDb.lyricsDao()
 

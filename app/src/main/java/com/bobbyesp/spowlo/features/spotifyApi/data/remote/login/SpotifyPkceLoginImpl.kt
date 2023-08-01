@@ -13,7 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 internal var pkceClassBackTo: Class<out Activity>? = MainActivity::class.java //null or other
 
-class SpotifyPkceLoginImpl: AbstractSpotifyPkceLoginActivity() {
+class SpotifyPkceLoginImpl : AbstractSpotifyPkceLoginActivity() {
 
     @ApplicationContext
     private val context: Context = MainActivity.getActivity().applicationContext
@@ -24,16 +24,20 @@ class SpotifyPkceLoginImpl: AbstractSpotifyPkceLoginActivity() {
     override fun onSuccess(api: SpotifyClientApi) {
         val credentialStore = CredentialsStorer().provideCredentials(context)
         credentialStore.setSpotifyApi(api)
-        val classToGoBackTo = pkceClassBackTo ?: throw IllegalStateException("No class to go back to")
+        val classToGoBackTo =
+            pkceClassBackTo ?: throw IllegalStateException("No class to go back to")
         pkceClassBackTo = null
-        ToastUtil.makeToast(context,"Authentication via PKCE has completed. Launching ${classToGoBackTo.simpleName}..")
+        ToastUtil.makeToast(
+            context,
+            "Authentication via PKCE has completed. Launching ${classToGoBackTo.simpleName}.."
+        )
         startActivity(Intent(this, classToGoBackTo))
     }
 
     override fun onFailure(exception: Exception) {
         exception.printStackTrace()
         pkceClassBackTo = null
-        ToastUtil.makeToast(context,"Auth failed: ${exception.message}")
+        ToastUtil.makeToast(context, "Auth failed: ${exception.message}")
     }
 
 }

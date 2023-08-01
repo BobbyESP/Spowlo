@@ -74,6 +74,7 @@ fun OpenInSpotifyFilledButton(
         )
     }
 }
+
 @Composable
 fun FilledTonalButtonWithIcon(
     modifier: Modifier = Modifier,

@@ -25,7 +25,7 @@ fun DotWithText(text: String) {
                 .background(MaterialTheme.colorScheme.primary)
         )
         Text(
-            text= text,
+            text = text,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 8.dp)
         )

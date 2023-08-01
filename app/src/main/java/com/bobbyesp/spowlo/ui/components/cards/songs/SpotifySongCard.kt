@@ -178,7 +178,10 @@ fun SmallSpotifySongCard(
                     )
                 }
                 Column(
-                    horizontalAlignment = Alignment.Start, modifier = Modifier.padding(vertical = 8.dp).padding(start = 2.dp, end = 8.dp)
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .padding(start = 2.dp, end = 8.dp)
                 ) {
                     MarqueeText(
                         text = track.name,

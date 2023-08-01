@@ -18,6 +18,7 @@ val SelectedSongParamType = object : NavType<SelectedSong>(isNullableAllowed = f
             bundle.getParcelable("localSelectedSong")
         }
     }
+
     override fun put(bundle: Bundle, key: String, value: SelectedSong) {
         bundle.putParcelable(key, value)
     }
@@ -26,20 +27,23 @@ val SelectedSongParamType = object : NavType<SelectedSong>(isNullableAllowed = f
         return Json.decodeFromString(Uri.decode(value))
     }
 }
+
 @Suppress("DEPRECATION")
-inline fun <reified T: Parcelable> parcelableTypeOf() = object : NavType<T>(isNullableAllowed = false) {
-    override fun get(bundle: Bundle, key: String): T? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable(key, getClassOfType<T>())
-        } else {
-            bundle.getParcelable(key)
+inline fun <reified T : Parcelable> parcelableTypeOf() =
+    object : NavType<T>(isNullableAllowed = false) {
+        override fun get(bundle: Bundle, key: String): T? {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getParcelable(key, getClassOfType<T>())
+            } else {
+                bundle.getParcelable(key)
+            }
+        }
+
+        override fun put(bundle: Bundle, key: String, value: T) {
+            bundle.putParcelable(key, value)
+        }
+
+        override fun parseValue(value: String): T {
+            return Json.decodeFromString(Uri.decode(value))
         }
     }
-    override fun put(bundle: Bundle, key: String, value: T) {
-        bundle.putParcelable(key, value)
-    }
-
-    override fun parseValue(value: String): T {
-        return Json.decodeFromString(Uri.decode(value))
-    }
-}

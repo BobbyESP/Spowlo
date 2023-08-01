@@ -46,17 +46,18 @@ fun ExpandableSearchBar(
             Icon(leadingIcon, contentDescription = "Leading Icon of the search bar")
         },
         trailingIcon = {
-            if(active) {
+            if (active) {
                 Icon(
                     modifier = Modifier.clickable {
-                        if(query.isNotEmpty()) {
+                        if (query.isNotEmpty()) {
                             onQueryChange("")
                         } else {
                             onActiveChange(false)
                         }
                     },
                     imageVector = Icons.Outlined.Close,
-                    contentDescription = "Close search bar")
+                    contentDescription = "Close search bar"
+                )
             }
         }
     ) {

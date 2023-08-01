@@ -19,7 +19,8 @@ fun DeviceStorageSizesBar(
 ) {
     val appBackground = MaterialTheme.colorScheme.primary
     val bgTotal = MaterialTheme.colorScheme.compositeSurfaceElevation(4.dp)
-    val bgOthers = MaterialTheme.colorScheme.compositeSurfaceElevation(8.dp).blendWith(appBackground, 0.2f)
+    val bgOthers =
+        MaterialTheme.colorScheme.compositeSurfaceElevation(8.dp).blendWith(appBackground, 0.2f)
 
     Canvas(modifier) {
         val width = size.width
@@ -37,6 +38,12 @@ fun DeviceStorageSizesBar(
         // OTHERS - APPLICATION
         drawLine(bgTotal, Offset(0f, 0f), Offset(width, 0f), height, StrokeCap.Round)
         drawLine(bgOthers, Offset(0f, 0f), Offset(othersOffsetEnd, 0f), height, StrokeCap.Round)
-        drawLine(appBackground, Offset(othersOffsetEnd, 0f), Offset(appOffsetEnd, 0f), height, StrokeCap.Round)
+        drawLine(
+            appBackground,
+            Offset(othersOffsetEnd, 0f),
+            Offset(appOffsetEnd, 0f),
+            height,
+            StrokeCap.Round
+        )
     }
 }

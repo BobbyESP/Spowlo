@@ -9,6 +9,6 @@ import com.bobbyesp.spowlo.data.local.db.music.entity.TrackEntityConverters
 
 @Database(entities = [TrackEntity::class], version = 1)
 @TypeConverters(TrackEntityConverters::class)
-abstract class MusicAppDatabase: RoomDatabase() {
+abstract class MusicAppDatabase : RoomDatabase() {
     abstract fun trackDao(): TrackDao
 }

@@ -53,18 +53,25 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         if (actualFilter == spotifyItemType) {
             return
         } else {
-            mutablePageViewState.value = pageViewState.value.copy(activeSearchType = spotifyItemType)
+            mutablePageViewState.value =
+                pageViewState.value.copy(activeSearchType = spotifyItemType)
         }
     }
 
     fun chooseSearchTypeAndSearch(searchType: SpotifyItemType, context: Context) {
         chooseSearchType(searchType)
         viewModelScope.launch {
-            if(pageViewState.value.query.isNotEmpty()) search(searchType = searchType, context = context)
+            if (pageViewState.value.query.isNotEmpty()) search(
+                searchType = searchType,
+                context = context
+            )
         }
     }
 
-    suspend fun search(searchType: SpotifyItemType = pageViewState.value.activeSearchType, context: Context) {
+    suspend fun search(
+        searchType: SpotifyItemType = pageViewState.value.activeSearchType,
+        context: Context
+    ) {
         val query = pageViewState.value.query
         searchJob?.cancel()
         updateViewState(SearchViewState.Loading)
@@ -222,6 +229,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
             )
         }
     }
+
     fun updateQuery(query: String) {
         mutablePageViewState.update {
             it.copy(

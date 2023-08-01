@@ -84,7 +84,8 @@ fun EqualizerAnimatedIcon(
         Line(
             modifier = Modifier.padding(end = 5.dp),
             height = line1Height,
-            color = lineColor)
+            color = lineColor
+        )
         Line(
             modifier = Modifier.padding(end = 5.dp),
             height = line2Height,
@@ -98,7 +99,8 @@ fun EqualizerAnimatedIcon(
 fun Line(
     modifier: Modifier = Modifier,
     height: Float,
-    color: Color) {
+    color: Color
+) {
     Box(
         modifier = modifier
             .fillMaxHeight(height)

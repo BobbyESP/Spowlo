@@ -25,11 +25,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
-            v.setPadding(0, 0, 0, 0)
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
+            view.setPadding(0, 0, 0, 0)
             insets
         }
-                activity = this
+        activity = this
 
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun startMediaPlayerService() {
         if (!isServiceRunning) {

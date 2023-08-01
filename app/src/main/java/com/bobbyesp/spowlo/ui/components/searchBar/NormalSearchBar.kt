@@ -32,7 +32,7 @@ fun QueryTextBox(
     modifier: Modifier = Modifier,
     query: String,
     onValueChange: (String) -> Unit,
-    onSearchCallback : () -> Unit
+    onSearchCallback: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current

@@ -84,6 +84,7 @@ fun FinalStatePreview() {
         progress = 1.0f
     )
 }
+
 private enum class MotionLayoutAppBarItem {
     BACK_BUTTON,
     TITLE,

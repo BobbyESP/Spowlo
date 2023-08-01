@@ -60,12 +60,16 @@ fun PlayPauseAnimatedButton(
             contentAlignment = Alignment.Center
         ) {
             Crossfade(targetState = isPlaying, label = "") { isPlaying ->
-                when(isPlaying) {
+                when (isPlaying) {
                     true -> {
                         Icon(imageVector = Icons.Default.Pause, contentDescription = "Pause button")
                     }
+
                     false -> {
-                        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play button")
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Play button"
+                        )
                     }
                 }
             }

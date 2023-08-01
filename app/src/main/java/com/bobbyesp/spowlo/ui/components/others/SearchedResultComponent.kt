@@ -25,11 +25,11 @@ import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 
 @Composable
 fun SearchingResult(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     artworkUrl: String,
     name: String,
     artists: String,
-    type : String = stringResource(id = R.string.track),
+    type: String = stringResource(id = R.string.track),
     insideModifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -79,7 +79,7 @@ fun SearchingResult(
                             ),
                         )
                     }
-                    if(artists.isNotEmpty()) {
+                    if (artists.isNotEmpty()) {
                         MarqueeText(
                             text = "$type • $artists",
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),

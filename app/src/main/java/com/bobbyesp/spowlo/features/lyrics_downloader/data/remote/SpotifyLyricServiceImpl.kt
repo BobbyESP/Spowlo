@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 class SpotifyLyricServiceImpl(
     private val client: HttpClient
-): SpotifyLyricService {
+) : SpotifyLyricService {
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true

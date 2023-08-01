@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.dto
 
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class SyncedLinesResponse(
     val error: Boolean,

@@ -11,6 +11,7 @@ fun handleSpotifyBroadcastEvent(data: SpotifyBroadcastEventData) {
         is SpotifyMetadataChangedData -> {
 
         }
+
         is SpotifyQueueChangedData -> {
         }
 
@@ -32,9 +33,11 @@ fun handleSpotifyBroadcastEvent(
         is SpotifyMetadataChangedData -> {
             metadataState.value = event
         }
+
         is SpotifyQueueChangedData -> {
             queueState.value = event
         }
+
         is SpotifyPlaybackStateChangedData -> {
 
             playbackState.value = event
