@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.2.0-alpha14"
+agp = "8.2.0-alpha15"
 kotlin = "1.8.21"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.10.1"
@@ -185,6 +185,7 @@ room-paging = { group = "androidx.room", name = "room-paging", version.ref = "ro
 
 #Serialization
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serializationJson" }
+kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 #Key-value storage
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }

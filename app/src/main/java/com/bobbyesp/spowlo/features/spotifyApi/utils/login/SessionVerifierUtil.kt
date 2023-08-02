@@ -11,6 +11,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStor
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException
 
@@ -67,7 +68,9 @@ suspend fun <T> checkSpotifyApiIsValid(
             }
         } else {
             pkceClassBackTo = classToGoBackTo
-            activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
+            runBlocking {
+                activity.startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
+            }
             return null
         }
     } catch (e: UnknownHostException) {

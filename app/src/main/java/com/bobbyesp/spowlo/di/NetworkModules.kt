@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModules {
-
     @Provides
     @Singleton
     fun provideSyncedLyricsApi(): SpotifyLyricService {

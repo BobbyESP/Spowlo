@@ -12,7 +12,7 @@ import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.entity.Lyric
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackAsSongPagingSource
-import com.bobbyesp.spowlo.ui.ext.toLyricsString
+import com.bobbyesp.spowlo.utils.lyrics.LyricsUtil.toLyricsString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

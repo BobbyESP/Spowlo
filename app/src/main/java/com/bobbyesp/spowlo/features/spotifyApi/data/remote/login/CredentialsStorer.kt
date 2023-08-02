@@ -15,9 +15,4 @@ class CredentialsStorer {
         }
         return credentialStore
     }
-
-    fun deleteCredentials(context: Context) {
-        val credentialStore = provideCredentials(context)
-        credentialStore.clear()
-    }
 }

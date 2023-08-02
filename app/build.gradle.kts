@@ -2,15 +2,14 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.hilt)
     kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("kotlin-parcelize")
 }
-apply(plugin = "dagger.hilt.android.plugin")
 
 sealed class Version(
     open val versionMajor: Int,
@@ -195,6 +194,7 @@ dependencies {
 
     //Serialization
     implementation(libs.kotlin.serialization.json)
+    implementation(libs.kotlin.datetime)
 
     //DI (Dependency Injection - Hilt)
     implementation(libs.bundles.hilt)

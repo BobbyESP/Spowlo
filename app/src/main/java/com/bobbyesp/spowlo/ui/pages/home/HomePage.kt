@@ -32,6 +32,8 @@ fun HomePage(
     val context = LocalContext.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
+    val isLoggedIn = viewState.value.loggedIn
+
     Scaffold(
         topBar = {
             SmallTopAppBar(
@@ -61,7 +63,7 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (viewState.value.loggedIn) {
+            if (isLoggedIn) {
                 Text(text = "Logged in")
             } else {
                 Text(text = "Not logged in")
@@ -73,7 +75,7 @@ fun HomePage(
                 }
             }
             Button(onClick = {
-                viewModel.deleteEncryptedSharedPrefs(context)
+                viewModel.deleteEncryptedSharedPrefs()
             }) {
                 Text(text = "Delete auth data")
             }
