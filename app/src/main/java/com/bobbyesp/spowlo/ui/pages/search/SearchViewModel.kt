@@ -11,10 +11,10 @@ import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchArtistsClientPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimpleAlbumsClientPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimplePlaylistsClientPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchTracksClientPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ArtistsClientPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SimpleAlbumsClientPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SimplePlaylistsClientPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.TracksClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.ArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimpleAlbumPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimplePlaylistPagingSource
@@ -119,7 +119,7 @@ class SearchViewModel @Inject constructor(
             clientApi = clientApi,
             isLogged = spotifyAuthManager.isAuthenticated(),
             pagingSourceFactory = { api ->
-                SearchTracksClientPagingSource(
+                TracksClientPagingSource(
                     spotifyApi = api,
                     query = query,
                 )
@@ -145,7 +145,7 @@ class SearchViewModel @Inject constructor(
             clientApi = clientApi,
             isLogged = spotifyAuthManager.isAuthenticated(),
             pagingSourceFactory = { api ->
-                SearchSimpleAlbumsClientPagingSource(
+                SimpleAlbumsClientPagingSource(
                     spotifyApi = api,
                     query = query,
                 )
@@ -170,7 +170,7 @@ class SearchViewModel @Inject constructor(
             clientApi = clientApi,
             isLogged = spotifyAuthManager.isAuthenticated(),
             pagingSourceFactory = { api ->
-                SearchSimplePlaylistsClientPagingSource(
+                SimplePlaylistsClientPagingSource(
                     spotifyApi = api,
                     query = query,
                 )
@@ -195,7 +195,7 @@ class SearchViewModel @Inject constructor(
             clientApi = clientApi,
             isLogged = spotifyAuthManager.isAuthenticated(),
             pagingSourceFactory = { api ->
-                SearchArtistsClientPagingSource(
+                ArtistsClientPagingSource(
                     spotifyApi = api,
                     query = query,
                 )

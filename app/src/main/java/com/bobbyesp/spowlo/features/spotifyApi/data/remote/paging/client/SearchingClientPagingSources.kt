@@ -10,7 +10,7 @@ import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.utils.Market
 
-class SearchTracksClientPagingSource(
+class TracksClientPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var query: String,
     private val market: Market = Market.FROM_TOKEN,
@@ -42,7 +42,7 @@ class SearchTracksClientPagingSource(
     }
 }
 
-class SearchSimpleAlbumsClientPagingSource(
+class SimpleAlbumsClientPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var query: String,
     private val market: Market = Market.FROM_TOKEN,
@@ -75,7 +75,7 @@ class SearchSimpleAlbumsClientPagingSource(
     }
 }
 
-class SearchArtistsClientPagingSource(
+class ArtistsClientPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var query: String,
     private val market: Market = Market.FROM_TOKEN,
@@ -108,7 +108,7 @@ class SearchArtistsClientPagingSource(
     }
 }
 
-class SearchSimplePlaylistsClientPagingSource(
+class SimplePlaylistsClientPagingSource(
     private var spotifyApi: SpotifyClientApi,
     private var query: String,
     private val market: Market = Market.FROM_TOKEN,
