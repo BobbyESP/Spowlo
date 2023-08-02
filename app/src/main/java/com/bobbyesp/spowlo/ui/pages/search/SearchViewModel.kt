@@ -5,10 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
@@ -18,10 +15,12 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchA
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimpleAlbumsClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchSimplePlaylistsClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SearchTracksClientPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.ArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimpleAlbumPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimplePlaylistPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.utils.createPager
-import com.bobbyesp.spowlo.features.spotifyApi.utils.login.checkSpotifyApiIsValid
+import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -36,12 +35,17 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val spotifyAuthManager: SpotifyAuthManager
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
     private var searchJob: Job? = null
+
+    private val clientApi by lazy {
+        spotifyAuthManager.getSpotifyClientApi()
+    }
 
     data class PageViewState(
         val searchViewState: SearchViewState = SearchViewState.Idle,
@@ -58,8 +62,11 @@ class SearchViewModel @Inject constructor(
         if (actualFilter == spotifyItemType) {
             return
         } else {
-            mutablePageViewState.value =
-                pageViewState.value.copy(activeSearchType = spotifyItemType)
+            mutablePageViewState.update {
+                it.copy(
+                    activeSearchType = spotifyItemType
+                )
+            }
         }
     }
 
@@ -109,20 +116,22 @@ class SearchViewModel @Inject constructor(
     //********************* CLIENT ***********************//
     private suspend fun getTracksPaginatedData(query: String) {
         val tracksPager = createPager(
-            context = context,
+            clientApi = clientApi,
+            isLogged = spotifyAuthManager.isAuthenticated(),
             pagingSourceFactory = { api ->
                 SearchTracksClientPagingSource(
                     spotifyApi = api,
                     query = query,
                 )
             },
-            authFailedPagingSource = {
+            nonLoggedSourceFactory = {
                 TrackPagingSource(
                     spotifyApi = null,
                     query = query,
                 )
             },
-            coroutineScope = viewModelScope
+            coroutineScope = viewModelScope,
+
         )
         mutablePageViewState.update {
             it.copy(
@@ -132,93 +141,77 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun getAlbumsPaginatedData(query: String) {
-        try {
-            checkSpotifyApiIsValid(applicationContext = context) { api ->
-                mutablePageViewState.update {
-                    it.copy(
-                        searchedAlbums = Pager(
-                            config = PagingConfig(
-                                pageSize = 20,
-                                enablePlaceholders = false,
-                                initialLoadSize = 40,
-                            ),
-                            pagingSourceFactory = {
-                                SearchSimpleAlbumsClientPagingSource(
-                                    spotifyApi = api,
-                                    query = query,
-                                )
-                            }
-                        ).flow.cachedIn(viewModelScope)
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("SearchViewModel", "getAlbumsPaginatedData: ${e.message}")
-
-            try {
-                mutablePageViewState.update {
-                    it.copy(
-                        searchedAlbums = Pager(
-                            config = PagingConfig(
-                                pageSize = 20,
-                                enablePlaceholders = false,
-                                initialLoadSize = 40,
-                            ),
-                            pagingSourceFactory = {
-                                SimpleAlbumPagingSource(
-                                    query = query,
-                                )
-                            }
-                        ).flow.cachedIn(viewModelScope)
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("SearchViewModel", "getAlbumsPaginatedData: ${e.message}")
-            }
+        val albumsPager = createPager(
+            clientApi = clientApi,
+            isLogged = spotifyAuthManager.isAuthenticated(),
+            pagingSourceFactory = { api ->
+                SearchSimpleAlbumsClientPagingSource(
+                    spotifyApi = api,
+                    query = query,
+                )
+            },
+            nonLoggedSourceFactory = {
+                SimpleAlbumPagingSource(
+                    spotifyApi = null,
+                    query = query,
+                )
+            },
+            coroutineScope = viewModelScope,
+        )
+        mutablePageViewState.update {
+            it.copy(
+                searchedAlbums = albumsPager!!
+            )
         }
     }
 
     private suspend fun getSimplePaginatedData(query: String) {
-        checkSpotifyApiIsValid(applicationContext = context) { api ->
-            mutablePageViewState.update {
-                it.copy(
-                    searchedPlaylists = Pager(
-                        config = PagingConfig(
-                            pageSize = 20,
-                            enablePlaceholders = false,
-                            initialLoadSize = 40,
-                        ),
-                        pagingSourceFactory = {
-                            SearchSimplePlaylistsClientPagingSource(
-                                spotifyApi = api,
-                                query = query,
-                            )
-                        }
-                    ).flow.cachedIn(viewModelScope)
+        val playlistsPager = createPager(
+            clientApi = clientApi,
+            isLogged = spotifyAuthManager.isAuthenticated(),
+            pagingSourceFactory = { api ->
+                SearchSimplePlaylistsClientPagingSource(
+                    spotifyApi = api,
+                    query = query,
                 )
-            }
+            },
+            nonLoggedSourceFactory = {
+                SimplePlaylistPagingSource(
+                    spotifyApi = null,
+                    query = query,
+                )
+            },
+            coroutineScope = viewModelScope,
+        )
+        mutablePageViewState.update {
+            it.copy(
+                searchedPlaylists = playlistsPager!!
+            )
         }
     }
 
     private suspend fun getArtistsPaginatedData(query: String) {
-        checkSpotifyApiIsValid(applicationContext = context) { api ->
-            mutablePageViewState.update {
-                it.copy(
-                    searchedArtists = Pager(
-                        config = PagingConfig(
-                            pageSize = 20,
-                            enablePlaceholders = false,
-                            initialLoadSize = 40,
-                        ),
-                        pagingSourceFactory = {
-                            SearchArtistsClientPagingSource(
-                                spotifyApi = api,
-                                query = query,
-                            )
-                        }
-                    ).flow.cachedIn(viewModelScope)
+        val artistsPager = createPager(
+            clientApi = clientApi,
+            isLogged = spotifyAuthManager.isAuthenticated(),
+            pagingSourceFactory = { api ->
+                SearchArtistsClientPagingSource(
+                    spotifyApi = api,
+                    query = query,
                 )
-            }
+            },
+            nonLoggedSourceFactory = {
+                ArtistsPagingSource(
+                    spotifyApi = null,
+                    query = query,
+                )
+            },
+            coroutineScope = viewModelScope,
+        )
+        mutablePageViewState.update {
+            it.copy(
+                searchedArtists = artistsPager!!
+            )
         }
     }
 

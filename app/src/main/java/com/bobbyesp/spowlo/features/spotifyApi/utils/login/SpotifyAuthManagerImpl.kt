@@ -1,9 +1,11 @@
 package com.bobbyesp.spowlo.features.spotifyApi.utils.login
 
 import android.content.Context
+import android.util.Log
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
+import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
@@ -16,7 +18,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
 
     private var spotifyClientApi: SpotifyClientApi? = null
     private val credentials = CredentialsStorer().provideCredentials(context)
-    private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
+    private val activityWrapper by lazy { ActivityCallsShortener(MainActivity.getActivity()) }
 
     override fun launchLoginActivity() {
         activityWrapper.execute {
@@ -35,7 +37,10 @@ class SpotifyAuthManagerImpl @Inject constructor(
     }
 
     override suspend fun isAuthenticated(): Boolean {
-        return spotifyClientApi != null && credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
+        val isTokenValid = credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
+        val isClientApiValid = spotifyClientApi != null
+        if(BuildConfig.DEBUG) Log.i("SearchViewModel", "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiValid")
+        return isTokenValid && isClientApiValid
     }
 
     override suspend fun refreshToken(): Boolean {

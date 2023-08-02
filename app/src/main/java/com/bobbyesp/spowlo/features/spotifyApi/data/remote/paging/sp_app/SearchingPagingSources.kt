@@ -16,7 +16,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 class TrackPagingSource(
     private var spotifyApi: SpotifyAppApi? = null,
     private var query: String,
-    private val market: Market = Market.FROM_TOKEN,
     private val filters: List<SearchFilter> = emptyList(),
 ) : PagingSource<Int, Track>() {
 
@@ -33,7 +32,8 @@ class TrackPagingSource(
                 query = query,
                 limit = params.loadSize,
                 offset = offset,
-                market = market,
+                market = null,
+                filters = filters,
             )
 
 
@@ -61,7 +61,6 @@ class TrackPagingSource(
 class SimpleAlbumPagingSource(
     private var spotifyApi: SpotifyAppApi? = null,
     private var query: String,
-    private val market: Market = Market.FROM_TOKEN,
     private val filters: List<SearchFilter> = emptyList(),
 ) : PagingSource<Int, SimpleAlbum>() {
 
@@ -78,7 +77,7 @@ class SimpleAlbumPagingSource(
                 query = query,
                 limit = params.loadSize,
                 offset = offset,
-                market = market,
+                market = null,
                 filters = filters,
             )
 
@@ -106,7 +105,6 @@ class SimpleAlbumPagingSource(
 class ArtistsPagingSource(
     private var spotifyApi: SpotifyAppApi? = null,
     private var query: String,
-    private val market: Market = Market.FROM_TOKEN,
     private val filters: List<SearchFilter> = emptyList(),
 ) : PagingSource<Int, Artist>() {
     override fun getRefreshKey(state: PagingState<Int, Artist>): Int? {
@@ -126,7 +124,7 @@ class ArtistsPagingSource(
                 query = query,
                 limit = params.loadSize,
                 offset = offset,
-                market = market,
+                market = null,
                 filters = filters,
             )
 
@@ -147,10 +145,9 @@ class ArtistsPagingSource(
     }
 }
 
-class SimplePlaylistClientPagingSource(
+class SimplePlaylistPagingSource(
     private var spotifyApi: SpotifyAppApi? = null,
     private var query: String,
-    private val market: Market = Market.FROM_TOKEN,
     private val filters: List<SearchFilter> = emptyList(),
 ) : PagingSource<Int, SimplePlaylist>() {
     override fun getRefreshKey(state: PagingState<Int, SimplePlaylist>): Int? {
@@ -170,7 +167,7 @@ class SimplePlaylistClientPagingSource(
                 query = query,
                 limit = params.loadSize,
                 offset = offset,
-                market = market,
+                market = null,
                 filters = filters,
             )
 
@@ -195,7 +192,7 @@ class SimplePlaylistClientPagingSource(
 class TrackAsSongPagingSource(
     private var spotifyApi: SpotifyAppApi? = null,
     private val query: String,
-    private val market: Market?,
+    private val market: Market? = null
 ) : PagingSource<Int, Song>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Song> {

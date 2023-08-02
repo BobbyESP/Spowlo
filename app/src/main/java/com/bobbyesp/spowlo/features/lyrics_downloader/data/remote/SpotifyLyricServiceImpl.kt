@@ -3,7 +3,7 @@ package com.bobbyesp.spowlo.features.lyrics_downloader.data.remote
 import android.util.Log
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.HttpRoutes
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.dto.SyncedLinesResponse
-import com.bobbyesp.spowlo.ui.ext.toLyricsString
+import com.bobbyesp.spowlo.utils.lyrics.LyricsUtil.toLyricsString
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
