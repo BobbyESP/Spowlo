@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 inline fun <T : Any> createPager(
-    isLogged : Boolean = false,
+    isLogged: Boolean = false,
     clientApi: SpotifyClientApi? = null,
     crossinline pagingSourceFactory: (api: SpotifyClientApi) -> PagingSource<Int, T>,
     crossinline nonLoggedSourceFactory: () -> PagingSource<Int, T>,

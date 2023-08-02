@@ -132,7 +132,7 @@ class SearchViewModel @Inject constructor(
             },
             coroutineScope = viewModelScope,
 
-        )
+            )
         mutablePageViewState.update {
             it.copy(
                 searchedTracks = tracksPager!!

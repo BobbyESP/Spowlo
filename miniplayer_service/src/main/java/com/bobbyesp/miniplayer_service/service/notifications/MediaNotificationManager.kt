@@ -15,6 +15,7 @@ import androidx.media3.ui.PlayerNotificationManager
 import com.bobbyesp.miniplayer_service.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+
 @RequiresApi(Build.VERSION_CODES.O)
 class MediaNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -59,8 +60,8 @@ class MediaNotificationManager @Inject constructor(
 
     private fun startForegroundNotification(mediaSessionService: MediaSessionService) {
         val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build()
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build()
 
         mediaSessionService.startForeground(NOTIFICATION_ID, notification)
     }

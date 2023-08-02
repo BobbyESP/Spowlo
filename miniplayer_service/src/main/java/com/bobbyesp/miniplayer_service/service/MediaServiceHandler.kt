@@ -48,10 +48,10 @@ class MediaServiceHandler @Inject constructor(
         player.prepare()
     }
 
-    suspend fun onPlayerEvent(playerEvent: PlayerEvent){
-        when(playerEvent) {
+    suspend fun onPlayerEvent(playerEvent: PlayerEvent) {
+        when (playerEvent) {
             is PlayerEvent.PlayPause -> {
-                if(player.isPlaying) {
+                if (player.isPlaying) {
                     player.pause()
                     stopProgressUpdate()
                 } else {
@@ -63,17 +63,21 @@ class MediaServiceHandler @Inject constructor(
 
                 }
             }
+
             is PlayerEvent.Stop -> {
                 /**THIS KILLS THE PLAYER**/
                 player.stop()
                 stopProgressUpdate()
             }
+
             is PlayerEvent.Next -> {
                 player.seekToNext()
             }
+
             is PlayerEvent.Previous -> {
                 player.seekToPrevious()
             }
+
             is PlayerEvent.UpdateProgress -> {
                 player.seekTo(playerEvent.updatedProgress)
             }
@@ -110,12 +114,15 @@ class MediaServiceHandler @Inject constructor(
             ExoPlayer.STATE_BUFFERING -> _mediaState.update {
                 MediaState.Buffering(player.duration)
             }
+
             ExoPlayer.STATE_READY -> _mediaState.update {
                 MediaState.Ready(player.duration)
             }
+
             ExoPlayer.STATE_ENDED -> _mediaState.update {
                 MediaState.Idle
             }
+
             ExoPlayer.STATE_IDLE -> _mediaState.update {
                 MediaState.Idle
             }
@@ -140,7 +147,7 @@ class MediaServiceHandler @Inject constructor(
 }
 
 sealed class PlayerEvent {
-    object PlayPause: PlayerEvent()
+    object PlayPause : PlayerEvent()
     object Stop : PlayerEvent()
     object Next : PlayerEvent()
     object Previous : PlayerEvent()

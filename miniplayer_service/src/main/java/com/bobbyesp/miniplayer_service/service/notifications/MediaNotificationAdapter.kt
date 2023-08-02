@@ -9,7 +9,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerNotificationManager
 import coil.ImageLoader
 
-@UnstableApi class MediaNotificationAdapter(
+@UnstableApi
+class MediaNotificationAdapter(
     private val context: Context,
     private val pendingIntent: PendingIntent?
 ) : PlayerNotificationManager.MediaDescriptionAdapter {

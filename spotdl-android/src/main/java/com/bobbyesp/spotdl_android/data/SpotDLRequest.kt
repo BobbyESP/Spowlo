@@ -54,8 +54,8 @@ open class SpotDLRequest(url: String? = null, urls: List<String>? = null) {
         val finalCommandList = ArrayList<String>()
         finalCommandList.addAll(options.buildOptions())
         finalCommandList.addAll(urls)
-        if(BuildConfig.DEBUG) Log.i("SpotDLRequest", urls.toString())
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) Log.i("SpotDLRequest", urls.toString())
+        if (BuildConfig.DEBUG) {
             Log.i("SpotDLRequest", "Commands: $finalCommandList")
 
             for ((numberOfArguments, command) in finalCommandList.withIndex()) {

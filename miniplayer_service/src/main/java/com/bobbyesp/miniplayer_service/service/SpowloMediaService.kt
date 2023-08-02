@@ -12,13 +12,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SpowloMediaService: MediaSessionService() {
+class SpowloMediaService : MediaSessionService() {
 
     @Inject
     lateinit var mediaSession: MediaSession
 
     @Inject
     lateinit var notificationManager: MediaNotificationManager
+
     @RequiresApi(Build.VERSION_CODES.O)
     @UnstableApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

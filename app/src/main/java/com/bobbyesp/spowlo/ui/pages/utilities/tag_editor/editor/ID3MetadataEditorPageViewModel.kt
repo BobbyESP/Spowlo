@@ -89,6 +89,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             )
         }
     }
+
     companion object {
         sealed class ID3MetadataEditorPageState {
             object Loading : ID3MetadataEditorPageState()

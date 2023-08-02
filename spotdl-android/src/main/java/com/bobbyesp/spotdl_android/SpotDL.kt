@@ -108,16 +108,19 @@ object SpotDL {
 
     @Throws(SpotDLException::class)
     fun setupPip(context: Context): Boolean {
-        if(!pipZipDirectory.exists()) {
+        if (!pipZipDirectory.exists()) {
             pipZipDirectory.mkdirs()
             Log.i(TAG, "Pip directory created successfully.")
         }
 
-        if(!pipZip.exists()) {
+        if (!pipZip.exists()) {
             return try {
                 val zipFileId = R.raw.pip
                 val outputFile = pipZip.absoluteFile
-                FileUtils.copyInputStreamToFile(context.resources.openRawResource(zipFileId), outputFile)
+                FileUtils.copyInputStreamToFile(
+                    context.resources.openRawResource(zipFileId),
+                    outputFile
+                )
                 Log.i(TAG, "Pip library extracted successfully.")
                 true
             } catch (e: Exception) {
@@ -175,7 +178,7 @@ object SpotDL {
             Log.i(TAG, "Running the process: $processBuilder")
             processBuilder.start()
         } catch (e: Exception) {
-             throw Exception("Error while running the process: ${e.message}")
+            throw Exception("Error while running the process: ${e.message}")
         }
 
         /**
@@ -270,7 +273,7 @@ object SpotDL {
      *
      * @param command The command to execute.
      */
-    suspend fun executePythonCommand(command: String){
+    suspend fun executePythonCommand(command: String) {
         TODO("Not yet implemented")
     }
 

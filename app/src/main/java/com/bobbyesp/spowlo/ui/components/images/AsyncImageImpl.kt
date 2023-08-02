@@ -170,5 +170,5 @@ fun AsyncImageImpl(
         alpha = alpha,
         colorFilter = colorFilter,
 
-    )
+        )
 }

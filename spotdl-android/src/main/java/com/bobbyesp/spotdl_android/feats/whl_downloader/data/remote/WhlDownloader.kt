@@ -88,7 +88,7 @@ object WhlDownloader {
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    if(response.isSuccessful){
+                    if (response.isSuccessful) {
                         val body = response.body.string()
                         val pyPiResponse = jsonFormatter.decodeFromString(
                             PyPiResponse.serializer(),
@@ -104,51 +104,53 @@ object WhlDownloader {
             })
         }
     }
+
     fun checkVersions(newVersion: String): Boolean {
         val currentVersion = SPOTDL_VERSION
         return currentVersion != newVersion
     }
 
-    private fun ResponseBody.downloadFileWithProgress(fileToSave: File): Flow<WhlDownloaderState> = flow {
-        emit(WhlDownloaderState.Downloading(0))
+    private fun ResponseBody.downloadFileWithProgress(fileToSave: File): Flow<WhlDownloaderState> =
+        flow {
+            emit(WhlDownloaderState.Downloading(0))
 
-        var deleteFile = true
+            var deleteFile = true
 
-        try {
-            byteStream().use { inputStream ->
-                fileToSave.outputStream().use { outputStream ->
-                    val totalBytes = contentLength()
-                    val data = ByteArray(8_192)
-                    var progressBytes = 0L
+            try {
+                byteStream().use { inputStream ->
+                    fileToSave.outputStream().use { outputStream ->
+                        val totalBytes = contentLength()
+                        val data = ByteArray(8_192)
+                        var progressBytes = 0L
 
-                    while (true) {
-                        val bytes = inputStream.read(data)
+                        while (true) {
+                            val bytes = inputStream.read(data)
 
-                        if (bytes == -1) {
-                            break
+                            if (bytes == -1) {
+                                break
+                            }
+
+                            outputStream.channel
+                            outputStream.write(data, 0, bytes)
+                            progressBytes += bytes
+                            emit(WhlDownloaderState.Downloading(((progressBytes * 100) / totalBytes).toInt()))
                         }
 
-                        outputStream.channel
-                        outputStream.write(data, 0, bytes)
-                        progressBytes += bytes
-                        emit(WhlDownloaderState.Downloading(((progressBytes * 100) / totalBytes).toInt()))
-                    }
-
-                    when {
-                        progressBytes < totalBytes -> throw Exception("Missing bytes from the download!")
-                        progressBytes > totalBytes -> throw Exception("Too many bytes from the download!")
-                        else -> deleteFile = false
+                        when {
+                            progressBytes < totalBytes -> throw Exception("Missing bytes from the download!")
+                            progressBytes > totalBytes -> throw Exception("Too many bytes from the download!")
+                            else -> deleteFile = false
+                        }
                     }
                 }
-            }
 
-            emit(WhlDownloaderState.Downloaded(fileToSave))
-        } finally {
-            if (deleteFile) {
-                fileToSave.delete()
+                emit(WhlDownloaderState.Downloaded(fileToSave))
+            } finally {
+                if (deleteFile) {
+                    fileToSave.delete()
+                }
             }
-        }
-    }.flowOn(Dispatchers.IO).distinctUntilChanged()
+        }.flowOn(Dispatchers.IO).distinctUntilChanged()
 }
 
 sealed class WhlDownloaderState {

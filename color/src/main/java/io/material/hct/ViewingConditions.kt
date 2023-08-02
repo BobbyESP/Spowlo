@@ -110,7 +110,8 @@ class ViewingConditions
             val k = 1.0 / (5.0 * adaptingLuminance + 1.0)
             val k4 = k * k * k * k
             val k4F = 1.0 - k4
-            val fl = k4 * adaptingLuminance + 0.1 * k4F * k4F * kotlin.math.cbrt(5.0 * adaptingLuminance)
+            val fl =
+                k4 * adaptingLuminance + 0.1 * k4F * k4F * kotlin.math.cbrt(5.0 * adaptingLuminance)
             val n = ColorUtils.yFromLstar(backgroundLstar) / whitePoint[1]
             val z = 1.48 + sqrt(n)
             val nbb = 0.725 / n.pow(0.2)

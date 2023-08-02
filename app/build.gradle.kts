@@ -79,7 +79,7 @@ android {
             useSupportLibrary = true
         }
         ksp {
-           arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
         if (!splitApks) ndk {
             (properties["ABI_FILTERS"] as String).split(';').forEach {
