@@ -9,38 +9,6 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.SpotifyClientApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-
-//suspend inline fun <T : Any> createPager(
-//    context: Context,
-//    crossinline pagingSourceFactory: (api: SpotifyClientApi) -> PagingSource<Int, T>,
-//    crossinline authFailedPagingSource: () -> PagingSource<Int, T>,
-//    coroutineScope: CoroutineScope
-//): Flow<PagingData<T>>? {
-//    return try {
-//        checkSpotifyApiIsValid(applicationContext = context) { api ->
-//            Pager(
-//                config = PagingConfig(
-//                    pageSize = 20,
-//                    enablePlaceholders = false,
-//                    initialLoadSize = 40,
-//                ),
-//                pagingSourceFactory = { pagingSourceFactory(api) }
-//            ).flow.cachedIn(coroutineScope)
-//        }
-//    } catch (e: Exception) {
-//        Log.e("SearchViewModel", "createPager: ${e.message}")
-//        Pager(
-//            config = PagingConfig(
-//                pageSize = 20,
-//                enablePlaceholders = false,
-//                initialLoadSize = 40,
-//            ),
-//            pagingSourceFactory = { authFailedPagingSource() }
-//        ).flow.cachedIn(coroutineScope)
-//    }
-//}
-
-
 inline fun <T : Any> createPager(
     isLogged: Boolean = false,
     clientApi: SpotifyClientApi? = null,
