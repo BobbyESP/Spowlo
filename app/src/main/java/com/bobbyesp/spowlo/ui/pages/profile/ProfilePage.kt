@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.profile
 
 import SpotifyHorizontalSongCard
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -73,7 +76,6 @@ import kotlinx.coroutines.launch
 fun ProfilePage(
     viewModel: ProfilePageViewModel
 ) {
-    val scope = rememberCoroutineScope()
     val bottomInsetsAsPadding =
         LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
@@ -106,7 +108,9 @@ fun ProfilePage(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 private fun PageImplementation(
     viewModel: ProfilePageViewModel
@@ -176,15 +180,23 @@ private fun PageImplementation(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 userScrollEnabled = true,
             ) {
-                item {
+                stickyHeader(key = "header_profilePage") {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp),
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.surface,
+                                        Color.Transparent
+                                    ),
+                                    endY = 175f
+                                )
+                            ),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

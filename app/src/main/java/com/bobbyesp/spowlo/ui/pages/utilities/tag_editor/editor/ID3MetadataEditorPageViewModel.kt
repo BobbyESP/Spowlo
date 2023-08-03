@@ -8,6 +8,7 @@ import com.kyant.tag.Metadata.Companion.getLyrics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,14 +30,10 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     suspend fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
 
-        val metadata: Metadata?
-
         try {
-            metadata = withContext(Dispatchers.IO) {
+            val metadata = withContext(Dispatchers.IO) {
                 Metadata.getMetadata(path)
             }
-
-            Log.i("Metadata", metadata.toString())
 
             if (metadata == null) {
                 updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
@@ -53,12 +50,13 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun getSongEmbeddedLyrics(path: String) {
         try {
-            val lyrics = withContext(Dispatchers.IO) {
-                getLyrics(path)
+            val lyricsDeferred = withContext(Dispatchers.IO) {
+               async { getLyrics(path) }
             }
+
+            val lyrics = lyricsDeferred.await()
 
             if (lyrics.isNullOrEmpty()) {
                 return
