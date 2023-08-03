@@ -34,7 +34,7 @@ import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.utils.localAsset
-import com.bobbyesp.spowlo.utils.time.TimeUtils.calculateTimeDifference
+import com.bobbyesp.spowlo.utils.time.calculateTimeDifference
 
 @Composable
 fun RecentlyPlayedSongCard(
