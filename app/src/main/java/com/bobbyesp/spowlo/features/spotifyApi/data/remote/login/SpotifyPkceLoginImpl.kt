@@ -26,7 +26,6 @@ class SpotifyPkceLoginImpl : AbstractSpotifyPkceLoginActivity() {
         credentialStore.setSpotifyApi(api)
         val classToGoBackTo =
             pkceClassBackTo ?: throw IllegalStateException("No class to go back to")
-        pkceClassBackTo = null
         ToastUtil.makeToast(
             context,
             "Authentication via PKCE has completed. Launching ${classToGoBackTo.simpleName}.."
@@ -36,7 +35,6 @@ class SpotifyPkceLoginImpl : AbstractSpotifyPkceLoginActivity() {
 
     override fun onFailure(exception: Exception) {
         exception.printStackTrace()
-        pkceClassBackTo = null
         ToastUtil.makeToast(context, "Auth failed: ${exception.message}")
     }
 

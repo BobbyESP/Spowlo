@@ -4,18 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
-import com.bobbyesp.spowlo.features.spotifyApi.utils.login.isLogged
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
@@ -34,7 +35,9 @@ class HomePageViewModel @Inject constructor(
     )
 
     init {
-        getLoggedIn()
+        viewModelScope.launch {
+            getLoggedIn()
+        }
     }
 
     fun login() {
@@ -48,8 +51,8 @@ class HomePageViewModel @Inject constructor(
         }
     }
 
-    private fun getLoggedIn() {
-        val logged = isLogged(context)
+    suspend fun getLoggedIn() {
+        val logged = spotifyAuthManager.isAuthenticated()
         mutablePageViewState.update {
             it.copy(loggedIn = logged)
         }

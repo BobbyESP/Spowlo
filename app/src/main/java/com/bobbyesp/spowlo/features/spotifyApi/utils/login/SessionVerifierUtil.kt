@@ -79,8 +79,3 @@ suspend fun <T> checkSpotifyApiIsValid(
         return null
     }
 }
-
-fun isLogged(applicationContext: Context): Boolean {
-    val apiCredentials = CredentialsStorer().provideCredentials(applicationContext)
-    return apiCredentials.spotifyToken != null
-}

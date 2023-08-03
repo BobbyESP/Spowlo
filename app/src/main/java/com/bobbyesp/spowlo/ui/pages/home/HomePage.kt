@@ -15,13 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,10 +31,13 @@ fun HomePage(
     viewModel: HomePageViewModel
 ) {
     val navController = LocalNavController.current
-    val context = LocalContext.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     val isLoggedIn = viewState.value.loggedIn
+
+    LaunchedEffect(Unit) {
+        viewModel.getLoggedIn()
+    }
 
     Scaffold(
         topBar = {
@@ -76,6 +81,10 @@ fun HomePage(
             }
             Button(onClick = {
                 viewModel.deleteEncryptedSharedPrefs()
+
+                viewModel.viewModelScope.launch {
+                    viewModel.getLoggedIn()
+                }
             }) {
                 Text(text = "Delete auth data")
             }
