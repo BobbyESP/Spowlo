@@ -38,12 +38,12 @@ class SpotifyAuthManagerImpl @Inject constructor(
 
     override suspend fun isAuthenticated(): Boolean {
         val isTokenValid = credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
-        val isClientApiValid = spotifyClientApi != null
+        val isClientApiInstanceNonNull = spotifyClientApi != null
         if (BuildConfig.DEBUG) Log.i(
             "SearchViewModel",
-            "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiValid"
+            "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
         )
-        return isTokenValid && isClientApiValid
+        return isTokenValid
     }
 
     override suspend fun refreshToken(): Boolean {

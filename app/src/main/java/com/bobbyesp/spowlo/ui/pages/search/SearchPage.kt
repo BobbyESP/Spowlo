@@ -28,7 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -62,7 +62,7 @@ fun SearchPage(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val uriHandler = LocalUriHandler.current
 
-    val (query, onValueChange) = remember {
+    val (query, onValueChange) = rememberSaveable(key = "searchQuery_searchPage") {
         mutableStateOf("")
     }
 

@@ -44,6 +44,7 @@ class SearchViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     private val clientApi = spotifyAuthManager.getSpotifyClientApi()
+
     data class PageViewState(
         val searchViewState: SearchViewState = SearchViewState.Idle,
         val query: String = "",
