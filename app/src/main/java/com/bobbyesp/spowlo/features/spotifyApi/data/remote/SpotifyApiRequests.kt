@@ -28,7 +28,6 @@ object SpotifyApiRequests {
         token = spotifyAppApi(clientId, clientSecret).build().token
         api = spotifyAppApi(clientId, clientSecret, token!!) {
             automaticRefresh = true
-            useCache = true
         }.build()
     }
 

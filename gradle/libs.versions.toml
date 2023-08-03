@@ -7,7 +7,7 @@ core-ktx = "1.10.1"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.6.1"
 activity-compose = "1.7.2"
-compose-compiler = "1.4.7"
+compose-compiler = "1.5.0"
 ksp = "1.9.0-1.0.13"
 material = "1.9.0"
 media3 = "1.1.0"
@@ -42,8 +42,8 @@ kotlinx-collectionsImmutable = "0.3.5"
 coil = "2.4.0"
 
 #Network
-okhttp = "5.0.0-alpha.10"
-ktor = "2.3.1" #For me the best client
+okhttp = "5.0.0-alpha.11"
+ktor = "2.3.3" #For me the best client
 retrofit = "2.9.0"
 
 #Dependency injection

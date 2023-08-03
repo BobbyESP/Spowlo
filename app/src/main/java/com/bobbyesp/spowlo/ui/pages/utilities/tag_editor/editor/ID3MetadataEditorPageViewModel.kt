@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kyant.tag.Metadata
 import com.kyant.tag.Metadata.Companion.getLyrics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -31,9 +33,11 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         updateState(ID3MetadataEditorPageState.Loading)
 
         try {
-            val metadata = withContext(Dispatchers.IO) {
-                Metadata.getMetadata(path)
+            val metadataDeferred = withContext(Dispatchers.IO) {
+                async { Metadata.getMetadata(path) }
             }
+
+            val metadata = metadataDeferred.await()
 
             if (metadata == null) {
                 updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
@@ -53,7 +57,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     private suspend fun getSongEmbeddedLyrics(path: String) {
         try {
             val lyricsDeferred = withContext(Dispatchers.IO) {
-               async { getLyrics(path) }
+                async { getLyrics(path) }
             }
 
             val lyrics = lyricsDeferred.await()
@@ -61,11 +65,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             if (lyrics.isNullOrEmpty()) {
                 return
             } else {
-                mutablePageViewState.update {
-                    PageViewState(
-                        lyrics = lyrics
-                    )
-                }
+                updateLyrics(lyrics)
             }
         } catch (e: Exception) {
             Log.i("Lyrics", e.toString())
@@ -81,10 +81,22 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     }
 
     private fun updateState(state: ID3MetadataEditorPageState) {
-        mutablePageViewState.update {
-            PageViewState(
-                state = state
-            )
+        viewModelScope.launch(Dispatchers.Main) {
+            mutablePageViewState.update {
+                it.copy(
+                    state = state
+                )
+            }
+        }
+    }
+
+    private fun updateLyrics(lyrics: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutablePageViewState.update {
+                it.copy(
+                    lyrics = lyrics
+                )
+            }
         }
     }
 

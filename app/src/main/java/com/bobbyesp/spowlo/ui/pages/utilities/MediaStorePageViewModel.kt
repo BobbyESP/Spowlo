@@ -11,6 +11,7 @@ import com.bobbyesp.spowlo.utils.databases.SearchingDbHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -48,11 +49,15 @@ class MediaStorePageViewModel @Inject constructor(
     ): List<Song> {
         updateState(MediaStorePageState.Loading)
 
-        val songs = withContext(Dispatchers.IO) {
-            MediaStoreReceiver.getAllSongsFromMediaStore(
-                applicationContext = context,
-            )
+        val songsDeferred = withContext(Dispatchers.IO) {
+            async {
+                MediaStoreReceiver.getAllSongsFromMediaStore(
+                    applicationContext = context,
+                )
+            }
         }
+
+        val songs = songsDeferred.await()
 
         updateState(MediaStorePageState.Loaded(songs))
 
@@ -102,8 +107,10 @@ class MediaStorePageViewModel @Inject constructor(
      * @param state the new state
      */
     private fun updateState(state: MediaStorePageState) {
-        mutablePageViewState.update {
-            it.copy(state = state)
+        viewModelScope.launch(Dispatchers.Main) {
+            mutablePageViewState.update {
+                it.copy(state = state)
+            }
         }
     }
 
@@ -118,14 +125,13 @@ class MediaStorePageViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 /**
  * The state of the page
  */
 sealed class MediaStorePageState {
-    object Loading : MediaStorePageState()
-    class Loaded(val mediaStoreSongs: List<Song>) : MediaStorePageState()
-    object Error : MediaStorePageState()
+    data object Loading : MediaStorePageState()
+    data class Loaded(val mediaStoreSongs: List<Song>) : MediaStorePageState()
+    data object Error : MediaStorePageState()
 }

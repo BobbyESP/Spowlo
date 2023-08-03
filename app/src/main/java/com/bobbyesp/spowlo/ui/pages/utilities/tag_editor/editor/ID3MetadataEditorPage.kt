@@ -120,8 +120,7 @@ fun ID3MetadataEditorPage(
                 }
 
                 is Companion.ID3MetadataEditorPageState.Success -> {
-                    val metadataCopyState =
-                        remember { mutableStateOf(actualPageState.metadata.toTags().copy()) }
+                    var metadataCopyState by remember { mutableStateOf(actualPageState.metadata.toTags().copy()) }
 
                     EditMetadataPage(
                         modifier = Modifier.fillMaxSize(),
@@ -130,7 +129,7 @@ fun ID3MetadataEditorPage(
                         selectedSong = selectedSong,
                     ) { updatedMetadata ->
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            metadataCopyState.value = updatedMetadata
+                            metadataCopyState = updatedMetadata
                         }
                     }
                 }

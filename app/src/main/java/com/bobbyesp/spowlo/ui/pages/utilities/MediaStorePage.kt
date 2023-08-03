@@ -163,7 +163,7 @@ fun MediaStorePage(
                             fontWeight = FontWeight.Bold
                         )
                         Button(onClick = {
-                            scope.launch {
+                            scope.launch(Dispatchers.IO) {
                                 viewModel.loadMediaStoreTracks(
                                     context
                                 )

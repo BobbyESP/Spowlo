@@ -1,13 +1,11 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -46,46 +44,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
+@SuppressLint("StaticFieldLeak")
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
-@SuppressLint("StaticFieldLeak")
 class ProfilePageViewModel @Inject constructor(
-    @ApplicationContext private val context: Context, //This is not a leak since we use the @ApplicationContext annotation
+    @ApplicationContext private val context: Context,
     private val spotifyAuthManager: SpotifyAuthManager
 ) : ViewModel(), SpotifyBroadcastObserver {
-    private val tag = this::class.java.simpleName
 
+    private val tag = this::class.java.simpleName
     private val clientApi by lazy { spotifyAuthManager.getSpotifyClientApi() }
 
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
-
-    private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
-    private val spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
-
-    init {
-        activityWrapper.execute {
-            registerSpotifyBroadcastReceiver(
-                spotifyBroadcastReceiver, *SpotifyBroadcastType.values()
-            )
-        }
-        spotifyBroadcastReceiver.addObserver(this)
-        loadPage()
-    }
-
-    override fun onCleared() {
-        activityWrapper.execute {
-            unregisterReceiver(
-                spotifyBroadcastReceiver
-            )
-        }
-        spotifyBroadcastReceiver.removeObserver(this)
-        super.onCleared()
-    }
 
     data class PageViewState(
         val state: PageStateWithThrowable = PageStateWithThrowable.Loading,
@@ -96,12 +70,35 @@ class ProfilePageViewModel @Inject constructor(
         val mostPlayedArtists: Flow<PagingData<Artist>> = emptyFlow(),
         val mostPlayedSongs: Flow<PagingData<Track>> = emptyFlow(),
         val recentlyPlayedSongs: List<PlayHistory> = emptyList(),
-        val broadcasts: MutableList<SpotifyBroadcastEventData> = mutableStateListOf(),
+        val broadcasts: List<SpotifyBroadcastEventData> = emptyList(),
         val metadataState: SpotifyMetadataChangedData? = null,
         val playbackState: SpotifyPlaybackStateChangedData? = null,
         val queueState: SpotifyQueueChangedData? = null,
         val actualTimeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm
     )
+
+
+    private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
+    private val spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
+
+    init {
+        activityWrapper.execute {
+            registerSpotifyBroadcastReceiver(
+                spotifyBroadcastReceiver,
+                *SpotifyBroadcastType.values()
+            )
+        }
+        spotifyBroadcastReceiver.addObserver(this)
+        loadPage()
+    }
+
+    override fun onCleared() {
+        activityWrapper.execute {
+            unregisterReceiver(spotifyBroadcastReceiver)
+        }
+        spotifyBroadcastReceiver.removeObserver(this)
+        super.onCleared()
+    }
 
     private fun loadPage() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -114,7 +111,6 @@ class ProfilePageViewModel @Inject constructor(
                 updateState(PageStateWithThrowable.Success)
             } catch (e: Exception) {
                 Log.e(tag, "loadPage: ", e)
-                // Show error message to the user
                 updateState(PageStateWithThrowable.Error(e))
             }
         }
@@ -125,18 +121,12 @@ class ProfilePageViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (pageViewState.value.userInformation == null) {
-                    withContext(Dispatchers.IO) {
-                        loadUserData()
-                    }
+                    loadUserData()
                 }
-                withContext(Dispatchers.IO) {
-                    loadMostListenedArtists()
-                    loadMostListenedSongs()
-                    loadRecentlyPlayedSongs()
-                }
+                loadMostListenedArtists()
+                loadMostListenedSongs()
             } catch (e: Exception) {
                 Log.e(tag, "reloadPage: ", e)
-                // Show error message to the user
                 updateState(PageStateWithThrowable.Error(e))
             } finally {
                 updateIsRefreshing(false)
@@ -152,11 +142,7 @@ class ProfilePageViewModel @Inject constructor(
             else -> ClientPersonalizationApi.TimeRange.ShortTerm
         }
 
-        mutablePageViewState.update {
-            it.copy(
-                actualTimeRange = selectedTimeRange
-            )
-        }
+        mutablePageViewState.update { it.copy(actualTimeRange = selectedTimeRange) }
     }
 
     fun updateTimeRangeAndReload(timeRange: Int) {
@@ -170,27 +156,23 @@ class ProfilePageViewModel @Inject constructor(
     private fun reloadAfterTimeRangeChange() {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    loadMostListenedArtists()
-                    loadMostListenedSongs()
-                }
+                loadMostListenedArtists()
+                loadMostListenedSongs()
             } catch (e: Exception) {
                 Log.e(tag, "reload: ", e)
                 // Show error message to the user
-                mutablePageViewState.value = pageViewState.value.copy(
-                    state = PageStateWithThrowable.Error(e)
-                )
+                mutablePageViewState.update {
+                    it.copy(
+                        state = PageStateWithThrowable.Error(e)
+                    )
+                }
             }
         }
     }
 
     private suspend fun loadUserData() {
         val userInformation = clientApi?.users?.getClientProfile()
-        mutablePageViewState.update {
-            it.copy(
-                userInformation = userInformation
-            )
-        }
+        mutablePageViewState.update { it.copy(userInformation = userInformation) }
     }
 
     private fun loadMostListenedArtists() {
@@ -203,11 +185,7 @@ class ProfilePageViewModel @Inject constructor(
                 )
             }
         ).flow.cachedIn(viewModelScope)
-        mutablePageViewState.update {
-            it.copy(
-                mostPlayedArtists = mostPlayedArtists
-            )
-        }
+        mutablePageViewState.update { it.copy(mostPlayedArtists = mostPlayedArtists) }
     }
 
     private fun loadMostListenedSongs() {
@@ -220,11 +198,7 @@ class ProfilePageViewModel @Inject constructor(
                 )
             }
         ).flow.cachedIn(viewModelScope)
-        mutablePageViewState.update {
-            it.copy(
-                mostPlayedSongs = mostPlayedSongs
-            )
-        }
+        mutablePageViewState.update { it.copy(mostPlayedSongs = mostPlayedSongs) }
     }
 
     private suspend fun loadRecentlyPlayedSongs() {
@@ -255,7 +229,7 @@ class ProfilePageViewModel @Inject constructor(
                 Log.i(tag, "sameSongAsBroadcastVerifier: Same song, doing nothing")
             } else {
                 if (apiPlayingSongId != null) {
-                    searchSongById(apiPlayingSongId)
+                    searchSongByIdAndUpdateUi(apiPlayingSongId)
                 } else {
                     Log.i(tag, "sameSongAsBroadcastVerifier: No song playing")
                 }
@@ -263,31 +237,21 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    suspend fun searchSongById(id: String) {
+    suspend fun searchSongByIdAndUpdateUi(id: String) {
         val track = clientApi?.tracks?.getTrack(id)
-        mutablePageViewState.update {
-            it.copy(
-                actualTrack = track
-            )
-        }
+        mutablePageViewState.update { it.copy(actualTrack = track) }
     }
 
-    private fun updateState(state: PageStateWithThrowable) {
-        mutablePageViewState.update {
-            it.copy(state = state)
-        }
-    }
+    private fun updateState(state: PageStateWithThrowable) =
+        mutablePageViewState.update { it.copy(state = state) }
 
-    private fun updateIsRefreshing(refreshing: Boolean) {
-        mutablePageViewState.update {
-            it.copy(isRefreshing = refreshing)
-        }
-    }
+    private fun updateIsRefreshing(refreshing: Boolean) =
+        mutablePageViewState.update { it.copy(isRefreshing = refreshing) }
 
     override fun onMetadataChanged(data: SpotifyMetadataChangedData) {
         mutablePageViewState.update {
             it.copy(
-                broadcasts = it.broadcasts.apply { add(data) },
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
                 metadataState = data
             )
         }
@@ -297,7 +261,7 @@ class ProfilePageViewModel @Inject constructor(
     override fun onPlaybackStateChanged(data: SpotifyPlaybackStateChangedData) {
         mutablePageViewState.update {
             it.copy(
-                broadcasts = it.broadcasts.apply { add(data) },
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
                 playbackState = data
             )
         }
@@ -307,7 +271,7 @@ class ProfilePageViewModel @Inject constructor(
     override fun onQueueChanged(data: SpotifyQueueChangedData) {
         mutablePageViewState.update {
             it.copy(
-                broadcasts = it.broadcasts.apply { add(data) },
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
                 queueState = data
             )
         }

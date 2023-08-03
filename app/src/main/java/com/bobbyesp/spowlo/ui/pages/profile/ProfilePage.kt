@@ -136,7 +136,7 @@ private fun PageImplementation(
     LaunchedEffect(pageState.metadataState) {
         val id = pageState.metadataState?.playableUri?.id?.getId()
         if (id != null) {
-            viewModel.searchSongById(id)
+            viewModel.searchSongByIdAndUpdateUi(id)
         }
     }
 
