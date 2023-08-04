@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.spotifyApi.data.remote.notifications
+package com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications
 
 import android.util.Log
 import com.adamratzman.spotify.notifications.AbstractSpotifyBroadcastReceiver

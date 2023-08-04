@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.spotifyApi.data.remote.login
+package com.bobbyesp.spowlo.features.spotifyApi.data.local.login
 
 import android.content.Context
 import com.adamratzman.spotify.auth.SpotifyDefaultCredentialStore

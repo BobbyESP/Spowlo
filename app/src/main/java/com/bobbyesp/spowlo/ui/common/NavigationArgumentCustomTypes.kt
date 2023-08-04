@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.ui.ext.getClassOfType
 import kotlinx.serialization.json.Json
 
@@ -28,9 +29,26 @@ val SelectedSongParamType = object : NavType<SelectedSong>(isNullableAllowed = f
     }
 }
 
+val MetadataEntityParamType = object : NavType<MetadataEntity>(isNullableAllowed = false) {
+    override fun get(bundle: Bundle, key: String): MetadataEntity? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle.getParcelable("selectedMetadataEntity", MetadataEntity::class.java)
+        } else {
+            bundle.getParcelable("selectedMetadataEntity")
+        }
+    }
+
+    override fun put(bundle: Bundle, key: String, value: MetadataEntity) {
+        bundle.putParcelable(key, value)
+    }
+
+    override fun parseValue(value: String): MetadataEntity {
+        return Json.decodeFromString(Uri.decode(value))
+    }
+}
+
 @Suppress("DEPRECATION")
-inline fun <reified T : Parcelable> parcelableTypeOf() =
-    object : NavType<T>(isNullableAllowed = false) {
+inline fun <reified T : Parcelable> parcelableTypeOf() = object : NavType<T>(isNullableAllowed = false) {
         override fun get(bundle: Bundle, key: String): T? {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 bundle.getParcelable(key, getClassOfType<T>())

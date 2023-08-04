@@ -120,7 +120,11 @@ fun ID3MetadataEditorPage(
                 }
 
                 is Companion.ID3MetadataEditorPageState.Success -> {
-                    var metadataCopyState by remember { mutableStateOf(actualPageState.metadata.toTags().copy()) }
+                    var metadataCopyState by remember {
+                        mutableStateOf(
+                            actualPageState.metadata.toTags().copy()
+                        )
+                    }
 
                     EditMetadataPage(
                         modifier = Modifier.fillMaxSize(),

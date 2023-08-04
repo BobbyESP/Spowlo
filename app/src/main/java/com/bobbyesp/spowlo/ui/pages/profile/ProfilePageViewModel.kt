@@ -24,8 +24,8 @@ import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
 import com.adamratzman.spotify.notifications.SpotifyQueueChangedData
 import com.adamratzman.spotify.notifications.registerSpotifyBroadcastReceiver
 import com.bobbyesp.spowlo.MainActivity
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.notifications.SpotifyBroadcastObserver
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.notifications.SpotifyBroadcastReceiver
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastObserver
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastReceiver
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedSongsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener

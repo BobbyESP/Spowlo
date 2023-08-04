@@ -19,7 +19,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.Artists
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimpleAlbumPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.SimplePlaylistPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.utils.createPager
+import com.bobbyesp.spowlo.features.spotifyApi.utils.createPager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -231,9 +231,9 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         sealed class SearchViewState {
-            object Idle : SearchViewState()
-            object Loading : SearchViewState()
-            object Success : SearchViewState()
+            data object Idle : SearchViewState()
+            data object Loading : SearchViewState()
+            data object Success : SearchViewState()
             data class Error(val error: Exception) : SearchViewState()
         }
     }

@@ -57,7 +57,8 @@ fun String.toTimestampInMillis(): Long {
         val date = dateFormat.parse(this)
         date?.time ?: 0
     } catch (e: Exception) {
-        val dateFormatWithoutMillis = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        val dateFormatWithoutMillis =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
         dateFormatWithoutMillis.timeZone = java.util.TimeZone.getTimeZone("UTC")
         val dateWithoutMillis = dateFormatWithoutMillis.parse(this)
         dateWithoutMillis?.time ?: 0

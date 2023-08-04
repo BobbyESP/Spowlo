@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui
 
-import android.os.Build
+//noinspection UsingMaterialAndMaterial3Libraries
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.NavigationRail
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -29,8 +32,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +56,7 @@ import com.bobbyesp.spowlo.ui.common.SelectedSongParamType
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
+import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
@@ -65,7 +71,7 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.Selecte
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
-import com.bobbyesp.spowlo.utils.ui.Constants.AppBarHeight
+import com.bobbyesp.spowlo.utils.ui.Constants
 import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
@@ -76,9 +82,14 @@ fun Navigator() {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    val configuration = LocalConfiguration.current
     val windowsInsets = WindowInsets.systemBars
     val density = LocalDensity.current
+
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
+    val startInset = with(density) {
+        windowsInsets.getLeft(density, layoutDirection = LayoutDirection.Ltr).toDp()
+    }
 
     val routesToShowInBottomBar: List<Route> = remember {
         listOf(
@@ -127,15 +138,40 @@ fun Navigator() {
             expandedBound = maxHeight,
         )
 
-        val playerAwareWindowInsets =
-            remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
-                var bottom = bottomInset
-                if (shouldShowNavigationBar) bottom += NavigationBarHeight
-                if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
-                windowsInsets
-                    .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                    .add(WindowInsets(top = AppBarHeight, bottom = bottom))
+        val playerAwareWindowInsets = when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                    var start = startInset
+                    if (shouldShowNavigationBar) start += NavigationBarHeight
+                    if (!playerBottomSheetState.isDismissed) start += MiniPlayerHeight
+                    windowsInsets
+                        .only(WindowInsetsSides.Vertical + WindowInsetsSides.Left)
+                        .add(WindowInsets(top = Constants.AppBarHeight, left = start))
+                }
             }
+
+            Configuration.ORIENTATION_PORTRAIT -> {
+                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                    var bottom = bottomInset
+                    if (shouldShowNavigationBar) bottom += NavigationBarHeight
+                    if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
+                    windowsInsets
+                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                        .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
+                }
+            }
+
+            else -> {
+                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                    var bottom = bottomInset
+                    if (shouldShowNavigationBar) bottom += NavigationBarHeight
+                    if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
+                    windowsInsets
+                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                        .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
+                }
+            }
+        }
 
 
         val scrollBehavior = appBarScrollBehavior(
@@ -189,65 +225,143 @@ fun Navigator() {
                         ProfilePage(viewModel = viewModel)
                     }
                 }
+                settingsNavigation()
             }
             PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
-            NavigationBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .offset {
-                        if (navigationBarHeight == 0.dp) {
-                            IntOffset(
-                                x = 0, y = (bottomInset + NavigationBarHeight).roundToPx()
-                            )
-                        } else {
-                            val slideOffset =
-                                (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
-                                    0f, 1f
+            val horizontalNavBar: @Composable () -> Unit = {
+                NavigationBar(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .offset {
+                            if (navigationBarHeight == 0.dp) {
+                                IntOffset(
+                                    x = 0, y = (bottomInset + NavigationBarHeight).roundToPx()
                                 )
-                            val hideOffset =
-                                (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                            IntOffset(
-                                x = 0, y = (slideOffset + hideOffset).roundToPx()
-                            )
-                        }
-                    },
-            ) {
-                routesToShowInBottomBar.forEach { route ->
-                    val isSelected = currentRootRoute.value == route.route
+                            } else {
+                                val slideOffset =
+                                    (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                        0f, 1f
+                                    )
+                                val hideOffset =
+                                    (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                IntOffset(
+                                    x = 0, y = (slideOffset + hideOffset).roundToPx()
+                                )
+                            }
+                        },
+                ) {
+                    routesToShowInBottomBar.forEach { route ->
+                        val isSelected = currentRootRoute.value == route.route
 
-                    val onClick = remember(isSelected, navController, route.route) {
-                        {
-                            if (!isSelected) {
-                                navController.navigate(route.route) {
-                                    popUpTo(Route.MainHost.route) {
-                                        saveState = true
+                        val onClick = remember(isSelected, navController, route.route) {
+                            {
+                                if (!isSelected) {
+                                    navController.navigate(route.route) {
+                                        popUpTo(Route.MainHost.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
                             }
                         }
+                        NavigationBarItem(
+                            modifier = Modifier.animateContentSize(),
+                            selected = isSelected,
+                            onClick = onClick,
+                            icon = {
+                                Icon(
+                                    imageVector = route.icon ?: return@NavigationBarItem,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = route.title,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }, alwaysShowLabel = false
+                        )
                     }
-                    NavigationBarItem(
-                        modifier = Modifier.animateContentSize(),
-                        selected = isSelected,
-                        onClick = onClick,
-                        icon = {
-                            Icon(
-                                imageVector = route.icon ?: return@NavigationBarItem,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
+                }
+            }
+
+            val verticalNavBar: @Composable () -> Unit = {
+                NavigationRail(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .offset {
+                            if (navigationBarHeight == 0.dp) {
+                                IntOffset(
+                                    y = 0, x = (startInset + NavigationBarHeight).roundToPx()
+                                )
+                            } else {
+                                val slideOffset =
+                                    (startInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                        0f, 1f
+                                    )
+                                val hideOffset =
+                                    (startInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                IntOffset(
+                                    x = 0, y = (slideOffset + hideOffset).roundToPx()
+                                )
+                            }
                         },
-                        label = {
-                            Text(
-                                text = route.title,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }, alwaysShowLabel = false
-                    )
+                ) {
+                    routesToShowInBottomBar.forEach { route ->
+                        val isSelected = currentRootRoute.value == route.route
+
+                        val onClick = remember(isSelected, navController, route.route) {
+                            {
+                                if (!isSelected) {
+                                    navController.navigate(route.route) {
+                                        popUpTo(Route.MainHost.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            }
+                        }
+                        NavigationRailItem(
+                            modifier = Modifier.animateContentSize(),
+                            selected = isSelected,
+                            onClick = onClick,
+                            icon = {
+                                Icon(
+                                    imageVector = route.icon ?: return@NavigationRailItem,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = route.title,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }, alwaysShowLabel = false
+                        )
+                    }
+                }
+            }
+            when (configuration.orientation) {
+
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    verticalNavBar()
+                }
+
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    horizontalNavBar()
+                }
+
+                else -> {
+
                 }
             }
         }
@@ -280,14 +394,7 @@ private fun NavGraphBuilder.utilitiesNavigation(
                 type = SelectedSongParamType
             })
         ) {
-
-            @Suppress("DEPRECATION")
-            val selectedSongParcelable =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.arguments?.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
-                } else {
-                    it.arguments?.getParcelable(NavArgs.SelectedSong.key)
-                }
+            val selectedSongParcelable = it.getParcelable<SelectedSong>(NavArgs.SelectedSong.key)
 
             val viewModel = hiltViewModel<SelectedSongLyricsPageViewModel>()
 
@@ -305,17 +412,8 @@ private fun NavGraphBuilder.utilitiesNavigation(
                 type = SelectedSongParamType
             })
         ) {
-
-            @Suppress("DEPRECATION")
             val selectedSongParcelable =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.arguments?.getParcelable(
-                        NavArgs.TagEditorSelectedSong.key,
-                        SelectedSong::class.java
-                    )
-                } else {
-                    it.arguments?.getParcelable(NavArgs.TagEditorSelectedSong.key)
-                }
+                it.getParcelable<SelectedSong>(NavArgs.TagEditorSelectedSong.key)
 
             val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 

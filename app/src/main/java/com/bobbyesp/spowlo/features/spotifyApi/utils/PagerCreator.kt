@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.utils
+package com.bobbyesp.spowlo.features.spotifyApi.utils
 
 import android.util.Log
 import androidx.paging.Pager
@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.SpotifyClientApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+
 inline fun <T : Any> createPager(
     isLogged: Boolean = false,
     clientApi: SpotifyClientApi? = null,

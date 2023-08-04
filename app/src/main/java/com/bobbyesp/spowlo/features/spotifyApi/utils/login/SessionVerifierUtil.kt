@@ -7,7 +7,7 @@ import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.SpotifyException
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
 import com.bobbyesp.spowlo.MainActivity
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.CredentialsStorer
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
 import kotlinx.coroutines.Dispatchers
