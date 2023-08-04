@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import SpotifyHorizontalSongCard
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +24,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -44,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,13 +79,17 @@ fun ProfilePage(
     viewModel: ProfilePageViewModel
 ) {
     val bottomInsetsAsPadding =
-        LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()
+        LocalPlayerAwareWindowInsets.current.asPaddingValues()
+    val layoutDirection = LocalLayoutDirection.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     Crossfade(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = bottomInsetsAsPadding),
+            .padding(
+                bottom = bottomInsetsAsPadding.calculateBottomPadding(),
+                start = bottomInsetsAsPadding.calculateStartPadding(layoutDirection)
+            ),
         targetState = viewState.value.state,
         label = "Main crossfade Profile Page"
     ) { state ->

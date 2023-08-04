@@ -15,12 +15,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.NavigationRail
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,8 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +81,7 @@ import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
 fun Navigator() {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val layoutDirection = LocalLayoutDirection.current
 
     val configuration = LocalConfiguration.current
     val windowsInsets = WindowInsets.systemBars
@@ -88,7 +89,7 @@ fun Navigator() {
 
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
     val startInset = with(density) {
-        windowsInsets.getLeft(density, layoutDirection = LayoutDirection.Ltr).toDp()
+        windowsInsets.getLeft(density, layoutDirection = layoutDirection).toDp()
     }
 
     val routesToShowInBottomBar: List<Route> = remember {
@@ -145,7 +146,7 @@ fun Navigator() {
                     if (shouldShowNavigationBar) start += NavigationBarHeight
                     if (!playerBottomSheetState.isDismissed) start += MiniPlayerHeight
                     windowsInsets
-                        .only(WindowInsetsSides.Vertical + WindowInsetsSides.Left)
+                        .only(WindowInsetsSides.Vertical)
                         .add(WindowInsets(top = Constants.AppBarHeight, left = start))
                 }
             }
@@ -181,10 +182,11 @@ fun Navigator() {
         )
 
         CompositionLocalProvider(
-            LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
+            LocalPlayerAwareWindowInsets provides playerAwareWindowInsets
         ) {
             NavHost(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
                 navController = navController,
                 startDestination = Route.HomeNavigator.route,
                 route = Route.MainHost.route,
@@ -297,17 +299,16 @@ fun Navigator() {
                         .offset {
                             if (navigationBarHeight == 0.dp) {
                                 IntOffset(
-                                    y = 0, x = (startInset + NavigationBarHeight).roundToPx()
+                                    y = 0, x = (startInset - NavigationBarHeight).roundToPx()
                                 )
                             } else {
-                                val slideOffset =
-                                    (startInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                val slideOffset = (startInset - NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
                                         0f, 1f
                                     )
                                 val hideOffset =
                                     (startInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
                                 IntOffset(
-                                    x = 0, y = (slideOffset + hideOffset).roundToPx()
+                                    y = 0, x = (slideOffset - hideOffset).roundToPx()
                                 )
                             }
                         },
@@ -361,7 +362,7 @@ fun Navigator() {
                 }
 
                 else -> {
-
+                    horizontalNavBar()
                 }
             }
         }
