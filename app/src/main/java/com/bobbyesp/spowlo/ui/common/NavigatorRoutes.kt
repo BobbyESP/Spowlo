@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.LocalPlay
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -58,6 +59,15 @@ sealed class Route(
         data object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
     data object Search : Route("search", "", Icons.Default.Search)
     data object Profile : Route("profile", "", Icons.Default.Person)
+
+    data object MetadataEntityViewer : Route(
+        "metadata_entity_viewer/{${NavArgs.MetadataEntitySelected.key}}",
+        "",
+        Icons.Default.MusicNote
+    ) {
+        fun createRoute(metadataEntity: MetadataEntity) =
+            "metadata_entity_viewer/${Uri.encode(Json.encodeToString<MetadataEntity>(metadataEntity))}"
+    }
 
 
     data object OnboardingPage : Route("onboarding_page", "")
@@ -104,5 +114,6 @@ sealed class Route(
 
 enum class NavArgs(val key: String) {
     SelectedSong(key = "selectedSong"),
-    TagEditorSelectedSong(key = "tagEditorSelectedSong")
+    TagEditorSelectedSong(key = "tagEditorSelectedSong"),
+    MetadataEntitySelected(key = "metadataEntitySelected")
 }

@@ -43,8 +43,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
+import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.others.SearchingResult
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
@@ -63,6 +66,7 @@ fun SearchPage(
         LocalPlayerAwareWindowInsets.current.asPaddingValues()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val uriHandler = LocalUriHandler.current
+    val navController = LocalNavController.current
 
     val (query, onValueChange) = rememberSaveable(key = "searchQuery_searchPage") {
         mutableStateOf("")
@@ -183,11 +187,16 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.TRACKS,
                                             onItemClick = { track ->
-                                                track.externalUrls.spotify?.let { url ->
-                                                    uriHandler.openUri(
-                                                        url
+                                                val selectedMetadataEntity = MetadataEntity(
+                                                    type = SpotifyItemType.TRACKS,
+                                                    id = track.id,
+                                                )
+
+                                                navController.navigate(
+                                                    Route.MetadataEntityViewer.createRoute(
+                                                        selectedMetadataEntity
                                                     )
-                                                }
+                                                )
                                             }
                                         )
                                     }

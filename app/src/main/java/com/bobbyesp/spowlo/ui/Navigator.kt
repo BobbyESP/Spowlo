@@ -40,16 +40,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.ui.bsPlayer.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.spowlo.ui.common.MetadataEntityParamType
 import com.bobbyesp.spowlo.ui.common.NavArgs
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.SelectedSongParamType
@@ -59,6 +60,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
+import com.bobbyesp.spowlo.ui.pages.metadata_entities.MetadataEntityBinder
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
 import com.bobbyesp.spowlo.ui.pages.search.SearchPage
@@ -186,6 +188,7 @@ fun Navigator() {
         ) {
             NavHost(
                 modifier = Modifier
+                    .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                 navController = navController,
                 startDestination = Route.HomeNavigator.route,
@@ -197,9 +200,7 @@ fun Navigator() {
                 ) {
                     composable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            HomePage(viewModel)
-                        }
+                        HomePage(viewModel)
                     }
                 }
 
@@ -214,7 +215,6 @@ fun Navigator() {
                 }
 
                 utilitiesNavigation(
-                    navController = navController,
                     mediaStorePageViewModel = mediaStoreViewModel
                 )
 
@@ -228,6 +228,18 @@ fun Navigator() {
                     }
                 }
                 settingsNavigation()
+
+                composable(
+                    route = Route.MetadataEntityViewer.route,
+                    arguments = listOf(navArgument(NavArgs.MetadataEntitySelected.key) {
+                        type = MetadataEntityParamType
+                    })
+                ) {
+                    val selectedMetadataEntity =
+                        it.getParcelable<MetadataEntity>(NavArgs.MetadataEntitySelected.key)
+
+                    MetadataEntityBinder(metadataEntity = selectedMetadataEntity!!)
+                }
             }
             PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
@@ -302,7 +314,8 @@ fun Navigator() {
                                     y = 0, x = (startInset - NavigationBarHeight).roundToPx()
                                 )
                             } else {
-                                val slideOffset = (startInset - NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                val slideOffset =
+                                    (startInset - NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
                                         0f, 1f
                                     )
                                 val hideOffset =
@@ -370,7 +383,6 @@ fun Navigator() {
 }
 
 private fun NavGraphBuilder.utilitiesNavigation(
-    navController: NavHostController,
     mediaStorePageViewModel: MediaStorePageViewModel
 ) {
     navigation(
@@ -403,7 +415,6 @@ private fun NavGraphBuilder.utilitiesNavigation(
         }
 
         composable(Route.TagEditor.route) {
-
             TagEditorPage(mediaStorePageViewModel)
         }
 
@@ -419,10 +430,6 @@ private fun NavGraphBuilder.utilitiesNavigation(
             val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 
             ID3MetadataEditorPage(viewModel = viewModel, selectedSong = selectedSongParcelable!!)
-        }
-
-        composable(Route.MiniplayerPage.route) {
-            TODO()
         }
     }
 }

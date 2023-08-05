@@ -109,4 +109,10 @@
     <string name="results">results</string>
     <string name="playlist">Playlist</string>
     <string name="track">Track</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="track_artwork">Track artwork</string>
+    <string name="track_not_found">Track not found</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="more_options">More options</string>
+    <string name="actions">Actions</string>
 </resources>

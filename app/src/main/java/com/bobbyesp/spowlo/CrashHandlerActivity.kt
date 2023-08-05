@@ -106,7 +106,7 @@ class CrashHandlerActivity : ComponentActivity() {
 
 @Composable
 @Preview
-fun CrashReportPage(
+private fun CrashReportPage(
     versionReport: String = "VERSION REPORT",
     errorMessage: String = error_report_fake,
     onClick: () -> Unit = {}
@@ -203,16 +203,14 @@ fun CrashReportPage(
             }
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-            SelectionContainer {
-                Text(
-                    text = errorMessage,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                )
-            }
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
         }
     }
 }
