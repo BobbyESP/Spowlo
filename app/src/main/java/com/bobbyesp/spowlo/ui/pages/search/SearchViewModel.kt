@@ -23,7 +23,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.createPager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.ktor.http.encodeURLQueryComponent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -225,7 +224,7 @@ class SearchViewModel @Inject constructor(
     fun updateQuery(query: String) {
         mutablePageViewState.update {
             it.copy(
-                query = query.encodeURLQueryComponent(),
+                query = query,
             )
         }
     }

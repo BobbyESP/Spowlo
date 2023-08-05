@@ -3,6 +3,7 @@ package com.bobbyesp.color.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
@@ -41,6 +42,20 @@ object PaletteGenerator {
         )
     }
 
+    suspend fun fromImageUrlToExtractedColors(imageUrl: String, context: Context): Map<ColorType, Color>? {
+        val imageBitmap = try {
+            convertImageUrlToBitmap(imageUrl, context)
+        } catch (e: Exception) {
+            Log.i("PaletteGenerator", "Error: ${e.message}")
+            null
+        }
+
+        return if(imageBitmap != null) {
+            extractColorsFromBitmap(imageBitmap)
+        } else {
+            null
+        }
+    }
     private fun parseColorSwatch(color: Palette.Swatch?): Color {
         return if (color != null) {
             val parsedColor = Integer.toHexString(color.rgb)
@@ -50,12 +65,12 @@ object PaletteGenerator {
         }
     }
 
-    private fun parseBodyColor(color: Int?): String {
+    private fun parseBodyColor(color: Int?): Color {
         return if (color != null) {
             val parsedColor = Integer.toHexString(color)
-            "#$parsedColor"
+            "#$parsedColor".toColor()
         } else {
-            "#FFFFFF"
+            "#FFFFFF".toColor()
         }
     }
 }

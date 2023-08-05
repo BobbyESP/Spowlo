@@ -190,7 +190,7 @@ fun TrackPage(
                                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        if(images.isEmpty()) StackedProfilePictures(
+                                        if (images.isNotEmpty()) StackedProfilePictures(
                                             profilePhotos = images,
                                             stackSpacing = 20
                                         )
@@ -219,7 +219,8 @@ fun TrackPage(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 6.dp),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
