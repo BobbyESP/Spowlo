@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -95,7 +93,7 @@ fun MetadataEntityItem(
                         contentDescription = stringResource(id = R.string.track_artwork),
                         contentScale = ContentScale.Crop,
 
-                    )
+                        )
                 }
                 Column(
                     modifier = Modifier
@@ -120,23 +118,27 @@ fun MetadataEntityItem(
                             ),
                         )
                     }
-                    Spacer(Modifier.height(6.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
+                        if (hasLyrics) LyricsTag(
+                            modifier = Modifier.padding(
+                                start = 6.dp,
+                                end = if (isExplicit) 6.dp else 0.dp
+                            )
+                        )
+                        if (isExplicit) ExplicitTag(if (hasLyrics) Modifier.padding(start = 6.dp) else Modifier.padding(end = 6.dp))
                         MarqueeText(
                             text = artists,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 10.sp,
+                            fontSize = 12.sp,
                             basicGradientColor = MaterialTheme.colorScheme.surface.copy(
                                 alpha = 0.8f
                             ),
                         )
-                        if (hasLyrics) LyricsTag(modifier = Modifier.padding(start = 6.dp, end = if (isExplicit) 6.dp else 0.dp))
-                        if(isExplicit) ExplicitTag( if(!hasLyrics) Modifier.padding(start = 6.dp) else Modifier )
                     }
                 }
             }

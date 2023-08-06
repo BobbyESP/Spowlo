@@ -24,7 +24,6 @@ fun MetadataEntityBinder(
                 songId = metadataEntity.id
             )
         }
-
         ALBUMS -> {}
         ARTISTS -> {}
         PLAYLISTS -> {}

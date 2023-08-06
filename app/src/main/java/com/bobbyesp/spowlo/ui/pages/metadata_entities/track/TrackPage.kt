@@ -76,7 +76,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackPage(
     viewModel: TrackPageViewModel,
@@ -140,7 +139,6 @@ private fun TrackPageImplementation(
     viewModel: TrackPageViewModel,
     loadedState: TrackPageViewModel.Companion.TrackPageState.Success
 ) {
-
     var showSheet by remember { mutableStateOf(false) }
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
