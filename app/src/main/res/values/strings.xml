@@ -115,4 +115,7 @@
     <string name="profile_picture">Profile picture</string>
     <string name="more_options">More options</string>
     <string name="actions">Actions</string>
+    <string name="download">Download</string>
+    <string name="copy_link">Copy link</string>
+    <string name="mins_secs">%02d min. %02d sec.</string>
 </resources>

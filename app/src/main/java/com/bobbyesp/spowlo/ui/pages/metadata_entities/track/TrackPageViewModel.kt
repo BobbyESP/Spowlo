@@ -2,9 +2,13 @@ package com.bobbyesp.spowlo.ui.pages.metadata_entities.track
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.palette.graphics.Palette
 import com.adamratzman.spotify.SpotifyAppApi
+import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleArtist
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
@@ -29,7 +33,8 @@ class TrackPageViewModel @Inject constructor(
     val pageViewState = mutablePageViewState.asStateFlow()
 
     data class PageViewState(
-        val state: TrackPageState = TrackPageState.Loading
+        val state: TrackPageState = TrackPageState.Loading,
+        val dominantColor: Color? = null,
     )
 
     suspend fun loadTrack(id: String) {
@@ -44,7 +49,9 @@ class TrackPageViewModel @Inject constructor(
 
             val artistsImages = getArtistsImages(track.artists)
 
-            updateState(TrackPageState.Success(track, artistsImages))
+            val artists = getArtists(track.artists)
+
+            updateState(TrackPageState.Success(track, artistsImages, artists))
         } catch (e: Exception) {
             updateState(
                 TrackPageState.Error(
@@ -56,21 +63,46 @@ class TrackPageViewModel @Inject constructor(
 
     private suspend fun getArtistsImages(artists: List<SimpleArtist>): List<String> {
         val images = mutableListOf<String>()
-
-            artists.forEach { artist ->
-                val newArtistDeferred = withContext(Dispatchers.IO) {
-                    async {artist.toFullArtist() }
-                }
-
-                val newArtist = newArtistDeferred.await()
-                val image = newArtist?.images?.firstOrNull()?.url
-
-                Log.i("TrackPageViewModel", "getArtistsImages: $image")
-                if (image != null) images.add(image)
+        artists.forEach { artist ->
+            val newArtistDeferred = withContext(Dispatchers.IO) {
+                async { artist.toFullArtist() }
             }
 
+            val newArtist = newArtistDeferred.await()
+            val image = newArtist?.images?.firstOrNull()?.url
+
+            if (image != null) images.add(image)
+        }
         return images
     }
+
+    fun getDominantColor(bitmap: Bitmap?) {
+        if(bitmap == null) return
+        Palette.from(bitmap).generate().let { palette ->
+            val color = palette.vibrantSwatch?.rgb?.let { Color(it) }
+            Log.i("TrackPageViewModel", "getDominantColor: $color")
+            mutablePageViewState.update {
+                it.copy(
+                    dominantColor = color
+                )
+            }
+        }
+    }
+
+    suspend fun getArtists(simpleArtists: List<SimpleArtist>): List<Artist> {
+        val artists = mutableListOf<Artist>()
+
+        simpleArtists.forEach { artist ->
+            val newArtistDeferred = withContext(Dispatchers.IO) {
+                async { artist.toFullArtist() }
+            }
+
+            val newArtist = newArtistDeferred.await()
+            if (newArtist != null) artists.add(newArtist)
+        }
+        return artists
+    }
+
 
     private fun updateState(state: TrackPageState) {
         mutablePageViewState.update {
@@ -84,7 +116,7 @@ class TrackPageViewModel @Inject constructor(
         sealed class TrackPageState {
             data object Loading : TrackPageState()
             data class Error(val e: String) : TrackPageState()
-            data class Success(val track: Track, val artistsImages: List<String>) : TrackPageState()
+            data class Success(val track: Track, val artistsImages: List<String>, val artists: List<Artist>) : TrackPageState()
         }
     }
 }

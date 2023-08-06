@@ -1,6 +1,6 @@
 @file:Suppress("KotlinConstantConditions")
 
-package com.bobbyesp.spowlo.ui.components.others
+package com.bobbyesp.spowlo.ui.components.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row

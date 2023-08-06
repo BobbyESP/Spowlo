@@ -1,8 +1,14 @@
 package com.bobbyesp.spowlo.ui.components.images
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -19,6 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
 import okhttp3.OkHttpClient
@@ -171,4 +178,28 @@ fun AsyncImageImpl(
         colorFilter = colorFilter,
 
         )
+}
+@Composable
+fun ladBitmapFromUrl(url: String): Bitmap? {
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val context = LocalContext.current
+
+    LaunchedEffect(url) {
+        val imageLoader = ImageLoader(context)
+        val request = ImageRequest.Builder(context)
+            .data(url)
+            .target { drawable ->
+                if (drawable is BitmapDrawable) {
+                    bitmap = drawable.bitmap
+                }
+            }
+            .build()
+
+        val result = (imageLoader.execute(request) as SuccessResult).drawable
+        if (result is BitmapDrawable) {
+            bitmap = result.bitmap
+        }
+    }
+
+    return bitmap
 }

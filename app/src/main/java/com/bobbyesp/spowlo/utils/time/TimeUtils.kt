@@ -1,5 +1,8 @@
 package com.bobbyesp.spowlo.utils.time
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.bobbyesp.spowlo.R
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -17,6 +20,13 @@ object TimeUtils {
         val minutes: Long = duration / 60000
         val seconds: Long = (duration % 60000) / 1000
         return String.format("%02d:%02d", minutes, seconds)
+    }
+
+    @Composable
+    fun formatDurationWithText(duration: Long): String {
+        val minutes: Long = duration / 60000
+        val seconds: Long = (duration % 60000) / 1000
+        return String.format(stringResource(id = R.string.mins_secs), minutes, seconds)
     }
 
     // Zulu time to local time parser
