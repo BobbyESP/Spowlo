@@ -58,12 +58,12 @@ import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.components.bottomsheets.ModernModalBottomSheet
+import com.bobbyesp.spowlo.ui.components.buttons.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
-import com.bobbyesp.spowlo.ui.components.buttons.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
@@ -152,6 +152,7 @@ private fun PageImplementation(
     }
 
     val userInfo = viewState.value.userInformation
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
