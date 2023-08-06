@@ -131,287 +131,298 @@ fun TrackPage(
             )
         },
     ) { paddingValues ->
-        Crossfade(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
-            targetState = viewState.value.state,
-            animationSpec = tween(175),
-            label = "Track Page Crossfade"
+            contentAlignment = Alignment.Center
         ) {
-            when (it) {
-                is TrackPageViewModel.Companion.TrackPageState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is TrackPageViewModel.Companion.TrackPageState.Success -> {
-                    val foundTrack = it.track
-                    val images = it.artistsImages
-
-                    val effectState = rememberUpdatedState(newValue = "effect")
-
-                    var showImage by remember {
-                        mutableStateOf(true)
-                    }
-
-                    val trackData by rememberSaveable(stateSaver = TrackSaver) {
-                        mutableStateOf(foundTrack)
-                    }
-
-                    val dominantColor = viewState.value.dominantColor ?: Color.Transparent
-                    val artistsFullString =
-                        trackData.artists.joinToString(", ") { artist -> artist.name }
-
-                    val artistsList = it.artists
-
-                    val externalSpotifyUrl = trackData.externalUrls.spotify ?: ""
-                    val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
-
-                    LaunchedEffect(effectState.value) {
-                        scope.launch(Dispatchers.IO) {
-                            viewModel.getDominantColor(
-                                PaletteGenerator.loadBitmapFromUrl(
-                                    context,
-                                    artworkUrl
-                                )
-                            )
+            Crossfade(
+                modifier = Modifier
+                    .fillMaxSize(),
+                targetState = viewState.value.state,
+                animationSpec = tween(175),
+                label = "Track Page Crossfade"
+            ) {
+                when (it) {
+                    is TrackPageViewModel.Companion.TrackPageState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        if (trackData.album.images.firstOrNull()?.url != null) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                dominantColor.copy(alpha = 0.65f)
-                                            ),
-                                            tileMode = TileMode.Repeated
-                                        )
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (showImage) {
-                                    AsyncImageImpl(
-                                        modifier = Modifier
-                                            .size(imageSize.dp)
-                                            .aspectRatio(
-                                                1f, matchHeightConstraintsFirst = true
-                                            )
-                                            .clip(MaterialTheme.shapes.small),
-                                        model = artworkUrl,
-                                        contentDescription = stringResource(id = R.string.track_artwork),
-                                        onState = { state ->
-                                            //if it was successful, don't show the placeholder, else show it
-                                            showImage =
-                                                state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
-                                        },
-                                        contentScale = ContentScale.FillBounds,
-                                    )
-                                } else {
-                                    PlaceholderCreator(
-                                        modifier = Modifier
-                                            .size(imageSize.dp)
-                                            .clip(MaterialTheme.shapes.small),
-                                        icon = Icons.Default.MusicNote,
-                                        colorful = false
-                                    )
-                                }
-                            }
-                        }
-                        Column(
+                    is TrackPageViewModel.Companion.TrackPageState.Success -> {
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            dominantColor.copy(alpha = 0.65f),
-                                            MaterialTheme.colorScheme.surface
-                                        ),
-                                        startY = 0f,
-                                        endY = 800f
-                                    )
-                                )
-                                .padding(top = 12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .nestedScroll(scrollBehavior.nestedScrollConnection)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 6.dp),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                SelectionContainer {
-                                    Text(
-                                        text = trackData.name,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                SelectionContainer {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        if (images.isNotEmpty()) StackedProfilePictures(
-                                            profilePhotos = images,
-                                            stackSpacing = 20
+                            val foundTrack = it.track
+                            val images = it.artistsImages
+
+                            val effectState = rememberUpdatedState(newValue = "effect")
+
+                            var showImage by remember {
+                                mutableStateOf(true)
+                            }
+
+                            val trackData by rememberSaveable(stateSaver = TrackSaver) {
+                                mutableStateOf(foundTrack)
+                            }
+
+                            val dominantColor = viewState.value.dominantColor ?: MaterialTheme.colorScheme.surface
+                            val artistsFullString =
+                                trackData.artists.joinToString(", ") { artist -> artist.name }
+
+                            val artistsList = it.artists
+
+                            val externalSpotifyUrl = trackData.externalUrls.spotify ?: ""
+                            val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
+
+                            LaunchedEffect(effectState.value) {
+                                scope.launch(Dispatchers.IO) {
+                                    viewModel.getDominantColor(
+                                        PaletteGenerator.loadBitmapFromUrl(
+                                            context,
+                                            artworkUrl
                                         )
-                                        Text(
-                                            text = artistsFullString,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            fontWeight = FontWeight.SemiBold,
-                                            maxLines = 1,
-                                            modifier = Modifier.alpha(alpha = 0.8f)
-                                        )
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
-                                SelectionContainer {
-                                    Text(
-                                        text = stringResource(id = R.string.track) + " • " + trackData.album.releaseDate?.year.toString(),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        modifier = Modifier.alpha(alpha = 0.8f)
                                     )
                                 }
                             }
+
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 12.dp)
                             ) {
-                                MetadataEntityItem(
-                                    contentModifier = Modifier.padding(
-                                        horizontal = 16.dp,
-                                        vertical = 6.dp
-                                    ),
-                                    songName = trackData.name,
-                                    artists = artistsFullString,
-                                    spotifyUrl = externalSpotifyUrl,
-                                    isExplicit = trackData.explicit,
-                                    surfaceColor = Color.Transparent
-                                ) {
-
+                                if (trackData.album.images.firstOrNull()?.url != null) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        dominantColor.copy(alpha = 0.65f)
+                                                    ),
+                                                    tileMode = TileMode.Repeated
+                                                )
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        if (showImage) {
+                                            AsyncImageImpl(
+                                                modifier = Modifier
+                                                    .size(imageSize.dp)
+                                                    .aspectRatio(
+                                                        1f, matchHeightConstraintsFirst = true
+                                                    )
+                                                    .clip(MaterialTheme.shapes.small),
+                                                model = artworkUrl,
+                                                contentDescription = stringResource(id = R.string.track_artwork),
+                                                onState = { state ->
+                                                    //if it was successful, don't show the placeholder, else show it
+                                                    showImage =
+                                                        state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
+                                                },
+                                                contentScale = ContentScale.FillBounds,
+                                            )
+                                        } else {
+                                            PlaceholderCreator(
+                                                modifier = Modifier
+                                                    .size(imageSize.dp)
+                                                    .clip(MaterialTheme.shapes.small),
+                                                icon = Icons.Default.MusicNote,
+                                                colorful = false
+                                            )
+                                        }
+                                    }
                                 }
-
-                                HorizontalDivider(
-                                    Modifier.padding(
-                                        horizontal = 6.dp,
-                                        vertical = 12.dp
-                                    ), thickness = 2.dp
-                                )
                                 Column(
-                                    modifier = Modifier.padding(
-                                        horizontal = 16.dp,
-                                    )
-                                ) {
-                                    Text(
-                                        text = trackData.album.releaseDate.toCompleteString(),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = TimeUtils.formatDurationWithText(trackData.durationMs.toLong()),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                                Text(
-                                    text = stringResource(id = R.string.artists),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier
-                                        .padding(horizontal = 12.dp, vertical = 12.dp),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                                    items(artistsList) { artist ->
-                                        ArtistHorizontalCard(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            artist = artist
+                                        .fillMaxSize()
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    dominantColor.copy(alpha = 0.65f),
+                                                    MaterialTheme.colorScheme.surface
+                                                ),
+                                                startY = 0f,
+                                                endY = 800f
+                                            )
+                                        )
+                                        .padding(top = 12.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 6.dp),
+                                        horizontalAlignment = Alignment.Start
+                                    ) {
+                                        SelectionContainer {
+                                            Text(
+                                                text = trackData.name,
+                                                fontWeight = FontWeight.Bold,
+                                                style = MaterialTheme.typography.headlineMedium,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        SelectionContainer {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                if (images.isNotEmpty()) StackedProfilePictures(
+                                                    profilePhotos = images,
+                                                    stackSpacing = 20
+                                                )
+                                                Text(
+                                                    text = artistsFullString,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    maxLines = 1,
+                                                    modifier = Modifier.alpha(alpha = 0.8f)
+                                                )
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        SelectionContainer {
+                                            Text(
+                                                text = stringResource(id = R.string.track) + " • " + trackData.album.releaseDate?.year.toString(),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                modifier = Modifier.alpha(alpha = 0.8f)
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(top = 12.dp)
+                                    ) {
+                                        MetadataEntityItem(
+                                            contentModifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                                vertical = 6.dp
+                                            ),
+                                            songName = trackData.name,
+                                            artists = artistsFullString,
+                                            spotifyUrl = externalSpotifyUrl,
+                                            isExplicit = trackData.explicit,
+                                            surfaceColor = Color.Transparent
                                         ) {
 
+                                        }
+
+                                        HorizontalDivider(
+                                            Modifier.padding(
+                                                horizontal = 6.dp,
+                                                vertical = 12.dp
+                                            ), thickness = 2.dp
+                                        )
+                                        Column(
+                                            modifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                            )
+                                        ) {
+                                            Text(
+                                                text = trackData.album.releaseDate.toCompleteString(),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = TimeUtils.formatDurationWithText(trackData.durationMs.toLong()),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
+//                                        Text(
+//                                            text = stringResource(id = R.string.artists),
+//                                            style = MaterialTheme.typography.headlineSmall,
+//                                            fontWeight = FontWeight.SemiBold,
+//                                            modifier = Modifier
+//                                                .padding(horizontal = 12.dp, vertical = 12.dp),
+//                                            color = MaterialTheme.colorScheme.primary
+//                                        )
+                                        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                                            items(artistsList) { artist ->
+                                                ArtistHorizontalCard(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    artist = artist
+                                                ) {
+
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    }
 
-                    if (showSheet) {
-                        BottomSheet(onDismiss = { showSheet = false }) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
-                                    .padding(bottom = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                if (trackData.album.images.firstOrNull()?.url != null) AsyncImageImpl(
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .aspectRatio(
-                                            1f, matchHeightConstraintsFirst = true
+                            if (showSheet) {
+                                BottomSheet(onDismiss = { showSheet = false }) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp)
+                                            .padding(bottom = 6.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        if (trackData.album.images.firstOrNull()?.url != null) AsyncImageImpl(
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .aspectRatio(
+                                                    1f, matchHeightConstraintsFirst = true
+                                                )
+                                                .clip(MaterialTheme.shapes.extraSmall),
+                                            model = trackData.album.images.firstOrNull()!!.url,
+                                            contentDescription = stringResource(
+                                                id = R.string.track_artwork
+                                            )
                                         )
-                                        .clip(MaterialTheme.shapes.extraSmall),
-                                    model = trackData.album.images.firstOrNull()!!.url,
-                                    contentDescription = stringResource(
-                                        id = R.string.track_artwork
-                                    )
-                                )
-                                Column(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = trackData.name,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1
-                                    )
-                                    Text(
-                                        text = trackData.artists.joinToString(", ") { artist -> artist.name },
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Normal,
-                                        modifier = Modifier.alpha(alpha = 0.6f),
-                                        maxLines = 1
-                                    )
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Text(
+                                                text = trackData.name,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1
+                                            )
+                                            Text(
+                                                text = trackData.artists.joinToString(", ") { artist -> artist.name },
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Normal,
+                                                modifier = Modifier.alpha(alpha = 0.6f),
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
+                                    HorizontalDivider()
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .size(200.dp),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(text = stringResource(id = R.string.actions))
+                                    }
                                 }
                             }
-                            HorizontalDivider()
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .size(200.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(text = stringResource(id = R.string.actions))
-                            }
                         }
                     }
-                }
-
-                is TrackPageViewModel.Companion.TrackPageState.Error -> {
-                    ErrorPage(error = it.e) {
-                        scope.launch(Dispatchers.IO) {
-                            viewModel.loadTrack(songId)
+                    is TrackPageViewModel.Companion.TrackPageState.Error -> {
+                        ErrorPage(error = it.e) {
+                            scope.launch(Dispatchers.IO) {
+                                viewModel.loadTrack(songId)
+                            }
                         }
                     }
                 }

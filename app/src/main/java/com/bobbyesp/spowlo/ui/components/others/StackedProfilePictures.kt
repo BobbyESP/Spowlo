@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -52,6 +53,6 @@ fun ProfilePhoto(
             .clip(CircleShape)
             .background(color = MaterialTheme.colorScheme.secondary)
     ) {
-        AsyncImageImpl(model = photoUrl, contentDescription = stringResource(id = R.string.profile_picture), modifier = Modifier.fillMaxSize())
+        AsyncImageImpl(model = photoUrl, contentDescription = stringResource(id = R.string.profile_picture), modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
     }
 }
