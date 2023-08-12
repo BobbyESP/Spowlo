@@ -42,7 +42,7 @@ class TrackPageViewModel @Inject constructor(
         val artists: List<Artist> = emptyList(),
         val artistsImages: List<String> = emptyList(),
         val audioAnalysisData: Resource<AudioAnalysis> = Resource.Loading(),
-        val audioFeaturesData : Resource<AudioFeatures> = Resource.Loading(),
+        val audioFeaturesData: Resource<AudioFeatures> = Resource.Loading(),
         val dominantColor: Color? = null,
     )
 
@@ -104,28 +104,46 @@ class TrackPageViewModel @Inject constructor(
     }
 
     private suspend fun loadAudioAnalysis(trackId: String, spotifyAppApi: SpotifyAppApi) {
-        val audioAnalysisDeferred = withContext(Dispatchers.IO) {
-            async { spotifyAppApi.tracks.getAudioAnalysis(trackId) }
-        }
-        val audioAnalysis = audioAnalysisDeferred.await()
+        try {
+            val audioAnalysisDeferred = withContext(Dispatchers.IO) {
+                async { spotifyAppApi.tracks.getAudioAnalysis(trackId) }
+            }
+            val audioAnalysis = audioAnalysisDeferred.await()
 
-        mutablePageViewState.update {
-            it.copy(
-                audioAnalysisData = Resource.Success(audioAnalysis)
-            )
+            mutablePageViewState.update {
+                it.copy(
+                    audioAnalysisData = Resource.Success(audioAnalysis)
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("TrackPageViewModel", "loadAudioAnalysis: ${e.message}")
+            mutablePageViewState.update {
+                it.copy(
+                    audioAnalysisData = Resource.Error(e.message ?: "Unknown error")
+                )
+            }
         }
     }
 
     private suspend fun loadAudioFeatures(trackId: String, spotifyAppApi: SpotifyAppApi) {
-        val audioFeaturesDeferred = withContext(Dispatchers.IO) {
-            async { spotifyAppApi.tracks.getAudioFeatures(trackId) }
-        }
-        val audioFeatures = audioFeaturesDeferred.await()
+        try {
+            val audioFeaturesDeferred = withContext(Dispatchers.IO) {
+                async { spotifyAppApi.tracks.getAudioFeatures(trackId) }
+            }
+            val audioFeatures = audioFeaturesDeferred.await()
 
-        mutablePageViewState.update {
-            it.copy(
-                audioFeaturesData = Resource.Success(audioFeatures)
-            )
+            mutablePageViewState.update {
+                it.copy(
+                    audioFeaturesData = Resource.Success(audioFeatures)
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("TrackPageViewModel", "loadAudioFeatures: ${e.message}")
+            mutablePageViewState.update {
+                it.copy(
+                    audioFeaturesData = Resource.Error(e.message ?: "Unknown error")
+                )
+            }
         }
     }
 
