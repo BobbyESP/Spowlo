@@ -122,4 +122,13 @@
     <string name="album_artwork">Album artwork</string>
     <string name="icon">Icon</string>
     <string name="copy_failed">Failed to copy to clipboard</string>
+    <string name="genres">Genres</string>
+    <string name="acousticness">Acousticness</string>
+    <string name="danceability">Danceability</string>
+    <string name="energy">Energy</string>
+    <string name="instrumentalness">Instrumentalness</string>
+    <string name="liveness">Liveness</string>
+    <string name="speechiness">Speechiness</string>
+    <string name="valence">Valence</string>
+    <string name="audio_analysis">Audio analysis</string>
 </resources>

@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,8 +64,11 @@ import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.ArtistHorizontal
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.MetadataEntityItem
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
+import com.bobbyesp.spowlo.ui.components.others.AudioPropertyBar
 import com.bobbyesp.spowlo.ui.components.others.StackedProfilePictures
+import com.bobbyesp.spowlo.ui.components.text.ExtraLargeCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.toCompleteString
+import com.bobbyesp.spowlo.utils.data.Resource
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import kotlinx.coroutines.Dispatchers
@@ -336,11 +340,106 @@ private fun TrackPageImplementation(
 
                 }
             }
+
+            item {
+                ExtraLargeCategoryTitle(
+                    modifier = Modifier.padding(start = 6.dp),
+                    text = stringResource(id = R.string.audio_features)
+                )
+            }
+            item {
+                when (val audioData = viewState.value.audioFeaturesData) {
+                    is Resource.Error -> {
+                        Text(text = audioData.message)
+                    }
+
+                    is Resource.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    is Resource.Success -> {
+                        val successData = audioData.data
+
+                        val featuresMap: Map<String, Float> = mapOf(
+                            stringResource(id = R.string.acousticness) to successData?.acousticness!!,
+                            stringResource(id = R.string.danceability) to successData.danceability,
+                            stringResource(id = R.string.energy) to successData.energy,
+                            stringResource(id = R.string.instrumentalness) to successData.instrumentalness,
+                            stringResource(id = R.string.liveness) to successData.liveness,
+                            stringResource(id = R.string.speechiness) to successData.speechiness,
+                            stringResource(id = R.string.valence) to successData.valence,
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(0.5f),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    6.dp
+                                )
+                            ) {
+                                //do a forEach but with the first 4 elements
+                                featuresMap.toList().subList(0, 4).forEach { (key, value) ->
+                                    AudioPropertyBar(
+                                        modifier = Modifier,
+                                        property = key,
+                                        value = value
+                                    )
+                                }
+                            }
+                            Column(
+                                modifier = Modifier.weight(0.5f),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    6.dp
+                                )
+                            ) {
+                                //do a forEach but with the last 4 elements
+                                featuresMap.toList().subList(4, 7).forEach { (key, value) ->
+                                    AudioPropertyBar(
+                                        modifier = Modifier,
+                                        property = key,
+                                        value = value
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+//            item {
+//                ExtraLargeCategoryTitle(
+//                    modifier = Modifier.padding(start = 6.dp),
+//                    text = stringResource(id = R.string.audio_analysis)
+//                )
+//            }
+//
+//            item {
+//                when (val audioData = viewState.value.audioAnalysisData) {
+//                    is Resource.Error -> {
+//                        Text(text = audioData.message)
+//                    }
+//
+//                    is Resource.Loading -> {
+//                        CircularProgressIndicator()
+//                    }
+//
+//                    is Resource.Success -> {
+//                        val successData = audioData.data
+//
+//
+//                    }
+//                }
+//            }
         }
-    }
-    if (showSheet) {
-        TrackBottomSheet(track = trackData) {
-            showSheet = false
+        if (showSheet) {
+            TrackBottomSheet(track = trackData) {
+                showSheet = false
+            }
         }
     }
 }

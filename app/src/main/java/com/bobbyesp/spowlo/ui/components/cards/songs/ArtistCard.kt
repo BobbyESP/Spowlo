@@ -74,7 +74,7 @@ fun ArtistCard(
                                 state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
                         },
                         contentDescription = "Song cover",
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.FillWidth,
                         isPreview = false
                     )
                 }

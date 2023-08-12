@@ -1,9 +1,9 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
@@ -207,7 +207,9 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadRecentlyPlayedSongs() {
-        val recentlyPlayedSongs = clientApi?.player?.getRecentlyPlayed(limit = 25)?.items
+        val recentlyPlayedSongs = withContext(Dispatchers.IO) {
+            clientApi?.player?.getRecentlyPlayed(limit = 25)?.items
+        }
         mutablePageViewState.update {
             it.copy(
                 recentlyPlayedSongs = recentlyPlayedSongs ?: emptyList()

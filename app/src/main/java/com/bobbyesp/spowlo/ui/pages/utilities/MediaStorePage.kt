@@ -58,7 +58,7 @@ import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.lazygrid.rememberForeverLazyGridState
 import com.bobbyesp.spowlo.ui.components.others.db.searching.RecentSearch
 import com.bobbyesp.spowlo.ui.components.searchBar.ExpandableSearchBar
-import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
+import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -229,7 +229,7 @@ fun MediaStorePage(
                                         Column(
                                             modifier = Modifier
                                         ) {
-                                            CategoryTitle(
+                                            LargeCategoryTitle(
                                                 modifier = Modifier
                                                     .padding(horizontal = 8.dp)
                                                     .padding(top = 8.dp),

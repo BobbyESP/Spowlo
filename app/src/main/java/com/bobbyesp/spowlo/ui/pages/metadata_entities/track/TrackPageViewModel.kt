@@ -3,16 +3,20 @@ package com.bobbyesp.spowlo.ui.pages.metadata_entities.track
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Artist
+import com.adamratzman.spotify.models.AudioAnalysis
+import com.adamratzman.spotify.models.AudioFeatures
 import com.adamratzman.spotify.models.SimpleArtist
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.color.utils.PaletteGenerator
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
+import com.bobbyesp.spowlo.utils.data.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +41,8 @@ class TrackPageViewModel @Inject constructor(
         val state: TrackPageState = TrackPageState.Loading,
         val artists: List<Artist> = emptyList(),
         val artistsImages: List<String> = emptyList(),
+        val audioAnalysisData: Resource<AudioAnalysis> = Resource.Loading(),
+        val audioFeaturesData : Resource<AudioFeatures> = Resource.Loading(),
         val dominantColor: Color? = null,
     )
 
@@ -53,6 +59,23 @@ class TrackPageViewModel @Inject constructor(
 
                 updateState(TrackPageState.Success(track))
 
+                loadSecondaryData(track, spotifyAppApi)
+            }
+        } catch (e: Exception) {
+            updateState(
+                TrackPageState.Error(
+                    e.message ?: context.getString(R.string.unknown_error)
+                )
+            )
+        }
+    }
+
+    private suspend fun loadSecondaryData(track: Track, spotifyAppApi: SpotifyAppApi) {
+
+        val trackId = track.id
+
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
                 val artistsImages = getArtistsImages(track.artists)
 
                 val artists = getArtists(track.artists)
@@ -66,19 +89,42 @@ class TrackPageViewModel @Inject constructor(
 
                 val artworkUrl = track.album.images.firstOrNull()?.url ?: ""
 
-                withContext(Dispatchers.IO) {
-                    getDominantColor(
-                        PaletteGenerator.loadBitmapFromUrl(
-                            context, artworkUrl
-                        )
+                getDominantColor(
+                    PaletteGenerator.loadBitmapFromUrl(
+                        context, artworkUrl
                     )
-                }
+                )
+
+                loadAudioFeatures(trackId, spotifyAppApi)
+                loadAudioAnalysis(trackId, spotifyAppApi)
             }
         } catch (e: Exception) {
-            updateState(
-                TrackPageState.Error(
-                    e.message ?: context.getString(R.string.unknown_error)
-                )
+            Log.e("TrackPageViewModel", "secondaryDataLoad: ${e.message}")
+        }
+    }
+
+    private suspend fun loadAudioAnalysis(trackId: String, spotifyAppApi: SpotifyAppApi) {
+        val audioAnalysisDeferred = withContext(Dispatchers.IO) {
+            async { spotifyAppApi.tracks.getAudioAnalysis(trackId) }
+        }
+        val audioAnalysis = audioAnalysisDeferred.await()
+
+        mutablePageViewState.update {
+            it.copy(
+                audioAnalysisData = Resource.Success(audioAnalysis)
+            )
+        }
+    }
+
+    private suspend fun loadAudioFeatures(trackId: String, spotifyAppApi: SpotifyAppApi) {
+        val audioFeaturesDeferred = withContext(Dispatchers.IO) {
+            async { spotifyAppApi.tracks.getAudioFeatures(trackId) }
+        }
+        val audioFeatures = audioFeaturesDeferred.await()
+
+        mutablePageViewState.update {
+            it.copy(
+                audioFeaturesData = Resource.Success(audioFeatures)
             )
         }
     }

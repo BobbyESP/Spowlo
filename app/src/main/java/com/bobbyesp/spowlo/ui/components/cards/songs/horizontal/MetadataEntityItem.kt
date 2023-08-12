@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,6 +32,7 @@ import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.others.tags.ExplicitTag
 import com.bobbyesp.spowlo.ui.components.others.tags.LyricsTag
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
+import com.bobbyesp.spowlo.utils.time.TimeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +41,7 @@ fun MetadataEntityItem(
     contentModifier: Modifier = Modifier,
     songName: String,
     artists: String,
+    duration: Int? = null,
     hasLyrics: Boolean = false,
     isExplicit: Boolean = false,
     isPlaylist: Boolean = false,
@@ -122,7 +124,7 @@ fun MetadataEntityItem(
                         )
                         if (isExplicit) ExplicitTag(if (hasLyrics) Modifier.padding(start = 6.dp) else Modifier.padding(end = 6.dp))
                         MarqueeText(
-                            text = artists,
+                            text = if(duration != null) artists + " • " + TimeUtils.formatDuration(duration.toLong()) else artists,
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

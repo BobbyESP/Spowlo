@@ -50,7 +50,7 @@ import com.bobbyesp.spowlo.ui.components.cards.CardListItem
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.tags.MetadataTag
-import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
+import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.text.PreConfiguredOutlinedTextField
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
@@ -227,7 +227,7 @@ fun EditMetadataPage(
             }
         }
 
-        CategoryTitle(
+        LargeCategoryTitle(
             modifier = Modifier.padding(vertical = 6.dp),
             text = stringResource(id = R.string.audio_features)
         )
@@ -274,7 +274,7 @@ fun EditMetadataPage(
         }
 
 
-        CategoryTitle(
+        LargeCategoryTitle(
             modifier = Modifier.padding(vertical = 6.dp),
             text = stringResource(id = R.string.general_tags)
         )
@@ -384,7 +384,7 @@ fun EditMetadataPage(
                 }
             }
         }
-        CategoryTitle(
+        LargeCategoryTitle(
             modifier = Modifier.padding(vertical = 6.dp),
             text = stringResource(id = R.string.credits)
         )

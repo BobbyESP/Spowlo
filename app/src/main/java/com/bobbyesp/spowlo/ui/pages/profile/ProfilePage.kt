@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import SpotifyHorizontalSongCard
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -72,7 +72,7 @@ import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSo
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
-import com.bobbyesp.spowlo.ui.components.text.CategoryTitle
+import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
@@ -270,7 +270,7 @@ private fun PageImplementation(
                 }
                 if (pageState.actualTrack != null) {
                     item {
-                        CategoryTitle(text = stringResource(id = R.string.listening_now))
+                        LargeCategoryTitle(text = stringResource(id = R.string.listening_now))
                     }
                     item {
                         SpotifyHorizontalSongCard(
@@ -284,7 +284,7 @@ private fun PageImplementation(
                     }
                 }
                 item {
-                    CategoryTitle(text = stringResource(id = R.string.most_played_artists))
+                    LargeCategoryTitle(text = stringResource(id = R.string.most_played_artists))
                 }
                 item {
                     LazyRow(
@@ -309,7 +309,7 @@ private fun PageImplementation(
                     }
                 }
                 item {
-                    CategoryTitle(text = stringResource(id = R.string.most_played_songs))
+                    LargeCategoryTitle(text = stringResource(id = R.string.most_played_songs))
                 }
                 item {
                     LazyRow(
@@ -360,7 +360,7 @@ private fun PageImplementation(
                     }
                 }
                 item {
-                    CategoryTitle(text = stringResource(id = R.string.recently_played))
+                    LargeCategoryTitle(text = stringResource(id = R.string.recently_played))
                 }
                 items(recentlyPlayedSongs) { item ->
                     RecentlyPlayedSongCard(

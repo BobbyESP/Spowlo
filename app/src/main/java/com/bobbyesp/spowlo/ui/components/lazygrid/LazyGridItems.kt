@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 
@@ -32,10 +34,26 @@ val GridMenuItemHeight = 96.dp
 fun VerticalGridMenu(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    minSize : Dp = 120.dp,
     content: LazyGridScope.() -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 120.dp),
+        columns = GridCells.Adaptive(minSize = minSize),
+        modifier = modifier,
+        contentPadding = contentPadding,
+        content = content
+    )
+}
+
+@Composable
+fun HorizontalGridMenu(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    minSize : Dp = 120.dp,
+    content: LazyGridScope.() -> Unit,
+) {
+    LazyHorizontalGrid(
+        rows = GridCells.Adaptive(minSize = minSize),
         modifier = modifier,
         contentPadding = contentPadding,
         content = content

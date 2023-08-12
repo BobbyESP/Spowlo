@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
@@ -64,6 +66,8 @@ import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.MetadataEntityIt
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
+import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
+import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
@@ -206,7 +210,8 @@ fun AlbumPageImplementation(
                     songName = track.name,
                     artists = trackArtists,
                     listIndex = it,
-                    isExplicit = track.explicit
+                    isExplicit = track.explicit,
+                    duration = track.durationMs,
                 ) {
                     viewModel.selectTrackForSheet(track)
                     showTrackSheet = true
@@ -217,7 +222,7 @@ fun AlbumPageImplementation(
             }
         }
     }
-    if(showTrackSheet && viewState.value.trackForSheet != null) {
+    if (showTrackSheet && viewState.value.trackForSheet != null) {
         TrackBottomSheet(
             simpleTrack = viewState.value.trackForSheet,
         ) {
@@ -226,6 +231,7 @@ fun AlbumPageImplementation(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, artistsString: String) {
 
@@ -299,6 +305,29 @@ fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, artistsS
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.secondary
                 )
+            }
+
+            if (album.genres.isNotEmpty()) {
+                Column(
+                    Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    LargeCategoryTitle(text = stringResource(id = R.string.genres))
+
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(album.genres) { genre ->
+                            RoundedTag(
+                                text = genre,
+                            )
+                        }
+                    }
+                }
             }
 
             Row(
