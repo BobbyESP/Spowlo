@@ -7,6 +7,7 @@ import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SearchFilter
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
+import com.adamratzman.spotify.models.SimpleTrack
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
@@ -98,6 +99,48 @@ class SimpleAlbumPagingSource(
     }
 
     override fun getRefreshKey(state: PagingState<Int, SimpleAlbum>): Int? {
+        return state.anchorPosition
+    }
+}
+
+class AlbumTracksPagingSource(
+    private var spotifyApi: SpotifyAppApi? = null,
+    private var albumId: String,
+) : PagingSource<Int, SimpleTrack>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SimpleTrack> {
+        val offset = params.key ?: 0
+
+        if (spotifyApi == null) {
+            val api = SpotifyApiRequests
+            spotifyApi = api.provideSpotifyApi()
+        }
+
+        return try {
+            val response = spotifyApi!!.albums.getAlbumTracks(
+                limit = params.loadSize,
+                offset = offset,
+                album = albumId,
+                market = null,
+            )
+
+            if (response.isNotEmpty()) {
+                val albums = response.items
+
+                LoadResult.Page(
+                    data = albums,
+                    prevKey = if (offset > 0) offset - params.loadSize else null,
+                    nextKey = if (albums.isNotEmpty()) offset + params.loadSize else null
+                )
+            } else {
+                LoadResult.Error(IllegalStateException("No album tracks found"))
+            }
+        } catch (exception: Exception) {
+            LoadResult.Error(exception)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, SimpleTrack>): Int? {
         return state.anchorPosition
     }
 }

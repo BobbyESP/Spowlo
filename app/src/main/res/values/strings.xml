@@ -118,4 +118,8 @@
     <string name="download">Download</string>
     <string name="copy_link">Copy link</string>
     <string name="mins_secs">%02d min. %02d sec.</string>
+    <string name="album_not_found">Album not found</string>
+    <string name="album_artwork">Album artwork</string>
+    <string name="icon">Icon</string>
+    <string name="copy_failed">Failed to copy to clipboard</string>
 </resources>

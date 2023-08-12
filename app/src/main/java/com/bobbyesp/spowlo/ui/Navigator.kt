@@ -47,7 +47,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
-import com.bobbyesp.spowlo.ui.bsPlayer.PlayerAsBottomSheet
+import com.bobbyesp.spowlo.ui.bottomSheets.player.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.MetadataEntityParamType

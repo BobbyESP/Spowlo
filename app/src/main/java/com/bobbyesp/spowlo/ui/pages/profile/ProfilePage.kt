@@ -38,7 +38,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,8 +59,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
+import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
+import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
-import com.bobbyesp.spowlo.ui.components.bottomsheets.ModernModalBottomSheet
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.buttons.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
@@ -123,10 +130,11 @@ private fun PageImplementation(
     viewModel: ProfilePageViewModel
 ) {
     val uriHandler = LocalUriHandler.current
-    val scope = rememberCoroutineScope()
+    val navController = LocalNavController.current
+
+    var showSheet by remember { mutableStateOf(false) }
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
-    val sheetState = viewState.value.sheetState
     val pageState = viewState.value
 
     val mostPlayedArtists = pageState.mostPlayedArtists.collectAsLazyPagingItems()
@@ -270,7 +278,8 @@ private fun PageImplementation(
                             isPlaying = pageState.playbackState?.playing ?: false,
                             track = pageState.actualTrack,
                         ) {
-                            pageState.actualTrack.externalUrls.spotify?.let { uriHandler.openUri(it) }
+                            viewModel.selectTrackForSheet(pageState.actualTrack)
+                            showSheet = true
                         }
                     }
                 }
@@ -323,7 +332,20 @@ private fun PageImplementation(
                                 showSpotifyLogo = false,
                                 number = it + 1,
                                 onClick = {
-                                    item.externalUrls.spotify?.let { it1 -> uriHandler.openUri(it1) }
+                                    val selectedMetadataEntity = MetadataEntity(
+                                        type = SpotifyItemType.TRACKS,
+                                        id = item.id,
+                                    )
+
+                                    navController.navigate(
+                                        Route.MetadataEntityViewer.createRoute(
+                                            selectedMetadataEntity
+                                        )
+                                    )
+                                },
+                                onLongClick = {
+                                    viewModel.selectTrackForSheet(item)
+                                    showSheet = true
                                 }
                             )
                         }
@@ -345,9 +367,8 @@ private fun PageImplementation(
                         modifier = Modifier.fillMaxWidth(),
                         playHistoryItem = item
                     ) {
-                        scope.launch {
-                            sheetState.show()
-                        }
+                        viewModel.selectTrackForSheet(item.track)
+                        showSheet = true
                     }
                     if (item != recentlyPlayedSongs.last()) {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -363,12 +384,10 @@ private fun PageImplementation(
             )
         }
 
-        ModernModalBottomSheet(modalSheetState = sheetState, onDismiss = {
-            scope.launch {
-                sheetState.hide()
+        if(showSheet) {
+            TrackBottomSheet(track = viewState.value.selectedTrackForSheet!!) {
+                showSheet = false
             }
-        }) {
-
         }
     }
 }

@@ -62,20 +62,23 @@ fun SmallSongCardShimmer(
 
 @Composable
 fun HorizontalSongCardShimmer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showSongImage: Boolean = true
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            Modifier
-                .width(48.dp)
-                .height(48.dp)
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.extraSmall)
-                .shimmerEffect()
-        )
+        if (showSongImage) {
+            Box(
+                Modifier
+                    .width(48.dp)
+                    .height(48.dp)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .shimmerEffect()
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()

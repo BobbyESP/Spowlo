@@ -8,6 +8,8 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.ARTISTS
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.PLAYLISTS
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.TRACKS
+import com.bobbyesp.spowlo.ui.pages.metadata_entities.album.AlbumPage
+import com.bobbyesp.spowlo.ui.pages.metadata_entities.album.AlbumPageViewModel
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPageViewModel
 
@@ -24,7 +26,11 @@ fun MetadataEntityBinder(
                 songId = metadataEntity.id
             )
         }
-        ALBUMS -> {}
+        ALBUMS -> {
+            val albumViewModel = hiltViewModel<AlbumPageViewModel>()
+
+            AlbumPage(viewModel = albumViewModel, albumId = metadataEntity.id)
+        }
         ARTISTS -> {}
         PLAYLISTS -> {}
     }

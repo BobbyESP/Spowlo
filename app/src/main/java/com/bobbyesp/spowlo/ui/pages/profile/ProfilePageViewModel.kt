@@ -1,9 +1,9 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
@@ -33,17 +33,17 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
-import com.t8rin.modalsheet.ModalBottomSheetValue
-import com.t8rin.modalsheet.ModalSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,7 +63,7 @@ class ProfilePageViewModel @Inject constructor(
 
     data class PageViewState(
         val state: PageStateWithThrowable = PageStateWithThrowable.Loading,
-        val sheetState: ModalSheetState = ModalSheetState(initialValue = ModalBottomSheetValue.Hidden),
+        val selectedTrackForSheet: Track? = null,
         val isRefreshing: Boolean = false,
         val userInformation: SpotifyUserInformation? = null,
         val actualTrack: Track? = null,
@@ -171,7 +171,12 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadUserData() {
-        val userInformation = clientApi?.users?.getClientProfile()
+        val deferredUserData = withContext(Dispatchers.IO) {
+            async { clientApi?.users?.getClientProfile() }
+        }
+
+        val userInformation = deferredUserData.await()
+
         mutablePageViewState.update { it.copy(userInformation = userInformation) }
     }
 
@@ -235,6 +240,10 @@ class ProfilePageViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun selectTrackForSheet(track: Track) {
+        mutablePageViewState.update { it.copy(selectedTrackForSheet = track) }
     }
 
     suspend fun searchSongByIdAndUpdateUi(id: String) {

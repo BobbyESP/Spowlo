@@ -1,7 +1,9 @@
 package com.bobbyesp.spowlo.ui.components.cards.songs
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,12 +110,14 @@ fun SpotifySongCard(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SmallSpotifySongCard(
     modifier: Modifier = Modifier,
     size: Dp = 110.dp,
     track: Track,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     number: Int? = null,
     showSpotifyLogo: Boolean = true
 ) {
@@ -124,6 +128,10 @@ fun SmallSpotifySongCard(
             .width(size)
             .clip(MaterialTheme.shapes.extraSmall)
             .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

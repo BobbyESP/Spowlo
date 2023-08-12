@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,18 +48,16 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
-import com.bobbyesp.color.utils.PaletteGenerator
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotifyApi.utils.TrackSaver
+import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
-import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.ArtistHorizontalCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.MetadataEntityItem
@@ -78,31 +73,23 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @Composable
 fun TrackPage(
-    viewModel: TrackPageViewModel,
-    songId: String
+    viewModel: TrackPageViewModel, songId: String
 ) {
     LaunchedEffect(songId) {
         viewModel.loadTrack(songId)
     }
 
-    var showSheet by remember { mutableStateOf(false) }
-
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     BackHandler {
-        if (showSheet) {
-            showSheet = false
-        } else {
-            navController.popBackStack()
-        }
+        navController.popBackStack()
     }
 
     val scope = rememberCoroutineScope()
 
     Crossfade(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         targetState = viewState.value.state,
         animationSpec = tween(175),
         label = "Track Page Crossfade"
@@ -110,8 +97,7 @@ fun TrackPage(
         when (it) {
             is TrackPageViewModel.Companion.TrackPageState.Loading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
                 }
@@ -144,17 +130,13 @@ private fun TrackPageImplementation(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     val config = LocalConfiguration.current
-    val context = LocalContext.current
     val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
 
     val imageSize =
         (config.screenHeightDp / 3.25) //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
 
     val foundTrack = loadedState.track
-    val images = loadedState.artistsImages
-
-    val effectState = rememberUpdatedState(newValue = "effect")
+    val images = viewState.value.artistsImages
 
     var showImage by remember {
         mutableStateOf(true)
@@ -164,26 +146,13 @@ private fun TrackPageImplementation(
         mutableStateOf(foundTrack)
     }
 
-    val dominantColor =
-        viewState.value.dominantColor ?: MaterialTheme.colorScheme.surface
-    val artistsFullString =
-        trackData.artists.joinToString(", ") { artist -> artist.name }
+    val dominantColor = viewState.value.dominantColor ?: MaterialTheme.colorScheme.surface
+    val artistsFullString = trackData.artists.joinToString(", ") { artist -> artist.name }
 
-    val artistsList = loadedState.artists
+    val artistsList = viewState.value.artists
 
     val externalSpotifyUrl = trackData.externalUrls.spotify ?: ""
     val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
-
-    LaunchedEffect(effectState.value) {
-        scope.launch(Dispatchers.IO) {
-            viewModel.getDominantColor(
-                PaletteGenerator.loadBitmapFromUrl(
-                    context,
-                    artworkUrl
-                )
-            )
-        }
-    }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = rememberTopAppBarState(),
@@ -196,8 +165,7 @@ private fun TrackPageImplementation(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.background(MaterialTheme.colorScheme.primary),
                 title = { },
                 navigationIcon = {
                     BackButton {
@@ -218,228 +186,161 @@ private fun TrackPageImplementation(
             )
         },
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             if (trackData.album.images.firstOrNull()?.url != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    dominantColor.copy(alpha = 0.65f)
-                                ),
-                                tileMode = TileMode.Repeated
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (showImage) {
-                        AsyncImageImpl(
-                            modifier = Modifier
-                                .size(imageSize.dp)
-                                .aspectRatio(
-                                    1f, matchHeightConstraintsFirst = true
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent, dominantColor.copy(alpha = 0.65f)
+                                    ), tileMode = TileMode.Repeated
                                 )
-                                .clip(MaterialTheme.shapes.small),
-                            model = artworkUrl,
-                            contentDescription = stringResource(id = R.string.track_artwork),
-                            onState = { state ->
-                                //if it was successful, don't show the placeholder, else show it
-                                showImage =
-                                    state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
-                            },
-                            contentScale = ContentScale.FillBounds,
-                        )
-                    } else {
-                        PlaceholderCreator(
-                            modifier = Modifier
-                                .size(imageSize.dp)
-                                .clip(MaterialTheme.shapes.small),
-                            icon = Icons.Default.MusicNote,
-                            colorful = false
-                        )
+                            ), contentAlignment = Alignment.Center
+                    ) {
+                        if (showImage) {
+                            AsyncImageImpl(
+                                modifier = Modifier
+                                    .size(imageSize.dp)
+                                    .aspectRatio(
+                                        1f, matchHeightConstraintsFirst = true
+                                    )
+                                    .clip(MaterialTheme.shapes.small),
+                                model = artworkUrl,
+                                contentDescription = stringResource(id = R.string.track_artwork),
+                                onState = { state ->
+                                    //if it was successful, don't show the placeholder, else show it
+                                    showImage =
+                                        state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
+                                },
+                                contentScale = ContentScale.FillBounds,
+                            )
+                        } else {
+                            PlaceholderCreator(
+                                modifier = Modifier
+                                    .size(imageSize.dp)
+                                    .clip(MaterialTheme.shapes.small),
+                                icon = Icons.Default.MusicNote,
+                                colorful = false
+                            )
+                        }
                     }
                 }
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                dominantColor.copy(alpha = 0.65f),
-                                MaterialTheme.colorScheme.surface
-                            ),
-                            startY = 0f,
-                            endY = 800f
-                        )
-                    )
-                    .padding(top = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            item {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    SelectionContainer {
-                        Text(
-                            text = trackData.name,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(6.dp))
-                    SelectionContainer {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            if (images.isNotEmpty()) StackedProfilePictures(
-                                profilePhotos = images,
-                                stackSpacing = 20
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    dominantColor.copy(alpha = 0.65f),
+                                    MaterialTheme.colorScheme.surface
+                                ),
+                                tileMode = TileMode.Mirror
                             )
+                        )
+                        .padding(top = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 6.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        SelectionContainer {
                             Text(
-                                text = artistsFullString,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.SemiBold,
+                                text = trackData.name,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.headlineMedium,
                                 maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        SelectionContainer {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                if (images.isNotEmpty()) StackedProfilePictures(
+                                    profilePhotos = images, stackSpacing = 20
+                                )
+                                Text(
+                                    text = artistsFullString,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.alpha(alpha = 0.8f)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        SelectionContainer {
+                            Text(
+                                text = stringResource(id = R.string.track) + " • " + trackData.album.releaseDate?.year.toString(),
+                                style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.alpha(alpha = 0.8f)
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(6.dp))
-                    SelectionContainer {
-                        Text(
-                            text = stringResource(id = R.string.track) + " • " + trackData.album.releaseDate?.year.toString(),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.alpha(alpha = 0.8f)
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 12.dp)
-                ) {
-                    MetadataEntityItem(
-                        contentModifier = Modifier.padding(
-                            horizontal = 16.dp,
-                            vertical = 6.dp
-                        ),
-                        songName = trackData.name,
-                        artists = artistsFullString,
-                        spotifyUrl = externalSpotifyUrl,
-                        isExplicit = trackData.explicit,
-                        surfaceColor = Color.Transparent
-                    ) {
-
-                    }
-
-                    HorizontalDivider(
-                        Modifier.padding(
-                            horizontal = 6.dp,
-                            vertical = 12.dp
-                        ), thickness = 2.dp
-                    )
                     Column(
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp,
-                        )
+                        modifier = Modifier
+                            .fillMaxSize()
                     ) {
-                        Text(
-                            text = trackData.album.releaseDate.toCompleteString(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = TimeUtils.formatDurationWithText(trackData.durationMs.toLong()),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-//                                        Text(
-//                                            text = stringResource(id = R.string.artists),
-//                                            style = MaterialTheme.typography.headlineSmall,
-//                                            fontWeight = FontWeight.SemiBold,
-//                                            modifier = Modifier
-//                                                .padding(horizontal = 12.dp, vertical = 12.dp),
-//                                            color = MaterialTheme.colorScheme.primary
-//                                        )
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(artistsList) { artist ->
-                            ArtistHorizontalCard(
-                                modifier = Modifier.fillMaxWidth(),
-                                artist = artist
-                            ) {
-
-                            }
+                        MetadataEntityItem(
+                            modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
+                            contentModifier = Modifier.padding(
+                                horizontal = 16.dp, vertical = 12.dp
+                            ),
+                            songName = trackData.name,
+                            artists = artistsFullString,
+                            isExplicit = trackData.explicit,
+                            surfaceColor = Color.Transparent
+                        ) {
+                            showSheet = true
+                        }
+                        Column(
+                            modifier = Modifier.padding(
+                                horizontal = 16.dp,
+                            )
+                        ) {
+                            Text(
+                                text = trackData.album.releaseDate.toCompleteString(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = TimeUtils.formatDurationWithText(trackData.durationMs.toLong()),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
             }
-        }
+            items(artistsList) { artist ->
+                ArtistHorizontalCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    artist = artist
+                ) {
 
-        if (showSheet) {
-            BottomSheet(onDismiss = { showSheet = false }) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (trackData.album.images.firstOrNull()?.url != null) AsyncImageImpl(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .aspectRatio(
-                                1f, matchHeightConstraintsFirst = true
-                            )
-                            .clip(MaterialTheme.shapes.extraSmall),
-                        model = trackData.album.images.firstOrNull()!!.url,
-                        contentDescription = stringResource(
-                            id = R.string.track_artwork
-                        )
-                    )
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = trackData.name,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1
-                        )
-                        Text(
-                            text = trackData.artists.joinToString(", ") { artist -> artist.name },
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.alpha(alpha = 0.6f),
-                            maxLines = 1
-                        )
-                    }
-                }
-                HorizontalDivider()
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(200.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = stringResource(id = R.string.actions))
                 }
             }
+        }
+    }
+    if (showSheet) {
+        TrackBottomSheet(track = trackData) {
+            showSheet = false
         }
     }
 }

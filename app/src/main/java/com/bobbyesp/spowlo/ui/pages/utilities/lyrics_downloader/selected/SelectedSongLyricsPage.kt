@@ -279,20 +279,22 @@ fun SelectedSongLyricsPage(
                                                     .padding(8.dp)
                                                     .fillMaxWidth()
                                             ) {
-                                                CardListItem(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    leadingContentIcon = Icons.Default.UploadFile,
-                                                    headlineContentText = stringResource(id = R.string.embed_lyrics_file)
-                                                ) {
-                                                    scope.launch {
-                                                        embedLyricsFile(
-                                                            context,
-                                                            selectedSong,
-                                                            lyrics
-                                                        )
+                                                if (selectedSong.localSongPath != null) {
+                                                    CardListItem(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        leadingContentIcon = Icons.Default.UploadFile,
+                                                        headlineContentText = stringResource(id = R.string.embed_lyrics_file)
+                                                    ) {
+                                                        scope.launch {
+                                                            embedLyricsFile(
+                                                                context,
+                                                                selectedSong,
+                                                                lyrics
+                                                            )
+                                                        }
                                                     }
+                                                    Spacer(modifier = Modifier.height(8.dp))
                                                 }
-                                                Spacer(modifier = Modifier.height(8.dp))
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth(),

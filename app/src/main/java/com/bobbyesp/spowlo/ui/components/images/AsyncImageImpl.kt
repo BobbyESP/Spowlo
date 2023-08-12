@@ -20,8 +20,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
+import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
@@ -47,31 +47,18 @@ fun AsyncImageImpl(
     val context = LocalContext.current
 
     // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
-    val imageLoader = remember {
-        ImageLoader.Builder(context)
-            .memoryCache {
-                MemoryCache.Builder(context)
-                    .maxSizePercent(0.05)
-                    .build()
-            }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.2)
-                    .build()
-            }
-            .okHttpClient {
-                OkHttpClient.Builder()
-                    .build()
-            }
+    val imageLoader = ImageLoader.Builder(context).memoryCache {
+        MemoryCache.Builder(context).maxSizePercent(0.05).build()
+    }.diskCache {
+        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache")).maxSizePercent(0.2)
             .build()
-    }
+    }.okHttpClient {
+        OkHttpClient.Builder().build()
+    }.build()
 
-    val imageRequest = ImageRequest.Builder(context)
-        .addHeader("user-agent", userAgentHeader)
-        .data(model)
-        .crossfade(true)
-        .build()
+    val imageRequest =
+        ImageRequest.Builder(context).addHeader("user-agent", userAgentHeader).data(model)
+            .crossfade(true).build()
 
     if (isPreview) {
         Image(
@@ -84,17 +71,12 @@ fun AsyncImageImpl(
             colorFilter = colorFilter,
         )
     } else {
-        val painter = rememberAsyncImagePainter(
+        AsyncImage(
             model = imageRequest,
             imageLoader = imageLoader,
             onState = onState,
             filterQuality = filterQuality,
             transform = transform,
-            contentScale = contentScale,
-        )
-
-        Image(
-            painter = painter,
             contentDescription = contentDescription,
             modifier = modifier,
             alignment = alignment,
@@ -126,50 +108,32 @@ fun AsyncImageImpl(
 
     val context = LocalContext.current
 
-    // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
-    val imageLoader = remember {
-        ImageLoader.Builder(context)
-            .memoryCache {
-                MemoryCache.Builder(context)
-                    .maxSizePercent(0.05)
-                    .build()
-            }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.2)
-                    .build()
-            }
-            .okHttpClient {
-                OkHttpClient.Builder()
-                    .build()
-            }
+    val imageLoader = ImageLoader.Builder(context).memoryCache {
+        MemoryCache.Builder(context).maxSizePercent(0.05).build()
+    }.diskCache {
+        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache")).maxSizePercent(0.2)
             .build()
-    }
+    }.okHttpClient {
+        OkHttpClient.Builder().build()
+    }.build()
 
-    val imageRequest = ImageRequest.Builder(context)
-        .addHeader("user-agent", userAgentHeader)
-        .data(model)
-        .crossfade(true)
-        .build()
+
+    val imageRequest =
+        ImageRequest.Builder(context).addHeader("user-agent", userAgentHeader).data(model)
+            .crossfade(true).build()
 
     val placeholderPainter = placeholder ?: painterResource(R.drawable.ic_launcher_foreground)
 
-    val painter = rememberAsyncImagePainter(
+    AsyncImage(
         model = imageRequest,
         imageLoader = imageLoader,
         filterQuality = filterQuality,
-        contentScale = contentScale,
         onError = onError,
         onLoading = onLoading,
         onSuccess = onSuccess,
         fallback = fallback,
         error = error,
         placeholder = placeholderPainter,
-    )
-
-    Image(
-        painter = painter,
         contentDescription = contentDescription,
         modifier = modifier,
         alignment = alignment,
@@ -179,21 +143,19 @@ fun AsyncImageImpl(
 
         )
 }
+
 @Composable
-fun ladBitmapFromUrl(url: String): Bitmap? {
+fun loadBitmapFromUrl(url: String): Bitmap? {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
 
     LaunchedEffect(url) {
         val imageLoader = ImageLoader(context)
-        val request = ImageRequest.Builder(context)
-            .data(url)
-            .target { drawable ->
-                if (drawable is BitmapDrawable) {
-                    bitmap = drawable.bitmap
-                }
+        val request = ImageRequest.Builder(context).data(url).target { drawable ->
+            if (drawable is BitmapDrawable) {
+                bitmap = drawable.bitmap
             }
-            .build()
+        }.build()
 
         val result = (imageLoader.execute(request) as SuccessResult).drawable
         if (result is BitmapDrawable) {

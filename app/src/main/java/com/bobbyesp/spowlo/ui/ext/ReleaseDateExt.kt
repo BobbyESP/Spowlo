@@ -9,8 +9,8 @@ import com.bobbyesp.spowlo.R
 fun ReleaseDate?.toCompleteString(): String {
     return this?.run {
         when {
-            day != null && month != null -> "$day/$month/$year"
-            month != null -> "$month/$year"
+            day != null && month != null -> "$day-$month-$year"
+            month != null -> "$month-$year"
             else -> "$year"
         }
     } ?: stringResource(id = R.string.unknown)

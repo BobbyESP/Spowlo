@@ -28,7 +28,7 @@ fun StackedProfilePictures(
         modifier = modifier,
     ) {
         profilePhotos.forEachIndexed { index, photoUrl ->
-            val overlapOffset = index * stackSpacing
+            val overlapOffset = index * stackSpacing / 1.5
             ProfilePhoto(
                 modifier = Modifier
                     .padding(start = overlapOffset.dp)

@@ -17,10 +17,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -49,17 +51,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import com.t8rin.modalsheet.ModalBottomSheetValue
 import com.t8rin.modalsheet.ModalSheet
 import com.t8rin.modalsheet.ModalSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ModernModalBottomSheet(
     modifier: Modifier = Modifier,
-    modalSheetState: ModalSheetState,
+    modalSheetState: ModalSheetState = ModalSheetState(initialValue = ModalBottomSheetValue.Hidden),
     onDismiss: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -74,13 +77,17 @@ fun ModernModalBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+fun BottomSheet(onDismiss: () -> Unit, edgeToEdge: Boolean = true, content: @Composable ColumnScope.() -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState()
+
+    val windowInsets = if (edgeToEdge)
+        WindowInsets(bottom = 0, top = 0) else BottomSheetDefaults.windowInsets
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
+        windowInsets = windowInsets,
     ) {
         content()
     }
