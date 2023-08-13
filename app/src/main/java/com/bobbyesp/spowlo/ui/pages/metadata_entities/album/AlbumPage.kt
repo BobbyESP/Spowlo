@@ -206,7 +206,7 @@ fun AlbumPageImplementation(
                 val trackArtists = track.artists.joinToString(", ") { artist -> artist.name }
 
                 MetadataEntityItem(
-                    contentModifier = Modifier.padding(vertical = 6.dp),
+                    contentModifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
                     songName = track.name,
                     artists = trackArtists,
                     listIndex = it,
