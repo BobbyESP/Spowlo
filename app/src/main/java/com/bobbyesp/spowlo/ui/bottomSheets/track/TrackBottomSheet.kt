@@ -68,6 +68,7 @@ import javax.inject.Inject
 fun TrackBottomSheet(
     track: Track? = null,
     simpleTrack: SimpleTrack? = null,
+    artworkForSimpleTrack : String? = null,
     viewModel: TrackBottomSheetViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
@@ -110,7 +111,7 @@ fun TrackBottomSheet(
                         1f, matchHeightConstraintsFirst = true
                     )
                     .clip(MaterialTheme.shapes.extraSmall),
-                model = track.album.images.firstOrNull()!!.url,
+                model = trackImage,
                 contentDescription = stringResource(
                     id = R.string.track_artwork
                 )
@@ -196,7 +197,7 @@ fun TrackBottomSheet(
                                 title = trackName,
                                 artist = trackArtistsString,
                                 album = track?.album?.name ?: "",
-                                albumArtPath = Uri.parse(trackImage),
+                                albumArtPath = if(track != null) Uri.parse(trackImage) else Uri.parse(artworkForSimpleTrack),
                                 duration = track?.durationMs?.toDouble() ?: 0.0,
                                 path = playableUrl!!
                             )

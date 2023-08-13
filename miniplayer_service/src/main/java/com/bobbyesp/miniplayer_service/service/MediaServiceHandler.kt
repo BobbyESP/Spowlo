@@ -24,8 +24,12 @@ class MediaServiceHandler @Inject constructor(
         job = Job()
     }
 
+    /**
+     * Kills the player and clears the queue
+     */
     fun killPlayer() {
         player.stop()
+        player.clearMediaItems()
         player.release()
     }
 
