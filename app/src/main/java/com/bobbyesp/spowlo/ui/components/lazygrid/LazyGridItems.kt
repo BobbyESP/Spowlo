@@ -10,6 +10,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
@@ -129,4 +132,62 @@ fun LazyGridScope.GridMenuItem(
         enabled = enabled,
         onClick = onClick
     )
+}
+
+
+fun LazyGridScope.PlayPauseDynamicItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    playing : Boolean = false,
+    time : String = "00:00",
+) {
+    item {
+        Surface(
+            modifier = modifier
+                .clip(ShapeDefaults.Large)
+                .height(GridMenuItemHeight)
+                .padding(12.dp),
+            shape = MaterialTheme.shapes.small,
+            onClick = onClick,
+            enabled = enabled
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(
+                    6.dp,
+                    Alignment.CenterVertically
+                )
+            ) {
+                if(playing) {
+                    Icon(
+                        imageVector = Icons.Default.Pause,
+                        contentDescription = stringResource(id = R.string.icon)
+                    )
+                    Text(
+                        text = "$time/00:30",
+                        style = MaterialTheme.typography.labelLarge,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = stringResource(id = R.string.icon)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.listen_preview),
+                        style = MaterialTheme.typography.labelLarge,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
+    }
 }

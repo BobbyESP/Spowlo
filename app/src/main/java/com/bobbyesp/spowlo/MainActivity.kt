@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         activity = this
 
         setContent {
+            LaunchedEffect(true) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startMediaPlayerService()
+                }
+            }
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(
@@ -42,6 +48,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, SpowloMediaService::class.java))
+        isServiceRunning = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -70,6 +70,7 @@ import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
 import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.ui.ext.toCompleteString
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -190,6 +191,49 @@ fun AlbumPageImplementation(
                 )
             }
             item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .padding(top = 6.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        item {
+                            RoundedTag(
+                                text = albumData.albumType.name,
+                            )
+                        }
+                        item {
+                            RoundedTag(
+                                text = albumData.totalTracks.toString() + " " + stringResource(id = R.string.tracks),
+                            )
+                        }
+                        item {
+                            RoundedTag(
+                                text = stringResource(id = R.string.popularity) + ": " + albumData.popularity.toString(),
+                            )
+                        }
+                        item {
+                            RoundedTag(
+                                text = albumData.releaseDate.toCompleteString(),
+                            )
+                        }
+                        item {
+                            RoundedTag(
+                                text = albumData.label,
+                            )
+                        }
+                    }
+                }
+            }
+            item {
                 HorizontalDivider(
                     modifier = Modifier.padding(
                         horizontal = 8.dp,
@@ -220,13 +264,40 @@ fun AlbumPageImplementation(
             loadStateContent(albumTracks) {
                 HorizontalSongCardShimmer(showSongImage = false)
             }
+            item {
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 12.dp
+                    )
+                )
+            }
+            item {
+                Text(
+                    text = stringResource(id = R.string.copyright),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            items(albumData.copyrights) { copyright ->
+                Text(
+                    text = "(${copyright.type.identifier})" + " " + copyright.text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
         }
-    }
-    if (showTrackSheet && viewState.value.trackForSheet != null) {
-        TrackBottomSheet(
-            simpleTrack = viewState.value.trackForSheet,
-        ) {
-            showTrackSheet = false
+        if (showTrackSheet && viewState.value.trackForSheet != null) {
+            TrackBottomSheet(
+                simpleTrack = viewState.value.trackForSheet,
+            ) {
+                showTrackSheet = false
+            }
         }
     }
 }

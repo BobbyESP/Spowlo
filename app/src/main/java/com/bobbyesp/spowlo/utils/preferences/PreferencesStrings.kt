@@ -7,6 +7,9 @@ object PreferencesStrings {
     //------------APP------------------
     const val UPDATE_CHANNEL = "update_channel"
 
+    //------------TRACKS---------------
+    const val STOP_AFTER_CLOSING_BS = "stop_after_closing_bs"
+
     //------------THEME----------------
     const val DARK_THEME_VALUE = "dark_theme_value"
     const val HIGH_CONTRAST = "high_contrast"

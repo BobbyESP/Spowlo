@@ -131,4 +131,10 @@
     <string name="speechiness">Speechiness</string>
     <string name="valence">Valence</string>
     <string name="audio_analysis">Audio analysis</string>
+    <string name="album_info">Album info</string>
+    <string name="popularity">Popularity</string>
+    <string name="release_date">Release date</string>
+    <string name="year">Year</string>
+    <string name="copyright">Copyright</string>
+    <string name="listen_preview">Listen preview</string>
 </resources>

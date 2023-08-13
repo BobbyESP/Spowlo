@@ -96,6 +96,7 @@ class App : Application() {
             } else {
                 Build.VERSION.RELEASE
             }
+
             return StringBuilder().append("App version: Spowlo $versionName ($versionCode)\n")
                 .append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
                 .append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")

@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.metadata_entities.album
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,6 +46,7 @@ class AlbumPageViewModel @Inject constructor(
     )
 
     suspend fun loadAlbum(id: String) {
+        Log.i("AlbumPageViewModel", "loadAlbum: $id")
         try {
             val spotifyAppApi: SpotifyAppApi = SpotifyApiRequests.provideSpotifyApi()
             viewModelScope.launch(Dispatchers.IO) {

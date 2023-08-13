@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.ui.bottomSheets.track
 
+import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,28 +30,58 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.adamratzman.spotify.models.SimpleTrack
 import com.adamratzman.spotify.models.Track
+import com.bobbyesp.miniplayer_service.service.MediaServiceHandler
+import com.bobbyesp.miniplayer_service.service.MediaState
+import com.bobbyesp.miniplayer_service.service.PlayerEvent
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.lazygrid.GridMenuItem
+import com.bobbyesp.spowlo.ui.components.lazygrid.PlayPauseDynamicItem
 import com.bobbyesp.spowlo.ui.components.lazygrid.VerticalGridMenu
 import com.bobbyesp.spowlo.utils.localAsset
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
+import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getBoolean
+import com.bobbyesp.spowlo.utils.time.TimeUtils.formatDuration
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Composable
-fun TrackBottomSheet(track: Track? = null, simpleTrack: SimpleTrack? = null, onDismiss: () -> Unit) {
-
+fun TrackBottomSheet(
+    track: Track? = null,
+    simpleTrack: SimpleTrack? = null,
+    viewModel: TrackBottomSheetViewModel = hiltViewModel(),
+    onDismiss: () -> Unit
+) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
 
-    val spotifyUrlNotNull = track?.externalUrls?.spotify != null || simpleTrack?.externalUrls?.spotify != null
+    val stopPlayingAfterClosing = STOP_AFTER_CLOSING_BS.getBoolean()
+
+    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+
+    val spotifyUrlNotNull =
+        track?.externalUrls?.spotify != null || simpleTrack?.externalUrls?.spotify != null
     val spotifyUrl = track?.externalUrls?.spotify ?: simpleTrack?.externalUrls?.spotify
 
     val trackName = track?.name ?: simpleTrack?.name ?: ""
@@ -57,7 +89,12 @@ fun TrackBottomSheet(track: Track? = null, simpleTrack: SimpleTrack? = null, onD
     val trackArtistsString = trackArtists.joinToString(", ") { artist -> artist.name }
     val trackImage = track?.album?.images?.firstOrNull()?.url
 
-    BottomSheet(onDismiss = onDismiss) {
+    val playableUrl = track?.previewUrl ?: simpleTrack?.previewUrl
+
+    BottomSheet(onDismiss = {
+        onDismiss()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && stopPlayingAfterClosing) viewModel.stopPlaying()
+    }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,6 +183,138 @@ fun TrackBottomSheet(track: Track? = null, simpleTrack: SimpleTrack? = null, onD
                     )
                 }
             )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val isPlayingAndSameSong = viewState.value.isPlaying && viewState.value.actualSong?.path == playableUrl
+                PlayPauseDynamicItem(
+                    modifier = Modifier,
+                    onClick = {
+                        if (isPlayingAndSameSong) {
+                            viewModel.playPause()
+                        } else {
+                            val song = Song(
+                                id = 0L,
+                                title = trackName,
+                                artist = trackArtistsString,
+                                album = track?.album?.name ?: "",
+                                albumArtPath = Uri.parse(trackImage),
+                                duration = track?.durationMs?.toDouble() ?: 0.0,
+                                path = playableUrl!!
+                            )
+                            viewModel.loadSongAndPlay(
+                                song
+                            )
+                        }
+                    },
+                    enabled = playableUrl != null,
+                    playing = isPlayingAndSameSong,
+                    time = viewState.value.progressString
+                )
+            }
+        }
+    }
+}
+
+@HiltViewModel
+class TrackBottomSheetViewModel @Inject constructor(
+    private val serviceHandler: MediaServiceHandler
+) : ViewModel() {
+
+    private val mutablePageViewState = MutableStateFlow(PageViewState())
+    val pageViewState = mutablePageViewState.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            serviceHandler.mediaState.collect { mediaState ->
+                when (mediaState) {
+                    is MediaState.Buffering -> calculateProgressValues(mediaState.progress)
+                    is MediaState.Playing -> mutablePageViewState.update { it.copy(isPlaying = true) }
+                    is MediaState.Idle -> mutablePageViewState.update { it.copy(uiState = PlayerState.Initial) }
+                    is MediaState.Progress -> calculateProgressValues(mediaState.progress)
+                    is MediaState.Ready -> {
+                        mutablePageViewState.update {
+                            it.copy(
+                                uiState = PlayerState.Ready, duration = mediaState.duration
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        viewModelScope.launch {
+            serviceHandler.killPlayer()
+        }
+        super.onCleared()
+    }
+
+    data class PageViewState(
+        val uiState: PlayerState = PlayerState.Initial,
+        val progress: Float = 0f,
+        val progressString: String = "00:00",
+        val duration: Long = 0L,
+        val actualSong: Song? = null,
+        val isPlaying: Boolean = false
+    )
+
+    private fun loadSong(song: Song) {
+        mutablePageViewState.update {
+            it.copy(
+                actualSong = song
+            )
+        }
+        val mediaItem = MediaItem.Builder()
+            .setUri(song.path)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(song.title)
+                    .setArtist(song.artist)
+                    .setAlbumTitle(song.album)
+                    .setArtworkUri(song.albumArtPath)
+                    .build()
+            ).build()
+
+        viewModelScope.launch {
+            serviceHandler.setMediaItem(mediaItem)
+        }
+    }
+
+    fun loadSongAndPlay(song: Song) {
+        loadSong(song)
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
+    fun stopPlaying() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.Stop)
+        }
+    }
+
+    fun playPause() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
+    private fun calculateProgressValues(currentProgress: Long) {
+        with(pageViewState.value) {
+            val progress = if (currentProgress > 0) (currentProgress.toFloat() / duration) else 0f
+            val progressString = formatDuration(currentProgress)
+            mutablePageViewState.update {
+                it.copy(
+                    progress = progress, progressString = progressString
+                )
+            }
+        }
+    }
+
+    companion object {
+        sealed class PlayerState {
+            data object Initial : PlayerState()
+            data object Ready : PlayerState()
         }
     }
 }

@@ -24,6 +24,11 @@ class MediaServiceHandler @Inject constructor(
         job = Job()
     }
 
+    fun killPlayer() {
+        player.stop()
+        player.release()
+    }
+
     /**
      * Creates a NEW single-song queue and prepares the player
      */
@@ -53,6 +58,9 @@ class MediaServiceHandler @Inject constructor(
             is PlayerEvent.PlayPause -> {
                 if (player.isPlaying) {
                     player.pause()
+                    _mediaState.update {
+                        MediaState.Playing(false)
+                    }
                     stopProgressUpdate()
                 } else {
                     player.play()
@@ -60,7 +68,6 @@ class MediaServiceHandler @Inject constructor(
                         MediaState.Playing(true)
                     }
                     startProgressUpdate()
-
                 }
             }
 
@@ -147,10 +154,10 @@ class MediaServiceHandler @Inject constructor(
 }
 
 sealed class PlayerEvent {
-    object PlayPause : PlayerEvent()
-    object Stop : PlayerEvent()
-    object Next : PlayerEvent()
-    object Previous : PlayerEvent()
+    data object PlayPause : PlayerEvent()
+    data object Stop : PlayerEvent()
+    data object Next : PlayerEvent()
+    data object Previous : PlayerEvent()
     data class UpdateProgress(val updatedProgress: Long) : PlayerEvent()
 }
 

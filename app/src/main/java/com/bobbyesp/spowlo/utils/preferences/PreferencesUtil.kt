@@ -5,6 +5,7 @@ import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DARK_THEME_VALUE
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DYNAMIC_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.HIGH_CONTRAST
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.PALETTE_STYLE
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THEME_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.UPDATE_CHANNEL
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
@@ -24,7 +25,9 @@ private val StringPreferenceDefaults: Map<String, String> =
     mapOf()
 
 private val BooleanPreferenceDefaults: Map<String, Boolean> =
-    mapOf()
+    mapOf(
+        STOP_AFTER_CLOSING_BS to false,
+    )
 
 private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
