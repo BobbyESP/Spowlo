@@ -246,7 +246,7 @@ private fun PageImplementation(
                                     modifier = Modifier.fillMaxSize(),
                                     model = userInfo.images.lastIndex.let { userInfo.images[it].url },
                                     contentDescription = "Song cover",
-                                    contentScale = ContentScale.Fit,
+                                    contentScale = ContentScale.FillBounds,
                                 )
                             }
                         } else {
