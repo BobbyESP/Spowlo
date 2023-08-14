@@ -21,7 +21,7 @@ inline fun <T : Any> createPager(
     //if we are logged in we can use the api, so we use the pagingSourceFactory. In case that it fails we use the nonLoggedSourceFactory; if we are not logged in we use the nonLoggedSourceFactory
     return try {
         if (isLogged) {
-            if (clientApi == null) throw Exception("clientApi is null") // Strange error, should never happen when app is ready for the public.
+            if (clientApi == null || clientApi.token.shouldRefresh()) throw Exception("clientApi is null") // Strange error, should never happen when app is ready for the public.
             Pager(
                 config = PagingConfig(
                     pageSize = 20,

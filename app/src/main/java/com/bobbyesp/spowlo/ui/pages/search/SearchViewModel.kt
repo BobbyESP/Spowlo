@@ -2,7 +2,6 @@ package com.bobbyesp.spowlo.ui.pages.search
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -87,7 +86,6 @@ class SearchViewModel @Inject constructor(
             try {
                 when (searchType) {
                     SpotifyItemType.TRACKS -> {
-                        Log.i("SearchViewModel", "search: $query")
                         getTracksPaginatedData(query = query)
                     }
 
@@ -129,8 +127,7 @@ class SearchViewModel @Inject constructor(
                 )
             },
             coroutineScope = viewModelScope,
-
-            )
+        )
         mutablePageViewState.update {
             it.copy(
                 searchedTracks = tracksPager!!

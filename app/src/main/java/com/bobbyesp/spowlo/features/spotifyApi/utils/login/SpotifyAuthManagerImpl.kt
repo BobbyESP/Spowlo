@@ -32,7 +32,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
 
         //Verify if the user is logged in and return the SpotifyClientApi if it is
-        spotifyClientApi = credentials.getSpotifyClientPkceApi()
+        spotifyClientApi = credentials.getSpotifyClientPkceApi { automaticRefresh = true }
         return spotifyClientApi
     }
 
@@ -44,6 +44,10 @@ class SpotifyAuthManagerImpl @Inject constructor(
             "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
         )
         return isTokenValid
+    }
+
+    override fun shouldRefreshToken(): Boolean {
+        return spotifyClientApi?.token?.shouldRefresh() ?: false
     }
 
     override suspend fun refreshToken(): Boolean {

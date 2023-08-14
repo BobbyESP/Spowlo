@@ -112,6 +112,7 @@ class ProfilePageViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(tag, "loadPage: ", e)
                 updateState(PageStateWithThrowable.Error(e))
+                refreshTokenIfNeeded()
             }
         }
     }
@@ -128,6 +129,7 @@ class ProfilePageViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(tag, "reloadPage: ", e)
                 updateState(PageStateWithThrowable.Error(e))
+                refreshTokenIfNeeded()
             } finally {
                 updateIsRefreshing(false)
             }
@@ -251,6 +253,12 @@ class ProfilePageViewModel @Inject constructor(
     suspend fun searchSongByIdAndUpdateUi(id: String) {
         val track = clientApi?.tracks?.getTrack(id)
         mutablePageViewState.update { it.copy(actualTrack = track) }
+    }
+
+    private suspend fun refreshTokenIfNeeded() {
+        if (spotifyAuthManager.shouldRefreshToken()) {
+            spotifyAuthManager.refreshToken()
+        }
     }
 
     private fun updateState(state: PageStateWithThrowable) =

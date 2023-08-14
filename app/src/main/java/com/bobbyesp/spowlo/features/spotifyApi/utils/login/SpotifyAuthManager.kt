@@ -6,6 +6,7 @@ interface SpotifyAuthManager {
     fun launchLoginActivity()
     fun getSpotifyClientApi(): SpotifyClientApi?
     suspend fun isAuthenticated(): Boolean
+    fun shouldRefreshToken(): Boolean
     suspend fun refreshToken(): Boolean
     fun deleteCredentials(): Boolean
 }
