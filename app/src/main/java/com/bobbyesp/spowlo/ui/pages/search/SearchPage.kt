@@ -257,11 +257,16 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.PLAYLISTS,
                                             onItemClick = { playlist ->
-                                                playlist.externalUrls.spotify?.let { url ->
-                                                    uriHandler.openUri(
-                                                        url
+                                                val selectedMetadataEntity = MetadataEntity(
+                                                    type = SpotifyItemType.PLAYLISTS,
+                                                    id = playlist.id,
+                                                )
+
+                                                navController.navigate(
+                                                    Route.MetadataEntityViewer.createRoute(
+                                                        selectedMetadataEntity
                                                     )
-                                                }
+                                                )
                                             }
                                         )
                                     }

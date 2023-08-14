@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Launch
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +45,8 @@ import com.bobbyesp.miniplayer_service.service.PlayerEvent
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
@@ -89,6 +92,7 @@ fun TrackBottomSheet(
     val trackArtists = track?.artists ?: simpleTrack?.artists ?: emptyList()
     val trackArtistsString = trackArtists.joinToString(", ") { artist -> artist.name }
     val trackImage = track?.album?.images?.firstOrNull()?.url
+    val trackId = track?.id ?: simpleTrack?.id
 
     val playableUrl = track?.previewUrl ?: simpleTrack?.previewUrl
 
@@ -162,6 +166,25 @@ fun TrackBottomSheet(
                         return@GridMenuItem
                     }
                 }, enabled = spotifyUrlNotNull
+            )
+            GridMenuItem(
+                icon = Icons.Default.Launch,
+                title = { stringResource(id = R.string.open_page) },
+                onClick = {
+                    onDismiss()
+
+                    val selectedMetadataEntity = MetadataEntity(
+                        type = SpotifyItemType.TRACKS,
+                        id = trackId!!,
+                    )
+
+                    navController.navigate(
+                        Route.MetadataEntityViewer.createRoute(
+                            selectedMetadataEntity
+                        )
+                    )
+                },
+                enabled = trackId != null
             )
             GridMenuItem(
                 icon = Icons.Default.Lyrics,

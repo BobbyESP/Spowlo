@@ -117,7 +117,7 @@
     <string name="actions">Actions</string>
     <string name="download">Download</string>
     <string name="copy_link">Copy link</string>
-    <string name="mins_secs">%02d min. %02d sec.</string>
+    <string name="mins_secs" formatted="true">%02d min. %02d sec.</string>
     <string name="album_not_found">Album not found</string>
     <string name="album_artwork">Album artwork</string>
     <string name="icon">Icon</string>
@@ -137,4 +137,12 @@
     <string name="year">Year</string>
     <string name="copyright">Copyright</string>
     <string name="listen_preview">Listen preview</string>
+    <string name="playlist_not_found">Playlist not found</string>
+    <string name="playlist_artwork">Playlist artwork</string>
+    <string name="public_string">Public</string>
+    <string name="private_string">Private</string>
+    <string name="not_collaborative">Not collaborative</string>
+    <string name="collaborative">Collaborative</string>
+    <string name="followers">Followers</string>
+    <string name="open_page">Open page</string>
 </resources>

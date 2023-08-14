@@ -78,7 +78,7 @@ fun MetadataEntityItem(
                 if (isPlaylist && imageUrl.isNotEmpty()) {
                     AsyncImageImpl(
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(48.dp)
                             .aspectRatio(
                                 1f, matchHeightConstraintsFirst = true
                             )

@@ -10,6 +10,8 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType.TRACKS
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.album.AlbumPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.album.AlbumPageViewModel
+import com.bobbyesp.spowlo.ui.pages.metadata_entities.playlist.PlaylistPage
+import com.bobbyesp.spowlo.ui.pages.metadata_entities.playlist.PlaylistPageViewModel
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPageViewModel
 
@@ -32,6 +34,10 @@ fun MetadataEntityBinder(
             AlbumPage(viewModel = albumViewModel, albumId = metadataEntity.id)
         }
         ARTISTS -> {}
-        PLAYLISTS -> {}
+        PLAYLISTS -> {
+            val playlistViewModel = hiltViewModel<PlaylistPageViewModel>()
+
+            PlaylistPage(viewModel = playlistViewModel, playlistId = metadataEntity.id)
+        }
     }
 }

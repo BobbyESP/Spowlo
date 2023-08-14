@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.metadata_entities.album
+package com.bobbyesp.spowlo.ui.pages.metadata_entities.playlist
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,11 +10,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.adamratzman.spotify.SpotifyAppApi
-import com.adamratzman.spotify.models.Album
-import com.adamratzman.spotify.models.SimpleTrack
+import com.adamratzman.spotify.models.Playlist
+import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
-import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.AlbumTracksPagingSource
+import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.PlaylistTracksAsTracksPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -30,78 +30,68 @@ import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
-class AlbumPageViewModel @Inject constructor(
+class PlaylistPageViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
-
     data class PageViewState(
-        val state: AlbumPageState = AlbumPageState.Loading,
-        val albumTracksPaginated: Flow<PagingData<SimpleTrack>> = emptyFlow(),
-        val trackForSheet : SimpleTrack? = null,
+        val state: PlaylistPageState = PlaylistPageState.Loading,
+        val playlistTracksPaginated: Flow<PagingData<Track>> = emptyFlow(),
+        val trackForSheet : Track? = null,
         val dominantColor: Color? = null,
     )
 
-    suspend fun loadAlbum(id: String) {
+    suspend fun loadPlaylist(id: String) {
         try {
             val spotifyAppApi: SpotifyAppApi = SpotifyApiRequests.provideSpotifyApi()
+            if (pageViewState.value.state != PlaylistPageState.Loading) updateState(PlaylistPageState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
-                if (pageViewState.value.state != AlbumPageState.Loading) updateState(AlbumPageState.Loading)
-                val albumDeferred = withContext(Dispatchers.IO) {
-                    async { spotifyAppApi.albums.getAlbum(id) }
+                val playlistDeferred = withContext(Dispatchers.IO) {
+                    async { spotifyAppApi.playlists.getPlaylist(id) }
                 }
-                val album = albumDeferred.await()
-                    ?: throw Exception(context.getString(R.string.album_not_found))
+                val playlist = playlistDeferred.await()
+                    ?: throw Exception(context.getString(R.string.playlist_not_found))
 
-                updateState(AlbumPageState.Success(album))
-
-                getAlbumTracksPaginated(id)
+                updateState(PlaylistPageState.Success(playlist))
+                getPlaylistTracksPaginated(id)
             }
         } catch (e: Exception) {
-            updateState(AlbumPageState.Error(e.message ?: "Unknown error"))
+            updateState(PlaylistPageState.Error(e.message ?: "Unknown error"))
         }
     }
 
-    private fun getAlbumTracksPaginated(albumId: String) {
-        val albumTracksPager = Pager(
+    private fun getPlaylistTracksPaginated(id: String) {
+        val playlistTracksPager = Pager(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false,
                 initialLoadSize = 40,
             ),
-            pagingSourceFactory = { AlbumTracksPagingSource(albumId = albumId) }
+            pagingSourceFactory = { PlaylistTracksAsTracksPagingSource(playlistId = id) }
         ).flow.cachedIn(viewModelScope)
 
         mutablePageViewState.update {
             it.copy(
-                albumTracksPaginated = albumTracksPager
+                playlistTracksPaginated = playlistTracksPager
             )
         }
     }
-
-    private fun updateState(state: AlbumPageState) {
-        mutablePageViewState.update {
-            it.copy(
-                state = state
-            )
-        }
-    }
-
-    fun selectTrackForSheet(track: SimpleTrack) {
+    fun selectTrackForSheet(track: Track) {
         mutablePageViewState.update {
             it.copy(
                 trackForSheet = track
             )
         }
     }
-
+    private fun updateState(state: PlaylistPageState) {
+        mutablePageViewState.update { it.copy(state = state) }
+    }
     companion object {
-        sealed class AlbumPageState {
-            data object Loading : AlbumPageState()
-            data class Error(val e: String) : AlbumPageState()
-            data class Success(val album: Album) : AlbumPageState()
+        sealed class PlaylistPageState {
+            data object Loading : PlaylistPageState()
+            data class Error(val e: String) : PlaylistPageState()
+            data class Success(val playlist: Playlist) : PlaylistPageState()
         }
     }
 }

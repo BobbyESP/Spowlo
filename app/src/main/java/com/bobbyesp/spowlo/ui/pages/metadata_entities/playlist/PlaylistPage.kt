@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.metadata_entities.album
+package com.bobbyesp.spowlo.ui.pages.metadata_entities.playlist
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
@@ -11,18 +11,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonOff
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.PublicOff
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -54,10 +57,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImagePainter
-import com.adamratzman.spotify.models.Album
-import com.bobbyesp.spowlo.App.Companion.SpotifyLogoUrl
+import com.adamratzman.spotify.models.Playlist
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.spotifyApi.utils.AlbumSaver
+import com.bobbyesp.spowlo.features.spotifyApi.utils.PlaylistSaver
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
@@ -66,25 +69,26 @@ import com.bobbyesp.spowlo.ui.components.buttons.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.MetadataEntityItem
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
+import com.bobbyesp.spowlo.ui.components.others.ProfilePhoto
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
-import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
+import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTagWithIcon
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
-import com.bobbyesp.spowlo.ui.ext.toCompleteString
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
+import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @Composable
-fun AlbumPage(
-    viewModel: AlbumPageViewModel,
-    albumId: String
+fun PlaylistPage(
+    viewModel: PlaylistPageViewModel,
+    playlistId: String
 ) {
-    LaunchedEffect(albumId) {
-        viewModel.loadAlbum(albumId)
+    LaunchedEffect(playlistId) {
+        viewModel.loadPlaylist(playlistId)
     }
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
@@ -98,59 +102,52 @@ fun AlbumPage(
         modifier = Modifier.fillMaxSize(),
         targetState = viewState.value.state,
         animationSpec = tween(175),
-        label = "Album Page Crossfade"
+        label = "Playlist Page Crossfade"
     ) {
         when (it) {
-            is AlbumPageViewModel.Companion.AlbumPageState.Error -> {
+            is PlaylistPageViewModel.Companion.PlaylistPageState.Error -> {
                 ErrorPage(error = it.e) {
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.loadAlbum(albumId)
+                        viewModel.loadPlaylist(playlistId)
                     }
                 }
             }
 
-            AlbumPageViewModel.Companion.AlbumPageState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+            PlaylistPageViewModel.Companion.PlaylistPageState.Loading -> {
+                LoadingPage()
             }
 
-            is AlbumPageViewModel.Companion.AlbumPageState.Success -> {
-                AlbumPageImplementation(viewModel = viewModel, loadedState = it)
+            is PlaylistPageViewModel.Companion.PlaylistPageState.Success -> {
+                PlaylistPageImplementation(viewModel = viewModel, loadedState = it)
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumPageImplementation(
-    viewModel: AlbumPageViewModel,
-    loadedState: AlbumPageViewModel.Companion.AlbumPageState.Success
+private fun PlaylistPageImplementation(
+    viewModel: PlaylistPageViewModel,
+    loadedState: PlaylistPageViewModel.Companion.PlaylistPageState.Success
 ) {
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
 
     val navController = LocalNavController.current
 
-    val foundAlbum = loadedState.album
-
-    val albumData by rememberSaveable(stateSaver = AlbumSaver) {
-        mutableStateOf(foundAlbum)
+    val foundPlaylist = loadedState.playlist
+    val playlistData by rememberSaveable(stateSaver = PlaylistSaver) {
+        mutableStateOf(foundPlaylist)
     }
+    val playlistTracks = viewState.playlistTracksPaginated.collectAsLazyPagingItems()
+    val collaborative = playlistData.collaborative
+    val collaborativeString =
+        if (collaborative) stringResource(id = R.string.collaborative) else stringResource(id = R.string.not_collaborative)
 
     var showTrackSheet by remember {
         mutableStateOf(false)
     }
 
-    val artistsString = albumData.artists.joinToString(", ") { artist -> artist.name }
-    val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.primary
-
-    val albumTracks = viewState.albumTracksPaginated.collectAsLazyPagingItems()
-
     val lazyColumnState = rememberLazyListState()
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = rememberTopAppBarState(),
         canScroll = { true },
@@ -183,22 +180,22 @@ fun AlbumPageImplementation(
                 .padding(paddingValues),
         ) {
             item {
-                AlbumHeader(
+                PlaylistHeader(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    album = albumData,
-                    dominantColor = dominantColor,
-                    artistsString = artistsString
+                        .padding(horizontal = 16.dp), playlist = playlistData
                 )
             }
+
+            item {
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .padding(top = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(horizontal = 8.dp),
                 ) {
                     LazyRow(
                         modifier = Modifier
@@ -208,33 +205,30 @@ fun AlbumPageImplementation(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         item {
-                            RoundedTag(
-                                text = albumData.albumType.name,
+                            RoundedTag(text = playlistData.type)
+                        }
+                        item {
+                            RoundedTagWithIcon(
+                                text = collaborativeString,
+                                icon = if (collaborative) Icons.Default.Person else Icons.Default.PersonOff
                             )
                         }
                         item {
-                            RoundedTag(
-                                text = albumData.totalTracks.toString() + " " + stringResource(id = R.string.tracks),
-                            )
+                            RoundedTag(text = "${playlistData.tracks.total} ${stringResource(id = R.string.tracks)}")
                         }
                         item {
-                            RoundedTag(
-                                text = stringResource(id = R.string.popularity) + ": " + albumData.popularity.toString(),
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = albumData.releaseDate.toCompleteString(),
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = albumData.label,
+                            RoundedTagWithIcon(
+                                text = "${playlistData.followers.total} ${
+                                    stringResource(
+                                        id = R.string.followers
+                                    )
+                                }", icon = Icons.Default.Person
                             )
                         }
                     }
                 }
             }
+
             item {
                 HorizontalDivider(
                     modifier = Modifier.padding(
@@ -243,28 +237,30 @@ fun AlbumPageImplementation(
                     )
                 )
             }
+
             items(
-                count = albumTracks.itemCount,
-                key = albumTracks.itemKey(),
-                contentType = albumTracks.itemContentType()
+                count = playlistTracks.itemCount,
+                key = playlistTracks.itemKey(),
+                contentType = playlistTracks.itemContentType()
             ) {
-                val track = albumTracks[it] ?: return@items
+                val track = playlistTracks[it] ?: return@items
                 val trackArtists = track.artists.joinToString(", ") { artist -> artist.name }
 
                 MetadataEntityItem(
-                    contentModifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+                    contentModifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     songName = track.name,
                     artists = trackArtists,
-                    listIndex = it,
                     isExplicit = track.explicit,
                     duration = track.durationMs,
+                    imageUrl = track.album.images.firstOrNull()?.url ?: "",
+                    isPlaylist = true
                 ) {
                     viewModel.selectTrackForSheet(track)
                     showTrackSheet = true
                 }
             }
-            loadStateContent(albumTracks) {
-                HorizontalSongCardShimmer(showSongImage = false)
+            loadStateContent(playlistTracks) {
+                HorizontalSongCardShimmer(showSongImage = true)
             }
             item {
                 HorizontalDivider(
@@ -274,30 +270,12 @@ fun AlbumPageImplementation(
                     )
                 )
             }
-            item {
-                Text(
-                    text = stringResource(id = R.string.copyright),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, bottom = 8.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-            items(albumData.copyrights) { copyright ->
-                Text(
-                    text = "(${copyright.type.identifier})" + " " + copyright.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
         }
         if (showTrackSheet && viewState.trackForSheet != null) {
             TrackBottomSheet(
-                simpleTrack = viewState.trackForSheet,
-                artworkForSimpleTrack = albumData.images.firstOrNull()?.url ?: SpotifyLogoUrl,
+                track = viewState.trackForSheet,
+                artworkForSimpleTrack = viewState.trackForSheet.album.images.firstOrNull()?.url
+                    ?: App.SpotifyLogoUrl,
             ) {
                 showTrackSheet = false
             }
@@ -305,9 +283,12 @@ fun AlbumPageImplementation(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, artistsString: String) {
+private fun PlaylistHeader(
+    modifier: Modifier,
+    playlist: Playlist,
+    dominantColor: Color = MaterialTheme.colorScheme.primary
+) {
 
     var showArtwork by remember {
         mutableStateOf(true)
@@ -317,7 +298,12 @@ private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, 
     val imageSize =
         (config.screenHeightDp / 3.25) //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
 
-    val albumArtwork = album.images.firstOrNull()?.url ?: ""
+    val playlistArtwork = playlist.images.firstOrNull()?.url ?: ""
+    val isPublic = playlist.public ?: true
+    val isPublicString =
+        if (isPublic) stringResource(id = R.string.public_string) else stringResource(
+            id = R.string.private_string
+        )
 
     Box(
         modifier = modifier.fillMaxWidth()
@@ -343,8 +329,8 @@ private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, 
                                 1f, matchHeightConstraintsFirst = true
                             )
                             .clip(MaterialTheme.shapes.small),
-                        model = albumArtwork,
-                        contentDescription = stringResource(id = R.string.album_artwork),
+                        model = playlistArtwork,
+                        contentDescription = stringResource(id = R.string.playlist_artwork),
                         onState = { state ->
                             //if it was successful, don't show the placeholder, else show it
                             showArtwork =
@@ -369,41 +355,37 @@ private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MarqueeText(
-                    text = album.name,
+                    text = playlist.name,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 24.dp),
                     maxLines = 1,
                     color = dominantColor,
-                    sideGradientColor = MaterialTheme.colorScheme.surface
+                    basicGradientColor = MaterialTheme.colorScheme.surface
                 )
-                Text(
-                    text = artistsString,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-            }
-
-            if (album.genres.isNotEmpty()) {
-                Column(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    LargeCategoryTitle(text = stringResource(id = R.string.genres))
-
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        items(album.genres) { genre ->
-                            RoundedTag(
-                                text = genre,
-                            )
-                        }
+                Row {
+                    if (playlist.owner.images.firstOrNull()?.url != null) {
+                        ProfilePhoto(
+                            photoUrl = playlist.owner.images.firstOrNull()?.url!!,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
                     }
+                    Text(
+                        text = playlist.owner.displayName ?: stringResource(id = R.string.unknown),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        text = " • ",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    RoundedTagWithIcon(
+                        text = isPublicString,
+                        icon = if (isPublic) Icons.Default.Public else Icons.Default.PublicOff
+                    )
                 }
             }
 
@@ -425,6 +407,7 @@ private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, 
                     text = stringResource(id = R.string.more_options)
                 )
             }
+
         }
     }
 }

@@ -147,6 +147,7 @@ fun LazyGridScope.PlayPauseDynamicItem(
             modifier = modifier
                 .clip(ShapeDefaults.Large)
                 .height(GridMenuItemHeight)
+                .alpha(if (enabled) 1f else 0.5f)
                 .padding(12.dp),
             shape = MaterialTheme.shapes.small,
             onClick = onClick,

@@ -4,6 +4,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import com.adamratzman.spotify.models.Album
 import com.adamratzman.spotify.models.AudioFeatures
+import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.Track
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
@@ -39,6 +40,17 @@ object AlbumSaver : Saver<Album, String> {
     }
 
     override fun SaverScope.save(value: Album): String {
+        return Json.encodeToString(value)
+    }
+}
+
+@ExperimentalSerializationApi
+object PlaylistSaver : Saver<Playlist, String> {
+    override fun restore(value: String): Playlist {
+        return Json.decodeFromString(value)
+    }
+
+    override fun SaverScope.save(value: Playlist): String {
         return Json.encodeToString(value)
     }
 }
