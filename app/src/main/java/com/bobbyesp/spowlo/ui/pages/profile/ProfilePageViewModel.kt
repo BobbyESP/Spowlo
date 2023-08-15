@@ -163,11 +163,8 @@ class ProfilePageViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(tag, "reload: ", e)
                 // Show error message to the user
-                mutablePageViewState.update {
-                    it.copy(
-                        state = PageStateWithThrowable.Error(e)
-                    )
-                }
+                updateState(PageStateWithThrowable.Error(e))
+                refreshTokenIfNeeded()
             }
         }
     }
@@ -256,7 +253,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun refreshTokenIfNeeded() {
-        if (spotifyAuthManager.shouldRefreshToken()) {
+        if (spotifyAuthManager.shouldRefreshToken() || !spotifyAuthManager.isAuthenticated()) {
             spotifyAuthManager.refreshToken()
         }
     }

@@ -47,7 +47,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
     }
 
     override fun shouldRefreshToken(): Boolean {
-        return spotifyClientApi?.token?.shouldRefresh() ?: false
+        return spotifyClientApi?.token?.shouldRefresh() ?: true
     }
 
     override suspend fun refreshToken(): Boolean {
