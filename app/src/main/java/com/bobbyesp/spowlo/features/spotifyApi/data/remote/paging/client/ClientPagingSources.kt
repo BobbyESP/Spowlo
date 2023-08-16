@@ -262,6 +262,43 @@ class ClientMostListenedSongsPagingSource(
     }
 }
 
+class ClientPlaylistTracksAsTracksPagingSource(
+    private var spotifyApi: SpotifyClientApi? = null,
+    private var playlistId: String,
+) : PagingSource<Int, Track>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Track> {
+        val offset = params.key ?: 0
+
+        return try {
+            val response = spotifyApi!!.playlists.getPlaylistTracks(
+                limit = params.loadSize,
+                offset = offset,
+                playlist = playlistId,
+                market = Market.FROM_TOKEN,
+            )
+
+            if (response.isNotEmpty()) {
+                val tracks = response.items.mapNotNull { it.track?.asTrack }
+
+                LoadResult.Page(
+                    data = tracks,
+                    prevKey = if (offset > 0) offset - params.loadSize else null,
+                    nextKey = if (tracks.isNotEmpty()) offset + params.loadSize else null
+                )
+            } else {
+                LoadResult.Error(IllegalStateException("No album tracks found"))
+            }
+        } catch (exception: Exception) {
+            LoadResult.Error(exception)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Track>): Int? {
+        return state.anchorPosition
+    }
+}
+
 class SpotifyCustomPagingSource<T : Any>(
     private val request: suspend (offset: Int, limit: Int) -> PagingObject<T>,
 ) : PagingSource<Int, T>() {

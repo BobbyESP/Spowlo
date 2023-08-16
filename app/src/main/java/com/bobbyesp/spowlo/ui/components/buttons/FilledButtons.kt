@@ -26,11 +26,13 @@ fun FilledButtonWithIcon(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
+    enabled : Boolean = true,
     text: String
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
+        enabled = enabled,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
     )
     {

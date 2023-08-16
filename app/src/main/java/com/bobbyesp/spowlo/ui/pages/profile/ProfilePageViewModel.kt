@@ -77,7 +77,6 @@ class ProfilePageViewModel @Inject constructor(
         val actualTimeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm
     )
 
-
     private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
     private val spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
 

@@ -73,6 +73,7 @@ import com.bobbyesp.spowlo.ui.components.others.ProfilePhoto
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
 import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTagWithIcon
+import com.bobbyesp.spowlo.ui.components.text.ExpandableText
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
@@ -188,7 +189,7 @@ private fun PlaylistPageImplementation(
             }
 
             item {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             item {
@@ -260,7 +261,12 @@ private fun PlaylistPageImplementation(
                 }
             }
             loadStateContent(playlistTracks) {
-                HorizontalSongCardShimmer(showSongImage = true)
+                HorizontalSongCardShimmer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    showSongImage = true
+                )
             }
             item {
                 HorizontalDivider(
@@ -397,6 +403,7 @@ private fun PlaylistHeader(
                     modifier = Modifier.weight(1f),
                     onClick = { /*TODO*/ },
                     icon = Icons.Default.Download,
+                    enabled = playlist.public ?: true,
                     text = stringResource(id = R.string.download)
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -407,7 +414,15 @@ private fun PlaylistHeader(
                     text = stringResource(id = R.string.more_options)
                 )
             }
-
+            if (playlist.description != null && playlist.description!!.isNotEmpty()) {
+                ExpandableText(
+                    text = playlist.description!!,
+                    maxLines = 2,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
 }

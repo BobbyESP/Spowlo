@@ -155,7 +155,6 @@ private fun TrackPageImplementation(
 
     val artistsList = viewState.value.artists
 
-    val externalSpotifyUrl = trackData.externalUrls.spotify ?: ""
     val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(

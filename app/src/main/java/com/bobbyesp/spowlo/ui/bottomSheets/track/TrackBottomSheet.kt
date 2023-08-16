@@ -71,7 +71,7 @@ import javax.inject.Inject
 fun TrackBottomSheet(
     track: Track? = null,
     simpleTrack: SimpleTrack? = null,
-    artworkForSimpleTrack : String? = null,
+    artworkForSimpleTrack: String? = null,
     viewModel: TrackBottomSheetViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
@@ -208,7 +208,8 @@ fun TrackBottomSheet(
                 }
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val isPlayingAndSameSong = viewState.value.isPlaying && viewState.value.actualSong?.path == playableUrl
+                val isPlayingAndSameSong =
+                    viewState.value.isPlaying && viewState.value.actualSong?.path == playableUrl
                 PlayPauseDynamicItem(
                     modifier = Modifier,
                     onClick = {
@@ -220,7 +221,9 @@ fun TrackBottomSheet(
                                 title = trackName,
                                 artist = trackArtistsString,
                                 album = track?.album?.name ?: "",
-                                albumArtPath = if(track != null) Uri.parse(trackImage) else Uri.parse(artworkForSimpleTrack),
+                                albumArtPath = if (track != null) Uri.parse(trackImage) else Uri.parse(
+                                    artworkForSimpleTrack
+                                ),
                                 duration = track?.durationMs?.toDouble() ?: 0.0,
                                 path = playableUrl!!
                             )
@@ -334,11 +337,9 @@ class TrackBottomSheetViewModel @Inject constructor(
             }
         }
     }
+}
 
-    companion object {
-        sealed class PlayerState {
-            data object Initial : PlayerState()
-            data object Ready : PlayerState()
-        }
-    }
+sealed class PlayerState {
+    data object Initial : PlayerState()
+    data object Ready : PlayerState()
 }

@@ -197,6 +197,7 @@ fun SmallSpotifySongCard(
                     Text(
                         text = track.name,
                         style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1

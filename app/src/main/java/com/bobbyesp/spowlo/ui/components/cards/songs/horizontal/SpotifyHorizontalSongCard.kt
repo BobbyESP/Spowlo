@@ -1,4 +1,6 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,13 +37,16 @@ import com.bobbyesp.spowlo.ui.components.others.PlayingIndicator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.utils.localAsset
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SpotifyHorizontalSongCard(
     modifier: Modifier = Modifier,
     showSpotifyLogo: Boolean = true,
     track: Track? = null,
     song: Song? = null,
+    listIndex: Int? = null,
     isPlaying: Boolean = false,
+    onLongClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     val albumArtPath = track?.album?.images?.get(0)?.url ?: song?.albumArtPath
@@ -48,16 +54,30 @@ fun SpotifyHorizontalSongCard(
 
     Box(modifier) {
         Surface(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onClick,
-            shape = MaterialTheme.shapes.small,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.small)
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick
+                ),
         ) {
             Column(Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box {
+                    if (listIndex != null) {
+                        Text(
+                            text = "${listIndex + 1}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .padding(end = 4.dp)
+                        )
+                    }
+                    Box(contentAlignment = Alignment.CenterStart) {
                         if (albumArtPath != null && showArtwork) {
                             AsyncImageImpl(
                                 modifier = Modifier
@@ -77,7 +97,7 @@ fun SpotifyHorizontalSongCard(
                         } else {
                             PlaceholderCreator(
                                 modifier = Modifier
-                                    .size(84.dp)
+                                    .size(90.dp)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
                                     .clip(MaterialTheme.shapes.small),
                                 icon = Icons.Default.MusicNote,
@@ -109,7 +129,6 @@ fun SpotifyHorizontalSongCard(
                             horizontalAlignment = Alignment.Start,
                             modifier = Modifier
                                 .padding(8.dp)
-                                .padding(start = 4.dp)
                                 .weight(1f)
                         ) {
                             MarqueeText(

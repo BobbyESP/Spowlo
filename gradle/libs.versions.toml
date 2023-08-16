@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.2.0-alpha15"
+agp = "8.2.0-alpha16"
 kotlin = "1.9.0"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.10.1"
@@ -14,10 +14,10 @@ media3 = "1.1.0"
 leakcanary = "2.12"
 
 #Compose
-compose-bom = "2023.06.01"
-constraintLayout = "1.1.0-alpha11"
-androidx-compose-material3 = "1.2.0-alpha04"
-compose-util = "1.4.3"
+compose-bom = "2023.08.00"
+constraintLayout = "1.1.0-alpha12"
+androidx-compose-material3 = "1.2.0-alpha05"
+compose-util = "1.5.0"
 accompanist = "0.31.4-beta"
 compose-pagination = "1.0.0-alpha20"
 
@@ -27,7 +27,7 @@ shimmer = "1.0.3"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.6.0"
+androidx-navigation = "2.7.0"
 androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
@@ -53,6 +53,7 @@ hilt-compose-nav = "1.0.0"
 
 #Database
 room = "2.5.2"
+datastore = "1.0.0"
 
 #High performance Key-value storage
 mmkv = "1.2.15"
@@ -61,7 +62,7 @@ mmkv = "1.2.15"
 simpleStorage = "1.5.5"
 
 #Chrome custom tabs
-customTabs = "1.5.0"
+customTabs = "1.6.0"
 
 #Markdown handler
 markdown = "0.3.3"
@@ -77,7 +78,7 @@ spotdlversion = "-SNAPSHOT"
 kyantTaglib = "2023.7.7"
 
 #Firebase, GMS...
-firebaseAuth = "22.1.0"
+firebaseAuth = "22.1.1"
 gmsPlayServicesAuth = "20.6.0"
 googleServices = "4.3.15"
 
@@ -182,6 +183,8 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 #Serialization
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serializationJson" }

@@ -33,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,7 +64,6 @@ fun SearchPage(
     val bottomInsetsAsPadding =
         LocalPlayerAwareWindowInsets.current.asPaddingValues()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
 
     val (query, onValueChange) = rememberSaveable(key = "searchQuery_searchPage") {
@@ -237,11 +235,16 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.ARTISTS,
                                             onItemClick = { artist ->
-                                                artist.externalUrls.spotify?.let { url ->
-                                                    uriHandler.openUri(
-                                                        url
+                                                val selectedMetadataEntity = MetadataEntity(
+                                                    type = SpotifyItemType.ARTISTS,
+                                                    id = artist.id,
+                                                )
+
+                                                navController.navigate(
+                                                    Route.MetadataEntityViewer.createRoute(
+                                                        selectedMetadataEntity
                                                     )
-                                                }
+                                                )
                                             }
                                         )
                                     }

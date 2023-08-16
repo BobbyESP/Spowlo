@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import SpotifyHorizontalSongCard
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,10 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -129,7 +127,6 @@ fun ProfilePage(
 private fun PageImplementation(
     viewModel: ProfilePageViewModel
 ) {
-    val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
 
     var showSheet by remember { mutableStateOf(false) }
@@ -153,9 +150,6 @@ private fun PageImplementation(
         if (id != null) {
             viewModel.searchSongByIdAndUpdateUi(id)
         }
-    }
-
-    LaunchedEffect(Unit) {
         viewModel.sameSongAsBroadcastVerifier()
     }
 
@@ -303,7 +297,16 @@ private fun PageImplementation(
                                     .height(120.dp)
                                     .width(80.dp)
                             ) {
-                                item.externalUrls.spotify?.let { it1 -> uriHandler.openUri(it1) }
+                                val selectedMetadataEntity = MetadataEntity(
+                                    type = SpotifyItemType.ARTISTS,
+                                    id = item.id,
+                                )
+
+                                navController.navigate(
+                                    Route.MetadataEntityViewer.createRoute(
+                                        selectedMetadataEntity
+                                    )
+                                )
                             }
                         }
                     }
@@ -362,7 +365,11 @@ private fun PageImplementation(
                 item {
                     LargeCategoryTitle(text = stringResource(id = R.string.recently_played))
                 }
-                items(recentlyPlayedSongs) { item ->
+                items(
+                    count = recentlyPlayedSongs.size,
+                    key = { index -> recentlyPlayedSongs[index].track.id + index.toString() },
+                ) { index ->
+                    val item = recentlyPlayedSongs[index]
                     RecentlyPlayedSongCard(
                         modifier = Modifier.fillMaxWidth(),
                         playHistoryItem = item
@@ -384,7 +391,7 @@ private fun PageImplementation(
             )
         }
 
-        if(showSheet) {
+        if (showSheet) {
             TrackBottomSheet(track = viewState.value.selectedTrackForSheet!!) {
                 showSheet = false
             }

@@ -10,7 +10,6 @@ import com.bobbyesp.spotdl_android.data.streams.StreamGobbler
 import com.bobbyesp.spotdl_utilities.FileUtils
 import com.bobbyesp.spotdl_utilities.ZipUtils
 import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
-import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
 import java.io.File
@@ -27,9 +26,6 @@ object SpotDL {
 
     private lateinit var pythonDirectory: File
     private lateinit var ffmpegDirectory: File
-
-    private lateinit var pipZipDirectory: File
-    private lateinit var pipZip: File  // Initialization with null value
 
     //START: MAIN ENVIRONMENT VARIABLES
     private lateinit var ENV_LD_LIBRARY_PATH: String
@@ -51,9 +47,6 @@ object SpotDL {
 
         val androidLibBaseDir = File(applicationContext.noBackupFilesDir, androidLibName)
 
-        pipZipDirectory = File(androidLibBaseDir, LibNames.pipDirName)
-        pipZip = File(pipZipDirectory, LibNames.pipZipName)
-
         if (!androidLibBaseDir.exists()) {
             androidLibBaseDir.mkdirs()
         }
@@ -72,7 +65,7 @@ object SpotDL {
 
         if (isDebug) printAllDirectories()
 
-        initializePython(applicationContext, pythonDirectory)
+        initializePython(pythonDirectory)
 
         isInitialized = true
     }
@@ -82,11 +75,11 @@ object SpotDL {
      *
      * @param pythonDirectory The directory where the Python interpreter is located.
      */
-    private fun initializePython(context: Context, pythonDirectory: File) {
+    private fun initializePython(pythonDirectory: File) {
         val pythonLibPath = File(binariesDirectory, LibNames.pythonLibraryName)
         val librarySize = pythonLibPath.length().toString() //We are gonna use this a checksum
 
-        if (!pythonDirectory.exists()) {
+        if (!pythonDirectory.exists() || shouldUpdatePython(librarySize)) {
             FileUtils.deleteFileSilently(pythonDirectory)
             pythonDirectory.mkdirs()
             try {
@@ -95,42 +88,10 @@ object SpotDL {
                 FileUtils.deleteFileSilently(pythonDirectory)
                 throw Exception("Error while decompressing Python library: ${e.message} \nInitialization of the Python interpreter failed.")
             }
-            PreferencesUtil.encodeString(PYTHON_VERSION, librarySize)
+            updatePython(librarySize)
             Log.i(TAG, "Python library extracted successfully.")
         }
-        try {
-            setupPip(context)
-        } catch (e: Exception) {
-            FileUtils.deleteFileSilently(pipZipDirectory)
-            throw Exception("Error while decompressing pip library: ${e.message} \nInitialization of pip failed.")
-        }
     }
-
-    @Throws(SpotDLException::class)
-    fun setupPip(context: Context): Boolean {
-        if (!pipZipDirectory.exists()) {
-            pipZipDirectory.mkdirs()
-            Log.i(TAG, "Pip directory created successfully.")
-        }
-
-        if (!pipZip.exists()) {
-            return try {
-                val zipFileId = R.raw.pip
-                val outputFile = pipZip.absoluteFile
-                FileUtils.copyInputStreamToFile(
-                    context.resources.openRawResource(zipFileId),
-                    outputFile
-                )
-                Log.i(TAG, "Pip library extracted successfully.")
-                true
-            } catch (e: Exception) {
-                FileUtils.deleteFileSilently(pipZipDirectory)
-                throw SpotDLException("Error while decompressing pip library: ${e.message} \nInitialization of the pip failed.")
-            }
-        }
-        return true
-    }
-
     @Throws(
         Exception::class,
         SpotDLException::class,
@@ -168,7 +129,7 @@ object SpotDL {
             put("SSL_CERT_FILE", ENV_SSL_CERT_FILE)
             put("PYTHONHOME", ENV_PYTHONHOME)
             put("HOME", ENV_PYTHONHOME)
-            put("PATH", System.getenv("PATH")!! + ":" + pythonPath.absolutePath)
+            put("PATH", System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath)
         }
 
         /**
@@ -220,27 +181,6 @@ object SpotDL {
     }
 
     /**
-     * Get the list of files in a directory.
-     *
-     * @param directory The directory to search.
-     * @return The list of files in the directory.
-     */
-    private fun getListOfFilesInDirectory(directory: File): List<File> {
-        val files = mutableListOf<File>()
-        directory.listFiles()?.let {
-            for (file in it) {
-                if (file.isDirectory) {
-                    files.addAll(getListOfFilesInDirectory(file))
-                } else {
-                    files.add(file)
-                }
-            }
-        }
-        if (isDebug) Log.i(TAG, "FILES: $files")
-        return files
-    }
-
-    /**
      * Setup the environment variables that will be used by the Python interpreter.
      */
     private fun setupEnvironmentVariables() {
@@ -262,10 +202,6 @@ object SpotDL {
         Log.i(TAG, "------------ PATHS ------------")
         Log.i(TAG, "PYTHON PATH: ${pythonPath.absolutePath}")
         Log.i(TAG, "FFMPEG PATH: ${ffmpegPath.absolutePath}")
-
-        Log.i(TAG, "------------ PIP ------------")
-        Log.i(TAG, "PIP DIRECTORY: ${pipZipDirectory.absolutePath}")
-        Log.i(TAG, "PIP PATH: ${pipZip.absolutePath}")
     }
 
     /**

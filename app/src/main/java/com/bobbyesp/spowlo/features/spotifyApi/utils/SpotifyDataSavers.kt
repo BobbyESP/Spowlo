@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.features.spotifyApi.utils
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import com.adamratzman.spotify.models.Album
+import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.AudioFeatures
 import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.Track
@@ -51,6 +52,17 @@ object PlaylistSaver : Saver<Playlist, String> {
     }
 
     override fun SaverScope.save(value: Playlist): String {
+        return Json.encodeToString(value)
+    }
+}
+
+@ExperimentalSerializationApi
+object ArtistSaver : Saver<Artist, String> {
+    override fun restore(value: String): Artist {
+        return Json.decodeFromString(value)
+    }
+
+    override fun SaverScope.save(value: Artist): String {
         return Json.encodeToString(value)
     }
 }

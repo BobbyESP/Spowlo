@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -94,58 +93,53 @@ fun MediaStorePage(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    BackButton {
-                        navController.popBackStack()
-                    }
-                }, actions = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                viewModel.loadMediaStoreTracks(
-                                    context
-                                )
-                            }
-                        }, enabled = state is MediaStorePageState.Loaded
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh MediaStore"
+    Scaffold(topBar = {
+        SmallTopAppBar(scrollBehavior = scrollBehavior, navigationIcon = {
+            BackButton {
+                navController.popBackStack()
+            }
+        }, actions = {
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        viewModel.loadMediaStoreTracks(
+                            context
                         )
                     }
-                    IconButton(
-                        onClick = {
-                            wantsToSearch = !wantsToSearch
-                        }, enabled = true
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search for songs"
-                        )
-                    }
+                }, enabled = state is MediaStorePageState.Loaded
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Refresh MediaStore"
+                )
+            }
+            IconButton(
+                onClick = {
+                    wantsToSearch = !wantsToSearch
+                }, enabled = true
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search for songs"
+                )
+            }
 
-                }, title = {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        title()
-                        subtitle()
-                    }
-                })
-        }, floatingActionButton = {
-            fabs()
-        }, modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        }, title = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                title()
+                subtitle()
+            }
+        })
+    }, floatingActionButton = {
+        fabs()
+    }, modifier = Modifier
+        .fillMaxSize()
+        .nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->
         Crossfade(
-            targetState = state,
-            label = "",
-            modifier = Modifier.fillMaxSize()
+            targetState = state, label = "", modifier = Modifier.fillMaxSize()
         ) {
             when (it) {
                 is MediaStorePageState.Loading -> {
@@ -200,8 +194,7 @@ fun MediaStorePage(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                ExpandableSearchBar(
-                                    query = query,
+                                ExpandableSearchBar(query = query,
                                     onQueryChange = { query = it },
                                     onSearch = { queryToSearch ->
                                         viewModel.viewModelScope.launch {
@@ -294,7 +287,10 @@ fun MediaStorePage(
                             modifier = Modifier.fillMaxSize(),
                             state = lazyGridState
                         ) {
-                            items(it.mediaStoreSongs) { song ->
+                            items(count = it.mediaStoreSongs.size,
+                                key = { index -> it.mediaStoreSongs[index].id },
+                                contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
+                                val song = it.mediaStoreSongs[index]
                                 LocalSongCard(song = song, modifier = Modifier, onClick = {
                                     onItemClicked(song)
                                 })

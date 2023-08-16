@@ -120,6 +120,7 @@ android {
             matchingFallbacks.add(1, "release")
         }
         debug {
+            isMinifyEnabled = false
             if (keystorePropertiesFile.exists()) signingConfig = signingConfigs.getByName("debug")
             packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
@@ -205,6 +206,9 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
     ksp(libs.room.compiler)
+
+    //Datastore (Preferences)
+    implementation(libs.datastore.preferences)
 
     //Networking
     implementation(libs.bundles.ktor)

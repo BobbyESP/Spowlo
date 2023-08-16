@@ -15,8 +15,4 @@ object LibNames {
     //-------- OTHERS --------
     const val certificatePath = "/usr/etc/tls/cert.pem"
     const val androidLibName = "spotdl_android"
-    const val whlFileName = "spotdl.whl"
-    const val pipZipName = "pip.pyz"
-    const val pipDirName = "pip"
-
 }

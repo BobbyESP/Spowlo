@@ -145,4 +145,6 @@
     <string name="collaborative">Collaborative</string>
     <string name="followers">Followers</string>
     <string name="open_page">Open page</string>
+    <string name="artist_not_found">Artist not found</string>
+    <string name="top_tracks">The best of %1$s</string>
 </resources>

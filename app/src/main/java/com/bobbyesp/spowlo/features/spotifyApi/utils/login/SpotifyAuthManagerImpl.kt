@@ -15,7 +15,6 @@ import javax.inject.Inject
 class SpotifyAuthManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SpotifyAuthManager {
-
     private var spotifyClientApi: SpotifyClientApi? = null
     private val credentials = CredentialsStorer().provideCredentials(context)
     private val activityWrapper by lazy { ActivityCallsShortener(MainActivity.getActivity()) }
@@ -37,13 +36,19 @@ class SpotifyAuthManagerImpl @Inject constructor(
     }
 
     override suspend fun isAuthenticated(): Boolean {
-        val isTokenValid = credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
-        val isClientApiInstanceNonNull = spotifyClientApi != null
-        if (BuildConfig.DEBUG) Log.i(
-            "SearchViewModel",
-            "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
-        )
-        return isTokenValid
+        return try {
+            val isTokenValid =
+                credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
+            val isClientApiInstanceNonNull = spotifyClientApi != null
+            if (BuildConfig.DEBUG) Log.i(
+                "SearchViewModel",
+                "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
+            )
+            isTokenValid
+        } catch (e: Throwable) {
+            Log.e("SpotifyAuthManager", "Error checking if user is authenticated", e)
+            false
+        }
     }
 
     override fun shouldRefreshToken(): Boolean {
@@ -52,12 +57,14 @@ class SpotifyAuthManagerImpl @Inject constructor(
 
     override suspend fun refreshToken(): Boolean {
         return try {
+            Log.i("SpotifyAuthManager", "Refreshing token...")
             val api = credentials.getSpotifyClientPkceApi()
                 ?: throw SpotifyException.ReAuthenticationNeededException()
             api.refreshToken()
             credentials.spotifyToken = api.token
             true
         } catch (e: SpotifyException.ReAuthenticationNeededException) {
+            Log.e("SpotifyAuthManager", "Error refreshing token", e)
             throw e // Throw the exception for being handled by the places where SpotifyAuthManager is used
         }
     }
@@ -66,7 +73,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
         return try {
             credentials.clear()
             true
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             false
         }
     }
