@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.documentfile.provider.DocumentFile
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.components.cards.CardListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

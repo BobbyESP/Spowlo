@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.PlayingIndicator

@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 
 object MediaStoreReceiver {
 

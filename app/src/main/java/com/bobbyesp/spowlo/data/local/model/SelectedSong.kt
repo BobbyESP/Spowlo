@@ -2,7 +2,7 @@ package com.bobbyesp.spowlo.data.local.model
 
 import android.net.Uri
 import android.os.Parcelable
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.UriSerializer
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.UriSerializer
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 

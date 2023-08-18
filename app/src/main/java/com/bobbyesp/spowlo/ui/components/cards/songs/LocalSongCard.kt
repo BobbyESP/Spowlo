@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText

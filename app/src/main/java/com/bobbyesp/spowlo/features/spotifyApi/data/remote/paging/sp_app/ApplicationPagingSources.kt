@@ -12,8 +12,8 @@ import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.SimpleTrack
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.utils.Market
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.toSongs
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.toSongs
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 
 class TrackPagingSource(

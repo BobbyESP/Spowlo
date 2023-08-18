@@ -17,7 +17,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.utils.Market
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.toSong
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.toSong
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackPagingSource
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.HorizontalSongCard
 import dagger.hilt.android.lifecycle.HiltViewModel

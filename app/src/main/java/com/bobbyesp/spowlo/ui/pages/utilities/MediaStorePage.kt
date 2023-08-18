@@ -48,7 +48,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.songs.LocalSongCard

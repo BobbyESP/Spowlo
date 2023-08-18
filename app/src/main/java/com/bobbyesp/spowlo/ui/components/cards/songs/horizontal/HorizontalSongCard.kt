@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 

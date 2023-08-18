@@ -46,8 +46,8 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.storage.StorageHelper.SaveLyricsButton
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.CloseButton

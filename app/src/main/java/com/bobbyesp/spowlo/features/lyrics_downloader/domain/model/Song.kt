@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model
+package com.bobbyesp.spowlo.features.lyrics_downloader.domain.model
 
 import android.net.Uri
 import android.os.Parcelable

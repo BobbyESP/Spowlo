@@ -9,8 +9,8 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.utils.Market
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.LyricsDatabase
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.db.entity.LyricsEntity
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
 import com.bobbyesp.spowlo.features.lyrics_downloader.data.remote.SpotifyLyricService
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.TrackAsSongPagingSource
 import com.bobbyesp.spowlo.utils.lyrics.LyricsUtil.toLyricsString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -120,14 +120,14 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
 
     companion object {
         sealed class SelectedSongLyricsPageState {
-            object Loading : SelectedSongLyricsPageState()
+           data object Loading : SelectedSongLyricsPageState()
             data class Loaded(val lyrics: String) : SelectedSongLyricsPageState()
             data class Error(val error: String) : SelectedSongLyricsPageState()
         }
 
         sealed class LyricsDownloaderPageStage {
-            object Selecting : LyricsDownloaderPageStage()
-            object Selected : LyricsDownloaderPageStage()
+            data object Selecting : LyricsDownloaderPageStage()
+            data object Selected : LyricsDownloaderPageStage()
         }
     }
 }

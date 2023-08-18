@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.adamratzman.spotify.models.PagingObject
 import com.adamratzman.spotify.models.Track
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 
 /**
  * TrackEntity is a representation of a track from Spotify in the database.

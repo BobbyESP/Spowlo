@@ -44,7 +44,7 @@ import com.bobbyesp.miniplayer_service.service.MediaState
 import com.bobbyesp.miniplayer_service.service.PlayerEvent
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
-import com.bobbyesp.spowlo.features.lyrics_downloader.data.local.model.Song
+import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
