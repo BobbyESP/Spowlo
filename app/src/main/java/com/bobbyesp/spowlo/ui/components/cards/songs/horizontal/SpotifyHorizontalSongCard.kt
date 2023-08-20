@@ -158,3 +158,88 @@ fun SpotifyHorizontalSongCard(
         }
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CompactSpotifyHorizontalSongCard(
+    modifier: Modifier = Modifier,
+    track: Track,
+    listIndex: Int? = null,
+    onLongClick: () -> Unit = {},
+    onClick: () -> Unit = {}
+) {
+    val albumArtPath = track.album.images.firstOrNull()?.url
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (listIndex != null) {
+                Text(
+                    text = "${listIndex + 1}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .padding(end = 4.dp)
+                )
+            }
+            Box(contentAlignment = Alignment.CenterStart) {
+                if (albumArtPath != null) {
+                    AsyncImageImpl(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                            .clip(MaterialTheme.shapes.small),
+                        model = albumArtPath,
+                        contentDescription = "Song cover",
+                        contentScale = ContentScale.Fit,
+                        isPreview = false
+                    )
+                } else {
+                    PlaceholderCreator(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                            .clip(MaterialTheme.shapes.small),
+                        icon = Icons.Default.MusicNote,
+                        colorful = false,
+                        contentDescription = "Song cover"
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f)
+                ) {
+                    MarqueeText(
+                        text = track.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    MarqueeText(
+                        text = track.artists.joinToString(", ") { it.name },
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    )
+                }
+            }
+        }
+    }
+}

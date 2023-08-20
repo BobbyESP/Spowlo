@@ -1,6 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_entities.artist
 
-import SpotifyHorizontalSongCard
+import CompactSpotifyHorizontalSongCard
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
@@ -354,10 +354,9 @@ private fun MostPlayedTracks(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         trackList.data?.take(6)?.forEachIndexed { index, track ->
-                            SpotifyHorizontalSongCard(
+                            CompactSpotifyHorizontalSongCard(
                                 track = track,
                                 modifier = Modifier.height(54.dp),
-                                showSpotifyLogo = false,
                                 listIndex = index,
                                 onClick = {
                                     val selectedMetadataEntity = MetadataEntity(
