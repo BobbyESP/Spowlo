@@ -68,6 +68,12 @@ object SpotDL {
         initializePython(pythonDirectory)
 
         isInitialized = true
+
+        try {
+            testCommand()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while testing the command: ${e.message}")
+        }
     }
 
     /**
@@ -98,7 +104,7 @@ object SpotDL {
         InterruptedException::class,
         CanceledException::class
     )
-    private fun installSpotDL(
+    private fun testCommand(
     ): Boolean {
         val process: Process
 
@@ -118,7 +124,9 @@ object SpotDL {
         command.addAll(
             listOf(
                 pythonPath.absolutePath,
-                "--version"
+                "-m",
+                "yt-dlp",
+                "--help"
             )
         )
 
@@ -174,7 +182,7 @@ object SpotDL {
 
         if (exitCode != 0) {
             Log.e(TAG, err)
-            throw SpotDLException("Error while installing SpotDL: $err")
+            throw SpotDLException("Error while running the command: $err")
         }
 
         return true
