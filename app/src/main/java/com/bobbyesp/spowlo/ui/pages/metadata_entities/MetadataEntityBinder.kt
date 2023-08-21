@@ -17,7 +17,6 @@ import com.bobbyesp.spowlo.ui.pages.metadata_entities.playlist.PlaylistPageViewM
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.track.TrackPageViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetadataEntityBinder(
     metadataEntity: MetadataEntity

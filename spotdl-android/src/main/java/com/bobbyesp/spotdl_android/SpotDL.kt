@@ -125,8 +125,9 @@ object SpotDL {
             listOf(
                 pythonPath.absolutePath,
                 "-m",
-                "yt-dlp",
-                "--help"
+                "spotdl",
+                "download",
+                "https://open.spotify.com/track/6XSqqQIy7Lm7SnwxS4NrGx?si=997add376175428f"
             )
         )
 

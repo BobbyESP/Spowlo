@@ -225,7 +225,8 @@ fun CompactSpotifyHorizontalSongCard(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center
                 ) {
                     MarqueeText(
                         text = track.name,

@@ -341,9 +341,9 @@ private fun MostPlayedTracks(
                             id = R.string.top_tracks,
                             artistName
                         ),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         maxLines = 1
                     )
                     Column(
