@@ -3,16 +3,16 @@ package com.bobbyesp.spotdl_android.data
 import android.util.Log
 import com.bobbyesp.spotdl_android.BuildConfig
 
-open class SpotDLRequest(url: String? = null, urls: List<String>? = null) {
+class SpotDLRequest {
     private var urls: List<String> = listOf()
     private var options = SpotDLOptions()
     private var customCommandList = ArrayList<String>()
 
-    constructor(url: String) : this() {
-        this.urls = listOf(url)
+    constructor(url: String) {
+        urls = listOf(url)
     }
 
-    constructor(urls: List<String>) : this() {
+    constructor(urls: List<String>) {
         this.urls = urls
     }
 

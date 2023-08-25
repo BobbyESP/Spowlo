@@ -1,7 +1,7 @@
 package com.bobbyesp.spotdl_android.data
 
-open class SpotDLResponse(
-    val commands: List<String>,
+class SpotDLResponse(
+    val commands: List<String?>,
     val exitCode: Int,
     val elapsedTime: Long,
     val output: String,

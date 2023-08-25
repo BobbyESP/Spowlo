@@ -5,6 +5,8 @@ import android.util.Log
 import com.bobbyesp.spotdl_android.LibNames.androidLibName
 import com.bobbyesp.spotdl_android.data.CanceledException
 import com.bobbyesp.spotdl_android.data.SpotDLException
+import com.bobbyesp.spotdl_android.data.SpotDLRequest
+import com.bobbyesp.spotdl_android.data.SpotDLResponse
 import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
 import com.bobbyesp.spotdl_android.data.streams.StreamGobbler
 import com.bobbyesp.spotdl_utilities.FileUtils
@@ -13,6 +15,8 @@ import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
 import java.io.File
+import java.io.IOException
+import java.util.Collections
 
 /**
  * The main class of the library.
@@ -31,17 +35,19 @@ object SpotDL {
     private lateinit var ENV_LD_LIBRARY_PATH: String
     private lateinit var ENV_SSL_CERT_FILE: String
     private lateinit var ENV_PYTHONHOME: String
+    private lateinit var YT_DLP_DIR: String
     //END: MAIN ENVIRONMENT VARIABLES
 
     private var isInitialized = false
     private val isDebug = BuildConfig.DEBUG
+
+    private val idProcessMap = Collections.synchronizedMap(HashMap<String, Process>())
 
     /**
      * Initialize the library.
      *
      * @param applicationContext The application context.
      */
-
     fun init(applicationContext: Context) {
         if (isInitialized) return
 
@@ -69,10 +75,8 @@ object SpotDL {
 
         isInitialized = true
 
-        try {
-            testCommand()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error while testing the command: ${e.message}")
+        execute(SpotDLRequest(emptyList()), null) { progress, eta, line ->
+            if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
         }
     }
 
@@ -98,96 +102,6 @@ object SpotDL {
             Log.i(TAG, "Python library extracted successfully.")
         }
     }
-    @Throws(
-        Exception::class,
-        SpotDLException::class,
-        InterruptedException::class,
-        CanceledException::class
-    )
-    private fun testCommand(
-    ): Boolean {
-        val process: Process
-
-        val exitCode: Int
-
-        //STDERR and STDOUT
-        val outStrBuffer = StringBuffer() //stdout
-        val errStrBuffer = StringBuffer() //stderr
-
-        //Time on start
-        val startTime = System.currentTimeMillis()
-
-        /*****************************************/
-
-        //Command to execute
-        val command = mutableListOf<String>()
-        command.addAll(
-            listOf(
-                pythonPath.absolutePath,
-                "-m",
-                "spotdl",
-                "download",
-                "https://open.spotify.com/track/6XSqqQIy7Lm7SnwxS4NrGx?si=997add376175428f"
-            )
-        )
-
-        val processBuilder = ProcessBuilder(command)
-
-        processBuilder.environment().apply {
-            put("LD_LIBRARY_PATH", ENV_LD_LIBRARY_PATH)
-            put("SSL_CERT_FILE", ENV_SSL_CERT_FILE)
-            put("PYTHONHOME", ENV_PYTHONHOME)
-            put("HOME", ENV_PYTHONHOME)
-            put("PATH", System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath)
-        }
-
-        /**
-         * Start the process.
-         */
-        process = try {
-            Log.i(TAG, "Running the process: $processBuilder")
-            processBuilder.start()
-        } catch (e: Exception) {
-            throw Exception("Error while running the process: ${e.message}")
-        }
-
-        /**
-         * Get the outputs of the process.
-         */
-        val outStream = process.inputStream //stdout
-        val errStream = process.errorStream //stderr
-
-        val stdOutProcessor =
-            StreamDataProcessExtractor(outStrBuffer, outStream) { progress, eta, line ->
-                if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
-            }
-        val stdErrProcessor = StreamGobbler(errStrBuffer, errStream)
-
-        exitCode = try {
-            stdOutProcessor.start()
-            stdErrProcessor.start()
-            process.waitFor()
-            Log.i(TAG, "Process finished with exit code: ${process.exitValue()}")
-        } catch (e: InterruptedException) {
-            process.destroy()
-            throw e
-        } catch (e: Exception) {
-            throw Exception("Error while waiting for the process: ${e.message}")
-        }
-
-        val out = outStrBuffer.toString()
-        val err = errStrBuffer.toString()
-
-        Log.i(TAG, "STDOUT: $out")
-        Log.i(TAG, "STDERR: $err")
-
-        if (exitCode != 0) {
-            Log.e(TAG, err)
-            throw SpotDLException("Error while running the command: $err")
-        }
-
-        return true
-    }
 
     /**
      * Setup the environment variables that will be used by the Python interpreter.
@@ -197,29 +111,199 @@ object SpotDL {
             pythonDirectory.absolutePath + "/usr/lib" + ":" + ffmpegDirectory.absolutePath + "/usr/lib"
         ENV_SSL_CERT_FILE = pythonDirectory.absolutePath + LibNames.certificatePath
         ENV_PYTHONHOME = pythonDirectory.absolutePath + "/usr"
+        YT_DLP_DIR = pythonDirectory.absolutePath + "/usr/lib/python3.8/site-packages/yt_dlp"
     }
 
     /**
      * Print all the directories and paths used by the library.
      */
     private fun printAllDirectories() {
-        Log.i(TAG, "------------ DIRECTORIES ------------")
-        Log.i(TAG, "BINARIES DIRECTORY: ${binariesDirectory.absolutePath}")
-        Log.i(TAG, "PYTHON DIRECTORY: ${pythonDirectory.absolutePath}")
-        Log.i(TAG, "FFMPEG DIRECTORY: ${ffmpegDirectory.absolutePath}")
+        Log.d(TAG, "------------ DIRECTORIES ------------")
+        Log.d(TAG, "BINARIES DIRECTORY: ${binariesDirectory.absolutePath}")
+        Log.d(TAG, "PYTHON DIRECTORY: ${pythonDirectory.absolutePath}")
+        Log.d(TAG, "FFMPEG DIRECTORY: ${ffmpegDirectory.absolutePath}")
 
-        Log.i(TAG, "------------ PATHS ------------")
-        Log.i(TAG, "PYTHON PATH: ${pythonPath.absolutePath}")
-        Log.i(TAG, "FFMPEG PATH: ${ffmpegPath.absolutePath}")
+        Log.d(TAG, "------------ PATHS ------------")
+        Log.d(TAG, "PYTHON PATH: ${pythonPath.absolutePath}")
+        Log.d(TAG, "FFMPEG PATH: ${ffmpegPath.absolutePath}")
+    }
+
+    @JvmOverloads
+    @Throws(SpotDLException::class, InterruptedException::class, CanceledException::class)
+    fun execute(
+        request: SpotDLRequest,
+        processId: String? = null,
+        callback: ((Float, Long, String) -> Unit)? = null
+    ): SpotDLResponse {
+        assertInit()
+        if (processId != null && idProcessMap.containsKey(processId)) throw SpotDLException("Process ID already exists")
+        // disable caching unless it is explicitly requested
+
+//        if (!request.hasOption("--cache-path") || request.getOption("--cache-path") == null) {
+//            request.addOption("--no-cache")
+//        }
+
+        /* Set ffmpeg location, See https://github.com/xibr/ytdlp-lazy/issues/1 */
+//        request.addOption("--ffmpeg-location", ffmpegPath.absolutePath)
+        val spotDlResponse: SpotDLResponse
+        val process: Process
+        val exitCode: Int
+        val outBuffer = StringBuffer() //stdout
+        val errBuffer = StringBuffer() //stderr
+        val startTime = System.currentTimeMillis()
+        val args = request.buildCommand()
+        val command: MutableList<String?> = ArrayList()
+
+        if(isDebug) {
+            //print environment variables
+            Log.i(TAG, "------------ ENVIRONMENT VARIABLES ------------")
+            Log.i(TAG, "LD_LIBRARY_PATH: $ENV_LD_LIBRARY_PATH")
+            Log.i(TAG, "SSL_CERT_FILE: $ENV_SSL_CERT_FILE")
+            Log.i(TAG, "PYTHONHOME: $ENV_PYTHONHOME")
+            Log.i(TAG, "YT_DLP_DIR: $YT_DLP_DIR")
+            Log.i(TAG, "Path: ${System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath}")
+        }
+
+        Log.i("YoutubeDL", "execute: " + pythonPath.absolutePath)
+
+        command.addAll(listOf(pythonPath.absolutePath, YT_DLP_DIR))
+        command.addAll(args)
+        val processBuilder = ProcessBuilder(command)
+        processBuilder.environment().apply {
+            this["LD_LIBRARY_PATH"] = ENV_LD_LIBRARY_PATH
+            this["SSL_CERT_FILE"] = ENV_SSL_CERT_FILE
+            this["PATH"] = System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath
+            this["PYTHONHOME"] = ENV_PYTHONHOME
+            this["HOME"] = ENV_PYTHONHOME
+        }
+
+        process = try {
+            processBuilder.start()
+        } catch (e: IOException) {
+            throw SpotDLException(e)
+        }
+        if (processId != null) {
+            idProcessMap[processId] = process
+        }
+        val outStream = process.inputStream
+        val errStream = process.errorStream
+        val stdOutProcessor = StreamDataProcessExtractor(outBuffer, outStream, callback)
+        val stdErrProcessor = StreamGobbler(errBuffer, errStream)
+        exitCode = try {
+            stdOutProcessor.join()
+            stdErrProcessor.join()
+            process.waitFor()
+        } catch (e: InterruptedException) {
+            process.destroy()
+            if (processId != null) idProcessMap.remove(processId)
+            throw e
+        }
+        val out = outBuffer.toString()
+        val err = errBuffer.toString()
+
+        if (exitCode > 0) {
+            if (processId != null && !idProcessMap.containsKey(processId))
+                throw CanceledException()
+            if (!ignoreErrors(request, out)) {
+                idProcessMap.remove(processId)
+                throw SpotDLException(err)
+            }
+        }
+        idProcessMap.remove(processId)
+
+        val elapsedTime = System.currentTimeMillis() - startTime
+        spotDlResponse = SpotDLResponse(command, exitCode, elapsedTime, out, err)
+        return spotDlResponse
     }
 
     /**
      * Execute a Python command.
      *
-     * @param command The command to execute.
+     * @param request The command to execute.
+     * @param processId The ID of the process.
+     * @param callback The callback to be called when the process is running.
+     *
+     * @return The response of the process.
      */
-    suspend fun executePythonCommand(command: String) {
-        TODO("Not yet implemented")
+    @JvmOverloads
+    @Throws(SpotDLException::class, InterruptedException::class, CanceledException::class)
+    fun executePythonCommand(
+        request: SpotDLRequest,
+        processId: String? = null,
+        callback: ((Float, Long, String) -> Unit)? = null
+    ): SpotDLResponse {
+        assertInit()
+        if(isDebug) {
+            Log.i(TAG, "Starting process with command: $request")
+        }
+        if (processId != null && idProcessMap.containsKey(processId)) throw SpotDLException("Process ID already exists")
+
+        val response: SpotDLResponse
+        val process: Process
+        val exitCode: Int
+        val outBuffer = StringBuffer() //stdout
+        val errBuffer = StringBuffer() //stderr
+        val startTime = System.currentTimeMillis()
+        val args = request.buildCommand()
+        val command: MutableList<String?> = ArrayList()
+
+        command.add(pythonPath.absolutePath)
+        command.addAll(args)
+
+        val processBuilder = ProcessBuilder(command)
+        processBuilder.environment().apply {
+            this["LD_LIBRARY_PATH"] = ENV_LD_LIBRARY_PATH
+            this["SSL_CERT_FILE"] = ENV_SSL_CERT_FILE
+            this["PATH"] = System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath
+            this["PYTHONHOME"] = ENV_PYTHONHOME
+            this["HOME"] = ENV_PYTHONHOME
+        }
+
+        if(isDebug) {
+            Log.i(TAG, "Running the process: $processBuilder")
+        }
+
+        process = try {
+            processBuilder.start()
+        } catch (e: IOException) {
+            throw SpotDLException(e)
+        }
+        if (processId != null) {
+            idProcessMap[processId] = process
+        }
+        val outStream = process.inputStream
+        val errStream = process.errorStream
+        val stdOutProcessor = StreamDataProcessExtractor(outBuffer, outStream, callback)
+        val stdErrProcessor = StreamGobbler(errBuffer, errStream)
+        exitCode = try {
+            stdOutProcessor.join()
+            stdErrProcessor.join()
+            process.waitFor()
+        } catch (e: InterruptedException) {
+            process.destroy()
+            if (processId != null) idProcessMap.remove(processId)
+            throw e
+        }
+        val out = outBuffer.toString()
+        val err = errBuffer.toString()
+        if (exitCode > 0) {
+            if (processId != null && !idProcessMap.containsKey(processId))
+                throw CanceledException()
+        }
+        idProcessMap.remove(processId)
+
+        val elapsedTime = System.currentTimeMillis() - startTime
+        response = SpotDLResponse(command, exitCode, elapsedTime, out, err)
+        if(isDebug) {
+            Log.i(TAG, "STDOUT: $out")
+            Log.e(TAG, "STDERR: $err")
+            Log.i(TAG, "Process finished with exit code: $exitCode")
+        }
+        return response
+    }
+
+    private fun ignoreErrors(request: SpotDLRequest, out: String): Boolean {
+        return out.isNotEmpty() && !request.hasOption("--print-errors")
     }
 
     /**
@@ -248,4 +332,8 @@ object SpotDL {
      */
     @JvmStatic
     fun getInstance() = this
+
+    private fun assertInit() {
+        check(isInitialized) { "Python instance is not initialized" }
+    }
 }

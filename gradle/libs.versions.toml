@@ -65,7 +65,7 @@ simpleStorage = "1.5.5"
 customTabs = "1.6.0"
 
 #Markdown handler
-markdown = "0.3.3"
+markdown = "0.3.5"
 
 #Spotify API
 spotify-apiHandler = "4.0.2"
