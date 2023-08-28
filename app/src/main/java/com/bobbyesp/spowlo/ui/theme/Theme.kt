@@ -53,8 +53,8 @@ fun SpowloTheme(
             )
             else this
         }
-    val window = LocalView.current.context.findWindow()
     val view = LocalView.current
+    val window = view.context.findWindow()
 
     window?.let {
         WindowCompat.getInsetsController(it, view).isAppearanceLightStatusBars = darkTheme

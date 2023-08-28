@@ -160,7 +160,6 @@ object SpotDL {
             Log.i(TAG, "LD_LIBRARY_PATH: $ENV_LD_LIBRARY_PATH")
             Log.i(TAG, "SSL_CERT_FILE: $ENV_SSL_CERT_FILE")
             Log.i(TAG, "PYTHONHOME: $ENV_PYTHONHOME")
-            Log.i(TAG, "YT_DLP_DIR: $YT_DLP_DIR")
             Log.i(TAG, "Path: ${System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath}")
         }
 

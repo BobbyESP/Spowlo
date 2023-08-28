@@ -31,6 +31,21 @@ object FileUtils {
         }
     }
 
+    fun copyFile(source: File, destination: File) {
+        source.copyTo(destination, true)
+    }
+
+    fun deleteDirectory(directory: File): Boolean {
+        return try {
+            if (directory.isDirectory) {
+                directory.listFiles()?.forEach { deleteDirectory(it) }
+            }
+            directory.delete()
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     /**
      * Get the list of files in a directory.
      *
