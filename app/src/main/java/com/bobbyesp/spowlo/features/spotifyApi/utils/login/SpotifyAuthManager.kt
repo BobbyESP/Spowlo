@@ -8,5 +8,6 @@ interface SpotifyAuthManager {
     suspend fun isAuthenticated(): Boolean
     fun shouldRefreshToken(): Boolean
     suspend fun refreshToken(): Boolean
+    fun credentialsFileExists(): Boolean
     fun deleteCredentials(): Boolean
 }

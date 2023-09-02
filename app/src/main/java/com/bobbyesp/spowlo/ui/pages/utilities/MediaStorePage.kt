@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.utilities
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -62,7 +63,7 @@ import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MediaStorePage(
     navController: NavController = LocalNavController.current,
@@ -194,16 +195,18 @@ fun MediaStorePage(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                ExpandableSearchBar(query = query,
+                                ExpandableSearchBar(
+                                    query = query,
                                     onQueryChange = { query = it },
                                     onSearch = { queryToSearch ->
+                                        val finalQuery = queryToSearch.trim()
                                         viewModel.viewModelScope.launch {
                                             viewModel.loadMediaStoreWithFilter(
-                                                context, queryToSearch
+                                                context, finalQuery
                                             )
 
                                             viewModel.insertSearch(
-                                                queryToSearch
+                                                finalQuery
                                             )
                                         }
                                         activeFullscreenSearching = false
@@ -291,7 +294,7 @@ fun MediaStorePage(
                                 key = { index -> it.mediaStoreSongs[index].id },
                                 contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
                                 val song = it.mediaStoreSongs[index]
-                                LocalSongCard(song = song, modifier = Modifier, onClick = {
+                                LocalSongCard(song = song, modifier = Modifier.animateItemPlacement(), onClick = {
                                     onItemClicked(song)
                                 })
                             }

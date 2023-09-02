@@ -2,7 +2,10 @@ package com.bobbyesp.spotdl_android
 
 import android.content.Context
 import android.util.Log
+import com.bobbyesp.library.SpotDLUpdater
 import com.bobbyesp.spotdl_android.LibNames.androidLibName
+import com.bobbyesp.spotdl_android.LibNames.spotdlBinaryName
+import com.bobbyesp.spotdl_android.LibNames.spotdlInternalDirectoryName
 import com.bobbyesp.spotdl_android.data.CanceledException
 import com.bobbyesp.spotdl_android.data.SpotDLException
 import com.bobbyesp.spotdl_android.data.SpotDLRequest
@@ -10,6 +13,7 @@ import com.bobbyesp.spotdl_android.data.SpotDLResponse
 import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
 import com.bobbyesp.spotdl_android.data.streams.StreamGobbler
 import com.bobbyesp.spotdl_utilities.FileUtils
+import com.bobbyesp.spotdl_utilities.FileUtils.copyRawResourceToFile
 import com.bobbyesp.spotdl_utilities.ZipUtils
 import com.bobbyesp.spotdl_utilities.preferences.PYTHON_VERSION
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
@@ -27,15 +31,18 @@ object SpotDL {
     private lateinit var binariesDirectory: File
     private lateinit var pythonPath: File
     private lateinit var ffmpegPath: File
+    private lateinit var spotDLPath: File
 
     private lateinit var pythonDirectory: File
     private lateinit var ffmpegDirectory: File
+
+    private lateinit var appPath: File
 
     //START: MAIN ENVIRONMENT VARIABLES
     private lateinit var ENV_LD_LIBRARY_PATH: String
     private lateinit var ENV_SSL_CERT_FILE: String
     private lateinit var ENV_PYTHONHOME: String
-    private lateinit var YT_DLP_DIR: String
+    private lateinit var HOME: String
     //END: MAIN ENVIRONMENT VARIABLES
 
     private var isInitialized = false
@@ -64,20 +71,21 @@ object SpotDL {
         pythonPath = File(binariesDirectory, LibNames.pythonInterpreterName)
         ffmpegPath = File(binariesDirectory, LibNames.ffmpegBinaryName)
 
+        spotDLPath = File(androidLibBaseDir, spotdlBinaryName)
+
         pythonDirectory = File(packagesDirectory, LibNames.pythonInternalDirectoryName)
         ffmpegDirectory = File(packagesDirectory, LibNames.ffmpegInternalDirectoryName)
+
+        appPath = File(applicationContext.filesDir, spotdlInternalDirectoryName)
 
         setupEnvironmentVariables()
 
         if (isDebug) printAllDirectories()
 
         initializePython(pythonDirectory)
+        initializeSpotDL(applicationContext, androidLibBaseDir)
 
         isInitialized = true
-
-        execute(SpotDLRequest(emptyList()), null) { progress, eta, line ->
-            if (isDebug) Log.i(TAG, "PROGRESS: $progress, ETA: $eta, LINE: $line")
-        }
     }
 
     /**
@@ -103,6 +111,27 @@ object SpotDL {
         }
     }
 
+
+    @Throws(SpotDLException::class)
+    fun initializeSpotDL(appContext: Context, spotDLdirectory: File) {
+        if (!spotDLdirectory.exists()) spotDLdirectory.mkdirs()
+
+        val spotDlBinary = File(spotDLdirectory, spotdlBinaryName)
+
+        if (!spotDlBinary.exists()) {
+            try {
+                //See https://github.com/containerd/containerd/blob/269548fa27e0089a8b8278fc4fc781d7f65a939b/platforms/platforms.go#L88
+                //Also https://www.digitalocean.com/community/tutorials/building-go-applications-for-different-operating-systems-and-architectures
+                val binaryFileId = R.raw.spotdl
+                val outputFile = File(spotDlBinary.absolutePath)
+                copyRawResourceToFile(appContext, binaryFileId, outputFile)
+            } catch (e: Exception) {
+                FileUtils.deleteFileSilently(spotDLdirectory)
+                throw SpotDLException("Error extracting spotdl files", e)
+            }
+        }
+    }
+
     /**
      * Setup the environment variables that will be used by the Python interpreter.
      */
@@ -111,7 +140,7 @@ object SpotDL {
             pythonDirectory.absolutePath + "/usr/lib" + ":" + ffmpegDirectory.absolutePath + "/usr/lib"
         ENV_SSL_CERT_FILE = pythonDirectory.absolutePath + LibNames.certificatePath
         ENV_PYTHONHOME = pythonDirectory.absolutePath + "/usr"
-        YT_DLP_DIR = pythonDirectory.absolutePath + "/usr/lib/python3.8/site-packages/yt_dlp"
+        HOME = appPath.absolutePath
     }
 
     /**
@@ -136,15 +165,17 @@ object SpotDL {
         callback: ((Float, Long, String) -> Unit)? = null
     ): SpotDLResponse {
         assertInit()
-        if (processId != null && idProcessMap.containsKey(processId)) throw SpotDLException("Process ID already exists")
+
+        //Check if the process ID already exists or not.
+        if (processId != null && idProcessMap.containsKey(processId)) throw SpotDLException("Process ID already exists! Change the process ID and retry.")
+
         // disable caching unless it is explicitly requested
+        if (!request.hasOption("--cache-path") || request.getOption("--cache-path") == null) {
+            request.addOption("--no-cache")
+        }
 
-//        if (!request.hasOption("--cache-path") || request.getOption("--cache-path") == null) {
-//            request.addOption("--no-cache")
-//        }
+        request.addOption("--ffmpeg", ffmpegPath.absolutePath)
 
-        /* Set ffmpeg location, See https://github.com/xibr/ytdlp-lazy/issues/1 */
-//        request.addOption("--ffmpeg-location", ffmpegPath.absolutePath)
         val spotDlResponse: SpotDLResponse
         val process: Process
         val exitCode: Int
@@ -154,39 +185,52 @@ object SpotDL {
         val args = request.buildCommand()
         val command: MutableList<String?> = ArrayList()
 
-        if(isDebug) {
+        if (isDebug) {
             //print environment variables
             Log.i(TAG, "------------ ENVIRONMENT VARIABLES ------------")
             Log.i(TAG, "LD_LIBRARY_PATH: $ENV_LD_LIBRARY_PATH")
             Log.i(TAG, "SSL_CERT_FILE: $ENV_SSL_CERT_FILE")
             Log.i(TAG, "PYTHONHOME: $ENV_PYTHONHOME")
             Log.i(TAG, "Path: ${System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath}")
+            Log.i(TAG, "HOME: $HOME")
         }
 
-        Log.i("YoutubeDL", "execute: " + pythonPath.absolutePath)
-
-        command.addAll(listOf(pythonPath.absolutePath, YT_DLP_DIR))
+        command.addAll(listOf(pythonPath.absolutePath, spotDLPath.absolutePath))
         command.addAll(args)
-        val processBuilder = ProcessBuilder(command)
-        processBuilder.environment().apply {
-            this["LD_LIBRARY_PATH"] = ENV_LD_LIBRARY_PATH
-            this["SSL_CERT_FILE"] = ENV_SSL_CERT_FILE
-            this["PATH"] = System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath
-            this["PYTHONHOME"] = ENV_PYTHONHOME
-            this["HOME"] = ENV_PYTHONHOME
+
+        if (isDebug) {
+            Log.i(TAG, "Running the process: $command")
         }
+
+        val processBuilder = ProcessBuilder(command)
+        processBuilder.putEnvironmentVariables()
 
         process = try {
             processBuilder.start()
         } catch (e: IOException) {
             throw SpotDLException(e)
         }
+
+        Log.d("SpotDL", "Started process: $process; the process ID is: $processId")
+
         if (processId != null) {
             idProcessMap[processId] = process
+            Log.d("SpotDL", "Added process to the process map: $processId")
         }
+
         val outStream = process.inputStream
         val errStream = process.errorStream
-        val stdOutProcessor = StreamDataProcessExtractor(outBuffer, outStream, callback)
+
+        if (isDebug){
+            Log.d("SpotDL", "Out stream: $outStream")
+            Log.d("SpotDL", "Err stream: $errStream")
+        }
+
+        val stdOutProcessor = StreamDataProcessExtractor(
+            outBuffer,
+            outStream,
+            callback
+        )
         val stdErrProcessor = StreamGobbler(errBuffer, errStream)
         exitCode = try {
             stdOutProcessor.join()
@@ -232,7 +276,7 @@ object SpotDL {
         callback: ((Float, Long, String) -> Unit)? = null
     ): SpotDLResponse {
         assertInit()
-        if(isDebug) {
+        if (isDebug) {
             Log.i(TAG, "Starting process with command: $request")
         }
         if (processId != null && idProcessMap.containsKey(processId)) throw SpotDLException("Process ID already exists")
@@ -250,15 +294,10 @@ object SpotDL {
         command.addAll(args)
 
         val processBuilder = ProcessBuilder(command)
-        processBuilder.environment().apply {
-            this["LD_LIBRARY_PATH"] = ENV_LD_LIBRARY_PATH
-            this["SSL_CERT_FILE"] = ENV_SSL_CERT_FILE
-            this["PATH"] = System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath
-            this["PYTHONHOME"] = ENV_PYTHONHOME
-            this["HOME"] = ENV_PYTHONHOME
-        }
 
-        if(isDebug) {
+        processBuilder.putEnvironmentVariables()
+
+        if (isDebug) {
             Log.i(TAG, "Running the process: $processBuilder")
         }
 
@@ -293,12 +332,22 @@ object SpotDL {
 
         val elapsedTime = System.currentTimeMillis() - startTime
         response = SpotDLResponse(command, exitCode, elapsedTime, out, err)
-        if(isDebug) {
+        if (isDebug) {
             Log.i(TAG, "STDOUT: $out")
             Log.e(TAG, "STDERR: $err")
             Log.i(TAG, "Process finished with exit code: $exitCode")
         }
         return response
+    }
+
+    @Throws(SpotDLException::class)
+    suspend fun updateSpotDL(appContext: Context): SpotDLUpdater.Companion.UpdateStatus? {
+        assertInit()
+        return try {
+            SpotDLUpdater.getInstance().update(appContext)
+        } catch (e: IOException) {
+            throw SpotDLException("Failed to update the spotDL library.", e)
+        }
     }
 
     private fun ignoreErrors(request: SpotDLRequest, out: String): Boolean {
@@ -335,4 +384,19 @@ object SpotDL {
     private fun assertInit() {
         check(isInitialized) { "Python instance is not initialized" }
     }
+    fun ProcessBuilder.putEnvironmentVariables() {
+        this.environment().apply {
+            this["LD_LIBRARY_PATH"] = SpotDL.ENV_LD_LIBRARY_PATH
+            this["SSL_CERT_FILE"] = SpotDL.ENV_SSL_CERT_FILE
+            this["PATH"] = System.getenv("PATH")!! + ":" + SpotDL.binariesDirectory.absolutePath
+            this["PYTHONHOME"] = SpotDL.ENV_PYTHONHOME
+            this["HOME"] = SpotDL.HOME
+            this["ffmpeg"] = SpotDL.ffmpegPath.absolutePath
+            //ENVIRONMENT VARIABLES TO FORCE RICH PYTHON LIB TO SHOW THE PROGRESS LINE.
+            //Thanks xnetcat (https://github.com/xnetcat) (principal spotdl library developer/maintainer) for the help and time!
+            this["TERM"] = "xterm-256color"
+            this["FORCE_COLOR"] = "true"
+        }
+    }
 }
+

@@ -69,6 +69,10 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
     }
 
+    override fun credentialsFileExists(): Boolean {
+        TODO()
+    }
+
     override fun deleteCredentials(): Boolean {
         return try {
             credentials.clear()

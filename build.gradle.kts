@@ -1,7 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
 buildscript {
-
     repositories {
         mavenCentral()
         google()

@@ -12,6 +12,8 @@ ksp = "1.9.0-1.0.13"
 material = "1.9.0"
 media3 = "1.1.0"
 leakcanary = "2.12"
+commonsIo = "2.5"
+commonsCompress = "1.12"
 
 #Compose
 compose-bom = "2023.08.00"
@@ -223,6 +225,10 @@ compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+#File utils
+commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 
 #Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

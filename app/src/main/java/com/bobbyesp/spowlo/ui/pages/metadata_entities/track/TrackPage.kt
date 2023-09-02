@@ -369,6 +369,8 @@ private fun TrackPageImplementation(
                             stringResource(id = R.string.valence) to successData.valence,
                         )
 
+                        val featuresList = featuresMap.toList()
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -382,7 +384,7 @@ private fun TrackPageImplementation(
                                 )
                             ) {
                                 //do a forEach but with the first 4 elements
-                                featuresMap.toList().subList(0, 4).forEach { (key, value) ->
+                                featuresList.subList(0, 4).forEach { (key, value) ->
                                     AudioPropertyBar(
                                         modifier = Modifier,
                                         property = key,
@@ -397,7 +399,7 @@ private fun TrackPageImplementation(
                                 )
                             ) {
                                 //do a forEach but with the last 4 elements
-                                featuresMap.toList().subList(4, 7).forEach { (key, value) ->
+                                featuresList.subList(4, 7).forEach { (key, value) ->
                                     AudioPropertyBar(
                                         modifier = Modifier,
                                         property = key,

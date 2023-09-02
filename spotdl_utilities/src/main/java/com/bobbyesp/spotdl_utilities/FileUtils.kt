@@ -1,10 +1,12 @@
 package com.bobbyesp.spotdl_utilities
 
+import android.content.Context
 import android.util.Log
 import com.tencent.mmkv.BuildConfig
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.net.URL
 
 object FileUtils {
     private const val TAG = "FileUtils"
@@ -44,6 +46,48 @@ object FileUtils {
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun copyRawResourceToFile(context: Context, resourceId: Int, file: File) {
+        val inputStream = context.resources.openRawResource(resourceId)
+        val outputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var read = inputStream.read(buffer)
+        while (read != -1) {
+            outputStream.write(buffer, 0, read)
+            read = inputStream.read(buffer)
+        }
+        outputStream.close()
+        inputStream.close()
+    }
+
+    fun copyURLToFile(url: String, file: File) {
+        val inputStream = URL(url).openStream()
+        val outputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var read = inputStream.read(buffer)
+        while (read != -1) {
+            outputStream.write(buffer, 0, read)
+            read = inputStream.read(buffer)
+        }
+        outputStream.close()
+        inputStream.close()
+    }
+
+    fun copyURLToFile(url: String, file: File, timeout: Int, fileReadTimeout: Int) {
+        val inputStream = URL(url).openConnection().apply {
+            connectTimeout = timeout
+            readTimeout = fileReadTimeout
+        }.getInputStream()
+        val outputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var read = inputStream.read(buffer)
+        while (read != -1) {
+            outputStream.write(buffer, 0, read)
+            read = inputStream.read(buffer)
+        }
+        outputStream.close()
+        inputStream.close()
     }
 
     /**

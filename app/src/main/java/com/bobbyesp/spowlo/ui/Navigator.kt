@@ -298,7 +298,9 @@ fun Navigator() {
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                            }, alwaysShowLabel = false
+                            },
+                            alwaysShowLabel = false,
+                            enabled = true
                         )
                     }
                 }
