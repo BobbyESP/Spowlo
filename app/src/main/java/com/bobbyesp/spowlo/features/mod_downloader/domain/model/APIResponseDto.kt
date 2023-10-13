@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor
+package com.bobbyesp.spowlo.features.mod_downloader.domain.model
 
 import kotlinx.serialization.Serializable
 

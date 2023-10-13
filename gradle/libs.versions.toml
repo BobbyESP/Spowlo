@@ -1,20 +1,21 @@
 [versions]
 accompanist = "0.29.2-rc"
-androidGradlePlugin = "7.4.2"
-androidxComposeBom = "2023.01.00"
-androidxComposeCompiler = "1.4.0"
-androidxCore = "1.10.0-rc01"
-androidMaterial = "1.9.0-alpha02"
-androidxAppCompat = "1.7.0-alpha02"
-androidxActivity = "1.6.1"
-markdownDependency = "0.3.2"
+androidGradlePlugin = "8.1.2"
+androidxComposeBom = "2023.10.00"
+androidxComposeCompiler = "1.5.3"
+androidxCore = "1.12.0"
+androidMaterial = "1.10.0"
+androidxAppCompat = "1.7.0-alpha03"
+androidxActivity = "1.8.0"
+markdownDependency = "0.3.5"
 navTransitions = "0.11.0-alpha"
-androidxPaging = "3.1.1"
-paginationCompose = "1.0.0-alpha18"
+androidxPaging = "3.2.1"
+paginationCompose = "3.2.1"
+ksp = "1.9.10-1.0.13"
 
-androidxLifecycle = "2.6.0"
-androidxNavigation = "2.5.3"
-androidxComposeMaterial3 = "1.1.0-alpha08"
+androidxLifecycle = "2.6.2"
+androidxNavigation = "2.7.4"
+androidxComposeMaterial3 = "1.1.2"
 
 androidxEspresso = "3.5.1"
 androidxHiltNavigationCompose = "1.0.0"
@@ -27,26 +28,26 @@ spotifyApiKotlinVersion = "3.8.8"
 shimmerLibrary = "1.0.4"
 crashHandlerVersion = "2.0.2"
 
-coil = "2.2.2"
-hilt = "2.44.2"
+coil = "2.4.0"
+hilt = "2.48"
 hiltExt = "1.0.0"
 
 junit4 = "4.13.2"
-kotlin = "1.8.0"
-kotlinxCoroutines = "1.6.4"
+kotlin = "1.9.10"
+kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.0"
-kotlinxSerializationJson = "1.5.0"
-okhttp = "5.0.0-alpha.10"
+kotlinxSerializationJson = "1.5.1"
+okhttp = "5.0.0-alpha.11"
 ktor = "1.6.3"
 
-exoplayer = "2.18.4"
+exoplayer = "2.19.1"
 
-room = "2.5.0"
+room = "2.5.2"
 
 mmkv = "1.2.15"
 
 #chrome custom tabs
-customTabs = "1.5.0"
+customTabs = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -149,5 +150,6 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

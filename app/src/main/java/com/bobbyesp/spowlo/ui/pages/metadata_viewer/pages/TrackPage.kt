@@ -44,7 +44,6 @@ import com.bobbyesp.spowlo.ui.components.songs.metadata_viewer.TrackComponent
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.dataStringToString
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

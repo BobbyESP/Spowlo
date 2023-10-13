@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeveloperMode
 import androidx.compose.material.icons.outlined.Key
-import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PermIdentity
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,8 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -29,10 +26,8 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.stringState
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.DismissButton
-import com.bobbyesp.spowlo.ui.components.LinkButton
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonChip
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
-import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.updateString
 import com.bobbyesp.spowlo.utils.SPOTIFY_CLIENT_ID
 import com.bobbyesp.spowlo.utils.SPOTIFY_CLIENT_SECRET

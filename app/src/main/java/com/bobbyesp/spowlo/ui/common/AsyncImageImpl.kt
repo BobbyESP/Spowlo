@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.disk.DiskCache
-import coil.imageLoader
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.bobbyesp.spowlo.App.Companion.context

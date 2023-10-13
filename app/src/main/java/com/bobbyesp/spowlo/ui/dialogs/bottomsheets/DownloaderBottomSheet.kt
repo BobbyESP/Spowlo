@@ -33,6 +33,7 @@ import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlaylistAddCheck
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -56,6 +57,7 @@ import androidx.navigation.NavController
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.AudioFilterChip
+import com.bobbyesp.spowlo.ui.components.BottomSheet
 import com.bobbyesp.spowlo.ui.components.ButtonChip
 import com.bobbyesp.spowlo.ui.components.DrawerSheetSubtitle
 import com.bobbyesp.spowlo.ui.components.FilledButtonWithIcon
@@ -79,7 +81,9 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun DownloaderBottomSheet(
     onBackPressed: () -> Unit,
@@ -87,15 +91,19 @@ fun DownloaderBottomSheet(
     navController: NavController,
     onDownloadPressed : () -> Unit,
     onRequestMetadata : () -> Unit,
-    hide: () -> Unit,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(initialPage = 0)
 
     val pages =
         listOf(BottomSheetPages.MAIN, BottomSheetPages.TERTIARY) //, BottomSheetPages.SECONDARY
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f
+    ) {
+        pages.size
+    }
 
     val roundedTopShape =
         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
@@ -181,21 +189,20 @@ fun DownloaderBottomSheet(
     var showClientSecretDialog by remember { mutableStateOf(false) }
 
     val downloadButtonCallback = {
-        hide()
+        onBackPressed()
         checkPermissionOrDownload()
     }
 
     val requestMetadata = {
-        hide()
+        onBackPressed()
         onRequestMetadata()
     }
 
+    BottomSheet(onDismiss = onBackPressed) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
             .navigationBarsPadding()
-            .clip(roundedTopShape)
             .padding(8.dp)
             .animateContentSize(
                 animationSpec = tween(
@@ -265,7 +272,7 @@ fun DownloaderBottomSheet(
             }
         }
         HorizontalPager(
-            pageCount = pages.size, state = pagerState, modifier = Modifier.animateContentSize()
+            state = pagerState, modifier = Modifier.animateContentSize()
         ) {
             when (pages[it]) {
                 BottomSheetPages.MAIN -> {
@@ -473,6 +480,7 @@ fun DownloaderBottomSheet(
                             text = stringResource(R.string.see_playlist)
                         )
                     }
+
                     albumRegex.matches(url) -> {
                         val albumId = albumRegex.find(url)!!.groupValues[1]
                         FilledButtonWithIcon(
@@ -482,6 +490,7 @@ fun DownloaderBottomSheet(
                             text = stringResource(R.string.see_album)
                         )
                     }
+
                     else -> {
                         FilledButtonWithIcon(
                             modifier = Modifier.padding(end = 12.dp),
@@ -494,6 +503,7 @@ fun DownloaderBottomSheet(
             }
         }
     }
+}
 
     if (showAudioFormatDialog) {
         AudioFormatDialog(

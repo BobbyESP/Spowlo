@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization")
 }
@@ -44,7 +45,7 @@ sealed class Version(
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
     versionMinor = 3,
-    versionPatch = 3,
+    versionPatch = 4,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -66,12 +67,12 @@ android {
         }
     }
 
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
-        targetSdk = 33
-        versionCode = 10300
+        targetSdk = 34
+        versionCode = 10340
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
@@ -81,11 +82,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-            correctErrorTypes = true
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
         if (!splitApks)
             ndk {
@@ -142,12 +140,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -218,13 +216,13 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     //spotDL library
     implementation(libs.spotdl.android.library)
@@ -238,15 +236,7 @@ dependencies {
     implementation(libs.mmkv)
 
     implementation(libs.markdown)
-    //Exoplayer
-//    implementation(libs.exoplayer.core)
-//    implementation(libs.exoplayer.ui)
-//    implementation(libs.exoplayer.dash)
-//    implementation(libs.exoplayer.smoothstreaming)
-//    implementation(libs.exoplayer.extension.mediasession)
-
     implementation(libs.customtabs)
-   // implementation(libs.shimmer)
 
     debugImplementation(libs.crash.handler)
 
@@ -256,5 +246,12 @@ dependencies {
 //    androidTestImplementation(libs.androidx.compose.ui.test)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
 
+class RoomSchemaArgProvider(
+    @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE) val schemaDir: File
+) : CommandLineArgumentProvider {
+    override fun asArguments(): Iterable<String> {
+        return listOf("room.schemaLocation=${schemaDir.path}")
+    }
 }

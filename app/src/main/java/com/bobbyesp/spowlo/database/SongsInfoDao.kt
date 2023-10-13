@@ -14,22 +14,22 @@ interface SongsInfoDao {
     @Insert
     suspend fun insertAll(vararg info: DownloadedSongInfo)
 
-    @Query("SELECT * FROM DownloadedSongInfo")
+    @Query("SELECT * FROM downloaded_songs_info")
     fun getAllMedia(): Flow<List<DownloadedSongInfo>>
 
-    @Query("DELETE FROM DownloadedSongInfo")
+    @Query("DELETE FROM downloaded_songs_info")
     fun deleteAllMediaFromDb()
 
-    @Query("SELECT * from DownloadedSongInfo WHERE id=:id")
+    @Query("SELECT * from downloaded_songs_info WHERE id=:id")
     suspend fun getInfoById(id: Int): DownloadedSongInfo
 
-    @Query("DELETE FROM DownloadedSongInfo WHERE id = :id")
+    @Query("DELETE FROM downloaded_songs_info WHERE id = :id")
     suspend fun deleteInfoById(id: Int)
 
-    @Query("DELETE FROM DownloadedSongInfo WHERE songPath = :path")
+    @Query("DELETE FROM downloaded_songs_info WHERE songPath = :path")
     suspend fun deleteInfoByPath(path: String)
 
-    @Query("SELECT * FROM DownloadedSongInfo WHERE songPath = :path")
+    @Query("SELECT * FROM downloaded_songs_info WHERE songPath = :path")
     suspend fun getInfoByPath(path: String): DownloadedSongInfo?
 
     @Transaction

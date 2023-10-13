@@ -1,7 +1,7 @@
 package com.bobbyesp.spowlo
 
 import com.bobbyesp.library.dto.Song
-import java.util.*
+import java.util.Queue
 
 abstract class SongDownloaderQueue : Queue<Song> {
     private val queue: MutableList<Song> = mutableListOf()

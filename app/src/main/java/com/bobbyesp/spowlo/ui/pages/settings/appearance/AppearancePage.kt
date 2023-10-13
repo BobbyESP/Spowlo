@@ -160,14 +160,18 @@ fun AppearancePage(
                     ), modifier = Modifier.padding(16.dp), isPreview = true
                 )
                 val pagerState =
-                    rememberPagerState(initialPage = colorList.indexOf(Color(LocalSeedColor.current))
-                        .run { if (equals(-1)) 1 else this })
+                    rememberPagerState(
+                        initialPage = colorList.indexOf(Color(LocalSeedColor.current))
+                            .run { if (equals(-1)) 1 else this },
+                        initialPageOffsetFraction = 0f
+                    ) {
+                        colorList.size
+                    }
                 HorizontalPager(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clearAndSetSemantics { },
                     state = pagerState,
-                    pageCount = colorList.size,
                     contentPadding = PaddingValues(horizontal = 6.dp)
                 ) {
                     Row { ColorButtons(colorList[it]) }

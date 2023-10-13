@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
@@ -101,11 +101,8 @@ import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
-import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -152,6 +149,8 @@ fun InitialEntry(
 
     val context = LocalContext.current
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
+    var showDownloaderBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showOptionsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     val scope = rememberCoroutineScope()
     var updateJob: Job? = null
@@ -198,15 +197,6 @@ fun InitialEntry(
             .background(MaterialTheme.colorScheme.background)
     ) {
         val navRootUrl = "android-app://androidx.navigation/"
-        ModalBottomSheetLayout(
-            bottomSheetNavigator,
-            sheetShape = MaterialTheme.shapes.medium.copy(
-                bottomStart = CornerSize(0.dp),
-                bottomEnd = CornerSize(0.dp)
-            ),
-            scrimColor = MaterialTheme.colorScheme.scrim.copy(0.5f),
-            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-        ) {
             Scaffold(
                 bottomBar = {
                     AnimatedVisibility(
@@ -266,7 +256,7 @@ fun InitialEntry(
                     .fillMaxSize()
                     .align(Alignment.Center)
             ) { paddingValues ->
-                AnimatedNavHost(
+                NavHost(
                     modifier = Modifier
                         .fillMaxWidth(
                             when (LocalWindowWidthState.current) {
@@ -291,14 +281,10 @@ fun InitialEntry(
                                     }
                                 },
                                 navigateToSettings = {
-                                    navController.navigate(Route.MORE_OPTIONS_HOME) {
-                                        launchSingleTop = true
-                                    }
+                                                     showOptionsBottomSheet = true
                                 },
                                 navigateToDownloaderSheet = {
-                                    navController.navigate(Route.DOWNLOADER_SHEET) {
-                                        launchSingleTop = true
-                                    }
+                                    showDownloaderBottomSheet = true
                                 },
                                 onSongCardClicked = {
                                     navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
@@ -435,69 +421,6 @@ fun InitialEntry(
                                 onBackPressed
                             )
                         }
-
-                        //BOTTOM SHEETS --------------------------
-                        bottomSheet(Route.MORE_OPTIONS_HOME) {
-                            MoreOptionsHomeBottomSheet(
-                                onBackPressed,
-                                navController
-                            )
-                        }
-
-                        bottomSheet(Route.DOWNLOADER_SHEET) {
-                            /*ModalBottomSheetLayout(
-                                bottomSheetNavigator = BottomSheetNavigator(
-                                    rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true),
-                                )
-                            ) {*/
-                            //val viewModel = hiltViewModel<DownloaderViewModel>()
-
-                            val storagePermission = rememberPermissionState(
-                                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ) { b: Boolean ->
-                                if (b) {
-                                    downloaderViewModel.startDownloadSong()
-                                } else {
-                                    ToastUtil.makeToast(R.string.permission_denied)
-                                }
-                            }
-
-                            val viewModelState =
-                                downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
-                            DownloaderBottomSheet(
-                                onBackPressed,
-                                viewModelState.url,
-                                navController,
-                                onDownloadPressed = {
-                                    if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
-                                    else {
-                                        storagePermission.launchPermissionRequest()
-                                    }
-                                },
-                                onRequestMetadata = {
-                                    downloaderViewModel.requestMetadata()
-                                },
-                                hide = {
-                                    navController.popBackStack()
-                                },
-                                navigateToPlaylist = { id ->
-                                    navController.navigate(
-                                        Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
-                                        navOptions = navOptions {
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        })
-                                },
-                                navigateToAlbum = { id ->
-                                    navController.navigate(
-                                        Route.PLAYLIST_PAGE + "/" + "album" + "/" + id,
-                                        navOptions = navOptions {
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        })
-                                },
-                            )
-                        }
                     }
 
                     //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
@@ -578,7 +501,6 @@ fun InitialEntry(
                 }
             }
         }
-    }
 
     //INIT SPOTIFY API
     LaunchedEffect(Unit) {
@@ -634,6 +556,59 @@ fun InitialEntry(
 //        }
 //    }
 
+    if(showDownloaderBottomSheet) {
+        val storagePermission = rememberPermissionState(
+            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) { b: Boolean ->
+            if (b) {
+                downloaderViewModel.startDownloadSong()
+            } else {
+                ToastUtil.makeToast(R.string.permission_denied)
+            }
+        }
+
+        val viewModelState =
+            downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
+        DownloaderBottomSheet(
+            onBackPressed = {
+                showDownloaderBottomSheet = false
+            },
+            viewModelState.url,
+            navController,
+            onDownloadPressed = {
+                if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
+                else {
+                    storagePermission.launchPermissionRequest()
+                }
+            },
+            onRequestMetadata = {
+                downloaderViewModel.requestMetadata()
+            },
+            navigateToPlaylist = { id ->
+                navController.navigate(
+                    Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
+                    navOptions = navOptions {
+                        launchSingleTop = true
+                        restoreState = true
+                    })
+            },
+            navigateToAlbum = { id ->
+                navController.navigate(
+                    Route.PLAYLIST_PAGE + "/" + "album" + "/" + id,
+                    navOptions = navOptions {
+                        launchSingleTop = true
+                        restoreState = true
+                    })
+            },
+        )
+    }
+
+    if(showOptionsBottomSheet) {
+        MoreOptionsHomeBottomSheet(
+            onBackPressed = { showOptionsBottomSheet = false },
+            navController
+        )
+    }
     if (showUpdateDialog) {
         UpdaterBottomDrawer(latestRelease = latestRelease)
     }

@@ -3,8 +3,8 @@ package com.bobbyesp.spowlo.features.mod_downloader.data.remote
 import android.content.Context
 import androidx.annotation.CheckResult
 import com.bobbyesp.spowlo.App
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.APIResponseDto
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.ApkResponseDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.APIResponseDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.ApkResponseDto
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil.downloadFileWithProgress
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,6 @@ object ModsDownloaderAPI {
     const val TAG = "APKsDownloaderAPI"
 
     private val requestAPIResponse = Request.Builder().url(BASE_URL + ENDPOINT).build()
-
 
     @CheckResult
     suspend fun getAPIResponse(): Result<APIResponseDto> {

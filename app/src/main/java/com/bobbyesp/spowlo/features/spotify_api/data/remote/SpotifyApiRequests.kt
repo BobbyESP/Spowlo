@@ -12,7 +12,6 @@ import com.adamratzman.spotify.models.Token
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Market
-import com.bobbyesp.spowlo.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,8 +23,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SpotifyApiRequests {
 
-    private const val clientId = BuildConfig.CLIENT_ID
-    private const val clientSecret = BuildConfig.CLIENT_SECRET
+    private const val clientId = "abcad8ba647d4b0ebae797a8f444ac9b"
+    private const val clientSecret = "7ac6711e50044f1db20e4610f10f1f98"
     private var api: SpotifyAppApi? = null
     private var token: Token? = null
 

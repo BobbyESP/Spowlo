@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "downloaded_songs_info")
 data class DownloadedSongInfo(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val songName: String,
@@ -12,8 +12,6 @@ data class DownloadedSongInfo(
     val songUrl: String,
     val thumbnailUrl: String,
     val songPath: String,
-    @ColumnInfo(defaultValue = "0.0")
-    val songDuration: Double = 0.0,
-    @ColumnInfo(defaultValue = "Unknown")
-    val extractor: String = "Unknown"
+    @ColumnInfo(defaultValue = "0.0") val songDuration: Double = 0.0,
+    @ColumnInfo(defaultValue = "Unknown") val extractor: String = "Unknown"
 )

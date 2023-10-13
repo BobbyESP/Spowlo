@@ -2,8 +2,7 @@ package com.bobbyesp.spowlo.ui.pages.mod_downloader
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.ViewModel
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.PackagesResponseDto
-import com.bobbyesp.spowlo.features.mod_downloader.domain.model.refactor.APIResponseDto
+import com.bobbyesp.spowlo.features.mod_downloader.domain.model.APIResponseDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update

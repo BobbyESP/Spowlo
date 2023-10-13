@@ -23,7 +23,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.compose.composable
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fadeThroughComposable(
@@ -74,6 +74,7 @@ private val path = Path().apply {
 
 private val emphasizePathInterpolator = PathInterpolator(path)
 private val emphasizeEasing = emphasizePathInterpolator.toEasing()
+private val emphasizeEasingVariant = CubicBezierEasing(.2f, 0f, 0f, 1f)
 private val emphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 private val emphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 1f, 1f)
 
@@ -96,7 +97,6 @@ private val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
 
 private val fadeSpec = fadeTween
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.animatedComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
@@ -129,7 +129,6 @@ fun NavGraphBuilder.animatedComposable(
     content = content
 )
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.animatedComposableVariant(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
@@ -201,5 +200,3 @@ fun NavGraphBuilder.slideInVerticallyComposable(
     },
     content = content
 )
-
-//Create a NavGraphBuilder extension function to add a composable route for a popup dialog

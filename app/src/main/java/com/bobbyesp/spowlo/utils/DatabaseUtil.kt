@@ -5,17 +5,14 @@ import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.database.AppDatabase
 import com.bobbyesp.spowlo.database.Backup
+import com.bobbyesp.spowlo.database.CommandShortcut
 import com.bobbyesp.spowlo.database.CommandTemplate
 import com.bobbyesp.spowlo.database.CookieProfile
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
-import com.bobbyesp.spowlo.database.CommandShortcut
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import javax.xml.transform.Templates
 
 object DatabaseUtil {
     private val format = Json { prettyPrint = true }

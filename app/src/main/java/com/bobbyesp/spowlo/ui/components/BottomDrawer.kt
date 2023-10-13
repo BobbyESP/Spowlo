@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,7 +20,11 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -111,4 +116,27 @@ fun DrawerSheetSubtitle(
         color = color,
         style = MaterialTheme.typography.labelLarge
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheet(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    edgeToEdge: Boolean = true,
+    state: SheetState = androidx.compose.material3.rememberModalBottomSheetState(),
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val windowInsets = if (edgeToEdge)
+        WindowInsets(bottom = 0, top = 0) else BottomSheetDefaults.windowInsets
+
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = { onDismiss() },
+        sheetState = state,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        windowInsets = windowInsets,
+    ) {
+        content()
+    }
 }

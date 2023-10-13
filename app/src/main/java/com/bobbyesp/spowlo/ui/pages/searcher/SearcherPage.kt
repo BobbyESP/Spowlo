@@ -186,12 +186,17 @@ fun SearcherPageImpl(
                         }
 
                         is ViewSearchState.Success -> {
-                            val pagerState = rememberPagerState(initialPage = 0)
                             val pages = listOf(
                                 SearcherPages.TRACKS,
                                 SearcherPages.PLAYLISTS,
                                 SearcherPages.ALBUMS
                             )
+                            val pagerState = rememberPagerState(
+                                initialPage = 0,
+                                initialPageOffsetFraction = 0f
+                            ) {
+                                pages.size
+                            }
                             val scope = rememberCoroutineScope()
 
                             IndicatorBehindScrollableTabRow(
@@ -226,7 +231,7 @@ fun SearcherPageImpl(
                             }
 
                             HorizontalPager(
-                                pageCount = pages.size, state = pagerState, modifier = Modifier
+                                state = pagerState, modifier = Modifier
                                     .animateContentSize()
                                     .fillMaxSize()
                             ) {
