@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -67,6 +68,9 @@ android {
         }
     }
 
+    val localProperties = Properties()
+    localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
     compileSdk = 34
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
@@ -108,17 +112,17 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            packagingOptions {
+            packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
             //add client id and secret to build config
-            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField("String", "CLIENT_ID", "\"${localProperties["spotifyClientID"]}\"")
             buildConfigField(
                 "String",
                 "CLIENT_SECRET",
-                "\"${project.properties["CLIENT_SECRET"]}\""
+                "\"${localProperties["spotifyClientSecret"]}\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
@@ -126,14 +130,14 @@ android {
         debug {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
-            packagingOptions {
+            packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
-            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
+            buildConfigField("String", "CLIENT_ID", "\"${localProperties["spotifyClientID"]}\"")
             buildConfigField(
                 "String",
                 "CLIENT_SECRET",
-                "\"${project.properties["CLIENT_SECRET"]}\""
+                "\"${localProperties["spotifyClientSecret"]}\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
@@ -216,9 +220,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.ext.compiler)
+    kapt(libs.hilt.ext.compiler)
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -248,6 +252,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
 
+fun String.capitalizeWord(): String {
+    return this.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()
+        ) else it.toString()
+    }
+}
 class RoomSchemaArgProvider(
     @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE) val schemaDir: File
 ) : CommandLineArgumentProvider {

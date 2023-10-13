@@ -149,8 +149,8 @@ fun InitialEntry(
 
     val context = LocalContext.current
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
-    var showDownloaderBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showOptionsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showDownloaderBottomSheet by remember { mutableStateOf(false) }
+    var showOptionsBottomSheet by remember { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     val scope = rememberCoroutineScope()
     var updateJob: Job? = null
