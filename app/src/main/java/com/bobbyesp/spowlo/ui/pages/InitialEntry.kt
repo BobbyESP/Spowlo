@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -58,7 +57,7 @@ import androidx.navigation.navigation
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPI
+import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPIService
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
@@ -114,8 +113,10 @@ import kotlinx.coroutines.launch
 private const val TAG = "InitialEntry"
 
 @OptIn(
-    ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
-    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterialNavigationApi::class,
+    ExperimentalLayoutApi::class,
+    ExperimentalPermissionsApi::class
 )
 @Composable
 fun InitialEntry(
@@ -147,6 +148,9 @@ fun InitialEntry(
         isLandscape.targetState = windowWidthState == WindowWidthSizeClass.Expanded
     }
 
+    val modsDownloaderResponse =
+        modsDownloaderViewModel.apiResponseFlow.collectAsStateWithLifecycle().value
+
     val context = LocalContext.current
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var showDownloaderBottomSheet by remember { mutableStateOf(false) }
@@ -167,15 +171,13 @@ fun InitialEntry(
             UpdateUtil.installLatestApk()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (!context.packageManager.canRequestPackageInstalls())
-                    settings.launch(
-                        Intent(
-                            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                            Uri.parse("package:${context.packageName}"),
-                        )
+                if (!context.packageManager.canRequestPackageInstalls()) settings.launch(
+                    Intent(
+                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                        Uri.parse("package:${context.packageName}"),
                     )
-                else
-                    UpdateUtil.installLatestApk()
+                )
+                else UpdateUtil.installLatestApk()
             }
         }
     }
@@ -185,9 +187,7 @@ fun InitialEntry(
     if (isUrlShared) {
         if (navController.currentDestination?.route != Route.DOWNLOADER) {
             navController.popBackStack(
-                route = Route.DOWNLOADER,
-                inclusive = false,
-                saveState = true
+                route = Route.DOWNLOADER, inclusive = false, saveState = true
             )
         }
     }
@@ -197,310 +197,302 @@ fun InitialEntry(
             .background(MaterialTheme.colorScheme.background)
     ) {
         val navRootUrl = "android-app://androidx.navigation/"
-            Scaffold(
-                bottomBar = {
-                    AnimatedVisibility(
-                        visible = !shouldHideBottomNavBar,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
+
+        Scaffold(
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = !shouldHideBottomNavBar,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    NavigationBar(
+                        modifier = Modifier
+                            .background(
+                                MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                    3.dp
+                                )
+                            )
+                            .navigationBarsPadding(),
                     ) {
-                        NavigationBar(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
-                                .navigationBarsPadding(),
-                        ) {
-                            MainActivity.showInBottomNavigation.forEach { (route, icon) ->
-                                val text = when (route) {
-                                    Route.DownloaderNavi -> App.context.getString(R.string.downloader)
-                                    Route.SearcherNavi -> App.context.getString(R.string.searcher)
-                                    Route.DownloadTasksNavi -> App.context.getString(R.string.tasks)
-                                    else -> ""
-                                }
+                        MainActivity.showInBottomNavigation.forEach { (route, icon) ->
+                            val text = when (route) {
+                                Route.DownloaderNavi -> App.context.getString(R.string.downloader)
+                                Route.SearcherNavi -> App.context.getString(R.string.searcher)
+                                Route.DownloadTasksNavi -> App.context.getString(R.string.tasks)
+                                else -> ""
+                            }
 
-                                val selected = currentRootRoute.value == route
+                            val selected = currentRootRoute.value == route
 
-                                val onClick = remember(selected, navController, route) {
-                                    {
-                                        if (!selected) {
-                                            navController.navigate(route) {
-                                                popUpTo(Route.NavGraph) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
+                            val onClick = remember(selected, navController, route) {
+                                {
+                                    if (!selected) {
+                                        navController.navigate(route) {
+                                            popUpTo(Route.NavGraph) {
+                                                saveState = true
                                             }
+                                            launchSingleTop = true
+                                            restoreState = true
                                         }
                                     }
                                 }
-                                NavigationBarItem(
-                                    selected = currentRootRoute.value == route,
-                                    onClick = onClick,
-                                    icon = {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            text = text,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        )
-                                    })
                             }
+                            NavigationBarItem(selected = currentRootRoute.value == route,
+                                onClick = onClick,
+                                icon = {
+                                    Icon(
+                                        imageVector = icon,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                })
                         }
                     }
-                }, modifier = Modifier
-                    .fillMaxSize()
+                }
+            }, modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
+        ) { paddingValues ->
+            NavHost(
+                modifier = Modifier
+                    .fillMaxWidth(
+                        when (LocalWindowWidthState.current) {
+                            WindowWidthSizeClass.Compact -> 1f
+                            WindowWidthSizeClass.Expanded -> 1f
+                            else -> 0.8f
+                        }
+                    )
                     .align(Alignment.Center)
-            ) { paddingValues ->
-                NavHost(
-                    modifier = Modifier
-                        .fillMaxWidth(
-                            when (LocalWindowWidthState.current) {
-                                WindowWidthSizeClass.Compact -> 1f
-                                WindowWidthSizeClass.Expanded -> 1f
-                                else -> 0.8f
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
+                navController = navController,
+                startDestination = Route.DownloaderNavi,
+                route = Route.NavGraph
+            ) {
+                navigation(startDestination = Route.DOWNLOADER, route = Route.DownloaderNavi) {
+                    animatedComposable(Route.DOWNLOADER) {
+                        DownloaderPage(navigateToDownloads = {
+                            navController.navigate(Route.DOWNLOADS_HISTORY) {
+                                launchSingleTop = true
                             }
-                        )
-                        .align(Alignment.Center)
-                        .padding(paddingValues)
-                        .consumeWindowInsets(paddingValues),
-                    navController = navController,
-                    startDestination = Route.DownloaderNavi,
-                    route = Route.NavGraph
-                ) {
-                    navigation(startDestination = Route.DOWNLOADER, route = Route.DownloaderNavi) {
-                        animatedComposable(Route.DOWNLOADER) {
-                            DownloaderPage(
-                                navigateToDownloads = {
-                                    navController.navigate(Route.DOWNLOADS_HISTORY) {
-                                        launchSingleTop = true
-                                    }
-                                },
-                                navigateToSettings = {
-                                                     showOptionsBottomSheet = true
-                                },
-                                navigateToDownloaderSheet = {
-                                    showDownloaderBottomSheet = true
-                                },
-                                onSongCardClicked = {
-                                    navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
-                                        launchSingleTop = true
-                                    }
-                                },
-                                navigateToMods = {
-                                    navController.navigate(Route.MODS_DOWNLOADER) {
-                                        launchSingleTop = true
-                                    }
-                                },
-                                downloaderViewModel = downloaderViewModel
-                            )
-                        }
-                        animatedComposable(Route.SETTINGS) {
-                            SettingsPage(
-                                navController = navController
-                            )
-                        }
-                        animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
-                            GeneralSettingsPage(
-                                onBackPressed = onBackPressed
-                            )
-                        }
-                        animatedComposable(Route.DOWNLOADS_HISTORY) {
-                            DownloadsHistoryPage(
-                                onBackPressed = onBackPressed,
-                            )
-                        }
-                        animatedComposable(Route.DOWNLOAD_DIRECTORY) {
-                            DownloadsDirectoriesPage {
-                                onBackPressed()
-                            }
-                        }
-                        animatedComposable(Route.APPEARANCE) {
-                            AppearancePage(navController = navController)
-                        }
-                        animatedComposable(Route.APP_THEME) {
-                            AppThemePreferencesPage {
-                                onBackPressed()
-                            }
-                        }
-                        animatedComposable(Route.DOWNLOAD_FORMAT) {
-                            SettingsFormatsPage {
-                                onBackPressed()
-                            }
-                        }
-                        animatedComposable(Route.SPOTIFY_PREFERENCES) {
-                            SpotifySettingsPage {
-                                onBackPressed()
-                            }
-                        }
-                        animatedComposable(Route.DOWNLOADER_SETTINGS) {
-                            DownloaderSettingsPage {
-                                onBackPressed()
-                            }
-                        }
-                        slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
-                            PlaylistMetadataPage(
-                                onBackPressed,
-                                //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
-                            )
-                        }
-                        animatedComposable(Route.MODS_DOWNLOADER) {
-                            ModsDownloaderPage(
-                                onBackPressed,
-                                modsDownloaderViewModel
-                            )
-                        }
-                        animatedComposable(Route.COOKIE_PROFILE) {
-                            CookieProfilePage(
-                                cookiesViewModel = cookiesViewModel,
-                                navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
-                            ) { onBackPressed() }
-                        }
-                        animatedComposable(
-                            Route.COOKIE_GENERATOR_WEBVIEW
-                        ) {
-                            WebViewPage(cookiesViewModel) { onBackPressed() }
-                        }
-                        animatedComposable(Route.UPDATER_PAGE) {
-                            UpdaterPage(
-                                onBackPressed
-                            )
-                        }
-                        animatedComposable(Route.DOCUMENTATION) {
-                            DocumentationPage(
-                                onBackPressed,
-                                navController
-                            )
-                        }
-
-                        animatedComposable(Route.ABOUT) {
-                            AboutPage {
-                                onBackPressed()
-                            }
-                        }
-
-                        animatedComposable(Route.LANGUAGES) {
-                            LanguagePage {
-                                onBackPressed()
-                            }
-                        }
-
-
-                        navDeepLink {
-                            // Want to go to "markdown_viewer/{markdownFileName}"
-                            uriPattern =
-                                "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
-                        }
-
-                        animatedComposable(
-                            MARKDOWN_VIEWER arg "markdownFileName",
-                            arguments = listOf(
-                                navArgument(
-                                    "markdownFileName"
-                                ) {
-                                    type = NavType.StringType
+                        },
+                            navigateToSettings = {
+                                showOptionsBottomSheet = true
+                            },
+                            navigateToDownloaderSheet = {
+                                showDownloaderBottomSheet = true
+                            },
+                            onSongCardClicked = {
+                                navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
+                                    launchSingleTop = true
                                 }
-                            )
-                        ) { backStackEntry ->
-                            val mdFileName =
-                                backStackEntry.arguments?.getString("markdownFileName") ?: ""
-                            Log.d("MainActivity", mdFileName)
-                            MarkdownViewerPage(
-                                markdownFileName = mdFileName,
-                                onBackPressed = onBackPressed
-                            )
+                            },
+                            navigateToMods = {
+                                navController.navigate(Route.MODS_DOWNLOADER) {
+                                    launchSingleTop = true
+                                }
+                            },
+                            downloaderViewModel = downloaderViewModel,
+                            isModsDownloaderEnabled = modsDownloaderResponse.Latest_Versions.Regular.isNotBlank()
+                        )
+                    }
+                    animatedComposable(Route.SETTINGS) {
+                        SettingsPage(
+                            navController = navController
+                        )
+                    }
+                    animatedComposable(Route.GENERAL_DOWNLOAD_PREFERENCES) {
+                        GeneralSettingsPage(
+                            onBackPressed = onBackPressed
+                        )
+                    }
+                    animatedComposable(Route.DOWNLOADS_HISTORY) {
+                        DownloadsHistoryPage(
+                            onBackPressed = onBackPressed,
+                        )
+                    }
+                    animatedComposable(Route.DOWNLOAD_DIRECTORY) {
+                        DownloadsDirectoriesPage {
+                            onBackPressed()
                         }
+                    }
+                    animatedComposable(Route.APPEARANCE) {
+                        AppearancePage(navController = navController)
+                    }
+                    animatedComposable(Route.APP_THEME) {
+                        AppThemePreferencesPage {
+                            onBackPressed()
+                        }
+                    }
+                    animatedComposable(Route.DOWNLOAD_FORMAT) {
+                        SettingsFormatsPage {
+                            onBackPressed()
+                        }
+                    }
+                    animatedComposable(Route.SPOTIFY_PREFERENCES) {
+                        SpotifySettingsPage {
+                            onBackPressed()
+                        }
+                    }
+                    animatedComposable(Route.DOWNLOADER_SETTINGS) {
+                        DownloaderSettingsPage {
+                            onBackPressed()
+                        }
+                    }
+                    slideInVerticallyComposable(Route.PLAYLIST_METADATA_PAGE) {
+                        PlaylistMetadataPage(
+                            onBackPressed,
+                            //TODO: ADD THE ABILITY TO PASS JUST SONGS AND NOT GET THEM FROM THE MUTABLE STATE
+                        )
+                    }
+                    animatedComposable(Route.MODS_DOWNLOADER) {
+                        ModsDownloaderPage(
+                            onBackPressed, modsDownloaderViewModel
+                        )
+                    }
+                    animatedComposable(Route.COOKIE_PROFILE) {
+                        CookieProfilePage(
+                            cookiesViewModel = cookiesViewModel,
+                            navigateToCookieGeneratorPage = { navController.navigate(Route.COOKIE_GENERATOR_WEBVIEW) },
+                        ) { onBackPressed() }
+                    }
+                    animatedComposable(
+                        Route.COOKIE_GENERATOR_WEBVIEW
+                    ) {
+                        WebViewPage(cookiesViewModel) { onBackPressed() }
+                    }
+                    animatedComposable(Route.UPDATER_PAGE) {
+                        UpdaterPage(
+                            onBackPressed
+                        )
+                    }
+                    animatedComposable(Route.DOCUMENTATION) {
+                        DocumentationPage(
+                            onBackPressed, navController
+                        )
+                    }
 
-                        //DIALOGS -------------------------------
-                        dialog(Route.AUDIO_QUALITY_DIALOG) {
-                            AudioQualityDialog(
-                                onBackPressed
-                            )
+                    animatedComposable(Route.ABOUT) {
+                        AboutPage {
+                            onBackPressed()
                         }
                     }
 
-                    //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
-                    navigation(startDestination = Route.SEARCHER, route = Route.SearcherNavi) {
-                        animatedComposableVariant(Route.SEARCHER) {
-                            SearcherPage(
-                                navController = navController
-                            )
-                        }
-
-
-                        //create a deeplink to the playlist page passing the id of the playlist
-                        navDeepLink {
-                            // Want to go to "markdown_viewer/{markdownFileName}"
-                            uriPattern =
-                                StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE)
-                                    .append("/{type}")
-                                    .append("/{id}").toString()
-                        }
-
-                        //We create the arguments for the route
-                        val typeArg = navArgument("type") {
-                            type = NavType.StringType
-                        }
-
-                        val idArg = navArgument("id") {
-                            type = NavType.StringType
-                        }
-
-                        //We build the route with the type of the destination and the id of it
-                        val routeWithIdPattern: String =
-                            StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}")
-                                .append("/{id}").toString()
-
-                        //We create the composable with the route and the arguments
-                        animatedComposableVariant(
-                            routeWithIdPattern,
-                            arguments = listOf(typeArg, idArg)
-                        ) { backStackEntry ->
-                            val id =
-                                backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
-                            val type = backStackEntry.arguments?.getString("type")
-                                ?: "SOMETHING WENT WRONG"
-
-                            PlaylistPage(
-                                onBackPressed,
-                                id = id,
-                                type = type,
-                                playlistPageViewModel = playlistPageViewModel,
-                            )
+                    animatedComposable(Route.LANGUAGES) {
+                        LanguagePage {
+                            onBackPressed()
                         }
                     }
 
-                    navigation(
-                        startDestination = Route.DOWNLOAD_TASKS,
-                        route = Route.DownloadTasksNavi
+
+                    navDeepLink {
+                        // Want to go to "markdown_viewer/{markdownFileName}"
+                        uriPattern =
+                            "android-app://androidx.navigation/markdown_viewer/{markdownFileName}"
+                    }
+
+                    animatedComposable(
+                        MARKDOWN_VIEWER arg "markdownFileName", arguments = listOf(navArgument(
+                            "markdownFileName"
+                        ) {
+                            type = NavType.StringType
+                        })
+                    ) { backStackEntry ->
+                        val mdFileName =
+                            backStackEntry.arguments?.getString("markdownFileName") ?: ""
+                        Log.d("MainActivity", mdFileName)
+                        MarkdownViewerPage(
+                            markdownFileName = mdFileName, onBackPressed = onBackPressed
+                        )
+                    }
+
+                    //DIALOGS -------------------------------
+                    dialog(Route.AUDIO_QUALITY_DIALOG) {
+                        AudioQualityDialog(
+                            onBackPressed
+                        )
+                    }
+                }
+
+                //Can add the downloads history bottom sheet here using `val downloadsHistoryViewModel = hiltViewModel()`
+                navigation(startDestination = Route.SEARCHER, route = Route.SearcherNavi) {
+
+                    animatedComposableVariant(Route.SEARCHER) {
+                        SearcherPage(
+                            navController = navController
+                        )
+                    }
+
+
+                    //create a deeplink to the playlist page passing the id of the playlist
+                    navDeepLink {
+                        // Want to go to "markdown_viewer/{markdownFileName}"
+                        uriPattern = StringBuilder().append(navRootUrl).append(Route.PLAYLIST_PAGE)
+                            .append("/{type}").append("/{id}").toString()
+                    }
+
+                    //We create the arguments for the route
+                    val typeArg = navArgument("type") {
+                        type = NavType.StringType
+                    }
+
+                    val idArg = navArgument("id") {
+                        type = NavType.StringType
+                    }
+
+                    //We build the route with the type of the destination and the id of it
+                    val routeWithIdPattern: String =
+                        StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}")
+                            .append("/{id}").toString()
+
+                    //We create the composable with the route and the arguments
+                    animatedComposableVariant(
+                        routeWithIdPattern, arguments = listOf(typeArg, idArg)
+                    ) { backStackEntry ->
+                        val id = backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
+                        val type =
+                            backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
+
+                        PlaylistPage(
+                            onBackPressed,
+                            id = id,
+                            type = type,
+                            playlistPageViewModel = playlistPageViewModel,
+                        )
+                    }
+                }
+
+                navigation(
+                    startDestination = Route.DOWNLOAD_TASKS, route = Route.DownloadTasksNavi
+                ) {
+
+                    animatedComposable(
+                        Route.FULLSCREEN_LOG arg "taskHashCode",
+                        arguments = listOf(navArgument("taskHashCode") {
+                            type = NavType.IntType
+                        })
                     ) {
 
-                        animatedComposable(
-                            Route.FULLSCREEN_LOG arg "taskHashCode",
-                            arguments = listOf(navArgument("taskHashCode") {
-                                type = NavType.IntType
-                            }
-                            )) {
+                        FullscreenConsoleOutput(
+                            onBackPressed = onBackPressed,
+                            taskHashCode = it.arguments?.getInt("taskHashCode") ?: -1
+                        )
+                    }
 
-                            FullscreenConsoleOutput(
-                                onBackPressed = onBackPressed,
-                                taskHashCode = it.arguments?.getInt("taskHashCode") ?: -1
-                            )
-                        }
-
-                        animatedComposable(Route.DOWNLOAD_TASKS) {
-                            DownloadTasksPage(
-                                onNavigateToDetail = { navController.navigate(Route.FULLSCREEN_LOG id it) }
-                            )
-                        }
+                    animatedComposable(Route.DOWNLOAD_TASKS) {
+                        DownloadTasksPage(onNavigateToDetail = { navController.navigate(Route.FULLSCREEN_LOG id it) })
                     }
                 }
             }
         }
+    }
 
     //INIT SPOTIFY API
     LaunchedEffect(Unit) {
@@ -512,7 +504,7 @@ fun InitialEntry(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         if (PreferencesUtil.isNetworkAvailable()) launch(Dispatchers.IO) {
             runCatching {
                 UpdateUtil.checkForUpdate()?.let {
@@ -530,15 +522,19 @@ fun InitialEntry(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         Log.d(TAG, "InitialEntry: Checking for mod updates")
-        if (PreferencesUtil.isNetworkAvailable()) ModsDownloaderAPI.getAPIResponse()
-            .onSuccess {
-                Log.d(TAG, "InitialEntry: Mods API call success")
-                modsDownloaderViewModel.updateApiResponse(it)
-            }.onFailure {
-                ToastUtil.makeToastSuspend(App.context.getString(R.string.api_call_failed))
+        if (PreferencesUtil.isNetworkAvailable()) {
+            val apiResult = ModsDownloaderAPIService.create().getAPIResponse()
+            if (apiResult.isSuccess) {
+                val apiResponse = apiResult.getOrNull()
+                if (apiResponse != null) {
+                    modsDownloaderViewModel.updateApiResponse(apiResponse)
+                }
+            } else {
+                ToastUtil.makeToastSuspend(context.getString(R.string.api_call_failed))
             }
+        }
     }
 
 //    LaunchedEffect(Unit) {
@@ -556,7 +552,7 @@ fun InitialEntry(
 //        }
 //    }
 
-    if(showDownloaderBottomSheet) {
+    if (showDownloaderBottomSheet) {
         val storagePermission = rememberPermissionState(
             permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) { b: Boolean ->
@@ -567,8 +563,7 @@ fun InitialEntry(
             }
         }
 
-        val viewModelState =
-            downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
+        val viewModelState = downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
         DownloaderBottomSheet(
             onBackPressed = {
                 showDownloaderBottomSheet = false
@@ -603,10 +598,9 @@ fun InitialEntry(
         )
     }
 
-    if(showOptionsBottomSheet) {
+    if (showOptionsBottomSheet) {
         MoreOptionsHomeBottomSheet(
-            onBackPressed = { showOptionsBottomSheet = false },
-            navController
+            onBackPressed = { showOptionsBottomSheet = false }, navController
         )
     }
     if (showUpdateDialog) {
@@ -614,5 +608,3 @@ fun InitialEntry(
     }
 
 }
-
-//TODO: Separate the SettingsPage into a different NavGraph (like Seal)

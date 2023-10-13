@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.settings.appearance
 import android.os.Build
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,12 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.DarkMode
@@ -38,6 +38,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -112,14 +113,14 @@ val colorList = listOf(
 fun AppearancePage(
     navController: NavHostController
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState(),
-        canScroll = { true })
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState(),
+            canScroll = { true })
     var showDarkThemeDialog by remember { mutableStateOf(false) }
     val darkTheme = LocalDarkTheme.current
-    var darkThemeValue by remember { mutableStateOf(darkTheme.darkThemeValue) }
+    var darkThemeValue by remember { mutableIntStateOf(darkTheme.darkThemeValue) }
     val image by remember {
-        mutableStateOf(
+        mutableIntStateOf(
             listOf(
                 R.drawable.sample, R.drawable.sample1, R.drawable.sample2, R.drawable.sample3
             ).random()
@@ -144,101 +145,123 @@ fun AppearancePage(
             )
         },
         content = {
-            Column(
-                Modifier
-                    .padding(it)
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(rememberScrollState())
+            LazyColumn(
+                Modifier.padding(it),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             ) {
-                SongCard(
-                    song = Song(
-                        name = "Shut Up",
-                        artist = "Alan Walker",
-                        explicit = true,
-                        cover_url = "https://i.scdn.co/image/ab67616d0000b273a152de6438e748b4c0cddff7",
-                        duration = 132.954
-                    ), modifier = Modifier.padding(16.dp), isPreview = true
-                )
-                val pagerState =
-                    rememberPagerState(
+                item {
+                    SongCard(
+                        song = Song(
+                            name = "Shut Up",
+                            artist = "Alan Walker",
+                            explicit = true,
+                            cover_url = "https://i.scdn.co/image/ab67616d0000b273a152de6438e748b4c0cddff7",
+                            duration = 132.954
+                        ), modifier = Modifier, isPreview = true
+                    )
+                }
+                item {
+                    val pagerState = rememberPagerState(
                         initialPage = colorList.indexOf(Color(LocalSeedColor.current))
-                            .run { if (equals(-1)) 1 else this },
-                        initialPageOffsetFraction = 0f
+                            .run { if (equals(-1)) 1 else this }, initialPageOffsetFraction = 0f
                     ) {
                         colorList.size
                     }
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clearAndSetSemantics { },
-                    state = pagerState,
-                    contentPadding = PaddingValues(horizontal = 6.dp)
-                ) {
-                    Row { ColorButtons(colorList[it]) }
+                    HorizontalPager(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics { },
+                        state = pagerState,
+                        contentPadding = PaddingValues(horizontal = 6.dp)
+                    ) {
+                        Row { ColorButtons(colorList[it]) }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        HorizontalPagerIndicator(pagerState = pagerState,
+                            pageCount = colorList.size,
+                            modifier = Modifier
+                                .clearAndSetSemantics { }
+                                .padding(vertical = 12.dp),
+                            activeColor = MaterialTheme.colorScheme.primary,
+                            inactiveColor = MaterialTheme.colorScheme.outlineVariant,
+                            indicatorHeight = 6.dp,
+                            indicatorWidth = 6.dp
+                        )
+                    }
                 }
-                HorizontalPagerIndicator(pagerState = pagerState,
-                    pageCount = colorList.size,
-                    modifier = Modifier
-                        .clearAndSetSemantics { }
-                        .align(Alignment.CenterHorizontally)
-                        .padding(vertical = 12.dp),
-                    activeColor = MaterialTheme.colorScheme.primary,
-                    inactiveColor = MaterialTheme.colorScheme.outlineVariant,
-                    indicatorHeight = 6.dp,
-                    indicatorWidth = 6.dp)
 
-                if (DynamicColors.isDynamicColorAvailable()) {
-                    SettingsSwitch(
-                        title = {
+                item {
+                    if (DynamicColors.isDynamicColorAvailable()) {
+                        SettingsSwitch(title = {
                             Text(
                                 stringResource(id = R.string.dynamic_color),
                                 fontWeight = FontWeight.Bold
                             )
                         },
-                        description = {
-                            Text(
-                                stringResource(id = R.string.dynamic_color_desc)
+                            description = {
+                                Text(
+                                    stringResource(id = R.string.dynamic_color_desc)
+                                )
+                            },
+                            icon = Icons.Outlined.Palette,
+                            checked = LocalDynamicColorSwitch.current,
+                            onCheckedChange = {
+                                PreferencesUtil.switchDynamicColor()
+                            },
+                            modifier = Modifier.clip(
+                                RoundedCornerShape(
+                                    topStart = 8.dp, topEnd = 8.dp
+                                )
                             )
-                        },
-                        icon = Icons.Outlined.Palette,
-                        checked = LocalDynamicColorSwitch.current,
-                        onCheckedChange = {
-                            PreferencesUtil.switchDynamicColor()
-                        }, modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)))
+                        )
+                    }
                 }
-                val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
-                SettingsSwitchWithDivider(
-                    onCheckedChange = {
+                item {
+                    val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
+                    SettingsSwitchWithDivider(onCheckedChange = {
                         PreferencesUtil.modifyDarkThemePreference(
                             if (isDarkTheme) OFF else ON
                         )
-                    }, checked = isDarkTheme,
-                    title = {
+                    },
+                        checked = isDarkTheme,
+                        title = {
+                            Text(
+                                stringResource(id = R.string.dark_theme),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        description = {
+                            Text(
+                                LocalDarkTheme.current.getDarkThemeDesc()
+                            )
+                        },
+                        icon = Icons.Outlined.DarkMode,
+                        onClick = { navController.navigate(Route.APP_THEME) })
+                }
+                item {
+                    if (Build.VERSION.SDK_INT >= 24) SettingsItemNew(title = {
                         Text(
-                            stringResource(id = R.string.dark_theme), fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.language),
+                            fontWeight = FontWeight.Bold
                         )
                     },
-                    description = {
-                        Text(
-                            LocalDarkTheme.current.getDarkThemeDesc()
+                        icon = Icons.Outlined.Language,
+                        description = { Text(getLanguageDesc()) },
+                        onClick = { navController.navigate(Route.LANGUAGES) },
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                bottomStart = 8.dp, bottomEnd = 8.dp
+                            )
                         )
-                    }, icon = Icons.Outlined.DarkMode,
-                    onClick = { navController.navigate(Route.APP_THEME) })
+                    )
+                }
 
-                if (Build.VERSION.SDK_INT >= 24) SettingsItemNew(
-                    title = { Text(text = stringResource(R.string.language), fontWeight = FontWeight.Bold) },
-                    icon = Icons.Outlined.Language,
-                    description = {Text(getLanguageDesc())},
-                    onClick ={ navController.navigate(Route.LANGUAGES) },
-                    modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                )
             }
         })
-    if (showDarkThemeDialog) AlertDialog(
-        onDismissRequest = {
-            showDarkThemeDialog = false
-            darkThemeValue = darkTheme.darkThemeValue
-        },
+    if (showDarkThemeDialog) AlertDialog(onDismissRequest = {
+        showDarkThemeDialog = false
+        darkThemeValue = darkTheme.darkThemeValue
+    },
         confirmButton = {
             ConfirmButton {
                 showDarkThemeDialog = false
@@ -299,7 +322,6 @@ fun RowScope.ColorButton(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RowScope.ColorButtonImpl(
     modifier: Modifier = Modifier,
@@ -307,14 +329,17 @@ fun RowScope.ColorButtonImpl(
     tonalPalettes: TonalPalettes,
     onClick: () -> Unit = {}
 ) {
-
     CompositionLocalProvider(LocalTonalPalettes provides tonalPalettes) {
         val color1 = 80.a1
         val color2 = 90.a2
         val color3 = 60.a3
 
-        val containerSize by animateDpAsState(targetValue = if (isSelected.invoke()) 28.dp else 0.dp)
-        val iconSize by animateDpAsState(targetValue = if (isSelected.invoke()) 16.dp else 0.dp)
+        val containerSize by animateDpAsState(targetValue = if (isSelected.invoke()) 28.dp else 0.dp,
+            label = ""
+        )
+        val iconSize by animateDpAsState(targetValue = if (isSelected.invoke()) 16.dp else 0.dp,
+            label = ""
+        )
         val containerColor = MaterialTheme.colorScheme.primaryContainer
 
         Surface(modifier = modifier

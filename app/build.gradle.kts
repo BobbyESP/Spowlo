@@ -236,6 +236,7 @@ dependencies {
 
     // okhttp
     implementation(libs.okhttp)
+    implementation(libs.bundles.ktor)
     //MMKV
     implementation(libs.mmkv)
 

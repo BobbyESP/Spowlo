@@ -16,6 +16,27 @@ fun <T> MutableList<T>.swap(to: Collection<T>) {
     }
 }
 
+/**
+ * Returns the second element, or `null` if the list has less than 2 elements.
+ */
+fun <T> List<T>.secondOrNull(): T? {
+    return if (isEmpty()) null else this[1]
+}
+
+/**
+ * Returns the third element, or `null` if the list has less than 3 elements.
+ */
+fun <T> List<T>.thirdOrNull(): T? {
+    return if (size < 3) null else this[2]
+}
+
+/**
+ * Returns all the elements, or `null` if the list has no elements.
+ */
+fun <T> List<T>.allOrNull(): List<T>? {
+    return ifEmpty { null }
+}
+
 fun <T> List<T>.randomSubList(length: Int) = List(length) { get(Random.nextInt(size)) }
 
 fun <T> List<T>.strictEquals(to: List<T>): Boolean {

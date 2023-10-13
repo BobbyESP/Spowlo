@@ -23,7 +23,7 @@ androidxHiltNavigationCompose = "1.0.0"
 androidxTestExt = "1.1.5"
 
 spotdlAndroidVersion = "-SNAPSHOT"
-spotifyApiKotlinVersion = "3.8.8"
+spotifyApiKotlinVersion = "4.0.2"
 
 shimmerLibrary = "1.0.4"
 crashHandlerVersion = "2.0.2"
@@ -38,7 +38,7 @@ kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.1"
 okhttp = "5.0.0-alpha.11"
-ktor = "1.6.3"
+ktor = "2.3.5"
 
 exoplayer = "2.19.1"
 
@@ -132,14 +132,12 @@ shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version
 soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
 soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }
 
-#ExoPlayer
-exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version.ref = "exoplayer" }
-exoplayer-ui = { group = "com.google.android.exoplayer", name = "exoplayer-ui", version.ref = "exoplayer" }
-exoplayer-hls = { group = "com.google.android.exoplayer", name = "exoplayer-hls", version.ref = "exoplayer" }
-exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-dash", version.ref = "exoplayer" }
-exoplayer-smoothstreaming = { group = "com.google.android.exoplayer", name = "exoplayer-smoothstreaming", version.ref = "exoplayer" }
-exoplayer-cast = { group = "com.google.android.exoplayer", name = "exoplayer-cast", version.ref = "exoplayer" }
-exoplayer-extension-mediasession = { group = "com.google.android.exoplayer", name = "extension-mediasession", version.ref = "exoplayer" }
+#Ktor (also network)
+ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 
 #chrome custom tabs
 customtabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
@@ -153,3 +151,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[bundles]
+ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]

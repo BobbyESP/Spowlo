@@ -7,6 +7,13 @@ import com.bobbyesp.spowlo.features.mod_downloader.domain.model.APIResponseDto
 import com.bobbyesp.spowlo.features.mod_downloader.domain.model.ApkResponseDto
 import com.bobbyesp.spowlo.utils.UpdateUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil.downloadFileWithProgress
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -23,66 +30,32 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-object ModsDownloaderAPI {
-
-    private val jsonFormat = Json { ignoreUnknownKeys = true }
-
-    private const val BASE_URL = "https://raw.githubusercontent.com/"
-    private const val ENDPOINT = "BobbyESP/Spowlo/main/API_Spowlo_APKs.json"
-
-    private val client = OkHttpClient()
-    const val TAG = "APKsDownloaderAPI"
-
-    private val requestAPIResponse = Request.Builder().url(BASE_URL + ENDPOINT).build()
-
-    @CheckResult
-    suspend fun getAPIResponse(): Result<APIResponseDto> {
-        return suspendCoroutine { continuation ->
-            client.newCall(requestAPIResponse).enqueue(object : Callback {
-
-                    override fun onResponse(call: Call, response: Response) {
-                        val responseData = response.body.string()
-                        val apiResponse =
-                            jsonFormat.decodeFromString(APIResponseDto.serializer(), responseData)
-                        response.body.close()
-                        continuation.resume(Result.success(apiResponse))
-                    }
-
-                    override fun onFailure(call: Call, e: IOException) {
-                        continuation.resumeWithException(e)
-                    }
-                })
-        }
-    }
-
-    private fun Context.getSpotifyAPK() = File(getExternalFilesDir("apk"), "Spotify_Spowlo_Mod.apk")
-
+interface ModsDownloaderAPIService {
+    suspend fun getAPIResponse(): Result<APIResponseDto>
     suspend fun downloadPackage(
-        context: Context = App.context, apiResponseDto: APIResponseDto, listName: String, index: Int
-    ): Flow<UpdateUtil.DownloadStatus> {
-        withContext(Dispatchers.IO) {
-            var selectedList = emptyList<ApkResponseDto>()
+        context: Context = App.context): Flow<UpdateUtil.DownloadStatus>
 
-            when (listName) {
-                "Regular" -> selectedList = apiResponseDto.apps.Regular
-                "Amoled" -> selectedList = apiResponseDto.apps.AMOLED
-                "Regular_Cloned" -> selectedList = apiResponseDto.apps.Regular_Cloned
-                "Amoled_Cloned" -> selectedList = apiResponseDto.apps.AMOLED_Cloned
-                "Lite" -> selectedList = apiResponseDto.apps.Lite
+    companion object {
+        fun create(): ModsDownloaderAPIService = ModsDownloaderAPIImpl(
+            client = HttpClient(Android) {
+                engine {
+                    sslManager = {
+                        it.setHostnameVerifier { _, _ -> true } //Caution, this is kind of dangerous/unsecure
+                    }
+                }
+                install(Logging) {
+                    level = LogLevel.ALL
+                }
+                install(ContentNegotiation) {
+                    json(
+                        contentType = ContentType.Application.Json,
+                        json = Json {
+                            ignoreUnknownKeys = true
+                            encodeDefaults = true
+                        }
+                    )
+                }
             }
-
-            val file = context.getSpotifyAPK()
-
-            val request = Request.Builder().url(selectedList[index].link).build()
-
-            try {
-                val response = client.newCall(request).execute()
-                val responseBody = response.body
-                return@withContext responseBody.downloadFileWithProgress(file)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        return emptyFlow()
+        )
     }
 }

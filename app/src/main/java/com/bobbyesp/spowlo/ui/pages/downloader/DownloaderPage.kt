@@ -113,6 +113,7 @@ fun DownloaderPage(
     navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
     navigateToMods: () -> Unit = {},
+    isModsDownloaderEnabled: Boolean = false,
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -222,6 +223,7 @@ fun DownloaderPage(
             cancelCallback = {
                 Downloader.cancelDownload()
             },
+            isModsDownloaderEnabled = isModsDownloaderEnabled,
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
         with(viewState) {
@@ -255,6 +257,7 @@ fun DownloaderPageImplementation(
     cancelCallback: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
     onUrlChanged: (String) -> Unit = {},
+    isModsDownloaderEnabled: Boolean = false,
     isPreview: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -267,7 +270,7 @@ fun DownloaderPageImplementation(
                 )
             }
         }, actions = {
-            IconButton(onClick = { navigateToMods() }) {
+            IconButton(onClick = { navigateToMods() }, enabled = isModsDownloaderEnabled) {
                 Icon(
                     imageVector = LocalAsset(id = R.drawable.spotify_logo),
                     contentDescription = stringResource(id = R.string.mods_downloader)

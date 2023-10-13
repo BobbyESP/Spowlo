@@ -1,455 +1,404 @@
 package com.bobbyesp.spowlo.ui.pages.searcher
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.Route
-import com.bobbyesp.spowlo.ui.components.AutoResizableText
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
-import com.bobbyesp.spowlo.ui.components.songs.search_feat.SearchingSongComponent
-import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.IndicatorBehindScrollableTabRow
-import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.getString
-import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.tabIndicatorOffset
-import com.bobbyesp.spowlo.ui.pages.commonPages.ErrorPage
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfDataToString
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
-import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
-import kotlinx.coroutines.delay
+import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.QueryTextBox
+import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.utils.secondOrNull
 import kotlinx.coroutines.launch
 
 @Composable
 fun SearcherPage(
-    searcherPageViewModel: SearcherPageViewModel = hiltViewModel(),
-    navController: NavController
+    viewModel: SearcherPageViewModel = hiltViewModel(),
+    navController : NavController
 ) {
-    val viewState by searcherPageViewModel.viewStateFlow.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
+    val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        SearcherPageImpl(
-            viewState = viewState,
-            onValueChange = { query ->
-                searcherPageViewModel.updateSearchText(query)
-            },
-            onItemClick = { type, id -> navController.navigate(Route.PLAYLIST_PAGE + "/" + type + "/" + id) },
-            reloadPageCallback = {
-                scope.launch {
-                    searcherPageViewModel.makeSearch()
+    val (query, onValueChange) = rememberSaveable(key = "searchQuery_searchPage") {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(query) {
+        viewModel.updateSearchText(query)
+    }
+
+    val onItemClick: (String, String) -> Unit = { type, id ->
+        navController.navigate(Route.PLAYLIST_PAGE + "/" + type + "/" + id)
+    }
+
+    val types = listOf(
+        SearchType(
+            searchType = SpotifySearchType.TRACK,
+            onClick = {
+                viewModel.chooseSearchTypeAndSearch(SpotifySearchType.TRACK)
+            }
+        ),
+        SearchType(
+            searchType = SpotifySearchType.ALBUM,
+            onClick = {
+                viewModel.chooseSearchTypeAndSearch(SpotifySearchType.ALBUM)
+            }
+        ),
+        SearchType(
+            searchType = SpotifySearchType.PLAYLIST,
+            onClick = {
+                viewModel.chooseSearchTypeAndSearch(SpotifySearchType.PLAYLIST)
+            }
+        ),
+    )
+
+    val paginatedTracks = viewState.searchedTracks.collectAsLazyPagingItems()
+    val paginatedAlbums = viewState.searchedAlbums.collectAsLazyPagingItems()
+    val paginatedPlaylists = viewState.searchedPlaylists.collectAsLazyPagingItems()
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            QueryTextBox(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+                query = query,
+                onValueChange = onValueChange,
+                onSearchCallback = {
+                    viewModel.viewModelScope.launch {
+                        viewModel.search()
+                    }
+                }
+            )
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp)
+                    .animateContentSize(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                items(types) {
+                    SearchTypeChip(
+                        modifier = Modifier,
+                        searchType = it.searchType,
+                        isActive = viewState.activeSearchType == it.searchType,
+                        onClick = it.onClick
+                    )
                 }
             }
-        )
-    }
-    LaunchedEffect(viewState.query) {
-        if (viewState.query.isEmpty()) return@LaunchedEffect
-        delay(300)
-        searcherPageViewModel.makeSearch()
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun SearcherPageImpl(
-    viewState: SearcherPageViewModel.ViewState,
-    onValueChange: (String) -> Unit,
-    onItemClick: (String, String) -> Unit,
-    reloadPageCallback: () -> Unit = {}
-) {
-    Scaffold(modifier = Modifier.fillMaxSize()) {
-        with(viewState) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                QueryTextBox(
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp
-                    ),
-                    query = query,
-                    onValueChange = { query ->
-                        onValueChange(query)
-                    }
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
-                ) {
-                    when (viewState.viewState) {
+            HorizontalDivider(modifier = Modifier.padding(8.dp))
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                with(viewState) {
+                    when (this.viewState) {
                         is ViewSearchState.Idle -> {
-                            Box(
+                            Text(
+                                text = stringResource(id = R.string.search),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(horizontal = 16.dp),
-                                contentAlignment = Alignment.TopCenter
-                            ) {
-                                AutoResizableText(
-                                    text = stringResource(id = R.string.search),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                            )
                         }
 
                         is ViewSearchState.Loading -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background)
-                            ) {
-                                Column(
-                                    modifier = Modifier.align(Alignment.Center),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .padding(6.dp),
-                                        strokeWidth = 4.dp
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.loading),
-                                        modifier = Modifier.align(
-                                            Alignment.CenterHorizontally
-                                        ),
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-
-                            }
-
-                        }
-
-                        is ViewSearchState.Error -> {
-                            ErrorPage(
-                                onReload = { reloadPageCallback() },
-                                exception = viewState.viewState.error,
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            CircularProgressIndicator()
                         }
 
                         is ViewSearchState.Success -> {
-                            val pages = listOf(
-                                SearcherPages.TRACKS,
-                                SearcherPages.PLAYLISTS,
-                                SearcherPages.ALBUMS
-                            )
-                            val pagerState = rememberPagerState(
-                                initialPage = 0,
-                                initialPageOffsetFraction = 0f
-                            ) {
-                                pages.size
-                            }
-                            val scope = rememberCoroutineScope()
-
-                            IndicatorBehindScrollableTabRow(
-                                selectedTabIndex = pagerState.currentPage,
-                                modifier = Modifier
-                                    .animateContentSize()
-                                    .fillMaxWidth(),
-                                indicator = { tabPositions ->
-                                    Box(
-                                        Modifier
-                                            .padding(vertical = 12.dp)
-                                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                                            .fillMaxHeight()
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    )
-                                },
-                                edgePadding = 16.dp,
-                                tabAlignment = Alignment.CenterStart,
-                            ) {
-                                pages.forEachIndexed { index, page ->
-                                    Tab(
-                                        text = { Text(text = page) },
-                                        selected = pagerState.currentPage == index,
-                                        onClick = {
-                                            scope.launch {
-                                                pagerState.animateScrollToPage(index)
+                            Crossfade(
+                                modifier = Modifier.fillMaxSize(),
+                                targetState = activeSearchType, label = ""
+                            ) { searchType ->
+                                when (searchType) {
+                                    SpotifySearchType.TRACK -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedTracks,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item ->
+                                                item.album.images.secondOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.TRACK,
+                                            onItemClick = { track ->
+                                                onItemClick(
+                                                    SpotifySearchType.TRACK.asString(),
+                                                    track.id
+                                                )
                                             }
-                                        },
-                                    )
-                                }
-                            }
-
-                            HorizontalPager(
-                                state = pagerState, modifier = Modifier
-                                    .animateContentSize()
-                                    .fillMaxSize()
-                            ) {
-                                when (pages[it]) {
-                                    SearcherPages.TRACKS -> {
-                                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                            viewState.viewState.data.let { data ->
-                                                item {
-                                                    Text(
-                                                        text = stringResource(R.string.showing_results).format(
-                                                            data.tracks?.size
-                                                        ),
-                                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                                            fontWeight = FontWeight.Bold
-                                                        ),
-                                                        modifier = Modifier
-                                                            .padding(16.dp)
-                                                            .alpha(0.7f),
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        textAlign = TextAlign.Start,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-
-                                                }
-                                                data.tracks?.items?.forEachIndexed { index, track ->
-                                                    item {
-                                                        val artists: List<String> =
-                                                            track.artists.map { artist -> artist.name }
-                                                        SearchingSongComponent(
-                                                            artworkUrl = track.album.images[2].url,
-                                                            songName = track.name,
-                                                            artists = artists.joinToString(", "),
-                                                            spotifyUrl = track.externalUrls.spotify
-                                                                ?: "",
-                                                            onClick = {
-                                                                onItemClick(
-                                                                    track.type,
-                                                                    track.id
-                                                                )
-                                                            },
-                                                            type = typeOfDataToString(
-                                                                type = typeOfSpotifyDataType(
-                                                                    track.type
-                                                                )
-                                                            )
-                                                        )
-                                                        HorizontalDivider(
-                                                            modifier = Modifier.alpha(0.35f),
-                                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        )
                                     }
 
-                                    SearcherPages.PLAYLISTS -> {
-                                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                            viewState.viewState.data.let { data ->
-                                                item {
-                                                    Text(
-                                                        text = stringResource(R.string.showing_results).format(
-                                                            data.playlists?.size
-                                                        ),
-                                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                                            fontWeight = FontWeight.Bold
-                                                        ),
-                                                        modifier = Modifier
-                                                            .padding(16.dp)
-                                                            .alpha(0.7f),
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        textAlign = TextAlign.Start,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-
-                                                }
-                                                data.playlists?.items?.forEachIndexed { index, playlist ->
-                                                    item {
-                                                        SearchingSongComponent(
-                                                            artworkUrl = playlist.images[0].url,
-                                                            songName = playlist.name,
-                                                            artists = playlist.owner.displayName
-                                                                ?: stringResource(R.string.unknown),
-                                                            spotifyUrl = playlist.externalUrls.spotify
-                                                                ?: "",
-                                                            onClick = {
-                                                                onItemClick(
-                                                                    playlist.type,
-                                                                    playlist.id
-                                                                )
-                                                            },
-                                                            type = typeOfDataToString(
-                                                                type = typeOfSpotifyDataType(
-                                                                    playlist.type
-                                                                )
-                                                            )
-                                                        )
-                                                        HorizontalDivider(
-                                                            modifier = Modifier.alpha(0.35f),
-                                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
-                                                        )
-                                                    }
-                                                }
+                                    SpotifySearchType.ALBUM -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedAlbums,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item ->
+                                                item.images.secondOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.ALBUM,
+                                            onItemClick = { album ->
+                                                onItemClick(
+                                                    SpotifySearchType.ALBUM.asString(),
+                                                    album.id
+                                                )
                                             }
-                                        }
+                                        )
                                     }
 
-                                    SearcherPages.ALBUMS -> {
-                                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                            viewState.viewState.data.let { data ->
-                                                item {
-                                                    Text(
-                                                        text = stringResource(R.string.showing_results).format(
-                                                            data.playlists?.size
-                                                        ),
-                                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                                            fontWeight = FontWeight.Bold
-                                                        ),
-                                                        modifier = Modifier
-                                                            .padding(16.dp)
-                                                            .alpha(0.7f),
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        textAlign = TextAlign.Start,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-
-                                                }
-                                                data.albums?.items?.forEachIndexed { index, album ->
-                                                    item {
-                                                        SearchingSongComponent(
-                                                            artworkUrl = album.images[0].url,
-                                                            songName = album.name,
-                                                            artists = album.artists[0].name,
-                                                            spotifyUrl = album.externalUrls.spotify
-                                                                ?: "",
-                                                            onClick = {
-                                                                onItemClick(
-                                                                    album.type,
-                                                                    album.id
-                                                                )
-                                                            },
-                                                            type = typeOfDataToString(
-                                                                type = typeOfSpotifyDataType(
-                                                                    album.type
-                                                                )
-                                                            )
-                                                        )
-                                                        HorizontalDivider(
-                                                            modifier = Modifier.alpha(0.35f),
-                                                            color = MaterialTheme.colorScheme.primary.harmonizeWithPrimary()
-                                                        )
-                                                    }
-                                                }
+                                    SpotifySearchType.PLAYLIST -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedPlaylists,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.owner.displayName ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.images.firstOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.PLAYLIST,
+                                            onItemClick = { playlist ->
+                                                onItemClick(
+                                                    SpotifySearchType.PLAYLIST.asString(),
+                                                    playlist.id
+                                                )
                                             }
-                                        }
+                                        )
                                     }
                                 }
                             }
+                        }
+
+                        is ViewSearchState.Error -> {
+                            Text(text = "Error")
                         }
                     }
                 }
             }
         }
     }
-}
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun QueryTextBox(
-    modifier: Modifier = Modifier,
-    query: String,
-    onValueChange: (String) -> Unit
+fun <T : Any> ResultsList(
+    modifier: Modifier,
+    paginatedItems: LazyPagingItems<T>,
+    itemName: (T) -> String,
+    itemArtists: (T) -> String,
+    itemArtworkUrl: (T) -> String,
+    itemType: SpotifySearchType,
+    onItemClick: (T) -> Unit
 ) {
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
-    val softwareKeyboardController = LocalSoftwareKeyboardController.current
-
-    OutlinedTextField(
-        value = query,
-        onValueChange = onValueChange,
-        placeholder = {
-            if (query.isEmpty()) {
-                Text(text = stringResource(id = R.string.searcher_page_query_text_box_label))
-            }
-        },
+    LazyColumn(
         modifier = modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester),
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                focusManager.clearFocus()
-                softwareKeyboardController?.hide()
-            }
-        ),
-        leadingIcon = {
-            Icon(imageVector = Icons.Rounded.Search, contentDescription = null)
-        },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = { onValueChange("") }) {
-                    Icon(imageVector = Icons.Rounded.Close, contentDescription = null)
+    ) {
+        stickyHeader {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = paginatedItems.itemCount.toString() + " " + stringResource(id = R.string.results),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
+        }
+        items(
+            count = paginatedItems.itemCount,
+            key = paginatedItems.itemKey(),
+            contentType = paginatedItems.itemContentType()
+        ) { index ->
+            val item = paginatedItems[index] as T
+            SearchingResult(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                insideModifier = Modifier.padding(vertical = 6.dp),
+                name = itemName(item),
+                artists = itemArtists(item),
+                artworkUrl = itemArtworkUrl(item),
+                onClick = {
+                    onItemClick(item)
+                },
+                type = itemType.asString()
+            )
+        }
+        loadStateContent(paginatedItems) {
+
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchTypeChip(
+    modifier: Modifier,
+    searchType: SpotifySearchType,
+    isActive: Boolean,
+    onClick: () -> Unit
+) {
+    FilterChip(
+        modifier = modifier,
+        selected = isActive,
+        onClick = onClick,
+        label = {
+            Text(text = searchType.name)
         },
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                8.dp
-            ), unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
     )
 }
 
-object SearcherPages {
-    val TRACKS = getString(R.string.tracks)
-    val PLAYLISTS = getString(R.string.playlists)
-    val ALBUMS = getString(R.string.albums)
+@Composable
+fun SearchingResult(
+    modifier: Modifier = Modifier,
+    artworkUrl: String,
+    name: String,
+    artists: String,
+    type: String = stringResource(id = R.string.track),
+    insideModifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier
+            .clickable { onClick() }) {
+        Row(
+            modifier = insideModifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically, //This makes all go to the center
+        ) {
+            AsyncImageImpl(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .size(48.dp)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                    .clip(MaterialTheme.shapes.extraSmall),
+                model = artworkUrl,
+                contentDescription = "Song cover",
+                contentScale = ContentScale.Crop,
+                isPreview = false
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        MarqueeText(
+                            text = name,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.8f
+                            ),
+                        )
+                    }
+                    if (artists.isNotEmpty()) {
+                        MarqueeText(
+                            text = "$type • $artists",
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 12.sp,
+                            basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.8f
+                            ),
+                        )
+                    } else {
+                        MarqueeText(
+                            text = type,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 12.sp,
+                            basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.8f
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
+private data class SearchType(
+    val searchType: SpotifySearchType,
+    val onClick: () -> Unit
+)
