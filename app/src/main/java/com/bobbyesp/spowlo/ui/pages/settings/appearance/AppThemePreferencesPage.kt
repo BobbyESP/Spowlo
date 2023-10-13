@@ -105,7 +105,8 @@ fun AppThemePreferencesPage(onBackPressed: () -> Unit) {
                         checked = isHighContrastModeEnabled,
                         title = { Text(text = stringResource(R.string.high_contrast)) },
                         icon = Icons.Outlined.Contrast,
-                        clipCorners = true)
+                        clipCorners = true
+                    )
                 }
             }
         })

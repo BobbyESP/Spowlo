@@ -10,10 +10,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 @OptIn(ExperimentalMaterialApi::class)
-class ModsDownloaderViewModel @Inject constructor(): ViewModel() {
+class ModsDownloaderViewModel @Inject constructor() : ViewModel() {
 
     val apiResponseFlow = MutableStateFlow(APIResponseDto())
-    fun updateApiResponse (apiResponseDto: APIResponseDto) {
+    fun updateApiResponse(apiResponseDto: APIResponseDto) {
         apiResponseFlow.update {
             apiResponseDto
         }

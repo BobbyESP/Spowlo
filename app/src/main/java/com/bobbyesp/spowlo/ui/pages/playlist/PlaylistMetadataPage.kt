@@ -58,7 +58,7 @@ fun PlaylistMetadataPage(onBackPressed: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                if(songs.value[0].song_list != null){
+                if (songs.value[0].song_list != null) {
                     PlaylistHeaderItem(playlist = songs.value[0], modifier = Modifier.padding())
                 }
             }

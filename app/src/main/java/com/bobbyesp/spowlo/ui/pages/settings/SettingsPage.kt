@@ -107,7 +107,10 @@ fun SettingsPage(navController: NavController) {
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             item {
-                SettingTitle(text = stringResource(id = R.string.settings), fontWeight = FontWeight.Bold)
+                SettingTitle(
+                    text = stringResource(id = R.string.settings),
+                    fontWeight = FontWeight.Bold
+                )
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (context.packageManager.queryIntentActivities(

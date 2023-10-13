@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class APIResponseDto(
-    val Latest_Versions : LatestVersionResponseDto = LatestVersionResponseDto(),
-    val apps : AppsResponseDto = AppsResponseDto(),
+    val Latest_Versions: LatestVersionResponseDto = LatestVersionResponseDto(),
+    val apps: AppsResponseDto = AppsResponseDto(),
 )
 
 @Serializable

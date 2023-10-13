@@ -37,8 +37,3 @@ fun dataStringToString(data: String, additional: String): String {
         SpotifyDataType.TRACK -> stringResource(id = R.string.track) + " • " + additional
     }
 }
-
-//RELEASE DATE TO STRING
-fun releaseDateToString(album: SimpleAlbum): String {
-    TODO()
-}

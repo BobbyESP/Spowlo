@@ -176,7 +176,10 @@ fun AppearancePage(
                     ) {
                         Row { ColorButtons(colorList[it]) }
                     }
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         HorizontalPagerIndicator(pagerState = pagerState,
                             pageCount = colorList.size,
                             modifier = Modifier
@@ -192,12 +195,13 @@ fun AppearancePage(
 
                 item {
                     if (DynamicColors.isDynamicColorAvailable()) {
-                        SettingsSwitch(title = {
-                            Text(
-                                stringResource(id = R.string.dynamic_color),
-                                fontWeight = FontWeight.Bold
-                            )
-                        },
+                        SettingsSwitch(
+                            title = {
+                                Text(
+                                    stringResource(id = R.string.dynamic_color),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
                             description = {
                                 Text(
                                     stringResource(id = R.string.dynamic_color_desc)
@@ -239,12 +243,13 @@ fun AppearancePage(
                         onClick = { navController.navigate(Route.APP_THEME) })
                 }
                 item {
-                    if (Build.VERSION.SDK_INT >= 24) SettingsItemNew(title = {
-                        Text(
-                            text = stringResource(R.string.language),
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
+                    if (Build.VERSION.SDK_INT >= 24) SettingsItemNew(
+                        title = {
+                            Text(
+                                text = stringResource(R.string.language),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
                         icon = Icons.Outlined.Language,
                         description = { Text(getLanguageDesc()) },
                         onClick = { navController.navigate(Route.LANGUAGES) },
@@ -334,10 +339,12 @@ fun RowScope.ColorButtonImpl(
         val color2 = 90.a2
         val color3 = 60.a3
 
-        val containerSize by animateDpAsState(targetValue = if (isSelected.invoke()) 28.dp else 0.dp,
+        val containerSize by animateDpAsState(
+            targetValue = if (isSelected.invoke()) 28.dp else 0.dp,
             label = ""
         )
-        val iconSize by animateDpAsState(targetValue = if (isSelected.invoke()) 16.dp else 0.dp,
+        val iconSize by animateDpAsState(
+            targetValue = if (isSelected.invoke()) 16.dp else 0.dp,
             label = ""
         )
         val containerColor = MaterialTheme.colorScheme.primaryContainer

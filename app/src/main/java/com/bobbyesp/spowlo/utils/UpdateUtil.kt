@@ -98,26 +98,26 @@ object UpdateUtil {
     private suspend fun getLatestRelease(): LatestRelease {
         return suspendCoroutine { continuation ->
             client.newCall(requestForReleases).enqueue(object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-                        val responseData = response.body.string()
+                override fun onResponse(call: Call, response: Response) {
+                    val responseData = response.body.string()
 //                    val latestRelease = jsonFormat.decodeFromString<LatestRelease>(responseData)
-                        val releaseList =
-                            jsonFormat.decodeFromString<List<LatestRelease>>(responseData)
-                        val latestRelease =
-                            releaseList.filter { if (UPDATE_CHANNEL.getInt() == STABLE) it.name.toVersion() is Version.Stable else true }
-                                .maxByOrNull { it.name.toVersion() }
-                                ?: throw Exception("null response")
-                        releaseList.sortedBy { it.name.toVersion() }.forEach {
-                            Log.d(TAG, it.tagName.toString())
-                        }
-                        response.body.close()
-                        continuation.resume(latestRelease)
+                    val releaseList =
+                        jsonFormat.decodeFromString<List<LatestRelease>>(responseData)
+                    val latestRelease =
+                        releaseList.filter { if (UPDATE_CHANNEL.getInt() == STABLE) it.name.toVersion() is Version.Stable else true }
+                            .maxByOrNull { it.name.toVersion() }
+                            ?: throw Exception("null response")
+                    releaseList.sortedBy { it.name.toVersion() }.forEach {
+                        Log.d(TAG, it.tagName.toString())
                     }
+                    response.body.close()
+                    continuation.resume(latestRelease)
+                }
 
-                    override fun onFailure(call: Call, e: IOException) {
-                        continuation.resumeWithException(e)
-                    }
-                })
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
+            })
         }
     }
 

@@ -51,7 +51,9 @@ fun ExtraInfoCard(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.align(alignment = Alignment.Center).padding(10.dp),
+                modifier = Modifier
+                    .align(alignment = Alignment.Center)
+                    .padding(10.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

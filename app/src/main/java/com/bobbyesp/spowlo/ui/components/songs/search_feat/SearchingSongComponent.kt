@@ -32,8 +32,8 @@ fun SearchingSongComponent(
     songName: String,
     artists: String,
     spotifyUrl: String,
-    type : String = App.context.getString(R.string.single),
-    onClick: () -> Unit = { ChromeCustomTabsUtil.openUrl(spotifyUrl)}
+    type: String = App.context.getString(R.string.single),
+    onClick: () -> Unit = { ChromeCustomTabsUtil.openUrl(spotifyUrl) }
 ) {
     Column(
         Modifier

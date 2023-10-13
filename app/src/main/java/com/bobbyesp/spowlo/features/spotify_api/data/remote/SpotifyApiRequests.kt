@@ -29,11 +29,6 @@ object SpotifyApiRequests {
     private var api: SpotifyAppApi? = null
     private var token: Token? = null
 
-    private var currentJob: Job? = null
-
-
-    //Pulls the clientId and clientSecret tokens and builds them into an object
-
     @Provides
     @Singleton
     suspend fun provideSpotifyApi(): SpotifyAppApi {
@@ -68,7 +63,12 @@ object SpotifyApiRequests {
     // Performs Spotify database query for queries related to track information.
     suspend fun searchAllTypes(searchQuery: String): SpotifySearchResult {
         kotlin.runCatching {
-            provideSpotifyApi().search.searchAllTypes(searchQuery, limit = 50, offset = 0, market = Market.ES)
+            provideSpotifyApi().search.searchAllTypes(
+                searchQuery,
+                limit = 50,
+                offset = 0,
+                market = Market.ES
+            )
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
             return SpotifySearchResult()

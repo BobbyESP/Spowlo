@@ -145,165 +145,174 @@ fun DownloadHistoryBottomDrawerImpl(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    BottomDrawer(modifier = Modifier.animateContentSize(),drawerState = drawerState, sheetContent = {
-        AnimatedVisibility(visible = !showDeleteInfo) {
-            Column(modifier = Modifier.fillMaxWidth().animateContentSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImageImpl(
-                        modifier = Modifier
-                            .size(64.dp)
-                            .aspectRatio(
-                                1f,
-                                matchHeightConstraintsFirst = true
-                            )
-                            .clip(MaterialTheme.shapes.small),
-                        model = artworkUrl,
-                        contentDescription = stringResource(id = R.string.song_cover),
-                        contentScale = ContentScale.Crop,
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp)
-                            .weight(1f)
-                    ) {
-                        SelectionContainer {
-                            MarqueeText(
-                                text = songName,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(6.dp))
-                        SelectionContainer {
-                            Text(
-                                text = songAuthor,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.alpha(alpha = 0.8f)
-                            )
-                        }
-                    }
-                }
-                LongTapTextButton(
-                    modifier = Modifier.padding(top = 14.dp),
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(songUrl))
-                        ToastUtil.makeToast(context.getString(R.string.link_copied))
-                    },
-                    onClickLabel = stringResource(id = R.string.copy_link),
-                    onLongClick = { },
-                    onLongClickLabel = stringResource(R.string.open_in_spotify)
-                ) {
-                    Icon(Icons.Outlined.Link, stringResource(R.string.song_url))
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 6.dp),
-                        text = songUrl, maxLines = 1, overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(top = 24.dp), horizontalArrangement = Arrangement.End
-                ) {
-                    OutlinedButtonWithIcon(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        onClick = onShowDeleteDialog,
-                        icon = Icons.Outlined.Delete,
-                        text = stringResource(R.string.remove)
-                    )
-                    FilledTonalButtonWithIcon(
-                        onClick = onShareFile,
-                        icon = Icons.Outlined.Share,
-                        text = stringResource(R.string.share_file)
-                    )
-                    OpenInSpotifyFilledButton(
-                        modifier = Modifier.padding(start = 12.dp),
-                        onClick = onOpenLink
-                    )
-                }
-            }
-        }
-        AnimatedVisibility(visible = showDeleteInfo) {
-            Column(
-                modifier = Modifier
+    BottomDrawer(
+        modifier = Modifier.animateContentSize(),
+        drawerState = drawerState,
+        sheetContent = {
+            AnimatedVisibility(visible = !showDeleteInfo) {
+                Column(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp)
-                    .animateContentSize(),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = stringResource(id = R.string.remove),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Column(
+                    .animateContentSize()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AsyncImageImpl(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .aspectRatio(
+                                    1f,
+                                    matchHeightConstraintsFirst = true
+                                )
+                                .clip(MaterialTheme.shapes.small),
+                            model = artworkUrl,
+                            contentDescription = stringResource(id = R.string.song_cover),
+                            contentScale = ContentScale.Crop,
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp)
+                                .weight(1f)
+                        ) {
+                            SelectionContainer {
+                                MarqueeText(
+                                    text = songName,
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                            SelectionContainer {
+                                Text(
+                                    text = songAuthor,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.alpha(alpha = 0.8f)
+                                )
+                            }
+                        }
+                    }
+                    LongTapTextButton(
+                        modifier = Modifier.padding(top = 14.dp),
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(songUrl))
+                            ToastUtil.makeToast(context.getString(R.string.link_copied))
+                        },
+                        onClickLabel = stringResource(id = R.string.copy_link),
+                        onLongClick = { },
+                        onLongClickLabel = stringResource(R.string.open_in_spotify)
+                    ) {
+                        Icon(Icons.Outlined.Link, stringResource(R.string.song_url))
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
+                            text = songUrl, maxLines = 1, overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 6.dp)
+                            .horizontalScroll(rememberScrollState())
+                            .padding(top = 24.dp), horizontalArrangement = Arrangement.End
                     ) {
-                        Text(
-                            text = stringResource(R.string.remove_song),
-                            fontWeight = FontWeight.Bold
+                        OutlinedButtonWithIcon(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            onClick = onShowDeleteDialog,
+                            icon = Icons.Outlined.Delete,
+                            text = stringResource(R.string.remove)
                         )
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Text(
-                            text = stringResource(R.string.are_you_sure),
-                            modifier = Modifier.alpha(alpha = 0.75f),
-                            fontSize = 12.sp
+                        FilledTonalButtonWithIcon(
+                            onClick = onShareFile,
+                            icon = Icons.Outlined.Share,
+                            text = stringResource(R.string.share_file)
+                        )
+                        OpenInSpotifyFilledButton(
+                            modifier = Modifier.padding(start = 12.dp),
+                            onClick = onOpenLink
                         )
                     }
                 }
-                Text(
-                    text = stringResource(R.string.remove_song_info).format(songName, songAuthor),
-                    modifier = Modifier.padding(12.dp),
-                    textAlign = TextAlign.Justify
-                )
-                MultiChoiceItem(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    text = stringResource(R.string.delete_file),
-                    checked = deleteFile
-                ) { onClickDeleteFile() }
-                Row(
+            }
+            AnimatedVisibility(visible = showDeleteInfo) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(top = 24.dp).animateContentSize(),
+                        .padding(6.dp)
+                        .animateContentSize(),
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    OutlinedButtonWithIcon(
+                    Row(
                         modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .weight(1f),
-                        onClick = {
-                            onShowDeleteDialog()
-                        },
-                        icon = Icons.Outlined.Cancel,
-                        text = stringResource(R.string.cancel)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.remove),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 6.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.remove_song),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                            Text(
+                                text = stringResource(R.string.are_you_sure),
+                                modifier = Modifier.alpha(alpha = 0.75f),
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    Text(
+                        text = stringResource(R.string.remove_song_info).format(
+                            songName,
+                            songAuthor
+                        ),
+                        modifier = Modifier.padding(12.dp),
+                        textAlign = TextAlign.Justify
                     )
-                    FilledTonalButtonWithIcon(
+                    MultiChoiceItem(
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        text = stringResource(R.string.delete_file),
+                        checked = deleteFile
+                    ) { onClickDeleteFile() }
+                    Row(
                         modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .weight(1f),
-                        onClick = onDeleteCallback,
-                        icon = Icons.Outlined.Delete,
-                        text = stringResource(R.string.remove)
-                    )
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                            .padding(top = 24.dp)
+                            .animateContentSize(),
+                    ) {
+                        OutlinedButtonWithIcon(
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp)
+                                .weight(1f),
+                            onClick = {
+                                onShowDeleteDialog()
+                            },
+                            icon = Icons.Outlined.Cancel,
+                            text = stringResource(R.string.cancel)
+                        )
+                        FilledTonalButtonWithIcon(
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp)
+                                .weight(1f),
+                            onClick = onDeleteCallback,
+                            icon = Icons.Outlined.Delete,
+                            text = stringResource(R.string.remove)
+                        )
 
+                    }
                 }
-            }
 
-        }
-    })
+            }
+        })
 }

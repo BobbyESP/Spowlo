@@ -42,7 +42,8 @@ fun DocumentationPage(
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.documentation), fontWeight = FontWeight.Bold
+                        text = stringResource(id = R.string.documentation),
+                        fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {

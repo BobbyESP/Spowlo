@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CookiesSettingsViewModel @Inject constructor(): ViewModel() {
+class CookiesSettingsViewModel @Inject constructor() : ViewModel() {
 
     companion object {
         const val NEW_PROFILE_ID = 0

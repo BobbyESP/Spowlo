@@ -25,17 +25,17 @@ import androidx.compose.ui.unit.dp
 fun ArchTag(
     modifier: Modifier = Modifier,
     arch: ArchType,
-    onClick: () -> Unit = {},
     shape: CornerBasedShape = MaterialTheme.shapes.extraSmall,
-    isClickable: Boolean = false
 ) {
-    Surface(modifier = modifier
-        .clickable(onClick = onClick),
+    Surface(
+        modifier = modifier,
         shape = shape,
-        color = MaterialTheme.colorScheme.secondaryContainer) {
+        color = MaterialTheme.colorScheme.secondaryContainer
+    ) {
 
-        Row(modifier = modifier
-            .padding(4.dp),
+        Row(
+            modifier = modifier
+                .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         )
@@ -46,9 +46,11 @@ fun ArchTag(
                 contentDescription = null,
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = arch.type,
+            Text(
+                text = arch.type,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface)
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

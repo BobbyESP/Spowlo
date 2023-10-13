@@ -97,14 +97,14 @@ class MainActivity : AppCompatActivity() {
 
             Intent.ACTION_SEND -> {
                 intent.getStringExtra(Intent.EXTRA_TEXT)?.let { sharedContent ->
-                        intent.removeExtra(Intent.EXTRA_TEXT)
-                        matchUrlFromSharedText(sharedContent).let { matchedUrl ->
-                                if (sharedUrl != matchedUrl) {
-                                    sharedUrl = matchedUrl
-                                    downloaderViewModel.updateUrl(sharedUrl, true)
-                                }
-                            }
+                    intent.removeExtra(Intent.EXTRA_TEXT)
+                    matchUrlFromSharedText(sharedContent).let { matchedUrl ->
+                        if (sharedUrl != matchedUrl) {
+                            sharedUrl = matchedUrl
+                            downloaderViewModel.updateUrl(sharedUrl, true)
+                        }
                     }
+                }
             }
         }
     }

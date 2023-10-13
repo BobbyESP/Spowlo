@@ -80,7 +80,8 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
         LargeTopAppBar(title = {
             Text(
                 modifier = Modifier,
-                text = stringResource(id = R.string.auto_update), fontWeight = FontWeight.Bold
+                text = stringResource(id = R.string.auto_update),
+                fontWeight = FontWeight.Bold
             )
         }, navigationIcon = {
             BackButton {
@@ -123,7 +124,12 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
                     text = stringResource(id = R.string.pre_release_channel),
                     selected = updateChannel == PRE_RELEASE,
                     contentPadding = PaddingValues(horizontal = 12.dp),
-                    modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                    modifier = Modifier.clip(
+                        RoundedCornerShape(
+                            bottomStart = 8.dp,
+                            bottomEnd = 8.dp
+                        )
+                    )
                 ) {
                     updateChannel = PRE_RELEASE
                     UPDATE_CHANNEL.updateInt(updateChannel)
@@ -133,7 +139,9 @@ fun UpdaterPage(onBackPressed: () -> Unit) {
                 var isLoading by remember { mutableStateOf(false) }
                 Row(
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
                 ) {
                     ProgressIndicatorButton(
                         modifier = Modifier

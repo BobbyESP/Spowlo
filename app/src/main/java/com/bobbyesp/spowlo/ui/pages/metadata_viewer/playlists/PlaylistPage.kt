@@ -53,8 +53,7 @@ fun PlaylistPage(
             is PlaylistDataState.Loaded -> {
                 Scaffold(modifier = Modifier
                     .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    , topBar = {
+                    .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
                     TopAppBar(title = {
                         Text(
                             text = stringResource(id = R.string.metadata_viewer),

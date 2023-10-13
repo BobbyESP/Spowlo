@@ -250,7 +250,12 @@ fun DownloadsDirectoriesPage(
                             editingDirectory = Directory.SDCARD
                             openDirectoryChooser()
                         },
-                        modifier = Modifier.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                bottomStart = 8.dp,
+                                bottomEnd = 8.dp
+                            )
+                        )
                     )
                 }
             }

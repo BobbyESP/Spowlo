@@ -217,10 +217,8 @@ fun PackagesListItem(
                                 else -> ArchType.Arm
                             },
                             version = versionName,
-                            link = link,
                             //on click open the link in browser
                             onClick = { ChromeCustomTabsUtil.openUrl(link) },
-                            onArchClick = { show = !show },
                             onCopyClick = { GeneralTextUtils.copyToClipboardAndNotify(link) }
                         )
 

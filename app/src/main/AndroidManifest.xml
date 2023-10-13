@@ -91,7 +91,8 @@
                 android:value="true" />
         </service>
 
-        <service android:name=".DownloaderKeepUpService"
+        <service
+            android:name=".DownloaderKeepUpService"
             android:enabled="true"
             android:exported="false" />
 

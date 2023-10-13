@@ -214,7 +214,7 @@ object Downloader {
         val oldValue = mutableTaskList[key] ?: return
         val newValue = oldValue.run {
             if (currentLine == line || line.containsEllipsis() || consoleOutput.contains(line)) return
-            when(isPlaylist) {
+            when (isPlaylist) {
                 true -> {
                     copy(
                         consoleOutput = consoleOutput + line + "\n",
@@ -229,6 +229,7 @@ object Downloader {
                     )
 
                 }
+
                 false -> {
                     copy(
                         consoleOutput = consoleOutput + line + "\n",
@@ -241,7 +242,7 @@ object Downloader {
         mutableTaskList[key] = newValue
     }
 
-    private fun getProgress(line: String): Float{
+    private fun getProgress(line: String): Float {
         val PERCENT: Float
         //Get the two numbers before an % in the line
         val regex = Regex("(\\d+)%")
@@ -256,7 +257,7 @@ object Downloader {
     fun onTaskEnded(
         url: String,
         response: String? = null,
-        notificationTitle : String? = null
+        notificationTitle: String? = null
     ) {
         val key = makeKey(url, url.reversed())
         NotificationsUtil.finishNotification(
@@ -356,16 +357,16 @@ object Downloader {
                 context.getString(if (it.isEmpty()) R.string.status_completed else R.string.download_finish_notification)
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
                 NotificationsUtil.finishNotification(
-                     notificationId,
-                     title = songInfo.name,
-                     text = text,
-                     intent = if (this != null) PendingIntent.getActivity(
-                         context,
-                         0,
-                         this,
-                         PendingIntent.FLAG_IMMUTABLE
-                     ) else null
-                 )
+                    notificationId,
+                    title = songInfo.name,
+                    text = text,
+                    intent = if (this != null) PendingIntent.getActivity(
+                        context,
+                        0,
+                        this,
+                        PendingIntent.FLAG_IMMUTABLE
+                    ) else null
+                )
             }
         }
     }
@@ -422,12 +423,12 @@ object Downloader {
             DownloaderUtil.fetchSongInfoFromUrl(
                 url = url
             ).onFailure {
-                    manageDownloadError(
-                        it,
-                        isFetchingInfo = true,
-                        isTaskAborted = true
-                    )
-                }
+                manageDownloadError(
+                    it,
+                    isFetchingInfo = true,
+                    isTaskAborted = true
+                )
+            }
                 .onSuccess { info ->
                     DownloaderUtil.updateSongsState(info)
                     mutableTaskState.update {

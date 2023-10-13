@@ -36,9 +36,13 @@ fun ContributorComponent(
     avatarUrl: String? = null,
     socialNetworkImage: ImageVector? = null
 ) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
         if (avatarUrl != null) {
-            Box(modifier = Modifier.padding(horizontal = 16.dp)){
+            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                 AsyncImageImpl(
                     model = avatarUrl,
                     contentDescription = stringResource(id = R.string.contributor_avatar),
@@ -50,10 +54,12 @@ fun ContributorComponent(
                 )
             }
         }
-        Column(modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .padding(if(avatarUrl == null) 16.dp else 0.dp, 0.dp)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(if (avatarUrl == null) 16.dp else 0.dp, 0.dp)
+        ) {
             Text(
                 text = name,
                 modifier = Modifier.padding(top = 8.dp, bottom = 6.dp),
@@ -70,8 +76,12 @@ fun ContributorComponent(
             )
         }
         if (socialUrl != null && socialNetworkImage != null) {
-            Box(modifier = Modifier.size(48.dp).padding(end = 16.dp),
-                contentAlignment = Alignment.Center){
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(end = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 IconButton(
                     onClick = {
                         ChromeCustomTabsUtil.openUrl(socialUrl)

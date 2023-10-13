@@ -56,7 +56,8 @@ import com.bobbyesp.spowlo.utils.USE_CACHING
 import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalAnimationApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable

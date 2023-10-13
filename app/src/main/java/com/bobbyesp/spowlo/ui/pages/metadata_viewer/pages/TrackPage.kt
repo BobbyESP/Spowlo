@@ -121,7 +121,8 @@ fun TrackPage(
             SelectionContainer {
                 Text(
                     text = dataStringToString(
-                        data = trackData.type, additional = trackData.album.releaseDate?.year.toString()
+                        data = trackData.type,
+                        additional = trackData.album.releaseDate?.year.toString()
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(alpha = 0.8f)

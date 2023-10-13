@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 @Composable
 fun MiniMetadataInfoComponent(
     modifier: Modifier = Modifier,
-    text : String,
+    text: String,
     textModifier: Modifier = Modifier,
 ) {
     Column(

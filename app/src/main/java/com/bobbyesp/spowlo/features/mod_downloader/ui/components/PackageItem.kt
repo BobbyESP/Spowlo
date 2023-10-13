@@ -37,28 +37,37 @@ enum class ArchType(
 fun PackageItemComponent(
     modifier: Modifier = Modifier,
     type: ArchType = ArchType.Arm64,
-    link: String = "",
     onClick: () -> Unit = {},
-    onArchClick: () -> Unit = {},
     version: String = "8.7.78.373",
-    onLongClick: () -> Unit = {},
     onCopyClick: () -> Unit = {},
 ) {
-    Surface(modifier = modifier.clickable(onClick = onClick).padding(6.dp)) {
+    Surface(modifier = modifier
+        .clickable(onClick = onClick)
+        .padding(6.dp)) {
         Row(
             modifier = modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ArchTag(modifier = Modifier.height(IntrinsicSize.Max).width(IntrinsicSize.Max) ,arch = type, onClick = onArchClick)
+            ArchTag(
+                modifier = Modifier
+                    .height(IntrinsicSize.Max)
+                    .width(IntrinsicSize.Max),
+                arch = type,
+            )
             Text(
-                modifier = Modifier.padding(start = 8.dp).height(IntrinsicSize.Max).width(IntrinsicSize.Min),
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .height(IntrinsicSize.Max)
+                    .width(IntrinsicSize.Min),
                 text = version,
                 style = MaterialTheme.typography.bodySmall,
             )
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.CenterEnd)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.CenterEnd)
+            ) {
                 Row(
                     modifier = Modifier,
                     horizontalArrangement = Arrangement.End,

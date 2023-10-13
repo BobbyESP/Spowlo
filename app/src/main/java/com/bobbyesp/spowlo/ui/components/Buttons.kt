@@ -71,7 +71,7 @@ fun TextButtonWithIcon(
     icon: ImageVector,
     text: String,
     contentColor: Color = MaterialTheme.colorScheme.primary,
-    enabled : Boolean = true
+    enabled: Boolean = true
 ) {
     TextButton(
         modifier = modifier,

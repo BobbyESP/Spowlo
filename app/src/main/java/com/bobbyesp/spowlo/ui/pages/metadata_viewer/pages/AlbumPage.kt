@@ -103,7 +103,7 @@ fun AlbumPage(
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
-            if(data.externalUrls.spotify != null) {
+            if (data.externalUrls.spotify != null) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -129,7 +129,7 @@ fun AlbumPage(
                 }
             }
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
-            if(data.tracks.size > 0) {
+            if (data.tracks.size > 0) {
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {

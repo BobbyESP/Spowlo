@@ -58,7 +58,7 @@ fun TrackComponent(
     hasLyrics: Boolean = false,
     isExplicit: Boolean = false,
     isPlaylist: Boolean = false,
-    imageUrl : String = "",
+    imageUrl: String = "",
     onClick: () -> Unit = { ChromeCustomTabsUtil.openUrl(spotifyUrl) }
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -78,7 +78,7 @@ fun TrackComponent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                if(isPlaylist && imageUrl.isNotEmpty()) {
+                if (isPlaylist && imageUrl.isNotEmpty()) {
                     AsyncImageImpl(
                         modifier = Modifier
                             .size(40.dp)
@@ -94,7 +94,7 @@ fun TrackComponent(
                 Column(
                     modifier = Modifier
                         .padding(6.dp)
-                        .padding(start = if(isPlaylist) 6.dp else 0.dp)
+                        .padding(start = if (isPlaylist) 6.dp else 0.dp)
                         .weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start
@@ -138,11 +138,12 @@ fun TrackComponent(
                 }
             }
             Column {
-                FilledTonalIconButton(onClick = {
-                    showDropdown.value = !showDropdown.value
-                },
+                FilledTonalIconButton(
+                    onClick = {
+                        showDropdown.value = !showDropdown.value
+                    },
                     modifier = Modifier.size(32.dp),
-                    ) {
+                ) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
                         contentDescription = "More options button",

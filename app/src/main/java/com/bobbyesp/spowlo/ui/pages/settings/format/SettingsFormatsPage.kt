@@ -68,15 +68,19 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
             )
         },
         content = {
-            LazyColumn(Modifier.padding(it).padding(horizontal = 16.dp)) {
+            LazyColumn(
+                Modifier
+                    .padding(it)
+                    .padding(horizontal = 16.dp)) {
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.audio))
                 }
                 item {
-                    SettingsSwitch(onCheckedChange = {
-                        preserveOriginalAudio = !preserveOriginalAudio
-                        PreferencesUtil.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
-                    },
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            preserveOriginalAudio = !preserveOriginalAudio
+                            PreferencesUtil.updateValue(ORIGINAL_AUDIO, preserveOriginalAudio)
+                        },
                         checked = preserveOriginalAudio,
                         title = {
                             Text(
@@ -115,12 +119,13 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
                     )
                 }
                 item {
-                    SettingsItemNew(title = {
-                        Text(
-                            text = stringResource(id = R.string.audio_provider),
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
+                    SettingsItemNew(
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.audio_provider),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
                         description = { Text(text = stringResource(id = R.string.audio_provider_desc)) },
                         icon = Icons.Outlined.ShuffleOn,
                         onClick = { showAudioProviderDialog = true },

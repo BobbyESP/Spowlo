@@ -55,7 +55,9 @@ fun MarkdownViewerPage(
 
     when (markdownFileName) {
         "index.md" -> markdownText = readMarkdownFile(LocalContext.current, R.raw.index)
-        "cli_commands.md" -> markdownText = readMarkdownFile(LocalContext.current, R.raw.cli_commands)
+        "cli_commands.md" -> markdownText =
+            readMarkdownFile(LocalContext.current, R.raw.cli_commands)
+
         else -> markdownText = readMarkdownFile(LocalContext.current, R.raw.index)
     }
 

@@ -33,8 +33,7 @@ object GeneralTextUtils {
 
     fun convertDuration(durationOfSong: Double): String {
         //First of all the duration comes with this format "146052" but it has to be "146.052"
-        var duration = 0.0
-        duration = if (durationOfSong > 100000.0){
+        val duration: Double = if (durationOfSong > 100000.0) {
             durationOfSong / 1000
         } else {
             durationOfSong
@@ -49,9 +48,12 @@ object GeneralTextUtils {
         }
     }
 
-    fun copyToClipboardAndNotify( string: String){
+    fun copyToClipboardAndNotify(string: String) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = android.content.ClipData.newPlainText(context.getString(R.string.copied_to_clipboard), string)
+        val clip = android.content.ClipData.newPlainText(
+            context.getString(R.string.copied_to_clipboard),
+            string
+        )
         clipboard.setPrimaryClip(clip)
         ToastUtil.makeToast(R.string.copied_to_clipboard)
     }
@@ -59,6 +61,7 @@ object GeneralTextUtils {
 
 private const val GIGA_BYTES = 1024f * 1024f * 1024f
 private const val MEGA_BYTES = 1024f * 1024f
+
 @Composable
 fun Long.toFileSizeText() = this.toFloat().run {
     if (this > GIGA_BYTES)

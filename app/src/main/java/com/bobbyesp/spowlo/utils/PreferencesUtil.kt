@@ -123,6 +123,7 @@ val palettesMap = mapOf(
     3 to PaletteStyle.Vibrant,
     4 to PaletteStyle.Spotify,
 )
+
 object PreferencesUtil {
     private val kv = MMKV.defaultMMKV()
 
@@ -167,7 +168,7 @@ object PreferencesUtil {
     }
 
     fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
-        return when (audioProviderInt){
+        return when (audioProviderInt) {
             0 -> context.getString(R.string.default_option)
             1 -> context.getString(R.string.both)
             2 -> "Youtube Music"
@@ -178,7 +179,7 @@ object PreferencesUtil {
 
     @Composable
     fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
-        return when (audioProviderInt){
+        return when (audioProviderInt) {
             2 -> LocalAsset(id = R.drawable.youtube_music_icons8)
             3 -> LocalAsset(id = R.drawable.icons8_youtube)
             else -> LocalAsset(id = R.drawable.youtube_music_icons8)
@@ -233,6 +234,7 @@ object PreferencesUtil {
             )
         else LANGUAGE.getInt()
     }
+
     data class AppSettings(
         val darkTheme: DarkThemePreference = DarkThemePreference(),
         val isDynamicColorEnabled: Boolean = false,

@@ -137,44 +137,44 @@ fun HistoryMediaItem(
                             horizontalAlignment = Alignment.Start
                         ) {
 
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    MarqueeText(
-                                        text = songName,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        basicGradientColor = MaterialTheme.colorScheme.surface.copy(
-                                            alpha = 0.8f
-                                        ),
-                                    )
-                                }
-                                Spacer(Modifier.height(8.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
                                 MarqueeText(
-                                    text = author,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                    text = songName,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    fontSize = 12.sp,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
                                     basicGradientColor = MaterialTheme.colorScheme.surface.copy(
                                         alpha = 0.8f
                                     ),
                                 )
-                                if (!isFileAvailable) {
-                                    Text(
-                                        modifier = Modifier.padding(top = 3.dp),
-                                        text = stringResource(
-                                            R.string.unavailable
-                                        ),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.error,
-                                        maxLines = 1,
-                                    )
-                                }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            MarqueeText(
+                                text = author,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.8f
+                                ),
+                            )
+                            if (!isFileAvailable) {
+                                Text(
+                                    modifier = Modifier.padding(top = 3.dp),
+                                    text = stringResource(
+                                        R.string.unavailable
+                                    ),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                    maxLines = 1,
+                                )
+                            }
 
                         }
                         Column(

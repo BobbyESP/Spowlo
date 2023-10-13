@@ -33,7 +33,10 @@ fun ConsoleOutputComponent(
     ) {
         Text(
             text = stringResource(id = R.string.console_output),
-            style = MaterialTheme.typography.headlineMedium.copy(fontSize = 18.sp, fontFamily = FontFamily.Monospace),
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontSize = 18.sp,
+                fontFamily = FontFamily.Monospace
+            ),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 4.dp)
         )

@@ -37,9 +37,9 @@ import com.bobbyesp.spowlo.ui.components.BottomSheet
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreOptionsHomeBottomSheet(
-    onBackPressed : () -> Unit,
+    onBackPressed: () -> Unit,
     navController: NavController
-){
+) {
     val uriHandler = LocalUriHandler.current
 
     BottomSheet(onDismiss = onBackPressed) {

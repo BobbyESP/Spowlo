@@ -37,7 +37,12 @@ fun LoadingPage() {
                     .padding(6.dp),
                 strokeWidth = 4.dp
             )
-            Text(text = stringResource(id = R.string.page_loading), modifier = Modifier.align(Alignment.CenterHorizontally), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(id = R.string.page_loading),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
         }
 
     }

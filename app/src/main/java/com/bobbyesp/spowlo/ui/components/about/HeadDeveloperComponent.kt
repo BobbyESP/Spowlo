@@ -48,13 +48,15 @@ fun HeadDeveloperComponent(
         )
         Text(
             text = name,
-            modifier = Modifier.padding(top = 8.dp,bottom = 6.dp),
+            modifier = Modifier.padding(top = 8.dp, bottom = 6.dp),
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.headlineMedium.fontSize
         )
         Text(
             text = description,
-            modifier = Modifier.padding(bottom = 6.dp).alpha(0.7f),
+            modifier = Modifier
+                .padding(bottom = 6.dp)
+                .alpha(0.7f),
         )
         Row(modifier = Modifier) {
             GithubLinkButton(

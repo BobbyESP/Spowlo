@@ -19,21 +19,25 @@ import com.bobbyesp.spowlo.R
 @ExperimentalMaterial3Api
 @Composable
 fun ExplicitIcon(visible: Boolean, modifier: Modifier = Modifier) {
-    if(visible) {
-        Surface(modifier = modifier,
+    if (visible) {
+        Surface(
+            modifier = modifier,
             color = MaterialTheme.colorScheme.secondaryContainer,
-        shape = MaterialTheme.shapes.extraSmall) {
+            shape = MaterialTheme.shapes.extraSmall
+        ) {
 
-            Row(modifier = Modifier,
+            Row(
+                modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             )
             {
-                Text(text = "E",
+                Text(
+                    text = "E",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(6.dp, 4.dp, 6.dp, 4.dp )
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(6.dp, 4.dp, 6.dp, 4.dp)
                 )
             }
         }
@@ -42,18 +46,22 @@ fun ExplicitIcon(visible: Boolean, modifier: Modifier = Modifier) {
 
 @ExperimentalMaterial3Api
 @Composable
-fun LyricsIcon(visible: Boolean, modifier : Modifier = Modifier) {
-    if(visible) {
-        Surface(modifier = Modifier,
+fun LyricsIcon(visible: Boolean, modifier: Modifier = Modifier) {
+    if (visible) {
+        Surface(
+            modifier = Modifier,
             color = MaterialTheme.colorScheme.secondaryContainer,
-            shape = MaterialTheme.shapes.extraSmall) {
+            shape = MaterialTheme.shapes.extraSmall
+        ) {
 
-            Row(modifier = Modifier,
+            Row(
+                modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             )
             {
-                Text(text = stringResource(id = R.string.lyrics).uppercase(),
+                Text(
+                    text = stringResource(id = R.string.lyrics).uppercase(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                     fontWeight = FontWeight.Bold,
@@ -65,7 +73,7 @@ fun LyricsIcon(visible: Boolean, modifier : Modifier = Modifier) {
 }
 
 @Composable
-fun CustomTag(text: String){
+fun CustomTag(text: String) {
     Surface(
         modifier = Modifier,
         color = MaterialTheme.colorScheme.secondaryContainer,
@@ -87,6 +95,7 @@ fun CustomTag(text: String){
         }
     }
 }
+
 @ExperimentalMaterial3Api
 @Preview
 @Composable

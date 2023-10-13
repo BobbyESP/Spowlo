@@ -278,11 +278,12 @@ fun InitialEntry(
             ) {
                 navigation(startDestination = Route.DOWNLOADER, route = Route.DownloaderNavi) {
                     animatedComposable(Route.DOWNLOADER) {
-                        DownloaderPage(navigateToDownloads = {
-                            navController.navigate(Route.DOWNLOADS_HISTORY) {
-                                launchSingleTop = true
-                            }
-                        },
+                        DownloaderPage(
+                            navigateToDownloads = {
+                                navController.navigate(Route.DOWNLOADS_HISTORY) {
+                                    launchSingleTop = true
+                                }
+                            },
                             navigateToSettings = {
                                 showOptionsBottomSheet = true
                             },

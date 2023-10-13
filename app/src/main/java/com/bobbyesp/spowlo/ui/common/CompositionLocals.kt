@@ -24,7 +24,11 @@ val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalPaletteStyleIndex = compositionLocalOf { 0 }
 
 @Composable
-fun SettingsProvider(windowWidthSizeClass: WindowWidthSizeClass, localWindowHeightSizeClass: WindowHeightSizeClass, content: @Composable () -> Unit) {
+fun SettingsProvider(
+    windowWidthSizeClass: WindowWidthSizeClass,
+    localWindowHeightSizeClass: WindowHeightSizeClass,
+    content: @Composable () -> Unit
+) {
     val appSettingsState = PreferencesUtil.AppSettingsStateFlow.collectAsState().value
     CompositionLocalProvider(
         LocalDarkTheme provides appSettingsState.darkTheme,

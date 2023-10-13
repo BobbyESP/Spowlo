@@ -260,6 +260,7 @@ fun String.capitalizeWord(): String {
         ) else it.toString()
     }
 }
+
 class RoomSchemaArgProvider(
     @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE) val schemaDir: File
 ) : CommandLineArgumentProvider {

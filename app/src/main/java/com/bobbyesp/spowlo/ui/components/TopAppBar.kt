@@ -32,10 +32,10 @@ fun LargeTopAppBar(
 }
 
 private val path = Path().apply {
-    moveTo(0f,0f)
+    moveTo(0f, 0f)
     lineTo(0.7f, 0.1f)
     cubicTo(0.7f, 0.1f, .95F, .5F, 1F, 1F)
-    moveTo(1f,1f)
+    moveTo(1f, 1f)
 }
 
 val fraction: (Float) -> Float = { PathInterpolator(path).getInterpolation(it) }

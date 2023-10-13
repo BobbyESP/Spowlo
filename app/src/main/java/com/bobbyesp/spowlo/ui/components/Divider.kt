@@ -11,7 +11,10 @@ import androidx.compose.ui.graphics.Color
 
 
 @Composable
-fun HorizontalDivider(modifier: Modifier=Modifier,color: Color = MaterialTheme.colorScheme.outlineVariant) {
+fun HorizontalDivider(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.outlineVariant
+) {
     Divider(
         modifier = modifier
             .fillMaxWidth()

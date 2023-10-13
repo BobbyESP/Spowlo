@@ -39,6 +39,7 @@ fun BlurEffect(
         content()
     }
 }
+
 const val DEFAULT_SEED_COLOR = 0xFF415f76.toInt()
 
 @Composable

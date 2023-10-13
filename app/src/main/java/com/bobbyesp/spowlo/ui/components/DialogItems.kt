@@ -51,7 +51,11 @@ fun SingleChoiceItem(
 
 @Composable
 fun SingleChoiceItemWithIcon(
-    modifier: Modifier = Modifier, text: String, selected: Boolean, onClick: () -> Unit, icon: ImageVector
+    modifier: Modifier = Modifier,
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    icon: ImageVector
 ) {
     Row(
         modifier = modifier
@@ -69,7 +73,9 @@ fun SingleChoiceItemWithIcon(
         RadioButton(
             modifier = Modifier.clearAndSetSemantics { }, selected = selected, onClick = onClick
         )
-        Icon(imageVector = icon, null, modifier = Modifier.padding(horizontal = 8.dp).size(32.dp))
+        Icon(imageVector = icon, null, modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .size(32.dp))
         Text(
 //            modifier = Modifier.padding(start = 18.dp),
             text = text, style = MaterialTheme.typography.bodyLarge

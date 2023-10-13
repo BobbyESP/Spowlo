@@ -11,7 +11,8 @@ import com.bobbyesp.spowlo.utils.NotificationsUtil
 import com.bobbyesp.spowlo.utils.NotificationsUtil.SERVICE_NOTIFICATION_ID
 
 private val TAG = DownloaderKeepUpService::class.java.simpleName
-class DownloaderKeepUpService: Service() {
+
+class DownloaderKeepUpService : Service() {
     override fun onBind(intent: Intent): IBinder {
         Log.d(TAG, "onBind: ")
         val pendingIntent: PendingIntent =

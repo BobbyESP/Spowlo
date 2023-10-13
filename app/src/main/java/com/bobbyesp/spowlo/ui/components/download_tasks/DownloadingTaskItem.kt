@@ -158,6 +158,7 @@ fun DownloadingTaskItem(
                                 contentDescription = stringResource(id = R.string.searching_error)
                             )
                         }
+
                         TaskState.CANCELED -> {
                             Icon(
                                 modifier = Modifier
@@ -183,7 +184,7 @@ fun DownloadingTaskItem(
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.Bold,
 
-                        )
+                            )
                         Text(
                             text = url,
                             style = MaterialTheme.typography.bodyMedium,

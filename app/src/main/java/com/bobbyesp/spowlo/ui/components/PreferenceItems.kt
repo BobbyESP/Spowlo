@@ -657,7 +657,9 @@ fun InlineEnterItem(
                 maxLines = 1,
                 style = preferenceTitle,
                 color = colorScheme.onSurface,
-                modifier = Modifier.weight(1f).padding(horizontal = 16.dp, vertical = 6.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
             )
         }
         Icon(
@@ -801,10 +803,12 @@ fun PreferenceInfo(
     icon: ImageVector = Icons.Outlined.Info,
     applyPaddings: Boolean = true
 ) {
-    Column(modifier = modifier.fillMaxWidth().run {
-        if (applyPaddings) padding(horizontal = 16.dp, vertical = 16.dp)
-        else this
-    }) {
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .run {
+            if (applyPaddings) padding(horizontal = 16.dp, vertical = 16.dp)
+            else this
+        }) {
         Icon(
             modifier = Modifier.padding(), imageVector = icon, contentDescription = null
         )

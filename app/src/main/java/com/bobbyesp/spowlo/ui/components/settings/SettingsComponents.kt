@@ -108,11 +108,13 @@ fun SettingsSwitch(
     highlightIcon: Boolean = false
 ) {
     val toggleableModifier = if (onCheckedChange != null) {
-        Modifier.toggleable(
-            value = checked,
-            enabled = enabled,
-            onValueChange = onCheckedChange
-        ).apply { if (!enabled) this.alpha(0.5f) }
+        Modifier
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                onValueChange = onCheckedChange
+            )
+            .apply { if (!enabled) this.alpha(0.5f) }
     } else Modifier
 
     SettingsItemNew(
@@ -187,11 +189,13 @@ fun SettingsSwitchWithDivider(
     onClick: () -> Unit = {}
 ) {
     val toggleableModifier = if (onCheckedChange != null) {
-        Modifier.toggleable(
-            value = checked,
-            enabled = enabled,
-            onValueChange = onCheckedChange
-        ).apply { if (!enabled) this.alpha(0.5f) }
+        Modifier
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                onValueChange = onCheckedChange
+            )
+            .apply { if (!enabled) this.alpha(0.5f) }
     } else Modifier
 
     SettingsItemNew(

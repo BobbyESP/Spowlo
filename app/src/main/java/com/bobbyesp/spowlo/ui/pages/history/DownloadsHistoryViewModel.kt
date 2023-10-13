@@ -52,14 +52,20 @@ class DownloadsHistoryViewModel @Inject constructor() : ViewModel() {
         val url: String = "",
         val artworkUrl: String = "",
         val path: String = "",
-        val duration : Double = 0.0,
+        val duration: Double = 0.0,
         val drawerState: ModalBottomSheetState = ModalBottomSheetState(
             ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true
         ),
         val showDialog: Boolean = false,
     ) {
         constructor(info: DownloadedSongInfo) : this(
-            info.id, info.songName, info.songAuthor, info.songUrl, info.thumbnailUrl, info.songPath, info.songDuration
+            info.id,
+            info.songName,
+            info.songAuthor,
+            info.songUrl,
+            info.thumbnailUrl,
+            info.songPath,
+            info.songDuration
         )
     }
 

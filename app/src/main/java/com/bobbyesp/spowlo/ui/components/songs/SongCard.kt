@@ -78,7 +78,9 @@ fun SongCard(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Column(
-                            modifier = Modifier.padding(6.dp).weight(1f), //Weight is to make the time not go away from the screen
+                            modifier = Modifier
+                                .padding(6.dp)
+                                .weight(1f), //Weight is to make the time not go away from the screen
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.Start
                         ) {
@@ -92,7 +94,9 @@ fun SongCard(
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    basicGradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                    basicGradientColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.8f
+                                    ),
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 ExplicitIcon(

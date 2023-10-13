@@ -85,7 +85,8 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                 title = {
                     Text(
                         modifier = Modifier,
-                        text = stringResource(id = R.string.spotify_settings), fontWeight = FontWeight.Bold
+                        text = stringResource(id = R.string.spotify_settings),
+                        fontWeight = FontWeight.Bold
                     )
                 }, navigationIcon = {
                     BackButton {
@@ -115,11 +116,18 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                 }
                 item {
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp))
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                3.dp
+                            )
+                        )
                     ) {
                         SettingsSwitch(
                             title = {
-                                Text(stringResource(id = R.string.use_spotify_credentials), fontWeight = FontWeight.Bold)
+                                Text(
+                                    stringResource(id = R.string.use_spotify_credentials),
+                                    fontWeight = FontWeight.Bold
+                                )
                             },
                             checked = useSpotifyCredentials,
                             onCheckedChange = {
@@ -134,7 +142,10 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                         Divider(color = MaterialTheme.colorScheme.surfaceVariant)
                         SettingsItemNew(
                             title = {
-                                Text(stringResource(id = R.string.spotify_client_id), fontWeight = FontWeight.Bold)
+                                Text(
+                                    stringResource(id = R.string.spotify_client_id),
+                                    fontWeight = FontWeight.Bold
+                                )
                             },
                             description = {
                                 Text(stringResource(id = R.string.spotify_client_id_description))
@@ -149,7 +160,10 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
 
                         SettingsItemNew(
                             title = {
-                                Text(stringResource(id = R.string.spotify_client_secret), fontWeight = FontWeight.Bold)
+                                Text(
+                                    stringResource(id = R.string.spotify_client_secret),
+                                    fontWeight = FontWeight.Bold
+                                )
                             },
                             description = {
                                 Text(stringResource(id = R.string.spotify_client_secret_description))

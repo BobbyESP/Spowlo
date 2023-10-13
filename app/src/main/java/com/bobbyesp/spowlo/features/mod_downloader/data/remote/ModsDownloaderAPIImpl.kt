@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 class ModsDownloaderAPIImpl(
     private val client: HttpClient
-): ModsDownloaderAPIService {
+) : ModsDownloaderAPIService {
 
     private val json = Json {
         ignoreUnknownKeys = true

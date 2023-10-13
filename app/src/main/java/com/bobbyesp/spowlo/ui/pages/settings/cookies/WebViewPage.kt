@@ -94,7 +94,13 @@ fun WebViewPage(
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
-            title = { Text(webViewState.pageTitle.toString(), maxLines = 1, fontWeight = FontWeight.Bold) },
+            title = {
+                Text(
+                    webViewState.pageTitle.toString(),
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold
+                )
+            },
             navigationIcon = {
                 IconButton(
                     onClick = { onDismissRequest() }) {

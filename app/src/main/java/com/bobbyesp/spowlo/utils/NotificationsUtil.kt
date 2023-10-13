@@ -38,7 +38,8 @@ object NotificationsUtil {
     const val SERVICE_NOTIFICATION_ID = 123
     private lateinit var serviceNotification: Notification
     private val commandNotificationBuilder =
-        NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
+        NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
@@ -82,7 +83,8 @@ object NotificationsUtil {
                 }
         }
 
-        NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
+        NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setContentTitle(title)
             .setProgress(PROGRESS_MAX, progress, progress <= 0)
             .setOngoing(true)
@@ -181,7 +183,8 @@ object NotificationsUtil {
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
+        NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setContentTitle(title)
             .setContentText(error)
             .setOngoing(false)
@@ -217,7 +220,8 @@ object NotificationsUtil {
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_launcher_monochrome)
+        NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setContentTitle("[${extraString}_${taskUrl}] " + context.getString(R.string.execute_parallel_download))
             .setContentText(text)
             .setOngoing(true)

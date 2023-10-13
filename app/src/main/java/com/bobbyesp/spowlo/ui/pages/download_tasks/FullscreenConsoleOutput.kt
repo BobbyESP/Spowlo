@@ -127,12 +127,18 @@ fun FullscreenConsoleOutput(
                             )
                             ButtonChip(
                                 label = "-",
-                                onClick = { mutableFontSize = (mutableFontSize - 2).coerceIn(minFontSize, maxFontSize) }
+                                onClick = {
+                                    mutableFontSize =
+                                        (mutableFontSize - 2).coerceIn(minFontSize, maxFontSize)
+                                }
 
                             )
                             ButtonChip(
                                 label = "+",
-                                onClick = { mutableFontSize = (mutableFontSize + 2).coerceIn(minFontSize, maxFontSize) }
+                                onClick = {
+                                    mutableFontSize =
+                                        (mutableFontSize + 2).coerceIn(minFontSize, maxFontSize)
+                                }
                             )
                         }
                         if (state is Downloader.DownloadTask.State.Error)
