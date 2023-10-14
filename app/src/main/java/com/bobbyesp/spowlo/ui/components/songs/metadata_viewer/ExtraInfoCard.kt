@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.ui.components.AutoResizableText
+import com.bobbyesp.spowlo.ui.components.text.AutoResizableText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
-import com.bobbyesp.spowlo.ui.pages.commonPages.LoadingPage
+import com.bobbyesp.spowlo.ui.pages.common_pages.LoadingPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.SpotifyPageBinder
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 
@@ -69,7 +69,7 @@ fun PlaylistPage(
                         type = typeOfSpotifyDataType(type),
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddings),
+                            .padding(top = paddings.calculateTopPadding()),
                         trackDownloadCallback = { url, name ->
                             playlistPageViewModel.downloadTrack(url, name)
                         },

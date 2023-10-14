@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ui.components.text.AutoResizableText
 
 @Composable
 fun ConsoleOutputComponent(

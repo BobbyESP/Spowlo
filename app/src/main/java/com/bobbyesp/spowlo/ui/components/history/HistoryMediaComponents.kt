@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.CustomTag
 import com.bobbyesp.spowlo.utils.toFileSizeText
 

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.commonPages
+package com.bobbyesp.spowlo.ui.pages.common_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

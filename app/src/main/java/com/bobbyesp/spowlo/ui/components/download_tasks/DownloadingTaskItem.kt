@@ -45,9 +45,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
-import com.bobbyesp.spowlo.ui.components.AutoResizableText
+import com.bobbyesp.spowlo.ui.components.text.AutoResizableText
 import com.bobbyesp.spowlo.ui.components.FlatButtonChip
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.theme.harmonizeWith
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
 import com.kyant.monet.LocalTonalPalettes

@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages.searcher
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -9,6 +11,7 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.SimpleAlbumPagingSource
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.SimplePlaylistPagingSource
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.TrackPagingSource
@@ -196,6 +199,15 @@ enum class SpotifySearchType {
             "album" -> ALBUM
             "playlist" -> PLAYLIST
             else -> TRACK
+        }
+    }
+
+    @Composable
+    fun asLocalizedString(): String {
+        return when (this) {
+            ALBUM -> stringResource(id = R.string.album)
+            PLAYLIST -> stringResource(id = R.string.playlist)
+            TRACK -> stringResource(id = R.string.track)
         }
     }
 }

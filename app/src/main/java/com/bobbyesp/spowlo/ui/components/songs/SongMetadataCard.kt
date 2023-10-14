@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.theme.harmonizeWithPrimary
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.GeneralTextUtils

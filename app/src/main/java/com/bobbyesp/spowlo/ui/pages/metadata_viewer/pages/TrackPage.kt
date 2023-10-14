@@ -38,11 +38,14 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.metadata_viewer.ExtraInfoCard
 import com.bobbyesp.spowlo.ui.components.songs.metadata_viewer.TrackComponent
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.dataStringToString
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -63,9 +66,13 @@ fun TrackPage(
     }
 
     LaunchedEffect(Unit) {
+        val featsAsync = withContext(Dispatchers.IO) {
+            async {
+                SpotifyApiRequests.providesGetAudioFeatures(data.id)
+            }
+        }
         if (audioFeatures == null) {
-            val feats = SpotifyApiRequests.providesGetAudioFeatures(data.id)
-            audioFeatures = feats
+            audioFeatures = featsAsync.await()
         }
         if (trackData != data) {
             trackData = data

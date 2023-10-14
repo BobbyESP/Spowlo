@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.ExplicitIcon
 import com.bobbyesp.spowlo.ui.components.songs.LyricsIcon
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset

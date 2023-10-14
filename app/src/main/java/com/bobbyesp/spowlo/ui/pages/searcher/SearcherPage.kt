@@ -6,7 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -24,16 +23,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,8 +54,10 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
-import com.bobbyesp.spowlo.ui.components.MarqueeText
 import com.bobbyesp.spowlo.ui.components.QueryTextBox
+import com.bobbyesp.spowlo.ui.components.others.shimmer.cards.HorizontalSongCardShimmer
+import com.bobbyesp.spowlo.ui.components.text.AnimatedCounter
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.secondOrNull
 import kotlinx.coroutines.launch
@@ -221,28 +229,48 @@ fun <T : Any> ResultsList(
     itemType: SpotifySearchType,
     onItemClick: (T) -> Unit
 ) {
+    // Get local density from composable
+    val localDensity = LocalDensity.current
+
+    // Create element height in dp state
+    var columnHeightDp: Dp by remember {
+        mutableStateOf(0.dp)
+    }
+
+    val shimmerItemsCount = remember {
+        derivedStateOf {
+            (columnHeightDp / 90.dp).toInt()
+        }
+    }
+
     LazyColumn(
         modifier = modifier
+            .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                columnHeightDp = with(localDensity) { coordinates.size.height.toDp() }
+            }
     ) {
         stickyHeader {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(vertical = 12.dp, horizontal = 16.dp)
                     .background(MaterialTheme.colorScheme.surface),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterStart).padding(vertical = 8.dp),
-                        text = paginatedItems.itemCount.toString() + " " + stringResource(id = R.string.results),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.labelLarge
+                AnimatedCounter(
+                    count = paginatedItems.itemCount,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        color = MaterialTheme.colorScheme.primary
                     )
-                }
+                )
+                Text(
+                    modifier = Modifier,
+                    text = " " + stringResource(id = R.string.results),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
         }
         items(
@@ -253,18 +281,22 @@ fun <T : Any> ResultsList(
             val item = paginatedItems[index] as T
             SearchingResult(
                 modifier = Modifier.fillMaxWidth(),
-                insideModifier = Modifier.padding(vertical = 6.dp),
+                insideModifier = Modifier.padding(vertical = 8.dp),
                 name = itemName(item),
                 artists = itemArtists(item),
                 artworkUrl = itemArtworkUrl(item),
                 onClick = {
                     onItemClick(item)
                 },
-                type = itemType.asString()
+                type = itemType.asLocalizedString()
             )
         }
-        loadStateContent(paginatedItems) {
-
+        loadStateContent(paginatedItems, itemCount = shimmerItemsCount.value) {
+            HorizontalSongCardShimmer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+            )
         }
     }
 }
@@ -280,7 +312,7 @@ fun SearchTypeChip(
         selected = isActive,
         onClick = onClick,
         label = {
-            Text(text = searchType.name)
+            Text(text = searchType.asLocalizedString())
         },
     )
 }

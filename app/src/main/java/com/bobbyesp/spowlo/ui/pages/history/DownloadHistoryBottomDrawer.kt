@@ -58,7 +58,7 @@ import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.FilledTonalButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.LongTapTextButton
-import com.bobbyesp.spowlo.ui.components.MarqueeText
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.MultiChoiceItem
 import com.bobbyesp.spowlo.ui.components.OpenInSpotifyFilledButton
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon

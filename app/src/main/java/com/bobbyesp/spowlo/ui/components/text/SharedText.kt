@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components
+package com.bobbyesp.spowlo.ui.components.text
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

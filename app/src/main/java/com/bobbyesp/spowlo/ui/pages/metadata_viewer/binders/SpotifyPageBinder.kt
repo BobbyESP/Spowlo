@@ -24,7 +24,7 @@ fun SpotifyPageBinder(
     trackDownloadCallback: (String, String) -> Unit,
 ) {
 
-    LazyColumn(modifier = modifier.padding(top = 6.dp), verticalArrangement = Arrangement.Top) {
+    LazyColumn(modifier = modifier, verticalArrangement = Arrangement.Top) {
         when (type) {
             SpotifyDataType.ALBUM -> {
                 val album = data as? Album

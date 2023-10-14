@@ -51,14 +51,11 @@ fun MarkdownViewerPage(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     //Read markdown file from the "raw" folder following the name of the file
-    val markdownText: String
+    val markdownText: String = when (markdownFileName) {
+        "index.md" -> readMarkdownFile(LocalContext.current, R.raw.index)
+        "cli_commands.md" -> readMarkdownFile(LocalContext.current, R.raw.cli_commands)
 
-    when (markdownFileName) {
-        "index.md" -> markdownText = readMarkdownFile(LocalContext.current, R.raw.index)
-        "cli_commands.md" -> markdownText =
-            readMarkdownFile(LocalContext.current, R.raw.cli_commands)
-
-        else -> markdownText = readMarkdownFile(LocalContext.current, R.raw.index)
+        else -> readMarkdownFile(LocalContext.current, R.raw.index)
     }
 
     Scaffold(modifier = Modifier
