@@ -19,6 +19,10 @@ sealed class Version(
     val versionBuild: Int = 0
 ) {
     abstract fun toVersionName(): String
+
+    fun toVersionCode(): Int =
+        versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
+
     class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
         Version(versionMajor, versionMinor, versionPatch, versionBuild) {
         override fun toVersionName(): String =
@@ -45,8 +49,8 @@ sealed class Version(
 
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
-    versionMinor = 3,
-    versionPatch = 4,
+    versionMinor = 4,
+    versionPatch = 0,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -76,7 +80,7 @@ android {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
         targetSdk = 34
-        versionCode = 10340
+        versionCode = currentVersion.toVersionCode()
 
         versionName = currentVersion.toVersionName().run {
             if (!splitApks) "$this-(F-Droid)"
