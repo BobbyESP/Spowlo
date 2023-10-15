@@ -530,7 +530,7 @@ object Downloader {
     fun String.toNotificationId(): Int = this.hashCode()
 
     //get just the numbers from a string and return an int
-    fun String.getNumbers(): Int {
+    private fun String.getNumbers(): Int {
         val sb = StringBuilder()
         for (c in this) {
             if (c.isDigit()) {

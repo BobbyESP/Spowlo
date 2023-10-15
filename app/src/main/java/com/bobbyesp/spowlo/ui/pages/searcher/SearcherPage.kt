@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -32,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -239,7 +242,7 @@ fun <T : Any> ResultsList(
 
     val shimmerItemsCount = remember {
         derivedStateOf {
-            (columnHeightDp / 90.dp).toInt()
+            (columnHeightDp / 60.dp).toInt()
         }
     }
 
@@ -251,26 +254,38 @@ fun <T : Any> ResultsList(
             }
     ) {
         stickyHeader {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp, horizontal = 16.dp)
-                    .background(MaterialTheme.colorScheme.surface),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                AnimatedCounter(
-                    count = paginatedItems.itemCount,
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        color = MaterialTheme.colorScheme.primary
+            Box(modifier = Modifier.fillMaxWidth().background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.surface,
+                        Color.Transparent
+                    ),
+                    startY = 30f,
+                )
+            )) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp, horizontal = 16.dp)
+                        .background(Color.Transparent)
+                        .align(Alignment.CenterStart),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    AnimatedCounter(
+                        count = paginatedItems.itemCount,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     )
-                )
-                Text(
-                    modifier = Modifier,
-                    text = " " + stringResource(id = R.string.results),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge
-                )
+                    Text(
+                        modifier = Modifier,
+                        text = " " + stringResource(id = R.string.results),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
             }
         }
         items(

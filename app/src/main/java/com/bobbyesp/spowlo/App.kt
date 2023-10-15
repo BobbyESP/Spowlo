@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.Calendar
 
 @HiltAndroidApp
 class App : Application() {
@@ -79,6 +80,19 @@ class App : Application() {
             ""
         )
         if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
+        Thread.setDefaultUncaughtExceptionHandler { _, e ->
+            val logfile = createLogFile(this, e.stackTraceToString())
+            startCrashReportActivity(logfile)
+        }
+    }
+
+    private fun startCrashReportActivity(logfilePath: String) {
+        val intent = Intent(this, CrashHandlerActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("version_report", getVersionReport())
+            putExtra("logfile_path", logfilePath)
+        }
+        startActivity(intent)
     }
 
     companion object {
@@ -158,6 +172,22 @@ class App : Application() {
                 .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
                 .append("spotDL version: ${SpotDl.version(context.applicationContext)}\n")
                 .toString()
+        }
+
+        fun createLogFile(context: Context, errorReport: String): String {
+            val date = getDayAsString()
+            val fileName = "log_$date.txt"
+            val logFile = File(context.filesDir, fileName)
+            if (!logFile.exists()) {
+                logFile.createNewFile()
+            }
+            logFile.appendText(errorReport)
+            return logFile.absolutePath
+        }
+
+        private fun getDayAsString(): String {
+            val calendar = Calendar.getInstance()
+            return "${calendar.get(Calendar.DAY_OF_MONTH)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}"
         }
 
         fun isFDroidBuild(): Boolean = packageInfo.versionName.contains("F-Droid")

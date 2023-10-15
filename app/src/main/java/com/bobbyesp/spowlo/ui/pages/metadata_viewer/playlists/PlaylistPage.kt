@@ -12,6 +12,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -24,7 +26,7 @@ import com.bobbyesp.spowlo.ui.pages.common_pages.LoadingPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.SpotifyPageBinder
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistPage(
     onBackPressed: () -> Unit,
@@ -64,8 +66,11 @@ fun PlaylistPage(
                     }, actions = {}, scrollBehavior = scrollBehavior
                     )
                 }) { paddings ->
+                    val stateData by remember {
+                        mutableStateOf(this.state.data)
+                    }
                     SpotifyPageBinder(
-                        data = state.data,
+                        data = stateData,
                         type = typeOfSpotifyDataType(type),
                         modifier = Modifier
                             .fillMaxSize()

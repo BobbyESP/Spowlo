@@ -501,7 +501,7 @@ fun InitialEntry(
             SpotifyApiRequests.provideSpotifyApi()
         }.onFailure {
             it.printStackTrace()
-            ToastUtil.makeToastSuspend(context.getString(R.string.spotify_api_error))
+            ToastUtil.makeToast(context.getString(R.string.spotify_api_error))
         }
     }
 
@@ -517,7 +517,7 @@ fun InitialEntry(
                 }
             }.onFailure {
                 it.printStackTrace()
-                ToastUtil.makeToastSuspend(context.getString(R.string.update_check_failed))
+                ToastUtil.makeToast(context.getString(R.string.update_check_failed))
                 return@launch
             }
         }
@@ -533,7 +533,7 @@ fun InitialEntry(
                     modsDownloaderViewModel.updateApiResponse(apiResponse)
                 }
             } else {
-                ToastUtil.makeToastSuspend(context.getString(R.string.api_call_failed))
+                ToastUtil.makeToast(context.getString(R.string.api_call_failed))
             }
         }
     }

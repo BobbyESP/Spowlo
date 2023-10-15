@@ -82,6 +82,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CrashHandlerActivity"
+            android:label="CrashHandlerActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Spowlo" />
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

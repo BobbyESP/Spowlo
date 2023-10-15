@@ -34,6 +34,9 @@ object FilesUtil {
         if (filePaths.isNullOrEmpty()) return
         openFile(filePaths.first())
     }
+    fun readFile(file: File): String {
+        return file.readText()
+    }
 
     fun openFile(path: String) =
         path.runCatching {

@@ -37,6 +37,7 @@ import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -372,6 +373,9 @@ fun DownloaderPageImplementation(
                         ConsoleOutputComponent(
                             consoleOutput = progressText, modifier = Modifier.padding(top = 10.dp)
                         )
+                    }
+                    Button(onClick = { error("TEST FOR CRASH ACTIVITY") }) {
+                        Text(text = "Crash")
                     }
 
                     AnimatedVisibility(visible = errorState.isErrorOccurred()) {

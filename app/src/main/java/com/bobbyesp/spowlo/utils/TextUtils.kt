@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
@@ -21,6 +22,16 @@ object ToastUtil {
     fun makeToastSuspend(text: String) {
         applicationScope.launch(Dispatchers.Main) {
             makeToast(text)
+        }
+    }
+
+    fun makeToast(context: Context, text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun makeToastSuspend(context: Context, text: String) {
+        App.applicationScope.launch(Dispatchers.Main) {
+            makeToast(context, text)
         }
     }
 

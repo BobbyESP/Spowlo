@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlaylistPageViewModel @Inject constructor() : ViewModel() {
@@ -29,18 +32,23 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
         }
         when (type) {
             SpotifyDataType.TRACK -> {
-                kotlin.runCatching {
-                    Log.d("SpotifyApiRequests", "provideGetTrackById($id)")
-                    SpotifyApiRequests.provideGetTrackById(id)
-                }.onSuccess { data ->
+                try {
+                    val trackDeferred = withContext(Dispatchers.IO) {
+                        async {
+                            Log.d("SpotifyApiRequests", "provideGetTrackById($id)")
+                            SpotifyApiRequests.provideGetTrackById(id)
+                        }
+                    }
+                    val track = trackDeferred.await()
+
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                data!!
+                                track!!
                             )
                         )
                     }
-                }.onFailure {
+                } catch (e: Exception) {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Error(Exception("Error while loading data"))
@@ -50,17 +58,23 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
             }
 
             SpotifyDataType.ALBUM -> {
-                kotlin.runCatching {
-                    SpotifyApiRequests.providesGetAlbumById(id)
-                }.onSuccess { data ->
+                try {
+                    val albumDeferred = withContext(Dispatchers.IO) {
+                        async {
+                            Log.d("SpotifyApiRequests", "providesGetAlbumById($id)")
+                            SpotifyApiRequests.providesGetAlbumById(id)
+                        }
+                    }
+                    val album = albumDeferred.await()
+
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                data!!
+                                album!!
                             )
                         )
                     }
-                }.onFailure {
+                } catch (e: Exception) {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Error(Exception("Error while loading data"))
@@ -71,25 +85,29 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
             }
 
             SpotifyDataType.PLAYLIST -> {
-                kotlin.runCatching {
-                    Log.d("SpotifyApiRequests", "provideGetPlaylistById($id)")
-                    SpotifyApiRequests.provideGetPlaylistById(id)
-                }.onSuccess { data ->
+                try {
+                    val playlistDeferred = withContext(Dispatchers.IO) {
+                        async {
+                            Log.d("SpotifyApiRequests", "provideGetPlaylistById($id)")
+                            SpotifyApiRequests.provideGetPlaylistById(id)
+                        }
+                    }
+                    val playlist = playlistDeferred.await()
+
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Loaded(
-                                data!!
+                                playlist!!
                             )
                         )
                     }
-                }.onFailure {
+                } catch (e: Exception) {
                     mutableViewStateFlow.update {
                         it.copy(
                             state = PlaylistDataState.Error(Exception("Error while loading data"))
                         )
                     }
                 }
-
             }
 
             SpotifyDataType.ARTIST -> {

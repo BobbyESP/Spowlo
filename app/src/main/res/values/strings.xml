@@ -331,4 +331,10 @@
     <string name="updates_blocked_description">We have blocked the SpotDL updates. This is because we can be focused on the next version of Spowlo, the 2.0.0 (will come with big changes)!</string>
     <string name="what_like_download">What would you like to download?</string>
     <string name="results">results</string>
+    <string name="paste_report_github">Paste the copied report in the marked text box in GitHub</string>
+    <string name="copy_and_exit">Copy and exit</string>
+    <string name="report_github">Report on GitHub</string>
+    <string name="device_info">Device info</string>
+    <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
+    <string name="unknown_error_title">An unknown error has occurred!</string>
 </resources>
