@@ -26,15 +26,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.PlayHistory
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.utils.localAsset
 import com.bobbyesp.spowlo.utils.time.calculateTimeDifference
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.coil.CoilImageState
 
 @Composable
 fun RecentlyPlayedSongCard(
@@ -60,20 +61,21 @@ fun RecentlyPlayedSongCard(
                 ) {
                     Box {
                         if (albumArtPath != null) {
-                            AsyncImageImpl(
+                            CoilImage(
+                                imageModel = { albumArtPath },
                                 modifier = Modifier
                                     .size(60.dp)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true)
                                     .clip(MaterialTheme.shapes.extraSmall),
-                                model = albumArtPath,
-                                onState = { state ->
+                                onImageStateChanged = { state ->
                                     //if it was successful, don't show the placeholder, else show it
                                     showArtwork =
-                                        state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
+                                        state !is CoilImageState.Loading && state !is CoilImageState.None
                                 },
-                                contentDescription = "Song cover",
-                                contentScale = ContentScale.Fit,
-                                isPreview = false
+                                imageOptions = ImageOptions(
+                                    contentDescription = "Song cover",
+                                    contentScale = ContentScale.Fit,
+                                )
                             )
                         } else {
                             PlaceholderCreator(

@@ -1,22 +1,26 @@
-package com.bobbyesp.library
+package com.bobbyesp.spotdl_android.features
 
 import android.content.Context
 import android.util.Log
-import com.bobbyesp.spotdl_android.LibNames.androidLibName
-import com.bobbyesp.spotdl_android.LibNames.spotdlBinaryName
-import com.bobbyesp.spotdl_android.LibNames.spotdlInternalDirectoryName
 import com.bobbyesp.spotdl_android.SpotDL
+import com.bobbyesp.spotdl_android.androidLibName
 import com.bobbyesp.spotdl_android.data.SpotDLException
 import com.bobbyesp.spotdl_android.domain.model.Release
-import com.bobbyesp.spotdl_utilities.FileUtils
+import com.bobbyesp.spotdl_android.spotdlBinaryName
+import com.bobbyesp.spotdl_android.spotdlInternalDirectoryName
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.getString
 import com.bobbyesp.spotdl_utilities.preferences.PreferencesUtil.updateString
 import com.bobbyesp.spotdl_utilities.preferences.SPOTDL_VERSION
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.apache.commons.io.FileUtils.copyFile
+import org.apache.commons.io.FileUtils.copyURLToFile
+import org.apache.commons.io.FileUtils.deleteDirectory
+import org.apache.commons.io.FileUtils.deleteQuietly
 import java.io.File
 import java.io.IOException
+import java.net.URL
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -45,14 +49,14 @@ open class SpotDLUpdater {
 
         try {/*DELETE OLDER VERSION OF THE LIBRARY BINARY*/
             if (spotdlDir.exists()) {
-                FileUtils.deleteDirectory(spotdlDir)
+                deleteDirectory(spotdlDir)
             }/* Install the downloaded version */
             spotdlDir.mkdir()
-            FileUtils.copyFile(updateFile, binary)
+            copyFile(updateFile, binary)
             Log.d(TAG, "Library update: ${binary.canExecute()}")
         } catch (e: Exception) {
 
-            FileUtils.deleteFileSilently(spotdlDir)
+            deleteQuietly(spotdlDir)
             SpotDL.getInstance().initializeSpotDL(appContext, spotdlDir)
             throw SpotDLException("Failed to update SpotDL", e)
         } finally {
@@ -99,7 +103,7 @@ open class SpotDLUpdater {
 
     private fun downloadUpdate(appContext: Context, downloadUrl: String): File {
         val updateFile = File.createTempFile(spotdlBinaryName, null, appContext.cacheDir)
-        FileUtils.copyURLToFile(downloadUrl, updateFile, 10000, 10000)
+        copyURLToFile(URL(downloadUrl), updateFile, 10000, 10000)
         return updateFile
     }
 

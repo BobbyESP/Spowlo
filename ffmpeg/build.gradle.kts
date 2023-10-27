@@ -5,11 +5,10 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.ffmpeg"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 24
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -30,22 +29,14 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    sourceSets {
-        getByName("main") {
-            jni {
-                srcDirs("src\\main\\jni", "src\\main\\jniLibs")
-            }
-        }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
 dependencies {
-
     implementation(libs.core.ktx)
-    implementation(libs.core.appcompat)
     implementation(project(":spotdl_utilities"))
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation(libs.commons.io)
 }

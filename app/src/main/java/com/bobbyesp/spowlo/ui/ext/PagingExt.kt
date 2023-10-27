@@ -9,19 +9,20 @@ import com.bobbyesp.spowlo.BuildConfig
 
 fun <T : Any> LazyListScope.loadStateContent(
     items: LazyPagingItems<T>,
+    itemCount: Int = 7,
     loadingContent: @Composable () -> Unit
 ) {
     items.apply {
         when {
             loadState.refresh is LoadState.Loading -> {
-                items(7) {
+                items(itemCount) {
                     // Render a loading indicator while refreshing
                     loadingContent()
                 }
             }
 
             loadState.append is LoadState.Loading -> {
-                items(7) {
+                items(itemCount) {
                     // Render a loading indicator at the end while loading more items
                     loadingContent()
                 }

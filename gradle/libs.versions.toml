@@ -1,39 +1,40 @@
 [versions]
 #General, lifecycle and core
-agp = "8.3.0-alpha01"
+agp = "8.3.0-alpha07"
 kotlin = "1.9.0"
 appcompat = "1.7.0-alpha03"
-core-ktx = "1.10.1"
+core-ktx = "1.12.0"
 legacySupportV4 = "1.0.0"
-lifecycle-runtime-ktx = "2.6.1"
+lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.7.2"
-compose-compiler = "1.5.0"
+compose-compiler = "1.5.2"
 ksp = "1.9.0-1.0.13"
 material = "1.9.0"
-media3 = "1.1.0"
+media3 = "1.1.1"
 leakcanary = "2.12"
 commonsIo = "2.5"
 commonsCompress = "1.12"
 
+
 #Compose
-compose-bom = "2023.08.00"
+compose-bom = "2023.09.01"
 constraintLayout = "1.1.0-alpha12"
-androidx-compose-material3 = "1.2.0-alpha05"
-compose-util = "1.5.0"
+androidx-compose-material3 = "1.2.0-alpha08"
+compose-util = "1.5.1"
 accompanist = "0.31.4-beta"
 compose-pagination = "1.0.0-alpha20"
 
 #More UI
-androidx-paging = "3.2.0"
+androidx-paging = "3.2.1"
 shimmer = "1.0.3"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.7.0"
+androidx-navigation = "2.7.3"
 androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
-kotlinx-coroutines = "1.7.2"
+kotlinx-coroutines = "1.7.3"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.0"
@@ -42,6 +43,7 @@ kotlinx-collectionsImmutable = "0.3.5"
 
 #Image loading
 coil = "2.4.0"
+landscapistCoil = "2.2.8"
 
 #Network
 okhttp = "5.0.0-alpha.11"
@@ -49,7 +51,7 @@ ktor = "2.3.3" #For me the best client
 retrofit = "2.9.0"
 
 #Dependency injection
-hilt = "2.46.1"
+hilt = "2.48"
 hilt-ext = "1.0.0"
 hilt-compose-nav = "1.0.0"
 
@@ -80,9 +82,9 @@ spotdlversion = "-SNAPSHOT"
 kyantTaglib = "2023.7.7"
 
 #Firebase, GMS...
-firebaseAuth = "22.1.1"
-gmsPlayServicesAuth = "20.6.0"
-googleServices = "4.3.15"
+firebaseAuth = "22.1.2"
+gmsPlayServicesAuth = "20.7.0"
+googleServices = "4.4.0"
 
 #Tests
 junit = "4.13.2"
@@ -152,6 +154,7 @@ accompanist-material = { group = "com.google.accompanist", name = "accompanist-n
 
 #Image loading
 compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapistCoil" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
 #Network

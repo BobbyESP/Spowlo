@@ -2,16 +2,13 @@ package com.bobbyesp.spotdl_android
 
 import android.content.Context
 import android.util.Log
-import com.bobbyesp.library.SpotDLUpdater
-import com.bobbyesp.spotdl_android.LibNames.androidLibName
-import com.bobbyesp.spotdl_android.LibNames.spotdlBinaryName
-import com.bobbyesp.spotdl_android.LibNames.spotdlInternalDirectoryName
 import com.bobbyesp.spotdl_android.data.CanceledException
 import com.bobbyesp.spotdl_android.data.SpotDLException
 import com.bobbyesp.spotdl_android.data.SpotDLRequest
 import com.bobbyesp.spotdl_android.data.SpotDLResponse
 import com.bobbyesp.spotdl_android.data.streams.StreamDataProcessExtractor
 import com.bobbyesp.spotdl_android.data.streams.StreamGobbler
+import com.bobbyesp.spotdl_android.features.SpotDLUpdater
 import com.bobbyesp.spotdl_utilities.FileUtils
 import com.bobbyesp.spotdl_utilities.FileUtils.copyRawResourceToFile
 import com.bobbyesp.spotdl_utilities.ZipUtils
@@ -58,23 +55,25 @@ object SpotDL {
     fun init(applicationContext: Context) {
         if (isInitialized) return
 
+        createTempSpotDLDir()
+
         val androidLibBaseDir = File(applicationContext.noBackupFilesDir, androidLibName)
 
         if (!androidLibBaseDir.exists()) {
             androidLibBaseDir.mkdirs()
         }
 
-        val packagesDirectory = File(androidLibBaseDir, LibNames.packagesRoot)
+        val packagesDirectory = File(androidLibBaseDir, packagesRoot)
 
         binariesDirectory = File(applicationContext.applicationInfo.nativeLibraryDir)
 
-        pythonPath = File(binariesDirectory, LibNames.pythonInterpreterName)
-        ffmpegPath = File(binariesDirectory, LibNames.ffmpegBinaryName)
+        pythonPath = File(binariesDirectory, pythonInterpreterName)
+        ffmpegPath = File(binariesDirectory, ffmpegBinaryName)
 
         spotDLPath = File(androidLibBaseDir, spotdlBinaryName)
 
-        pythonDirectory = File(packagesDirectory, LibNames.pythonInternalDirectoryName)
-        ffmpegDirectory = File(packagesDirectory, LibNames.ffmpegInternalDirectoryName)
+        pythonDirectory = File(packagesDirectory, pythonInternalDirectoryName)
+        ffmpegDirectory = File(packagesDirectory, ffmpegInternalDirectoryName)
 
         appPath = File(applicationContext.filesDir, spotdlInternalDirectoryName)
 
@@ -94,14 +93,14 @@ object SpotDL {
      * @param pythonDirectory The directory where the Python interpreter is located.
      */
     private fun initializePython(pythonDirectory: File) {
-        val pythonLibPath = File(binariesDirectory, LibNames.pythonLibraryName)
+        val pythonLibPath = File(binariesDirectory, pythonLibraryName)
         val librarySize = pythonLibPath.length().toString() //We are gonna use this a checksum
 
         if (!pythonDirectory.exists() || shouldUpdatePython(librarySize)) {
             FileUtils.deleteFileSilently(pythonDirectory)
             pythonDirectory.mkdirs()
             try {
-                ZipUtils.decompressFile(pythonLibPath, pythonDirectory)
+                ZipUtils.unzip(pythonLibPath, pythonDirectory)
             } catch (e: Exception) {
                 FileUtils.deleteFileSilently(pythonDirectory)
                 throw Exception("Error while decompressing Python library: ${e.message} \nInitialization of the Python interpreter failed.")
@@ -138,7 +137,7 @@ object SpotDL {
     private fun setupEnvironmentVariables() {
         ENV_LD_LIBRARY_PATH =
             pythonDirectory.absolutePath + "/usr/lib" + ":" + ffmpegDirectory.absolutePath + "/usr/lib"
-        ENV_SSL_CERT_FILE = pythonDirectory.absolutePath + LibNames.certificatePath
+        ENV_SSL_CERT_FILE = pythonDirectory.absolutePath + certificatePath
         ENV_PYTHONHOME = pythonDirectory.absolutePath + "/usr"
         HOME = appPath.absolutePath
     }
@@ -384,18 +383,25 @@ object SpotDL {
     private fun assertInit() {
         check(isInitialized) { "Python instance is not initialized" }
     }
-    fun ProcessBuilder.putEnvironmentVariables() {
+    private fun ProcessBuilder.putEnvironmentVariables() {
         this.environment().apply {
-            this["LD_LIBRARY_PATH"] = SpotDL.ENV_LD_LIBRARY_PATH
-            this["SSL_CERT_FILE"] = SpotDL.ENV_SSL_CERT_FILE
-            this["PATH"] = System.getenv("PATH")!! + ":" + SpotDL.binariesDirectory.absolutePath
-            this["PYTHONHOME"] = SpotDL.ENV_PYTHONHOME
-            this["HOME"] = SpotDL.HOME
-            this["ffmpeg"] = SpotDL.ffmpegPath.absolutePath
+            this["LD_LIBRARY_PATH"] = ENV_LD_LIBRARY_PATH
+            this["SSL_CERT_FILE"] = ENV_SSL_CERT_FILE
+            this["PATH"] = System.getenv("PATH")!! + ":" + binariesDirectory.absolutePath
+            this["PYTHONHOME"] = ENV_PYTHONHOME
+            this["HOME"] = HOME
+            this["ffmpeg"] = ffmpegPath.absolutePath
             //ENVIRONMENT VARIABLES TO FORCE RICH PYTHON LIB TO SHOW THE PROGRESS LINE.
             //Thanks xnetcat (https://github.com/xnetcat) (principal spotdl library developer/maintainer) for the help and time!
             this["TERM"] = "xterm-256color"
             this["FORCE_COLOR"] = "true"
+        }
+    }
+
+    private fun createTempSpotDLDir() {
+        val termuxSpotDlTemporarilyFiles = File("/data/data/com.termux/files/home/.spotdl")
+        if (!termuxSpotDlTemporarilyFiles.exists()) {
+            termuxSpotDlTemporarilyFiles.mkdirs()
         }
     }
 }

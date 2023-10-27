@@ -8,6 +8,6 @@ class SpotDLResponse(
     val error: String
 ) {
     val isSuccess: Boolean
-        get() = exitCode == 0
-
+        get() =
+            exitCode == 0
 }

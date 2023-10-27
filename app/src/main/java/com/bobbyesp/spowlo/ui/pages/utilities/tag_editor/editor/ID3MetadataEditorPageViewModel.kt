@@ -43,10 +43,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                 updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
                 return
             }
-
-            withContext(Dispatchers.IO) {
-                getSongEmbeddedLyrics(path)
-            }
+            getSongEmbeddedLyrics(path)
 
             updateState(ID3MetadataEditorPageState.Success(metadata))
         } catch (e: Exception) {
@@ -102,7 +99,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 
     companion object {
         sealed class ID3MetadataEditorPageState {
-            object Loading : ID3MetadataEditorPageState()
+            data object Loading : ID3MetadataEditorPageState()
             data class Success(val metadata: Metadata) : ID3MetadataEditorPageState()
             data class Error(val throwable: Throwable) : ID3MetadataEditorPageState()
         }

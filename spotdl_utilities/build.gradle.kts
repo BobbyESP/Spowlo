@@ -37,6 +37,9 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.core.appcompat)
     implementation(libs.mmkv)
+    implementation(libs.commons.io)
+    implementation(libs.commons.compress)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

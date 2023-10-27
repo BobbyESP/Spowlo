@@ -192,6 +192,7 @@ dependencies {
 
     //Coil (For Jetpack Compose)
     implementation(libs.compose.coil)
+    implementation(libs.landscapist.coil)
 
     //Serialization
     implementation(libs.kotlin.serialization.json)
@@ -220,8 +221,7 @@ dependencies {
     implementation(libs.spotify.api.android)
 
     //Spotify downloader
-    implementation(project(":spotdl-android"))
-    implementation(project(":ffmpeg"))
+    implementation("com.github.BobbyESP:spotdl-android:-SNAPSHOT")
 
     //Miniplayer service
     implementation(libs.media3.session)

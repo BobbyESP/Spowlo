@@ -46,7 +46,7 @@ object FFmpeg {
             FileUtils.deleteFileSilently(ffmpegDirectory)
             ffmpegDirectory.mkdirs()
             try {
-                ZipUtils.decompressFile(ffmpegLib, ffmpegDirectory)
+                ZipUtils.unzip(ffmpegLib, ffmpegDirectory)
             } catch (e: Exception) {
                 FileUtils.deleteFileSilently(ffmpegDirectory)
                 throw FFmpegException(

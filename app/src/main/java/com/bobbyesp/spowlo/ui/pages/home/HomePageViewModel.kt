@@ -7,9 +7,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.auth.pkce.startSpotifyClientPkceLoginActivity
-import com.bobbyesp.spotdl_android.SpotDL
-import com.bobbyesp.spotdl_android.data.SpotDLException
-import com.bobbyesp.spotdl_android.data.SpotDLRequest
+import com.bobbyesp.library.SpotDL
+import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
@@ -18,7 +17,6 @@ import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,14 +43,14 @@ class HomePageViewModel @Inject constructor(
         viewModelScope.launch {
             getLoggedIn()
         }
-        viewModelScope.launch {
-            delay(3000)
-            try {
-                testSpotDL()
-            } catch (e: SpotDLException) {
-                Log.e("HomePageViewModel", "Error testing SpotDL", e)
-            }
-        }
+//        viewModelScope.launch {
+//            delay(3000)
+//            try {
+//                testSpotDL()
+//            } catch (e: SpotDLException) {
+//                Log.e("HomePageViewModel", "Error testing SpotDL", e)
+//            }
+//        }
     }
 
     fun login() {
@@ -90,9 +88,9 @@ class HomePageViewModel @Inject constructor(
             //Print every command
             for (s in request.buildCommand()) Log.d("LOL", s)
 
-            SpotDL.getInstance().execute(request, null) { _, _, string ->
-                Log.i("HomePageViewModel", "testSpotDL: $string")
-            }
+            SpotDL.getInstance().execute(request, null, callback = { _, _, output ->
+                Log.d("SpotDL Test", output)
+            })
         }
     }
 

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AirplaneTicket
+import androidx.compose.material.icons.automirrored.outlined.AirplaneTicket
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -90,7 +90,7 @@ fun AppUtilityCardPreview() {
         AppUtilityCard(
             modifier = Modifier.size(200.dp),
             onClick = {},
-            icon = Icons.Outlined.AirplaneTicket,
+            icon = Icons.AutoMirrored.Outlined.AirplaneTicket,
             utilityName = "Flights"
         )
     }

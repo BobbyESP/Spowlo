@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Launch
 import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,7 +51,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
-import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.lazygrid.GridMenuItem
 import com.bobbyesp.spowlo.ui.components.lazygrid.PlayPauseDynamicItem
 import com.bobbyesp.spowlo.ui.components.lazygrid.VerticalGridMenu
@@ -59,6 +59,9 @@ import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.time.TimeUtils.formatDuration
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.InternalLandscapistApi
+import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,6 +70,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class, InternalLandscapistApi::class)
 @Composable
 fun TrackBottomSheet(
     track: Track? = null,
@@ -96,10 +100,11 @@ fun TrackBottomSheet(
 
     val playableUrl = track?.previewUrl ?: simpleTrack?.previewUrl
 
-    BottomSheet(onDismiss = {
-        onDismiss()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && stopPlayingAfterClosing) viewModel.stopPlaying()
-    }) {
+    BottomSheet(
+        onDismiss = {
+            onDismiss()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && stopPlayingAfterClosing) viewModel.stopPlaying()
+        }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,16 +113,18 @@ fun TrackBottomSheet(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (trackImage != null) AsyncImageImpl(
+            if (trackImage != null) CoilImage(
+                imageModel = { trackImage },
                 modifier = Modifier
                     .size(50.dp)
                     .aspectRatio(
                         1f, matchHeightConstraintsFirst = true
                     )
                     .clip(MaterialTheme.shapes.extraSmall),
-                model = trackImage,
-                contentDescription = stringResource(
-                    id = R.string.track_artwork
+                imageOptions = ImageOptions(
+                    contentDescription = stringResource(
+                        id = R.string.track_artwork
+                    ),
                 )
             )
             Column(
@@ -168,7 +175,7 @@ fun TrackBottomSheet(
                 }, enabled = spotifyUrlNotNull
             )
             GridMenuItem(
-                icon = Icons.Default.Launch,
+                icon = Icons.AutoMirrored.Filled.Launch,
                 title = { stringResource(id = R.string.open_page) },
                 onClick = {
                     onDismiss()

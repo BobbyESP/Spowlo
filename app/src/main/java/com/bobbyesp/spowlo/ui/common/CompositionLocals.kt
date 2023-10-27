@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.ImageLoader
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
@@ -28,6 +29,7 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
+import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
@@ -63,15 +65,18 @@ val LocalBottomSheetMenuState =
 val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
-@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
     content: @Composable () -> Unit
 ) {
+   val context = LocalContext.current
     val appSettingsState = AppSettingsStateFlow.collectAsState().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
+
+    val imageLoader = ImageLoader.Builder(context).build()
 
     appSettingsState.run {
         CompositionLocalProvider(
@@ -87,7 +92,8 @@ fun AppLocalSettingsProvider(
             else Color(seedColor).toTonalPalettes(
                 paletteStyles.getOrElse(paletteStyleIndex) { PaletteStyle.TonalSpot }
             ), // Tells the app what is the current palette to use
-            LocalShimmerTheme provides shimmerEffect
+            LocalShimmerTheme provides shimmerEffect,
+            LocalCoilImageLoader provides imageLoader
         ) {
             content() //The content of the app
         }
