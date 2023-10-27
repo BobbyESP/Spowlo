@@ -13,10 +13,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.Label
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -73,13 +73,15 @@ fun UpdatePage(
                     visible = downloadStatus is UpdateUtil.DownloadStatus.Progress
                 ) {
                     LinearProgressIndicator(
+                        progress = {
+                            when (downloadStatus) {
+                                is UpdateUtil.DownloadStatus.Progress -> downloadStatus.percent.toFloat() / 100f
+                                else -> 0f
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(6.dp),
-                        progress = when (downloadStatus) {
-                            is UpdateUtil.DownloadStatus.Progress -> downloadStatus.percent.toFloat() / 100f
-                            else -> 0f
-                        }
                     )
                 }
                 FilledTonalButtonWithIcon(
@@ -135,7 +137,7 @@ fun UpdatePage(
                 item {
                     CustomTag(
                         text = latestRelease.tagName.toString(),
-                        icon = Icons.Outlined.Label,
+                        icon = Icons.AutoMirrored.Outlined.Label,
                     )
                 }
                 item {

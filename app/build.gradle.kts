@@ -118,6 +118,7 @@ android {
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
+            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             isMinifyEnabled = false

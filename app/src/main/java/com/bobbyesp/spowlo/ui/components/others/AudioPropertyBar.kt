@@ -32,12 +32,12 @@ fun AudioPropertyBar(modifier: Modifier, property: String, value: Float) {
             modifier = Modifier
         )
         LinearProgressIndicator(
-            progress = value,
+            progress = { value },
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.small)
                 .height(4.dp),
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.secondary,
         )
     }
 }

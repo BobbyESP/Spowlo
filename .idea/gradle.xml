@@ -11,10 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/color" />
-            <option value="$PROJECT_DIR$/ffmpeg" />
             <option value="$PROJECT_DIR$/miniplayer_service" />
-            <option value="$PROJECT_DIR$/spotdl-android" />
-            <option value="$PROJECT_DIR$/spotdl_utilities" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

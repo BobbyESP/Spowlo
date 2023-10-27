@@ -14,11 +14,11 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
 
 #Add kotlinx.serialization to the list of libraries to be processed by Proguard
 # Keep `Companion` object fields of serializable classes.
@@ -99,3 +99,8 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+
+# keep broadcast receivers
+-keep class * extends android.content.BroadcastReceiver
+#keep my own implementation of broadcast receivers
+-keep class com.bobbyesp.spowlo.features.spotifyApi.** { *; }
