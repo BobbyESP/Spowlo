@@ -10,7 +10,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
-import com.bobbyesp.spotdl_android.SpotDL
+import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.google.android.material.color.DynamicColors
@@ -50,7 +50,7 @@ class App : Application() {
 
         applicationScope.launch((Dispatchers.Main)) {
             try {
-                SpotDL.init(context)
+                SpotDL.getInstance().init(context)
                 FFmpeg.init(context)
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

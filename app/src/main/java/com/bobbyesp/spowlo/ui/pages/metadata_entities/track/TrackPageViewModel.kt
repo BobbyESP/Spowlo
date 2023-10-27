@@ -87,14 +87,6 @@ class TrackPageViewModel @Inject constructor(
                     )
                 }
 
-                val artworkUrl = track.album.images.firstOrNull()?.url ?: ""
-
-                getDominantColor(
-                    PaletteGenerator.loadBitmapFromUrl(
-                        context, artworkUrl
-                    )
-                )
-
                 loadAudioFeatures(trackId, spotifyAppApi)
                 loadAudioAnalysis(trackId, spotifyAppApi)
             }

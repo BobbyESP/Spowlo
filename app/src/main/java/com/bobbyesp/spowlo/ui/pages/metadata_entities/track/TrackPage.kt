@@ -43,9 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -198,14 +196,8 @@ private fun TrackPageImplementation(
                 item {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent, dominantColor.copy(alpha = 0.65f)
-                                    ), tileMode = TileMode.Repeated
-                                )
-                            ), contentAlignment = Alignment.Center
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
                         if (showImage) {
                             AsyncImageImpl(
@@ -240,15 +232,6 @@ private fun TrackPageImplementation(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    dominantColor.copy(alpha = 0.65f),
-                                    MaterialTheme.colorScheme.surface
-                                ),
-                                tileMode = TileMode.Mirror
-                            )
-                        )
                         .padding(top = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
