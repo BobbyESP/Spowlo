@@ -25,7 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -76,9 +75,7 @@ fun ID3MetadataEditorPage(
     val viewModelScope = viewModel.viewModelScope
 
     LaunchedEffect(true) {
-        viewModelScope.launch(Dispatchers.IO) {
-            viewModel.loadTrackMetadata(selectedSong.localSongPath!!)
-        }
+        viewModel.loadTrackMetadata(selectedSong.localSongPath!!)
     }
 
     Scaffold(
@@ -89,15 +86,15 @@ fun ID3MetadataEditorPage(
                         navController.popBackStack()
                     }
                 }, actions = {
-                    TextButton(onClick = { }) {
-                        Text(text = stringResource(id = R.string.save))
-                    }
+//                    TextButton(onClick = { }) {
+//                        Text(text = stringResource(id = R.string.save))
+//                    }
                 }, title = {
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         MarqueeText(
-                            text = stringResource(id = R.string.editing_metadata),
+                            text = stringResource(id = R.string.viewing_metadata),
                             style = MaterialTheme.typography.bodyLarge,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold

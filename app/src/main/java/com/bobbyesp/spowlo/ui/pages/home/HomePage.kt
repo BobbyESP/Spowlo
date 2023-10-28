@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.utils.files.FilesUtil
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +34,8 @@ fun HomePage(
 ) {
     val navController = LocalNavController.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
 
     val isLoggedIn = viewState.value.loggedIn
 
@@ -87,6 +91,13 @@ fun HomePage(
                 }
             }) {
                 Text(text = "Delete auth data")
+            }
+
+            Button(
+                onClick = {
+                    FilesUtil.SharedPreferences.deleteSharedPreferences(context = context)
+                }) {
+                Text(text = "Force delete credentials")
             }
         }
     }

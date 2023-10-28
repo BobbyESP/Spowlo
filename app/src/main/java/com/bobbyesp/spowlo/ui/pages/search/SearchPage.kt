@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -20,7 +21,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,7 +112,7 @@ fun SearchPage(
     val paginatedArtists = viewState.searchedArtists.collectAsLazyPagingItems()
     val paginatedPlaylists = viewState.searchedPlaylists.collectAsLazyPagingItems()
 
-    Scaffold(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(
@@ -120,172 +120,166 @@ fun SearchPage(
                 start = bottomInsetsAsPadding.calculateStartPadding(
                     LocalLayoutDirection.current
                 )
-            )
-    ) { paddingValues ->
-        Column(
+            ).systemBarsPadding()
+    ) {
+        QueryTextBox(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            QueryTextBox(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
-                query = query,
-                onValueChange = onValueChange,
-                onSearchCallback = {
-                    viewModel.viewModelScope.launch {
-                        viewModel.search()
-                    }
-                }
-            )
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 8.dp)
-                    .animateContentSize(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                items(types) {
-                    SearchTypeChip(
-                        modifier = Modifier,
-                        searchType = it.searchType,
-                        isActive = viewState.activeSearchType == it.searchType,
-                        onClick = it.onClick
-                    )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp),
+            query = query,
+            onValueChange = onValueChange,
+            onSearchCallback = {
+                viewModel.viewModelScope.launch {
+                    viewModel.search()
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(8.dp))
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                with(viewState) {
-                    when (this.searchViewState) {
-                        is Companion.SearchViewState.Idle -> {
-                            IdlePage()
-                        }
+        )
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp)
+                .animateContentSize(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            items(types) {
+                SearchTypeChip(
+                    modifier = Modifier,
+                    searchType = it.searchType,
+                    isActive = viewState.activeSearchType == it.searchType,
+                    onClick = it.onClick
+                )
+            }
+        }
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            with(viewState) {
+                when (this.searchViewState) {
+                    is Companion.SearchViewState.Idle -> {
+                        IdlePage()
+                    }
 
-                        is Companion.SearchViewState.Loading -> {
-                            CircularProgressIndicator()
-                        }
+                    is Companion.SearchViewState.Loading -> {
+                        CircularProgressIndicator()
+                    }
 
-                        is Companion.SearchViewState.Success -> {
-                            Crossfade(
-                                modifier = Modifier.fillMaxSize(),
-                                targetState = activeSearchType, label = ""
-                            ) { searchType ->
-                                when (searchType) {
-                                    SpotifyItemType.TRACKS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
-                                            paginatedItems = paginatedTracks,
-                                            itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                            itemArtworkUrl = { item ->
-                                                item.album.images.secondOrNull()?.url ?: ""
-                                            },
-                                            itemType = SpotifyItemType.TRACKS,
-                                            onItemClick = { track ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.TRACKS,
-                                                    id = track.id,
+                    is Companion.SearchViewState.Success -> {
+                        Crossfade(
+                            modifier = Modifier.fillMaxSize(),
+                            targetState = activeSearchType, label = ""
+                        ) { searchType ->
+                            when (searchType) {
+                                SpotifyItemType.TRACKS -> {
+                                    ResultsList(
+                                        modifier = Modifier.fillMaxSize(),
+                                        paginatedItems = paginatedTracks,
+                                        itemName = { item -> item.name },
+                                        itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                        itemArtworkUrl = { item ->
+                                            item.album.images.secondOrNull()?.url ?: ""
+                                        },
+                                        itemType = SpotifyItemType.TRACKS,
+                                        onItemClick = { track ->
+                                            val selectedMetadataEntity = MetadataEntity(
+                                                type = SpotifyItemType.TRACKS,
+                                                id = track.id,
+                                            )
+
+                                            navController.navigate(
+                                                Route.MetadataEntityViewer.createRoute(
+                                                    selectedMetadataEntity
                                                 )
+                                            )
+                                        }
+                                    )
+                                }
 
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
+                                SpotifyItemType.ALBUMS -> {
+                                    ResultsList(
+                                        modifier = Modifier.fillMaxSize(),
+                                        paginatedItems = paginatedAlbums,
+                                        itemName = { item -> item.name },
+                                        itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                        itemArtworkUrl = { item ->
+                                            item.images.secondOrNull()?.url ?: ""
+                                        },
+                                        itemType = SpotifyItemType.ALBUMS,
+                                        onItemClick = { album ->
+                                            val selectedMetadataEntity = MetadataEntity(
+                                                type = SpotifyItemType.ALBUMS,
+                                                id = album.id,
+                                            )
 
-                                    SpotifyItemType.ALBUMS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
-                                            paginatedItems = paginatedAlbums,
-                                            itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                            itemArtworkUrl = { item ->
-                                                item.images.secondOrNull()?.url ?: ""
-                                            },
-                                            itemType = SpotifyItemType.ALBUMS,
-                                            onItemClick = { album ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.ALBUMS,
-                                                    id = album.id,
+                                            navController.navigate(
+                                                Route.MetadataEntityViewer.createRoute(
+                                                    selectedMetadataEntity
                                                 )
+                                            )
+                                        }
+                                    )
+                                }
 
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
+                                SpotifyItemType.ARTISTS -> {
+                                    ResultsList(
+                                        modifier = Modifier.fillMaxSize(),
+                                        paginatedItems = paginatedArtists,
+                                        itemName = { item -> item.name },
+                                        itemArtists = { _ -> "" },
+                                        itemArtworkUrl = { item ->
+                                            item.images.secondOrNull()?.url ?: ""
+                                        },
+                                        itemType = SpotifyItemType.ARTISTS,
+                                        onItemClick = { artist ->
+                                            val selectedMetadataEntity = MetadataEntity(
+                                                type = SpotifyItemType.ARTISTS,
+                                                id = artist.id,
+                                            )
 
-                                    SpotifyItemType.ARTISTS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
-                                            paginatedItems = paginatedArtists,
-                                            itemName = { item -> item.name },
-                                            itemArtists = { _ -> "" },
-                                            itemArtworkUrl = { item ->
-                                                item.images.secondOrNull()?.url ?: ""
-                                            },
-                                            itemType = SpotifyItemType.ARTISTS,
-                                            onItemClick = { artist ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.ARTISTS,
-                                                    id = artist.id,
+                                            navController.navigate(
+                                                Route.MetadataEntityViewer.createRoute(
+                                                    selectedMetadataEntity
                                                 )
+                                            )
+                                        }
+                                    )
+                                }
 
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
+                                SpotifyItemType.PLAYLISTS -> {
+                                    ResultsList(
+                                        modifier = Modifier.fillMaxSize(),
+                                        paginatedItems = paginatedPlaylists,
+                                        itemName = { item -> item.name },
+                                        itemArtists = { item -> item.owner.displayName ?: "" },
+                                        itemArtworkUrl = { item ->
+                                            item.images.firstOrNull()?.url ?: ""
+                                        },
+                                        itemType = SpotifyItemType.PLAYLISTS,
+                                        onItemClick = { playlist ->
+                                            val selectedMetadataEntity = MetadataEntity(
+                                                type = SpotifyItemType.PLAYLISTS,
+                                                id = playlist.id,
+                                            )
 
-                                    SpotifyItemType.PLAYLISTS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
-                                            paginatedItems = paginatedPlaylists,
-                                            itemName = { item -> item.name },
-                                            itemArtists = { item -> item.owner.displayName ?: "" },
-                                            itemArtworkUrl = { item ->
-                                                item.images.firstOrNull()?.url ?: ""
-                                            },
-                                            itemType = SpotifyItemType.PLAYLISTS,
-                                            onItemClick = { playlist ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.PLAYLISTS,
-                                                    id = playlist.id,
+                                            navController.navigate(
+                                                Route.MetadataEntityViewer.createRoute(
+                                                    selectedMetadataEntity
                                                 )
-
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
+                                            )
+                                        }
+                                    )
                                 }
                             }
                         }
+                    }
 
-                        is Companion.SearchViewState.Error -> {
-                            Text(text = "Error")
-                        }
+                    is Companion.SearchViewState.Error -> {
+                        Text(text = "Error")
                     }
                 }
             }

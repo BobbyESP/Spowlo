@@ -16,7 +16,7 @@ fun PreConfiguredOutlinedTextField(
     value: String?,
     label: String = "",
     enabled: Boolean = true,
-    readOnly: Boolean = false,
+    readOnly: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
     singleLine: Boolean = false,

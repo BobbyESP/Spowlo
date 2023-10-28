@@ -147,4 +147,9 @@
     <string name="open_page">Open page</string>
     <string name="artist_not_found">Artist not found</string>
     <string name="top_tracks">The best of %1$s</string>
+    <string name="output_copied">The output has been copied to clipboard</string>
+    <string name="url_copied">The URL has been copied to clipboard</string>
+    <string name="error_copied">The error has been copied to the clipboard</string>
+    <string name="no_error">There\'s no error to copy</string>
+    <string name="viewing_metadata">Viewing metadata</string>
 </resources>
