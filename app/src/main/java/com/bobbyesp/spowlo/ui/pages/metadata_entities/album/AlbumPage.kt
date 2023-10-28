@@ -55,7 +55,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Album
-import com.bobbyesp.spowlo.App.Companion.SpotifyLogoUrl
+import com.bobbyesp.spowlo.App.Companion.SPOTIFY_LOGO_URL
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotifyApi.utils.AlbumSaver
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
@@ -297,7 +297,7 @@ fun AlbumPageImplementation(
         if (showTrackSheet && viewState.trackForSheet != null) {
             TrackBottomSheet(
                 simpleTrack = viewState.trackForSheet,
-                artworkForSimpleTrack = albumData.images.firstOrNull()?.url ?: SpotifyLogoUrl,
+                artworkForSimpleTrack = albumData.images.firstOrNull()?.url ?: SPOTIFY_LOGO_URL,
             ) {
                 showTrackSheet = false
             }

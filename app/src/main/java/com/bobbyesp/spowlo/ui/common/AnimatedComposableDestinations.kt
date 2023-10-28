@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.common
 
-
 import android.graphics.Path
 import android.view.animation.PathInterpolator
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -155,6 +154,19 @@ fun NavGraphBuilder.animatedComposableVariant(
     },
     content = content
 )
+
+//fun slideInVertically(
+//    animationSpec: FiniteAnimationSpec<IntOffset> =
+//        spring(
+//            stiffness = Spring.StiffnessMedium,
+//            visibilityThreshold = IntOffset.VisibilityThreshold
+//        ),
+//    initialOffsetY: (fullHeight: Int) -> Int = { it },
+//): EnterTransition =
+//    slideIn(
+//        initialOffset = { IntOffset(0, initialOffsetY(it.height)) },
+//        animationSpec = animationSpec
+//    )
 
 val springSpec = spring(
     stiffness = Spring.StiffnessMedium,

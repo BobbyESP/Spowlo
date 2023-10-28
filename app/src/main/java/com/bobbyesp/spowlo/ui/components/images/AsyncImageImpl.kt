@@ -26,7 +26,7 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.bobbyesp.spowlo.App.Companion.userAgentHeader
+import com.bobbyesp.spowlo.App.Companion.USER_AGENT_HEADER
 import com.bobbyesp.spowlo.R
 import okhttp3.OkHttpClient
 
@@ -57,7 +57,7 @@ fun AsyncImageImpl(
     }.build()
 
     val imageRequest =
-        ImageRequest.Builder(context).addHeader("user-agent", userAgentHeader).data(model)
+        ImageRequest.Builder(context).addHeader("user-agent", USER_AGENT_HEADER).data(model)
             .crossfade(true).build()
 
     if (isPreview) {
@@ -119,7 +119,7 @@ fun AsyncImageImpl(
 
 
     val imageRequest =
-        ImageRequest.Builder(context).addHeader("user-agent", userAgentHeader).data(model)
+        ImageRequest.Builder(context).addHeader("user-agent", USER_AGENT_HEADER).data(model)
             .crossfade(true).build()
 
     val placeholderPainter = placeholder ?: painterResource(R.drawable.ic_launcher_foreground)

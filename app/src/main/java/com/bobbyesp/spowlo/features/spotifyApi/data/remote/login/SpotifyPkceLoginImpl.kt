@@ -21,7 +21,7 @@ class SpotifyPkceLoginImpl : AbstractSpotifyPkceLoginActivity() {
 
     override val clientId: String = BuildConfig.CLIENT_ID
     override val redirectUri: String = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE
-    override val scopes: List<SpotifyScope> = SpotifyScope.values().toList() //We use all scopes
+    override val scopes: List<SpotifyScope> = SpotifyScope.entries //We use all scopes
     override fun onSuccess(api: SpotifyClientApi) {
         val credentialStore = CredentialsStorer().provideCredentials(context)
         credentialStore.setSpotifyApi(api)

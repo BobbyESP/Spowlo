@@ -207,7 +207,7 @@ fun ArtistPage(
                     TrackBottomSheet(
                         track = viewState.trackForSheet,
                         artworkForSimpleTrack = viewState.trackForSheet!!.album.images.firstOrNull()?.url
-                            ?: App.SpotifyLogoUrl,
+                            ?: App.SPOTIFY_LOGO_URL,
                     ) {
                         showTrackSheet = false
                     }

@@ -211,6 +211,7 @@ spotify-app-remote = { group = "com.spotify", name = "spotify-app-remote", versi
 #Spotify downloader
 spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlversion" }
 spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlversion" }
+spotdl-android-commonUtilities = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-commonUtilities", version.ref = "spotdlversion" }
 
 # Metadata manager
 metadata-manager = { group = "com.github.Kyant0", name = "tag", version.ref = "kyantTaglib" }
@@ -259,6 +260,6 @@ hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
-spotdl= ["spotdl-android-library", "spotdl-android-ffmpeg"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 media3 = ["media3-exoplayer", "media3-ui", "media3-session"]
+spotdl = ["spotdl-android-library", "spotdl-android-ffmpeg"]

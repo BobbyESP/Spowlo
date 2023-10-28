@@ -54,9 +54,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.features.spotifyApi.utils.TrackSaver
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.ArtistHorizontalCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.MetadataEntityItem
@@ -319,7 +322,16 @@ private fun TrackPageImplementation(
                     modifier = Modifier.fillMaxWidth(),
                     artist = artist
                 ) {
+                    val selectedMetadataEntity = MetadataEntity(
+                        type = SpotifyItemType.ARTISTS,
+                        id = artist.id,
+                    )
 
+                    navController.navigate(
+                        Route.MetadataEntityViewer.createRoute(
+                            selectedMetadataEntity
+                        )
+                    )
                 }
             }
 

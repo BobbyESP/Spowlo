@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
+import android.util.Log
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
@@ -54,6 +55,7 @@ class App : Application() {
                 FFmpeg.init(context)
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    Log.i("App", "SpotDL init failed", e)
                     val logfile = createLogFile(this@App, e.stackTraceToString())
                     startCrashReportActivity(logfile)
                 }
@@ -78,9 +80,9 @@ class App : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
-        const val userAgentHeader =
+        const val USER_AGENT_HEADER =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
-        const val SpotifyLogoUrl = "https://www.liderlogo.es/wp-content/uploads/2022/12/pasted-image-0-4-1024x576.png"
+        const val SPOTIFY_LOGO_URL = "https://www.liderlogo.es/wp-content/uploads/2022/12/pasted-image-0-4-1024x576.png"
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName

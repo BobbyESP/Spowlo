@@ -175,6 +175,11 @@ android {
         jniLibs.useLegacyPackaging = true
     }
     namespace = "com.bobbyesp.spowlo"
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -222,7 +227,7 @@ dependencies {
     implementation(libs.spotify.api.android)
 
     //Spotify downloader
-    implementation("com.github.BobbyESP:spotdl-android:-SNAPSHOT")
+    implementation(libs.bundles.spotdl)
 
     //Miniplayer service
     implementation(libs.media3.session)

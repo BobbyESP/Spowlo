@@ -15,8 +15,11 @@ import javax.inject.Inject
 class SpotifyAuthManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SpotifyAuthManager {
+
+    private val credentialsStorer by lazy { CredentialsStorer() }
+
     private var spotifyClientApi: SpotifyClientApi? = null
-    private val credentials = CredentialsStorer().provideCredentials(context)
+    private val credentials = credentialsStorer.provideCredentials(context)
     private val activityWrapper by lazy { ActivityCallsShortener(MainActivity.getActivity()) }
 
     override fun launchLoginActivity() {

@@ -18,7 +18,7 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
--renamesourcefileattribute SourceFile
+#-renamesourcefileattribute SourceFile
 
 #Add kotlinx.serialization to the list of libraries to be processed by Proguard
 # Keep `Companion` object fields of serializable classes.
@@ -104,3 +104,5 @@
 -keep class * extends android.content.BroadcastReceiver
 #keep my own implementation of broadcast receivers
 -keep class com.bobbyesp.spowlo.features.spotifyApi.** { *; }
+
+-keep class com.bobbyesp.miniplayer_service.** { *; }
