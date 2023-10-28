@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -9,6 +10,7 @@ android {
 
     defaultConfig {
         minSdk = 24
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -36,7 +38,24 @@ android {
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
     implementation(libs.core.ktx)
-    implementation(project(":spotdl_utilities"))
+    implementation(project(":spotdl_lib"))
+    implementation(project(":commonUtilities"))
     implementation(libs.commons.io)
+}
+
+afterEvaluate{
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                from(components["release"])
+                groupId = "com.github.bobbyesp"
+                artifactId = "spotdl-android-ffmpeg"
+                version = "0.2.2"
+
+            }
+        }
+    }
 }

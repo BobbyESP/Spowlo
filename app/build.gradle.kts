@@ -227,7 +227,9 @@ dependencies {
     implementation(libs.spotify.api.android)
 
     //Spotify downloader
-    implementation(libs.bundles.spotdl)
+//    implementation(libs.bundles.spotdl)
+    implementation(project(":spotdl_lib"))
+    implementation(project(":ffmpeg"))
 
     //Miniplayer service
     implementation(libs.media3.session)

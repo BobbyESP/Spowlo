@@ -77,7 +77,7 @@ class HomePageViewModel @Inject constructor(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 "Spowlo"
             )
-            val request = SpotDLRequest(emptyList())
+            val request = SpotDLRequest(urls = emptyList())
             request.addOption("download", "alan walker faded")
             request.addOption("--log-level", "DEBUG")
             //request.addOption("--simple-tui")
