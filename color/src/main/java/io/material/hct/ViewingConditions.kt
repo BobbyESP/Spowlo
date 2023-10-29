@@ -85,8 +85,8 @@ class ViewingConditions
         ): ViewingConditions {
             // A background of pure black is non-physical and leads to infinities that represent the idea
             // that any color viewed in pure black can't be seen.
-            var backgroundLstar = backgroundLstar
-            backgroundLstar = max(0.1, backgroundLstar)
+            var modifiableBackgroundLstar = backgroundLstar
+            modifiableBackgroundLstar = max(0.1, modifiableBackgroundLstar)
             // Transform white point XYZ to 'cone'/'rgb' responses
             val matrix: Array<DoubleArray> = Cam16.Companion.XYZ_TO_CAM16RGB
             val rW =
@@ -112,7 +112,7 @@ class ViewingConditions
             val k4F = 1.0 - k4
             val fl =
                 k4 * adaptingLuminance + 0.1 * k4F * k4F * kotlin.math.cbrt(5.0 * adaptingLuminance)
-            val n = ColorUtils.yFromLstar(backgroundLstar) / whitePoint[1]
+            val n = ColorUtils.yFromLstar(modifiableBackgroundLstar) / whitePoint[1]
             val z = 1.48 + sqrt(n)
             val nbb = 0.725 / n.pow(0.2)
             val rgbAFactors = doubleArrayOf(

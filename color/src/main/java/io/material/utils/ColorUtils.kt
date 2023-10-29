@@ -223,8 +223,7 @@ object ColorUtils {
      */
     fun delinearized(rgbComponent: Double): Int {
         val normalized = rgbComponent / 100.0
-        var delinearized = 0.0
-        delinearized = if (normalized <= 0.0031308) {
+        val delinearized: Double = if (normalized <= 0.0031308) {
             normalized * 12.92
         } else {
             1.055 * normalized.pow(1.0 / 2.4) - 0.055

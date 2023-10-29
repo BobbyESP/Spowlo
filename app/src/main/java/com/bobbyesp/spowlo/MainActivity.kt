@@ -6,9 +6,17 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
@@ -22,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var isServiceRunning = false
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -34,9 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             LaunchedEffect(true) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startMediaPlayerService()
                 }
+            }
+            var corruptedCredentials by remember {
+                mutableStateOf(intent.getBooleanExtra("spotifyCredsCrash", false))
             }
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
@@ -45,6 +56,18 @@ class MainActivity : AppCompatActivity() {
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 ) {
                     Navigator()
+                    if (corruptedCredentials) {
+                        AlertDialog(
+                            onDismissRequest = { corruptedCredentials = false },
+                            confirmButton = { /*TODO*/ },
+                            text = {
+                                Text(text = stringResource(id = R.string.spotify_credentials_corrupted_desc))
+                            },
+                            title = {
+                                Text(text = stringResource(id = R.string.spotify_credentials_corrupted))
+                            }
+                        )
+                    }
                 }
             }
         }

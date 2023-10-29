@@ -106,3 +106,5 @@
 -keep class com.bobbyesp.spowlo.features.spotifyApi.** { *; }
 
 -keep class com.bobbyesp.miniplayer_service.** { *; }
+-keep class com.bobbyesp.spotdl_utilities.** { *; }
+-keepclassmembers class com.bobbyesp.spotdl_utilities.** { *; }

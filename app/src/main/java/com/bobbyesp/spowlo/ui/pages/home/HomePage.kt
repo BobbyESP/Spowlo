@@ -99,6 +99,12 @@ fun HomePage(
                 }) {
                 Text(text = "Force delete credentials")
             }
+            Button(onClick = { error("Test") }) {
+                Text(text = "Test crash")
+            }
+            Button(onClick = { error("contained an invalid tag (zero)") }) {
+                Text(text = "Test crash 2")
+            }
         }
     }
 }

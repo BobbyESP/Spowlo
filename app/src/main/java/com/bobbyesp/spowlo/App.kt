@@ -13,6 +13,7 @@ import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.utils.files.FilesUtil
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -62,8 +63,17 @@ class App : Application() {
             }
         }
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
-            val logfile = createLogFile(this, e.stackTraceToString())
-            startCrashReportActivity(logfile)
+            val stackTrace = e.stackTraceToString()
+            if(stackTrace.contains("contained an invalid tag (zero)")) {
+                Log.i("App", "Spotify API dependency credentials file is invalid or broken; deleting it")
+                FilesUtil.SharedPreferences.deleteSharedPreferences(this@App)
+                val intent = Intent(context, SpCredsCrashRestartActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                context.startActivity(intent)
+            } else {
+                val logfile = createLogFile(this, stackTrace)
+                startCrashReportActivity(logfile)
+            }
         }
     }
 

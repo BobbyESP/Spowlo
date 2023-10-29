@@ -152,4 +152,6 @@
     <string name="error_copied">The error has been copied to the clipboard</string>
     <string name="no_error">There\'s no error to copy</string>
     <string name="viewing_metadata">Viewing metadata</string>
+    <string name="spotify_credentials_corrupted_desc">Your Spotify credentials has been deleted since they were corrupted. Your session has been closed.</string>
+    <string name="spotify_credentials_corrupted">Spotify credentials corrupted</string>
 </resources>

@@ -325,8 +325,7 @@ object HctSolver {
      */
     fun trueDelinearized(rgbComponent: Double): Double {
         val normalized = rgbComponent / 100.0
-        var delinearized = 0.0
-        delinearized = if (normalized <= 0.0031308) {
+        val delinearized: Double = if (normalized <= 0.0031308) {
             normalized * 12.92
         } else {
             1.055 * normalized.pow(1.0 / 2.4) - 0.055
@@ -650,12 +649,12 @@ object HctSolver {
      * sufficiently close, and chroma will be maximized.
      */
     fun solveToInt(hueDegrees: Double, chroma: Double, lstar: Double): Int {
-        var hueDegrees = hueDegrees
+        var modifiableHueDegrees = hueDegrees
         if (chroma < 0.0001 || lstar < 0.0001 || lstar > 99.9999) {
             return ColorUtils.argbFromLstar(lstar)
         }
-        hueDegrees = MathUtils.sanitizeDegreesDouble(hueDegrees)
-        val hueRadians = hueDegrees / 180 * kotlin.math.PI
+        modifiableHueDegrees = MathUtils.sanitizeDegreesDouble(modifiableHueDegrees)
+        val hueRadians = modifiableHueDegrees / 180 * kotlin.math.PI
         val y = ColorUtils.yFromLstar(lstar)
         val exactAnswer = findResultByJ(hueRadians, chroma, y)
         if (exactAnswer != 0) {

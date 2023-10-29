@@ -1,16 +1,17 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
-    id("maven-publish")
 }
 
 android {
-    namespace = "com.bobbyesp.commonUtilities"
+    namespace = "com.bobbyesp.spotdl_utilities"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -30,13 +31,13 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
+    implementation(libs.core.ktx)
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(libs.commons.io)
     implementation(libs.commons.compress)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

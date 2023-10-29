@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.bobbyesp.commonUtilities.** { *; }
+-keep class org.apache.commons.** { *; }

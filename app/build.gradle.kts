@@ -100,7 +100,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
@@ -233,6 +233,7 @@ dependencies {
 //    implementation(libs.bundles.spotdl)
     implementation(project(":spotdl_lib"))
     implementation(project(":ffmpeg"))
+    implementation(project(":spotdl_utilities"))
 
     //Miniplayer service
     implementation(libs.media3.session)

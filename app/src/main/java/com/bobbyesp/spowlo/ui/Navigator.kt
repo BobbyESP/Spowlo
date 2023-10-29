@@ -54,6 +54,8 @@ import com.bobbyesp.spowlo.ui.common.MetadataEntityParamType
 import com.bobbyesp.spowlo.ui.common.NavArgs
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.SelectedSongParamType
+import com.bobbyesp.spowlo.ui.common.animatedComposable
+import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
@@ -198,7 +200,7 @@ fun Navigator() {
                     route = Route.HomeNavigator.route,
                     startDestination = Route.Home.route,
                 ) {
-                    composable(Route.Home.route) {
+                    animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
                         HomePage(viewModel)
                     }
@@ -208,7 +210,7 @@ fun Navigator() {
                     route = Route.SearchNavigator.route,
                     startDestination = Route.Search.route,
                 ) {
-                    composable(Route.Search.route) {
+                    animatedComposable(Route.Search.route) {
                         val viewModel = hiltViewModel<SearchViewModel>()
                         SearchPage(viewModel = viewModel)
                     }
@@ -222,14 +224,14 @@ fun Navigator() {
                     route = Route.ProfileNavigator.route,
                     startDestination = Route.Profile.route,
                 ) {
-                    composable(Route.Profile.route) {
+                    animatedComposable(Route.Profile.route) {
                         val viewModel = hiltViewModel<ProfilePageViewModel>()
                         ProfilePage(viewModel = viewModel)
                     }
                 }
                 settingsNavigation()
 
-                composable(
+                animatedComposable(
                     route = Route.MetadataEntityViewer.route,
                     arguments = listOf(navArgument(NavArgs.MetadataEntitySelected.key) {
                         type = MetadataEntityParamType
@@ -391,10 +393,10 @@ private fun NavGraphBuilder.utilitiesNavigation(
         route = Route.UtilitiesNavigator.route,
         startDestination = Route.Utilities.route,
     ) {
-        composable(Route.Utilities.route) {
+        animatedComposable(Route.Utilities.route) {
             UtilitiesPage()
         }
-        composable(Route.LyricsDownloader.route) {
+        animatedComposableVariant(Route.LyricsDownloader.route) {
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
@@ -416,7 +418,7 @@ private fun NavGraphBuilder.utilitiesNavigation(
             SelectedSongLyricsPage(viewModel, selectedSongParcelable!!)
         }
 
-        composable(Route.TagEditor.route) {
+        animatedComposableVariant(Route.TagEditor.route) {
             TagEditorPage(mediaStorePageViewModel)
         }
 

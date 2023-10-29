@@ -42,7 +42,8 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(project(":spotdl_lib"))
-    implementation(project(":commonutils"))
+    implementation(project(":spotdl_utilities"))
+
     implementation(libs.commons.io)
 }
 

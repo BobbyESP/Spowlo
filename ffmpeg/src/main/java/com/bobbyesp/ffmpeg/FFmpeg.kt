@@ -1,15 +1,17 @@
 package com.bobbyesp.ffmpeg
 
 import android.content.Context
-import com.bobbyesp.commonUtilities.SharedPrefsHelper
-import com.bobbyesp.commonUtilities.utils.ZipUtilities.unzip
 import com.bobbyesp.library.SpotDLException
+import com.bobbyesp.spotdl_utilities.SharedPreferencesHelper
+import com.bobbyesp.spotdl_utilities.storage.Zip
 import org.apache.commons.io.FileUtils
 import java.io.File
 
 object FFmpeg {
     private var initialized = false
     private var binDir: File? = null
+    private val sharedPreferencesHelper by lazy { SharedPreferencesHelper() }
+    private val zipUtils by lazy { Zip() }
 
     @Synchronized
     fun init(appContext: Context) {
@@ -31,7 +33,7 @@ object FFmpeg {
             FileUtils.deleteQuietly(ffmpegDir)
             ffmpegDir.mkdirs()
             try {
-                unzip(ffmpegLib, ffmpegDir)
+                zipUtils.unzip(ffmpegLib, ffmpegDir)
             } catch (e: Exception) {
                 FileUtils.deleteQuietly(ffmpegDir)
                 throw SpotDLException("failed to initialize", e)
@@ -41,11 +43,11 @@ object FFmpeg {
     }
 
     private fun shouldUpdateFFmpeg(appContext: Context, version: String): Boolean {
-        return version != SharedPrefsHelper[appContext, ffmpegLibVersion]
+        return version != sharedPreferencesHelper[appContext, ffmpegLibVersion]
     }
 
     private fun updateFFmpeg(appContext: Context, version: String) {
-        SharedPrefsHelper.update(appContext, ffmpegLibVersion, version)
+        sharedPreferencesHelper.update(appContext, ffmpegLibVersion, version)
     }
 
     @JvmStatic

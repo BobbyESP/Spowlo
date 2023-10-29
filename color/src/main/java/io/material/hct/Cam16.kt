@@ -378,8 +378,8 @@ class Cam16
             return fromJchInViewingConditions(j, c, h, viewingConditions)
         }
 
-        private inline fun Double.toRadians() = this * kotlin.math.PI / 180.0
+        private fun Double.toRadians() = this * kotlin.math.PI / 180.0
 
-        private inline fun Double.toDegrees() = this * 180.0 / kotlin.math.PI
+        private fun Double.toDegrees() = this * 180.0 / kotlin.math.PI
     }
 }

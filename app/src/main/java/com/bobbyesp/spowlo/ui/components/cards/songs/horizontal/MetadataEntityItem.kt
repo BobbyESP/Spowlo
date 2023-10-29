@@ -144,7 +144,7 @@ fun MetadataEntityItem(
             }
             Box(modifier = Modifier) {
                 IconButton(
-                    onClick = onClick,
+                    onClick = onLongClick,
                     modifier = Modifier.size(32.dp),
                 ) {
                     Icon(

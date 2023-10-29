@@ -1,4 +1,4 @@
-package com.bobbyesp.commonUtilities.utils
+package com.bobbyesp.spotdl_utilities.storage
 
 import android.system.ErrnoException
 import android.system.Os
@@ -9,7 +9,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-object ZipUtilities {
+class Zip {
     @Throws(IOException::class, ErrnoException::class, IllegalAccessException::class)
     fun unzip(sourceFile: File?, targetDirectory: File) {
         ZipFile(sourceFile).use { zipFile ->

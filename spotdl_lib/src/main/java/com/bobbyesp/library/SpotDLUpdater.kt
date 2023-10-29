@@ -2,9 +2,8 @@ package com.bobbyesp.library
 
 import android.content.Context
 import android.util.Log
-import com.bobbyesp.commonUtilities.SharedPrefsHelper
+import com.bobbyesp.library.SpotDL.Companion.sharedPrefsHelper
 import com.bobbyesp.library.dto.Release
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -71,7 +70,7 @@ open class SpotDLUpdater {
 
     private fun updateSharedPrefs(appContext: Context, tag: String) {
         //change the spotDLVersionKey to the new version tag
-        SharedPrefsHelper.update(appContext, spotDLVersionKey, tag)
+        sharedPrefsHelper.update(appContext, spotDLVersionKey, tag)
     }
 
     //check for updates+
@@ -87,9 +86,9 @@ open class SpotDLUpdater {
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                     if (response.isSuccessful) {
-                        val release = jsonFormat.decodeFromString<Release>(response.body!!.string())
+                        val release = jsonFormat.decodeFromString<Release>(response.body.string())
                         val newVersion = getTag(release)
-                        val oldVersion = SharedPrefsHelper[appContext, spotDLVersionKey]
+                        val oldVersion = sharedPrefsHelper[appContext, spotDLVersionKey]
 
                         Log.d(TAG, "New version: $newVersion, old version: $oldVersion")
                         if(newVersion == oldVersion) {
@@ -140,6 +139,6 @@ open class SpotDLUpdater {
     }
 
     open fun version(appContext: Context): String? {
-        return SharedPrefsHelper[appContext, spotDLVersionKey]
+        return sharedPrefsHelper[appContext, spotDLVersionKey]
     }
 }

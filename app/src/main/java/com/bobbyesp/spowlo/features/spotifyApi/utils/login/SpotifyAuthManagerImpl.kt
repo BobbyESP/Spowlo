@@ -45,7 +45,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
             val isClientApiInstanceNonNull = spotifyClientApi != null
             if (BuildConfig.DEBUG) Log.i(
                 "SearchViewModel",
-                "isAuthenticated: isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
+                "isAuthenticated --> isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
             )
             isTokenValid
         } catch (e: Throwable) {
@@ -72,6 +72,15 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
     }
 
+    override suspend fun createCredentials(): Boolean {
+        return try {
+            credentialsStorer.createCredentials(context)
+            true
+        } catch (e: Throwable) {
+            Log.e("SpotifyAuthManager", "Error creating credentials", e)
+            false
+        }
+    }
     override fun credentialsFileExists(): Boolean {
         TODO()
     }

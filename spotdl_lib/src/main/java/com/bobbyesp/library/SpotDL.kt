@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.bobbyesp.commonUtilities.SharedPrefsHelper
-import com.bobbyesp.commonUtilities.utils.ZipUtilities
 import com.bobbyesp.library.dto.Song
+import com.bobbyesp.spotdl_utilities.SharedPreferencesHelper
+import com.bobbyesp.spotdl_utilities.storage.Zip
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.apache.commons.io.FileUtils
@@ -72,6 +72,8 @@ open class SpotDL {
 
     //create a function that can be called out of this class to get the instance
     companion object {
+        internal val sharedPrefsHelper by lazy { SharedPreferencesHelper() }
+        private val zipUtils by lazy { Zip() }
         private val spotDl: SpotDL = SpotDL()
 
         fun getInstance(): SpotDL {
@@ -164,7 +166,7 @@ open class SpotDL {
 
             //And now we try to extract the python files
             try {
-                ZipUtilities.unzip(pythonLib, pythonDir)
+                zipUtils.unzip(pythonLib, pythonDir)
             } catch (e: Exception) {
                 FileUtils.deleteQuietly(pythonDir)
                 throw SpotDLException("Error extracting python files", e)
@@ -176,7 +178,7 @@ open class SpotDL {
     }
 
     private fun updatePython(appContext: Context, version: String) {
-        SharedPrefsHelper.update(
+        sharedPrefsHelper.update(
             appContext,
             pythonLibVersion,
             version
@@ -184,7 +186,7 @@ open class SpotDL {
     }
 
     private fun shouldUpdatePython(appContext: Context, version: String): Boolean {
-        return version != SharedPrefsHelper[appContext, pythonLibVersion]
+        return version != sharedPrefsHelper[appContext, pythonLibVersion]
     }
 
     @Throws(SpotDLException::class)

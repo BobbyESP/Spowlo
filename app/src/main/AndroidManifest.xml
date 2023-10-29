@@ -58,6 +58,12 @@
         </activity>
 
         <activity
+            android:name=".SpCredsCrashRestartActivity"
+            android:label="SpCredsCrashRestartActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Spowlo" />
+
+        <activity
             android:name=".CrashHandlerActivity"
             android:label="CrashHandlerActivity"
             android:launchMode="singleTask"
