@@ -86,6 +86,8 @@ android {
                 abiFilters.add(it)
             }
         }
+        manifestPlaceholders["redirectHostName"] = "spowlo"
+        manifestPlaceholders["redirectSchemeName"] = "spowlo"
     }
     if (splitApks) splits {
         abi {
@@ -171,6 +173,7 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/*.kotlin_module"
+            excludes += "/META-INF/versions/9/previous-compilation-data.bin"
         }
         jniLibs.useLegacyPackaging = true
     }
