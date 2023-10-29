@@ -258,6 +258,7 @@ fun AlbumPageImplementation(
                     listIndex = it,
                     isExplicit = track.explicit,
                     duration = track.durationMs,
+                    onClick = {}
                 ) {
                     viewModel.selectTrackForSheet(track)
                     showTrackSheet = true

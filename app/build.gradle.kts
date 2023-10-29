@@ -175,7 +175,7 @@ android {
         jniLibs.useLegacyPackaging = true
     }
     namespace = "com.bobbyesp.spowlo"
-    packagingOptions {
+    packaging {
         jniLibs {
             useLegacyPackaging = true
         }

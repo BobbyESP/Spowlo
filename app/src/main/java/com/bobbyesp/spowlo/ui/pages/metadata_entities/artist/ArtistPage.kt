@@ -309,7 +309,7 @@ private fun ArtistHeader(modifier: Modifier, artist: Artist) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(artist.genres) {
-                    RoundedTag(text = it)
+                    RoundedTag(text = it, shape = MaterialTheme.shapes.small)
                 }
             }
         }
@@ -341,7 +341,7 @@ private fun MostPlayedTracks(
                             id = R.string.top_tracks,
                             artistName
                         ),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1
@@ -349,7 +349,7 @@ private fun MostPlayedTracks(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 12.dp)
+                            .padding(start = 8.dp)
                             .fadingEdge(bottom = 58.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {

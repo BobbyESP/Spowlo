@@ -3,7 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
       <module name="Spowlo.app.miniplayer_service" target="17" />
-      <module name="Spowlo.ffmpeg" target="17" />
+      <module name="Spowlo.commonutilities" target="17" />
       <module name="Spowlo.spotdl-android" target="17" />
       <module name="Spowlo.spotdl_utilities" target="17" />
     </bytecodeTargetLevel>

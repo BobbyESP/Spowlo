@@ -254,7 +254,8 @@ private fun PlaylistPageImplementation(
                     isExplicit = track.explicit,
                     duration = track.durationMs,
                     imageUrl = track.album.images.firstOrNull()?.url ?: "",
-                    isPlaylist = true
+                    isPlaylist = true,
+                    onClick = {}
                 ) {
                     viewModel.selectTrackForSheet(track)
                     showTrackSheet = true

@@ -1,4 +1,4 @@
-package com.bobbyesp.commonutilities
+package com.bobbyesp.commonUtilities
 
 import android.content.Context
 

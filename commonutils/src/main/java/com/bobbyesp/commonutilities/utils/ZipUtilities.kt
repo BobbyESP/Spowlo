@@ -1,4 +1,4 @@
-package com.bobbyesp.commonutilities.utils
+package com.bobbyesp.commonUtilities.utils
 
 import android.system.ErrnoException
 import android.system.Os

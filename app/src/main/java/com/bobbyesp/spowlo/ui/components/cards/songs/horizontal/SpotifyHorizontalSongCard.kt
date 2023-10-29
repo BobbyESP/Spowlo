@@ -35,6 +35,7 @@ import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.PlayingIndicator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
+import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.utils.localAsset
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -168,11 +169,11 @@ fun CompactSpotifyHorizontalSongCard(
     onLongClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
-    val albumArtPath = track.album.images.firstOrNull()?.url
+    val albumArtPath = track.album.images.secondOrNull()?.url
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
+            .clip(MaterialTheme.shapes.extraSmall)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick

@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.ui.components.cards.songs.horizontal
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +36,7 @@ import com.bobbyesp.spowlo.ui.components.others.tags.LyricsTag
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MetadataEntityItem(
     modifier: Modifier = Modifier,
@@ -48,13 +50,17 @@ fun MetadataEntityItem(
     imageUrl: String = "",
     surfaceColor: Color = MaterialTheme.colorScheme.surface,
     listIndex: Int? = null,
-    onClick: () -> Unit = { }
+    onClick: () -> Unit = { },
+    onLongClick: () -> Unit = { }
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { onClick() },
+                onLongClick = { onLongClick() }
+            ),
         color = surfaceColor,
-        onClick = { onClick() },
     ) {
         Row(
             modifier = contentModifier.fillMaxWidth(),

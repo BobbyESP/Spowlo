@@ -293,7 +293,8 @@ private fun TrackPageImplementation(
                             songName = trackData.name,
                             artists = artistsFullString,
                             isExplicit = trackData.explicit,
-                            surfaceColor = Color.Transparent
+                            surfaceColor = Color.Transparent,
+                            onClick = { }
                         ) {
                             showSheet = true
                         }

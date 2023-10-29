@@ -43,8 +43,8 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.core.appcompat)
     implementation(libs.bundles.coroutines)
+    implementation(project(":commonutils"))
 
-    implementation(project(":commonUtilities"))
     implementation(libs.okhttp)
 
     implementation(libs.commons.io)
