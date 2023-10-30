@@ -139,7 +139,6 @@ fun AlbumPageImplementation(
     val albumData by rememberSaveable(stateSaver = AlbumSaver) {
         mutableStateOf(foundAlbum)
     }
-
     var showTrackSheet by remember {
         mutableStateOf(false)
     }
@@ -245,8 +244,8 @@ fun AlbumPageImplementation(
             }
             items(
                 count = albumTracks.itemCount,
-                key = albumTracks.itemKey(),
-                contentType = albumTracks.itemContentType()
+                key = albumTracks.itemKey { item -> item.id },
+                contentType = albumTracks.itemContentType { "album_tracks" }
             ) {
                 val track = albumTracks[it] ?: return@items
                 val trackArtists = track.artists.joinToString(", ") { artist -> artist.name }
@@ -264,8 +263,10 @@ fun AlbumPageImplementation(
                     showTrackSheet = true
                 }
             }
-            loadStateContent(albumTracks) {
-                HorizontalSongCardShimmer(showSongImage = false)
+            if(albumData.totalTracks != 1) {
+                loadStateContent(albumTracks) {
+                    HorizontalSongCardShimmer(showSongImage = false)
+                }
             }
             item {
                 HorizontalDivider(

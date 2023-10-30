@@ -10,6 +10,7 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 
 class SpotifyAuthManagerImpl @Inject constructor(
@@ -82,7 +83,9 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
     }
     override fun credentialsFileExists(): Boolean {
-        TODO()
+        val sharedPrefsFile = File(context.applicationInfo.dataDir + "/shared_prefs")
+        val encryptedPreferencesFile = File(sharedPrefsFile, "spotify-api-encrypted-preferences.xml")
+        return encryptedPreferencesFile.exists()
     }
 
     override fun deleteCredentials(): Boolean {

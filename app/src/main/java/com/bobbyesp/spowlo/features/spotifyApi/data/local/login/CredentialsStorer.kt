@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.features.spotifyApi.data.local.login
 
 import android.content.Context
+import android.util.Log
 import com.adamratzman.spotify.auth.SpotifyDefaultCredentialStore
 import com.bobbyesp.spowlo.BuildConfig
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ class CredentialsStorer {
             credentials.await()
             true
         } catch (e: Throwable) {
+            Log.e("CredentialsStorer", "Error creating credentials", e)
             false
         }
     }
