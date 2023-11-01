@@ -7,13 +7,13 @@ import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.HIGH_CONTRAST
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.PALETTE_STYLE
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THEME_COLOR
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THREADS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.UPDATE_CHANNEL
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
 
 const val SYSTEM_DEFAULT = 0
 
@@ -33,6 +33,7 @@ private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
         UPDATE_CHANNEL to STABLE,
         DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
+        THREADS to 1,
     )
 
 object PreferencesUtil {

@@ -154,4 +154,7 @@
     <string name="viewing_metadata">Viewing metadata</string>
     <string name="spotify_credentials_corrupted_desc">Your Spotify credentials has been deleted since they were corrupted. Your session has been closed.</string>
     <string name="spotify_credentials_corrupted">Spotify credentials corrupted</string>
+    <string name="task_running">A task is already running!</string>
+    <string name="no_current_line">There\'s no line to copy!</string>
+    <string name="current_line_copied">The current output line has been copied!</string>
 </resources>

@@ -12,3 +12,11 @@ fun String.getNumbers(): Int {
 fun String.getId(): String {
     return split(":").last()
 }
+fun String.containsEllipsis(): Boolean {
+    return this.contains("…")
+}
+
+private val domainRegex = Regex("""http(s)?://(\w*(www|m|account|sso))?|/.*""")
+fun String.toDomain(): String {
+    return this.replace(domainRegex, "")
+}

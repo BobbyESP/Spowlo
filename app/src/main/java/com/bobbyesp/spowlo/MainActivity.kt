@@ -28,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var isServiceRunning = false
+    private var isMusicPlayerServiceOn = false
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,14 +76,14 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stopService(Intent(this, SpowloMediaService::class.java))
-        isServiceRunning = false
+        isMusicPlayerServiceOn = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startMediaPlayerService() {
-        if (!isServiceRunning) {
+        if (!isMusicPlayerServiceOn) {
             startForegroundService(Intent(this, SpowloMediaService::class.java))
-            isServiceRunning = true
+            isMusicPlayerServiceOn = true
         }
     }
 

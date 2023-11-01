@@ -6,18 +6,19 @@ import androidx.compose.ui.text.AnnotatedString
 import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
+import kotlin.random.Random
 
 data class DownloadTask(
-    val id: Int,
+    val id: Int? = Random.nextInt(0, 100000),
     val title: String,
     val artist: String,
-    val album: String,
+    val type: SpotifyItemType,
     val taskName : String = "$title - $artist",
     val url: String,
-    val progress: Int,
-    val output: String,
-    val currentLine: String,
+    val output: String = "",
+    val currentLine: String? = null,
     val state: DownloadState
 ) {
     fun toKey() = Downloader.makeKey(title, artist)
@@ -45,8 +46,10 @@ data class DownloadTask(
     }
 
     fun onCopyCurrentLine(context: Context, clipboardManager: ClipboardManager) {
-        clipboardManager.setText(AnnotatedString(currentLine))
-        ToastUtil.makeToastSuspend(context, context.getString(R.string.output_copied))
+        currentLine?.let {
+            clipboardManager.setText(AnnotatedString(it))
+            ToastUtil.makeToastSuspend(context, context.getString(R.string.current_line_copied))
+        } ?: ToastUtil.makeToastSuspend(context, context.getString(R.string.no_current_line))
     }
 
     fun onCopyUrl(context: Context, clipboardManager: ClipboardManager) {

@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.utils.preferences
 object PreferencesStrings {
     //------------SPOTDL---------------
     const val SPOTDL = "spotdl"
+    const val THREADS = "threads"
 
     //------------APP------------------
     const val UPDATE_CHANNEL = "update_channel"

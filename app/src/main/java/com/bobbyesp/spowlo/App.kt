@@ -1,18 +1,23 @@
 package com.bobbyesp.spowlo
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.utils.services.DownloaderKeepUpService
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -48,7 +53,7 @@ class App : Application() {
 
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
-
+        appContext = applicationContext
         applicationScope.launch((Dispatchers.Main)) {
             try {
                 SpotDL.getInstance().init(context)
@@ -84,7 +89,10 @@ class App : Application() {
         })
     }
 
+
     companion object {
+        @SuppressLint("StaticFieldLeak") lateinit var appContext: Context
+        private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
@@ -92,6 +100,18 @@ class App : Application() {
         const val USER_AGENT_HEADER =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
         const val SPOTIFY_LOGO_URL = "https://www.liderlogo.es/wp-content/uploads/2022/12/pasted-image-0-4-1024x576.png"
+
+        var isKeepUpServiceRunning = false
+
+        private val connection = object : ServiceConnection {
+            override fun onServiceConnected(className: ComponentName, service: IBinder) {
+                val binder = service as DownloaderKeepUpService.DownloadServiceBinder
+                isKeepUpServiceRunning = true
+            }
+
+            override fun onServiceDisconnected(arg0: ComponentName) {
+            }
+        }
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
@@ -125,6 +145,25 @@ class App : Application() {
             }
             logFile.appendText(errorReport)
             return logFile.absolutePath
+        }
+
+        fun startKeepUpService(context: Context) {
+            if (isKeepUpServiceRunning) return
+            Intent(context.applicationContext, DownloaderKeepUpService::class.java).also { intent ->
+                context.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            }
+        }
+
+        fun stopKeepUpService(context: Context) {
+            if (!isKeepUpServiceRunning) return
+            try {
+                isKeepUpServiceRunning = false
+                context.applicationContext.run {
+                    unbindService(connection)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }
