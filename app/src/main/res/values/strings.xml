@@ -157,4 +157,6 @@
     <string name="task_running">A task is already running!</string>
     <string name="no_current_line">There\'s no line to copy!</string>
     <string name="current_line_copied">The current output line has been copied!</string>
+    <string name="song_info_null">No song information provided for the downloader!</string>
+    <string name="download_finished">Download finished!</string>
 </resources>

@@ -9,7 +9,7 @@ import com.bobbyesp.spowlo.BuildConfig
 
 fun <T : Any> LazyListScope.loadStateContent(
     items: LazyPagingItems<T>,
-    itemCount: Int = 7,
+    itemCount: Int = 1,
     loadingContent: @Composable () -> Unit
 ) {
     items.apply {

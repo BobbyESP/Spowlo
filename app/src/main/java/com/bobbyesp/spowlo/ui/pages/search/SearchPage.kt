@@ -120,7 +120,8 @@ fun SearchPage(
                 start = bottomInsetsAsPadding.calculateStartPadding(
                     LocalLayoutDirection.current
                 )
-            ).systemBarsPadding()
+            )
+            .systemBarsPadding()
     ) {
         QueryTextBox(
             modifier = Modifier
