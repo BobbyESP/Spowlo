@@ -16,6 +16,12 @@ fun String.containsEllipsis(): Boolean {
     return this.contains("…")
 }
 
+fun String.clearOutputWithEllipsis(): String {
+    return this.split("\n")
+        .filterNot { it.contains("…") }
+        .joinToString("\n")
+}
+
 private val domainRegex = Regex("""http(s)?://(\w*(www|m|account|sso))?|/.*""")
 fun String.toDomain(): String {
     return this.replace(domainRegex, "")

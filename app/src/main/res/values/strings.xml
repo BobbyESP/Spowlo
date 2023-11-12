@@ -159,4 +159,7 @@
     <string name="current_line_copied">The current output line has been copied!</string>
     <string name="song_info_null">No song information provided for the downloader!</string>
     <string name="download_finished">Download finished!</string>
+    <string name="download_cancelled">Download cancelled</string>
+    <string name="downloading_song">Downloading song</string>
+    <string name="download_failed">Download failed</string>
 </resources>

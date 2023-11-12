@@ -16,6 +16,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 object Downloader {
+
+    data class DownloadInfo(
+        val url: String,
+        val title: String,
+        val artist: String,
+        val type: SpotifyItemType,
+    )
+
     private var currentJob: Job? = null
     private var downloadResultTemp: Result<List<String>> =
         Result.failure(Exception("No result yet"))
@@ -57,19 +65,16 @@ object Downloader {
 
     fun onTaskStarted(
         id: Int? = null,
-        itemName: String,
-        artist: String,
-        type: SpotifyItemType,
-        url: String,
+        downloadInfo: DownloadInfo,
         taskName: String,
     ): DownloadTask = DownloadTask(
         id = id,
-        url = url,
+        url = downloadInfo.url,
         taskName = taskName,
-        artist = artist,
-        title = itemName,
+        artist = downloadInfo.artist,
+        title = downloadInfo.title,
         state = DownloadTask.DownloadState.Running(0f),
-        type = type
+        type = downloadInfo.type
     ).run {
         val taskKey = this.toKey()
         mutableTaskList[taskKey] = this

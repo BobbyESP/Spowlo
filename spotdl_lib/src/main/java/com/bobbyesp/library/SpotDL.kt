@@ -268,10 +268,10 @@ open class SpotDL {
         return SpotDLUpdater.getInstance().version(appContext!!)
     }
 
-    class CanceledException : Exception()
+    class CancelledException : Exception()
 
     @JvmOverloads
-    @Throws(SpotDLException::class, InterruptedException::class, CanceledException::class)
+    @Throws(SpotDLException::class, InterruptedException::class, CancelledException::class)
     fun execute(
         request: SpotDLRequest,
         processId: String? = null,
@@ -373,7 +373,7 @@ open class SpotDL {
 
         if (exitCode > 0) {
             if (processId != null && !idProcessMap.containsKey(processId))
-                throw CanceledException()
+                throw CancelledException()
             if(!command.contains("--print-errors")) {
                 throw SpotDLException("Error executing command: $command, exit code: $exitCode, stderr: $errClean \n\n stdout: $outClean")
             }
@@ -412,7 +412,7 @@ open class SpotDL {
         return out.isNotEmpty() && !request.hasOption("--print-errors")
     }
 
-    @Throws(SpotDLException::class, InterruptedException::class, CanceledException::class)
+    @Throws(SpotDLException::class, InterruptedException::class, CancelledException::class)
     fun getSongInfo(url: String, songId: String = UUID.randomUUID().toString()): List<Song> {
         assertInit()
         //Make sure that the path exists

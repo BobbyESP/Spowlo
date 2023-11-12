@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,8 +44,12 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.miniplayer_service.service.MediaServiceHandler
 import com.bobbyesp.miniplayer_service.service.MediaState
 import com.bobbyesp.miniplayer_service.service.PlayerEvent
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
+import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.downloader.Downloader.makeKey
+import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
 import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
@@ -83,6 +88,7 @@ fun TrackBottomSheet(
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
+    val scope = rememberCoroutineScope()
 
     val stopPlayingAfterClosing = STOP_AFTER_CLOSING_BS.getBoolean()
 
@@ -158,7 +164,24 @@ fun TrackBottomSheet(
             GridMenuItem(
                 icon = Icons.Default.Download,
                 title = { stringResource(id = R.string.download) },
-                onClick = { }
+                onClick = {
+                    //TODO: MOVE TO VIEWMODEL
+                    App.applicationScope.launch(Dispatchers.IO) {
+                        DownloaderUtil.downloadSong(
+                            downloadInfo = Downloader.DownloadInfo(
+                                url = spotifyUrl!!,
+                                title = trackName,
+                                artist = trackArtistsString,
+                                type = SpotifyItemType.TRACKS
+                            ),
+                            taskId = makeKey(trackName, trackArtistsString)
+                        ).onSuccess {
+                            ToastUtil.makeToastSuspend(context, context.getString(R.string.download_finished))
+                        }.onFailure {
+                            ToastUtil.makeToastSuspend(context, context.getString(R.string.download_failed))
+                        }
+                    }
+                }
             )
             GridMenuItem(
                 icon = Icons.Default.ContentCopy,
