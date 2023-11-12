@@ -23,7 +23,7 @@
     <string name="audio_provider">Proveedor de audio</string>
     <string name="audio_quality">Calidad de sonido</string>
     <string name="api_call_failed">La llamada a la API de los Mods no obtuvo respuesta</string>
-    <string name="cancel_download">Cancelar descarga</string>
+    <string name="cancel_download">Cancelar la descarga</string>
     <string name="check_source_code">Mira el código fuente de Spowlo en GitHub!</string>
     <string name="appearance_settings">Cambia la apariencia de la aplicación</string>
     <string name="spotify_settings_desc">Cambia los ajustes relacionados con la API de Spotify</string>
@@ -32,11 +32,11 @@
     <string name="download_error_msg">Ocurrió un error al intentar descargar la canción</string>
     <string name="about">Acerca de</string>
     <string name="filesize_gb">%.2f GB</string>
-    <string name="add">Añadir</string>
+    <string name="add">Agregar</string>
     <string name="filesize_mb">%.2f MB</string>
     <string name="network_settings_desc">Cambia la configuración de redes</string>
     <string name="lite_description">Una versión ligera de Spotify sin anuncios y con saltos ilimitados.</string>
-    <string name="multiselect_item_count">%1$d canción(es)</string>
+    <string name="multiselect_item_count">%1$d música(s)</string>
     <string name="are_you_sure">¿Estás seguro?</string>
     <string name="battery_configuration_desc">Activa el uso de la aplicación en segundo plano para asegurarte de que todo funciona correctamente.</string>
     <string name="settings_before_download_text">Ajusta tu descarga</string>
