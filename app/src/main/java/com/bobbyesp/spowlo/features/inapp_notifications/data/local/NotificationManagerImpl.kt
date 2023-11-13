@@ -1,7 +1,7 @@
 package com.bobbyesp.spowlo.features.inapp_notifications.data.local
 
 import android.util.Log
-import com.bobbyesp.spowlo.features.inapp_notifications.domain.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -55,5 +55,9 @@ class NotificationManagerImpl : NotificationManager {
 
     override fun getSessionNotifications(): List<Notification> {
         return _notifications.value.values.toList()
+    }
+
+    override fun getNotificationMapFlow(): MutableStateFlow<Map<Int, Notification>> {
+        return _notifications
     }
 }

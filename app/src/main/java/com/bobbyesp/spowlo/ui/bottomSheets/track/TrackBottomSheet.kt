@@ -49,7 +49,8 @@ import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.downloader.Downloader
 import com.bobbyesp.spowlo.features.downloader.Downloader.makeKey
 import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
-import com.bobbyesp.spowlo.features.inapp_notifications.domain.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.SpEntityNotificationInfo
 import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
@@ -167,14 +168,20 @@ fun TrackBottomSheet(
                 title = { stringResource(id = R.string.download) },
                 onClick = {
                     val notification = Notification(
-                        id = 0,
                         title = "Downloading $trackName",
                         subtitle = "TEST SUBTITLE",
                         timestamp = System.currentTimeMillis(),
-                        content = {}
+                        entityInfo = SpEntityNotificationInfo(
+                            name = trackName,
+                            artist = trackArtistsString,
+                            artworkUrl = trackImage,
+                            downloadUrl = spotifyUrl,
+                            itemType = SpotifyItemType.TRACKS,
+                        ),
+                        content = null
                     )
                     notiManager.showNotification(notification)
-                    //TODO: MOVE TO VIEWMODEL
+                    //TODO: MOVE TO VIEW MODEL
                     App.applicationScope.launch(Dispatchers.IO) {
                         DownloaderUtil.downloadSong(
                             downloadInfo = Downloader.DownloadInfo(
@@ -188,11 +195,10 @@ fun TrackBottomSheet(
                             ToastUtil.makeToastSuspend(context, context.getString(R.string.download_finished))
                             notiManager.showNotification(
                                 Notification(
-                                    id = 1,
                                     title = "Download finished",
                                     subtitle = "TEST SUBTITLE",
                                     timestamp = System.currentTimeMillis(),
-                                    content = {}
+                                    content = null
                                 )
                             )
                         }.onFailure {

@@ -1,6 +1,6 @@
 package com.bobbyesp.spowlo.features.inapp_notifications.data.local
 
-import com.bobbyesp.spowlo.features.inapp_notifications.domain.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface NotificationManager {
@@ -11,4 +11,5 @@ interface NotificationManager {
     fun dismissNotification()
     fun getNotification(notificationId: Int): Notification?
     fun getSessionNotifications(): List<Notification>
+    fun getNotificationMapFlow(): MutableStateFlow<Map<Int, Notification>>
 }

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -37,6 +38,7 @@ sealed class Route(
 
     //ROUTES
     data object Home : Route("home", "", Icons.Outlined.Home)
+        data object Notifications : Route("notifications", "", Icons.Default.Notifications)
     data object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
         data object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
             data object SelectedSongLyrics :

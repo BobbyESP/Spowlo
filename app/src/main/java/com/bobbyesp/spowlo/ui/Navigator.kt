@@ -4,7 +4,10 @@ package com.bobbyesp.spowlo.ui
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -14,7 +17,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
@@ -69,9 +71,11 @@ import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
+import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
+import com.bobbyesp.spowlo.ui.pages.home.notifications.NotificationsPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.MetadataEntityBinder
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
@@ -201,7 +205,8 @@ fun Navigator() {
         val scope = rememberCoroutineScope()
         val notificationState by notificationsManager.getCurrentNotification().collectAsStateWithLifecycle()
 
-        if (notificationState != null) {
+        val notificationVisible = notificationState != null
+        if (notificationVisible) {
             DisposableEffect(notificationState) {
                 val job = scope.launch {
                     delay(4000L)
@@ -232,6 +237,11 @@ fun Navigator() {
                     animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
                         HomePage(viewModel)
+                    }
+                    animatedComposableVariant(Route.Notifications.route) {
+                        NotificationsPage {
+                            navController.popBackStack()
+                        }
                     }
                 }
 
@@ -413,7 +423,7 @@ fun Navigator() {
             }
         }
         AnimatedVisibility(
-            visible = notificationState != null,
+            visible = notificationVisible,
             enter = fadeIn(), // You can customize enter and exit animations
             exit = fadeOut() // As an example, fadeIn and fadeOut are used
         ) {
@@ -427,13 +437,38 @@ fun Navigator() {
                             )
                         )
                     )
-                    .fillMaxWidth()
+                    .fillMaxSize()
             ) {
                 val notification = notificationState
-                if (notification?.content != null) {
-                    notification.content()
-                } else {
-                    Text(text = notification?.title ?: "")
+                notification?.let {
+                    if (notification.content != null) {
+                        notification.content.let { it() }
+                    } else {
+                        val cardVisible = remember { mutableStateOf(false) }
+                        if (!cardVisible.value) {
+                            scope.launch {
+                                delay(300) // Introduce a delay of 300ms
+                                cardVisible.value = true
+                            }
+                        }
+
+                        // Use transition to animate the card's appearance
+                        val transition = updateTransition(
+                            targetState = cardVisible.value,
+                            label = "Card visibility transition"
+                        )
+                        val offset by transition.animateDp(
+                            transitionSpec = { tween(durationMillis = 500) },
+                            label = "Card offset transition",
+                        ) { isVisible ->
+                            if (isVisible) 40.dp else (-100).dp
+                        }
+
+                        SongDownloadNotification(
+                            modifier = Modifier.offset(y = offset),
+                            notification = notification
+                        )
+                    }
                 }
             }
         }
