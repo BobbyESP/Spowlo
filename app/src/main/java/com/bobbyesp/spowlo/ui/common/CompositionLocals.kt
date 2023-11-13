@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
+import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManager
+import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManagerImpl
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference
@@ -58,6 +60,8 @@ val LocalWindowWidthState =
     staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
+val LocalNotificationsManager =
+    compositionLocalOf<NotificationManager> { error("No notifications manager provided") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalBottomSheetMenuState =
@@ -71,12 +75,12 @@ fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
     content: @Composable () -> Unit
 ) {
-   val context = LocalContext.current
+    val context = LocalContext.current
     val appSettingsState = AppSettingsStateFlow.collectAsState().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
-
     val imageLoader = ImageLoader.Builder(context).build()
+    val notificationManager = NotificationManagerImpl()
 
     appSettingsState.run {
         CompositionLocalProvider(
@@ -93,7 +97,8 @@ fun AppLocalSettingsProvider(
                 paletteStyles.getOrElse(paletteStyleIndex) { PaletteStyle.TonalSpot }
             ), // Tells the app what is the current palette to use
             LocalShimmerTheme provides shimmerEffect,
-            LocalCoilImageLoader provides imageLoader
+            LocalCoilImageLoader provides imageLoader,
+            LocalNotificationsManager provides notificationManager,
         ) {
             content() //The content of the app
         }

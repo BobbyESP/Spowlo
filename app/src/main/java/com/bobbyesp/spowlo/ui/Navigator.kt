@@ -2,8 +2,11 @@ package com.bobbyesp.spowlo.ui
 
 //noinspection UsingMaterialAndMaterial3Libraries
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
@@ -25,12 +29,16 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -39,6 +47,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,6 +58,7 @@ import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.ui.bottomSheets.player.PlayerAsBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.LocalNotificationsManager
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.MetadataEntityParamType
 import com.bobbyesp.spowlo.ui.common.NavArgs
@@ -79,6 +89,8 @@ import com.bobbyesp.spowlo.utils.ui.Constants
 import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -90,6 +102,7 @@ fun Navigator() {
     val configuration = LocalConfiguration.current
     val windowsInsets = WindowInsets.systemBars
     val density = LocalDensity.current
+    val notificationsManager = LocalNotificationsManager.current
 
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
     val startInset = with(density) {
@@ -184,6 +197,22 @@ fun Navigator() {
                 (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
             }
         )
+
+        val scope = rememberCoroutineScope()
+        val notificationState by notificationsManager.getCurrentNotification().collectAsStateWithLifecycle()
+
+        if (notificationState != null) {
+            DisposableEffect(notificationState) {
+                val job = scope.launch {
+                    delay(4000L)
+                    notificationsManager.dismissNotification()
+                }
+
+                onDispose {
+                    job.cancel()
+                }
+            }
+        }
 
         CompositionLocalProvider(
             LocalPlayerAwareWindowInsets provides playerAwareWindowInsets
@@ -380,6 +409,31 @@ fun Navigator() {
 
                 else -> {
                     horizontalNavBar()
+                }
+            }
+        }
+        AnimatedVisibility(
+            visible = notificationState != null,
+            enter = fadeIn(), // You can customize enter and exit animations
+            exit = fadeOut() // As an example, fadeIn and fadeOut are used
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black,
+                                Color.Transparent
+                            )
+                        )
+                    )
+                    .fillMaxWidth()
+            ) {
+                val notification = notificationState
+                if (notification?.content != null) {
+                    notification.content()
+                } else {
+                    Text(text = notification?.title ?: "")
                 }
             }
         }

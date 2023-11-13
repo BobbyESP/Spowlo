@@ -21,7 +21,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,10 +49,12 @@ import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.downloader.Downloader
 import com.bobbyesp.spowlo.features.downloader.Downloader.makeKey
 import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.Notification
 import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.LocalNotificationsManager
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
 import com.bobbyesp.spowlo.ui.components.lazygrid.GridMenuItem
@@ -88,7 +89,7 @@ fun TrackBottomSheet(
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
+    val notiManager = LocalNotificationsManager.current
 
     val stopPlayingAfterClosing = STOP_AFTER_CLOSING_BS.getBoolean()
 
@@ -165,6 +166,14 @@ fun TrackBottomSheet(
                 icon = Icons.Default.Download,
                 title = { stringResource(id = R.string.download) },
                 onClick = {
+                    val notification = Notification(
+                        id = 0,
+                        title = "Downloading $trackName",
+                        subtitle = "TEST SUBTITLE",
+                        timestamp = System.currentTimeMillis(),
+                        content = {}
+                    )
+                    notiManager.showNotification(notification)
                     //TODO: MOVE TO VIEWMODEL
                     App.applicationScope.launch(Dispatchers.IO) {
                         DownloaderUtil.downloadSong(
@@ -177,6 +186,15 @@ fun TrackBottomSheet(
                             taskId = makeKey(trackName, trackArtistsString)
                         ).onSuccess {
                             ToastUtil.makeToastSuspend(context, context.getString(R.string.download_finished))
+                            notiManager.showNotification(
+                                Notification(
+                                    id = 1,
+                                    title = "Download finished",
+                                    subtitle = "TEST SUBTITLE",
+                                    timestamp = System.currentTimeMillis(),
+                                    content = {}
+                                )
+                            )
                         }.onFailure {
                             ToastUtil.makeToastSuspend(context, context.getString(R.string.download_failed))
                         }
