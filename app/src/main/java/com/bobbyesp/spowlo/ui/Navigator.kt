@@ -89,6 +89,7 @@ import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.selected.Selecte
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
+import com.bobbyesp.spowlo.ui.theme.applyAlpha
 import com.bobbyesp.spowlo.utils.ui.Constants
 import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
@@ -239,7 +240,7 @@ fun Navigator() {
                         HomePage(viewModel)
                     }
                     animatedComposableVariant(Route.Notifications.route) {
-                        NotificationsPage {
+                        NotificationsPage(notificationsManager) {
                             navController.popBackStack()
                         }
                     }
@@ -432,12 +433,14 @@ fun Navigator() {
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black,
+                                Color.Black.applyAlpha(0.6f),
                                 Color.Transparent
-                            )
+                            ),
+                            endY = 500f
                         )
                     )
                     .fillMaxSize()
+                , contentAlignment = Alignment.TopCenter
             ) {
                 val notification = notificationState
                 notification?.let {

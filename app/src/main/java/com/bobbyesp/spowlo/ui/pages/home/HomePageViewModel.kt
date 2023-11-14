@@ -43,14 +43,6 @@ class HomePageViewModel @Inject constructor(
         viewModelScope.launch {
             getLoggedIn()
         }
-//        viewModelScope.launch {
-//            delay(3000)
-//            try {
-//                testSpotDL()
-//            } catch (e: SpotDLException) {
-//                Log.e("HomePageViewModel", "Error testing SpotDL", e)
-//            }
-//        }
     }
 
     fun login() {

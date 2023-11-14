@@ -28,7 +28,6 @@ class SpotifyAuthManagerImpl @Inject constructor(
             startSpotifyClientPkceLoginActivity(SpotifyPkceLoginImpl::class.java)
         }
     }
-
     override fun getSpotifyClientApi(): SpotifyClientApi? {
         if (spotifyClientApi != null) {
             return spotifyClientApi
@@ -38,14 +37,13 @@ class SpotifyAuthManagerImpl @Inject constructor(
         spotifyClientApi = credentials.getSpotifyClientPkceApi { automaticRefresh = true }
         return spotifyClientApi
     }
-
     override suspend fun isAuthenticated(): Boolean {
         return try {
             val isTokenValid =
                 credentials.getSpotifyClientPkceApi()?.isTokenValid()?.isValid ?: false
             val isClientApiInstanceNonNull = spotifyClientApi != null
             if (BuildConfig.DEBUG) Log.i(
-                "SearchViewModel",
+                "SpotifyAuthManager",
                 "isAuthenticated --> isTokenValid: $isTokenValid, isClientApiValid: $isClientApiInstanceNonNull"
             )
             isTokenValid
@@ -54,11 +52,9 @@ class SpotifyAuthManagerImpl @Inject constructor(
             false
         }
     }
-
     override fun shouldRefreshToken(): Boolean {
         return spotifyClientApi?.token?.shouldRefresh() ?: true
     }
-
     override suspend fun refreshToken(): Boolean {
         return try {
             Log.i("SpotifyAuthManager", "Refreshing token...")
@@ -72,22 +68,14 @@ class SpotifyAuthManagerImpl @Inject constructor(
             throw e // Throw the exception for being handled by the places where SpotifyAuthManager is used
         }
     }
-
     override suspend fun createCredentials(): Boolean {
-        return try {
-            credentialsStorer.createCredentials(context)
-            true
-        } catch (e: Throwable) {
-            Log.e("SpotifyAuthManager", "Error creating credentials", e)
-            false
-        }
+        return credentialsStorer.createCredentials(context)
     }
     override fun credentialsFileExists(): Boolean {
         val sharedPrefsFile = File(context.applicationInfo.dataDir + "/shared_prefs")
         val encryptedPreferencesFile = File(sharedPrefsFile, "spotify-api-encrypted-preferences.xml")
         return encryptedPreferencesFile.exists()
     }
-
     override fun deleteCredentials(): Boolean {
         return try {
             credentials.clear()

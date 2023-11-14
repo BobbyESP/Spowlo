@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
@@ -30,19 +31,21 @@ fun SongDownloadNotification(
     notification: Notification,
     showBar: Boolean = true
 ) {
-
     Surface(
         modifier = modifier,
+        tonalElevation = 6.dp,
+        shape = MaterialTheme.shapes.small
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(0.8f)
                 .padding(8.dp)
         ) {
             Column {
                 Text(
                     text = notification.title,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = notification.subtitle,
@@ -52,12 +55,12 @@ fun SongDownloadNotification(
                 if (showBar) {
                     var progress by remember { mutableFloatStateOf(1f) }
 
-                    LaunchedEffect(key1 = true) {
+                    LaunchedEffect(key1 = true, key2 = notification.id) {
                         val animationTime = 4000L
                         val startTime = withFrameNanos { it }
                         while (withFrameNanos { it } - startTime < animationTime) {
                             progress = ((withFrameNanos { it } - startTime) / animationTime.toFloat())
-                            delay(16) // Adjust the delay to change the smoothness of the animation
+                            delay(15) // Adjust the delay to change the smoothness of the animation
                         }
                         progress = 0f
                     }

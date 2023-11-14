@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.features.inapp_notifications.data.local
 import android.util.Log
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -12,6 +13,10 @@ class NotificationManagerImpl : NotificationManager {
 
     private val _currentNotification = MutableStateFlow<Notification?>(null)
 
+    /**
+     * This method is used to show a notification in the UI
+     * @param notification the notification to show
+     */
     override fun showNotification(notification: Notification) {
         //if the notification id is already present, we just make it visible, otherwise we add it
         val existingNotification = getNotification(notification.id)
@@ -29,12 +34,20 @@ class NotificationManagerImpl : NotificationManager {
         }
     }
 
+    /**
+     * This method is used to show a notification in the UI
+     * @param notificationId the id of the notification to show
+     */
     override fun showNotification(notificationId: Int) {
         getNotification(notificationId)?.let {
             showNotification(it)
         } ?: throw Exception("Notification with id $notificationId not found")
     }
 
+    /**
+     * This method is used to get the current notification
+     * @return the current notification
+     */
     override fun getCurrentNotification(): MutableStateFlow<Notification?> {
         return _currentNotification
     }
@@ -46,18 +59,35 @@ class NotificationManagerImpl : NotificationManager {
         }
     }
 
+    /**
+     * This method is used to dismiss the current notification
+     */
     override fun dismissNotification() {
         _currentNotification.value = null
     }
+
+    /**
+     * This method is used to get a notification by its id
+     * @param notificationId the id of the notification to get
+     * @return the notification with the given id
+     */
     override fun getNotification(notificationId: Int): Notification? {
         return _notifications.value[notificationId]
     }
 
+    /**
+     * This method is used to get all the notifications that have been shown in the current session
+     * @return a list of notifications
+     */
     override fun getSessionNotifications(): List<Notification> {
         return _notifications.value.values.toList()
     }
 
-    override fun getNotificationMapFlow(): MutableStateFlow<Map<Int, Notification>> {
-        return _notifications
+    /**
+     * This method is used to get all the notifications that have been shown in the current session
+     * @return a list of notifications
+     */
+    override fun getNotificationMapFlow(): StateFlow<Map<Int, Notification>> {
+        return notifications
     }
 }

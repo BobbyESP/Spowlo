@@ -6,8 +6,6 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -62,10 +60,6 @@ val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
 val LocalNotificationsManager =
     compositionLocalOf<NotificationManager> { error("No notifications manager provided") }
-
-@OptIn(ExperimentalMaterial3Api::class)
-val LocalBottomSheetMenuState =
-    compositionLocalOf<BottomSheetScaffoldState> { error("No BottomSheetScaffoldState provided") }
 val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
@@ -80,7 +74,7 @@ fun AppLocalSettingsProvider(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
     val imageLoader = ImageLoader.Builder(context).build()
-    val notificationManager = NotificationManagerImpl()
+    val notificationManager by lazy { NotificationManagerImpl() }
 
     appSettingsState.run {
         CompositionLocalProvider(
