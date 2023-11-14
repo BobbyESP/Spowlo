@@ -352,10 +352,10 @@ private fun PageImplementation(
                                 }
                             )
                         }
-                        loadStateContent(mostListenedSongs) {
+                        loadStateContent(mostListenedSongs, itemCount = 7) {
                             SmallSongCardShimmer()
                         }
-                        loadStateContent(mostPlayedArtists) {
+                        loadStateContent(mostPlayedArtists, itemCount = 7) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
                             )

@@ -123,6 +123,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         debug {
+            applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             if (keystorePropertiesFile.exists()) signingConfig = signingConfigs.getByName("debug")
             packaging {
