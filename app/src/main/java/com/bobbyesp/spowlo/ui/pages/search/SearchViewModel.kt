@@ -48,10 +48,10 @@ class SearchViewModel @Inject constructor(
         val searchViewState: SearchViewState = SearchViewState.Idle,
         val query: String = "",
         val activeSearchType: SpotifyItemType = SpotifyItemType.TRACKS,
-        val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
-        val searchedAlbums: Flow<PagingData<SimpleAlbum>> = emptyFlow(),
-        val searchedArtists: Flow<PagingData<Artist>> = emptyFlow(),
-        val searchedPlaylists: Flow<PagingData<SimplePlaylist>> = emptyFlow(),
+        val searchedTracks: Flow<PagingData<Track>>? = emptyFlow(),
+        val searchedAlbums: Flow<PagingData<SimpleAlbum>>? = emptyFlow(),
+        val searchedArtists: Flow<PagingData<Artist>>? = emptyFlow(),
+        val searchedPlaylists: Flow<PagingData<SimplePlaylist>>? = emptyFlow(),
     )
 
     private fun chooseSearchType(spotifyItemType: SpotifyItemType) {
@@ -83,7 +83,7 @@ class SearchViewModel @Inject constructor(
         searchJob?.cancel()
         updateViewState(SearchViewState.Loading)
         searchJob = viewModelScope.launch {
-            try {
+            runCatching {
                 when (searchType) {
                     SpotifyItemType.TRACKS -> {
                         getTracksPaginatedData(query = query)
@@ -101,10 +101,10 @@ class SearchViewModel @Inject constructor(
                         getSimplePaginatedData(query = query)
                     }
                 }
-
+            }.onSuccess {
                 updateViewState(SearchViewState.Success)
-            } catch (e: Exception) {
-                updateViewState(SearchViewState.Error(e))
+            }.onFailure {
+                updateViewState(SearchViewState.Error(it))
             }
         }
     }
@@ -130,7 +130,7 @@ class SearchViewModel @Inject constructor(
         )
         mutablePageViewState.update {
             it.copy(
-                searchedTracks = tracksPager!!
+                searchedTracks = tracksPager
             )
         }
     }
@@ -155,7 +155,7 @@ class SearchViewModel @Inject constructor(
         )
         mutablePageViewState.update {
             it.copy(
-                searchedAlbums = albumsPager!!
+                searchedAlbums = albumsPager
             )
         }
     }
@@ -180,7 +180,7 @@ class SearchViewModel @Inject constructor(
         )
         mutablePageViewState.update {
             it.copy(
-                searchedPlaylists = playlistsPager!!
+                searchedPlaylists = playlistsPager
             )
         }
     }
@@ -203,10 +203,15 @@ class SearchViewModel @Inject constructor(
             },
             coroutineScope = viewModelScope,
         )
-        mutablePageViewState.update {
-            it.copy(
-                searchedArtists = artistsPager!!
-            )
+
+        if (artistsPager == null) {
+            updateViewState(SearchViewState.Error(Exception("artistsPager is null")))
+        } else {
+            mutablePageViewState.update {
+                it.copy(
+                    searchedArtists = artistsPager
+                )
+            }
         }
     }
 
@@ -231,7 +236,7 @@ class SearchViewModel @Inject constructor(
             data object Idle : SearchViewState()
             data object Loading : SearchViewState()
             data object Success : SearchViewState()
-            data class Error(val error: Exception) : SearchViewState()
+            data class Error(val error: Throwable) : SearchViewState()
         }
     }
 }

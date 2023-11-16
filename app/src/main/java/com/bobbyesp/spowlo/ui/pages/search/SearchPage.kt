@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.search
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -107,10 +109,10 @@ fun SearchPage(
         ),
     )
 
-    val paginatedTracks = viewState.searchedTracks.collectAsLazyPagingItems()
-    val paginatedAlbums = viewState.searchedAlbums.collectAsLazyPagingItems()
-    val paginatedArtists = viewState.searchedArtists.collectAsLazyPagingItems()
-    val paginatedPlaylists = viewState.searchedPlaylists.collectAsLazyPagingItems()
+    val paginatedTracks = viewState.searchedTracks?.collectAsLazyPagingItems()
+    val paginatedAlbums = viewState.searchedAlbums?.collectAsLazyPagingItems()
+    val paginatedArtists = viewState.searchedArtists?.collectAsLazyPagingItems()
+    val paginatedPlaylists = viewState.searchedPlaylists?.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -292,7 +294,7 @@ fun SearchPage(
 @Composable
 fun <T : Any> ResultsList(
     modifier: Modifier,
-    paginatedItems: LazyPagingItems<T>,
+    paginatedItems: LazyPagingItems<T>?,
     itemName: (T) -> String,
     itemArtists: (T) -> String,
     itemArtworkUrl: (T) -> String,
@@ -300,6 +302,7 @@ fun <T : Any> ResultsList(
     onItemClick: (T) -> Unit
 ) {
 
+    val itemCount = paginatedItems?.itemCount
     // Get local density from composable
     val localDensity = LocalDensity.current
 
@@ -319,7 +322,8 @@ fun <T : Any> ResultsList(
             .fillMaxSize()
             .onGloballyPositioned { coordinates ->
                 columnHeightDp = with(localDensity) { coordinates.size.height.toDp() }
-            }
+            },
+        state = rememberLazyListState(),
     ) {
         stickyHeader {
             Box(
@@ -335,7 +339,6 @@ fun <T : Any> ResultsList(
                         )
                     )
             ) {
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -346,7 +349,7 @@ fun <T : Any> ResultsList(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     AnimatedCounter(
-                        count = paginatedItems.itemCount,
+                        count = paginatedItems?.itemCount ?: 0,
                         style = MaterialTheme.typography.labelLarge.copy(
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -360,24 +363,37 @@ fun <T : Any> ResultsList(
                 }
             }
         }
-        items(
-            count = paginatedItems.itemCount,
-            key = paginatedItems.itemKey(),
-            contentType = paginatedItems.itemContentType()
-        ) { index ->
-            val item = paginatedItems[index] as T
-            SearchingResult(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                insideModifier = Modifier.padding(vertical = 6.dp),
-                name = itemName(item),
-                artists = itemArtists(item),
-                artworkUrl = itemArtworkUrl(item),
-                onClick = {
-                    onItemClick(item)
-                },
-                type = itemType.toComposableStringSingular()
-            )
+        //TODO: while loading, show shimmer but not create items
+        paginatedItems?.let {
+            items(
+                count = it.itemCount,
+                key = paginatedItems.itemKey(),
+                contentType = paginatedItems.itemContentType()
+            ) { index ->
+                if (index in 0 until it.itemCount) {
+                    // Inside composable block
+                    val item = paginatedItems[index] as T
+                    SearchingResult(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        insideModifier = Modifier.padding(vertical = 6.dp),
+                        name = itemName(item),
+                        artists = itemArtists(item),
+                        artworkUrl = itemArtworkUrl(item),
+                        onClick = {
+                            onItemClick(item)
+                        },
+                        type = itemType.toComposableStringSingular()
+                    )
+                } else {
+                    // Handle the case where the index is out of bounds
+                    // You can log a message, throw an exception, or provide a default item
+                    Log.e("YourTag", "Index $index is out of bounds for list size $itemCount")
+                    // Alternatively, you can provide a default item or UI element
+                    // val defaultItem = getDefaultItem()
+                    // SearchingResult(/* Use defaultItem here */)
+                }
+            }
         }
         loadStateContent(paginatedItems, itemCount = shimmerItemsCount.value) {
             HorizontalSongCardShimmer(

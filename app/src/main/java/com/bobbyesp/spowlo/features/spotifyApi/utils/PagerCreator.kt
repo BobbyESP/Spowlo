@@ -17,48 +17,40 @@ inline fun <T : Any> createPager(
     crossinline nonLoggedSourceFactory: () -> PagingSource<Int, T>,
     coroutineScope: CoroutineScope
 ): Flow<PagingData<T>>? {
-    Log.i("SearchViewModel", "createPager -> isLogged: $isLogged")
+
+    val pagerConfig = PagingConfig(
+        pageSize = 20,
+        enablePlaceholders = false,
+        initialLoadSize = 40,
+    )
+
+    Log.i("PagerCreator", "createPager -> isLogged: $isLogged")
     //if we are logged in we can use the api, so we use the pagingSourceFactory. In case that it fails we use the nonLoggedSourceFactory; if we are not logged in we use the nonLoggedSourceFactory
     return try {
         if (isLogged) {
-            if (clientApi == null || clientApi.token.shouldRefresh()) throw Exception("clientApi is null") // Strange error, should never happen when app is ready for the public.
+            if (clientApi == null || clientApi.token.shouldRefresh()) throw TokenRefreshException("clientApi is null") // Strange error, should never happen when app is ready for the public.
+            Log.i("PagerCreator", "createPager: Using pagingSourceFactory")
             Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false,
-                    initialLoadSize = 40,
-                ),
+                config = pagerConfig,
                 pagingSourceFactory = { pagingSourceFactory(clientApi) }
             ).flow.cachedIn(coroutineScope)
         } else {
+            Log.i("PagerCreator", "createPager: Using nonLoggedSourceFactory")
             Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false,
-                    initialLoadSize = 40,
-                ),
+                config = pagerConfig,
                 pagingSourceFactory = { nonLoggedSourceFactory() }
             ).flow.cachedIn(coroutineScope)
         }
-    } catch (e: Exception) {
-        Log.e("SearchViewModel", "createPager: ${e.message}. Using nonLoggedSourceFactory")
+    } catch (e: TokenRefreshException) {
+        Log.e("PagerCreator", "createPager: ${e.message}. Using nonLoggedSourceFactory due to token refresh error.")
         Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false,
-                initialLoadSize = 40,
-            ),
+            config = pagerConfig,
             pagingSourceFactory = { nonLoggedSourceFactory() }
         ).flow.cachedIn(coroutineScope)
     } catch (e: NullPointerException) {
-        Log.e("SearchViewModel", "createPager: ${e.message}")
-        Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false,
-                initialLoadSize = 40,
-            ),
-            pagingSourceFactory = { nonLoggedSourceFactory() }
-        ).flow.cachedIn(coroutineScope)
+        Log.e("PagerCreator", "createPager: ${e.message}")
+        null
     }
 }
+
+class TokenRefreshException(message: String) : Exception(message)

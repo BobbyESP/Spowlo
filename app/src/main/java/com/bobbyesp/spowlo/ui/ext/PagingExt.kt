@@ -8,11 +8,11 @@ import androidx.paging.compose.LazyPagingItems
 import com.bobbyesp.spowlo.BuildConfig
 
 fun <T : Any> LazyListScope.loadStateContent(
-    items: LazyPagingItems<T>,
+    items: LazyPagingItems<T>?,
     itemCount: Int = 7,
     loadingContent: @Composable () -> Unit
 ) {
-    items.apply {
+    items?.apply {
         when {
             loadState.refresh is LoadState.Loading -> {
                 items(itemCount) {
