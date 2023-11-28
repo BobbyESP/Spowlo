@@ -5,7 +5,7 @@
     <string name="audio">Audio</string>
     <string name="check_for_updates">Buscar actualizaciones</string>
     <string name="artist">Artista</string>
-    <string name="audio_provider_desc">Cambia desde donde quieres descargar las canciones</string>
+    <string name="audio_provider_desc">Elige desde dónde quieres descargar las canciones</string>
     <string name="album">Álbum</string>
     <string name="amoled_cloned">MOD Clonado (AMOLED)</string>
     <string name="amoled">MOD (AMOLED)</string>
@@ -24,7 +24,7 @@
     <string name="audio_quality">Calidad del audio</string>
     <string name="api_call_failed">La llamada a la API de los Mods no obtuvo respuesta</string>
     <string name="cancel_download">Cancelar la descarga</string>
-    <string name="check_source_code">Mira el código fuente de Spowlo en GitHub!</string>
+    <string name="check_source_code">¡Comprueba el código fuente de Spowlo en GitHub!</string>
     <string name="appearance_settings">Cambia la apariencia de la aplicación</string>
     <string name="spotify_settings_desc">Cambia los ajustes relacionados con la API de Spotify</string>
     <string name="format_settings_desc">Cambia el formato de tus descargas</string>
