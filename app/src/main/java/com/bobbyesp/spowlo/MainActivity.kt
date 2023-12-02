@@ -18,10 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
+import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,7 +56,8 @@ class MainActivity : AppCompatActivity() {
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 ) {
-                    Navigator()
+                    val loginManager = hiltViewModel<LoginManagerViewModel>()
+                    Navigator(loginManager)
                     if (corruptedCredentials) {
                         AlertDialog(
                             onDismissRequest = { corruptedCredentials = false },

@@ -32,11 +32,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -73,6 +75,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.ext.getParcelable
+import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.home.notifications.NotificationsPage
@@ -94,12 +97,17 @@ import com.bobbyesp.spowlo.utils.ui.Constants
 import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun Navigator() {
+fun Navigator(
+    loginManager: LoginManagerViewModel
+) {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val layoutDirection = LocalLayoutDirection.current
@@ -141,6 +149,12 @@ fun Navigator() {
     val shouldShowNavigationBar = remember(navBackStackEntry) {
         navBackStackEntry?.destination?.route == null ||
                 routesToShowNavBar.fastAny { it.route == navBackStackEntry?.destination?.route }
+    }
+
+    var isLogged: Boolean? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(true) {
+        isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
@@ -237,7 +251,12 @@ fun Navigator() {
                 ) {
                     animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
-                        HomePage(viewModel)
+                        HomePage(viewModel, isLogged ?: false, onLoginRequest = {
+                            scope.launch {
+                                runBlocking(Dispatchers.IO) { loginManager.login() }
+                                isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
+                            }
+                        })
                     }
                     animatedComposableVariant(Route.Notifications.route) {
                         NotificationsPage(notificationsManager) {
@@ -342,7 +361,7 @@ fun Navigator() {
                                 )
                             },
                             alwaysShowLabel = false,
-                            enabled = true
+                            enabled = if(route == Route.ProfileNavigator) isLogged == true else true
                         )
                     }
                 }
@@ -385,6 +404,7 @@ fun Navigator() {
                                     }
                                 }
                             }
+
                         }
                         NavigationRailItem(
                             modifier = Modifier.animateContentSize(),
@@ -403,7 +423,8 @@ fun Navigator() {
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                            }, alwaysShowLabel = false
+                            }, alwaysShowLabel = false,
+                            enabled = if(route == Route.ProfileNavigator) isLogged == true else true
                         )
                     }
                 }

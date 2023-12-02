@@ -22,13 +22,14 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.createPager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
@@ -37,6 +38,7 @@ class SearchViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val spotifyAuthManager: SpotifyAuthManager
 ) : ViewModel() {
+    private val isLoggedIn = runBlocking(Dispatchers.IO) { spotifyAuthManager.isAuthenticated() }
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
@@ -48,10 +50,10 @@ class SearchViewModel @Inject constructor(
         val searchViewState: SearchViewState = SearchViewState.Idle,
         val query: String = "",
         val activeSearchType: SpotifyItemType = SpotifyItemType.TRACKS,
-        val searchedTracks: Flow<PagingData<Track>>? = emptyFlow(),
-        val searchedAlbums: Flow<PagingData<SimpleAlbum>>? = emptyFlow(),
-        val searchedArtists: Flow<PagingData<Artist>>? = emptyFlow(),
-        val searchedPlaylists: Flow<PagingData<SimplePlaylist>>? = emptyFlow(),
+        val searchedTracks: Flow<PagingData<Track>>? = null,
+        val searchedAlbums: Flow<PagingData<SimpleAlbum>>? = null,
+        val searchedArtists: Flow<PagingData<Artist>>? = null,
+        val searchedPlaylists: Flow<PagingData<SimplePlaylist>>? = null,
     )
 
     private fun chooseSearchType(spotifyItemType: SpotifyItemType) {
@@ -113,7 +115,7 @@ class SearchViewModel @Inject constructor(
     private suspend fun getTracksPaginatedData(query: String) {
         val tracksPager = createPager(
             clientApi = clientApi,
-            isLogged = spotifyAuthManager.isAuthenticated(),
+            isLogged = isLoggedIn,
             pagingSourceFactory = { api ->
                 TracksClientPagingSource(
                     spotifyApi = api,
@@ -135,14 +137,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAlbumsPaginatedData(query: String) {
+    private fun getAlbumsPaginatedData(query: String) {
         val albumsPager = createPager(
             clientApi = clientApi,
-            isLogged = spotifyAuthManager.isAuthenticated(),
+            isLogged = isLoggedIn,
             pagingSourceFactory = { api ->
                 SimpleAlbumsClientPagingSource(
                     spotifyApi = api,
-                    query = query,
+                    query = query
                 )
             },
             nonLoggedSourceFactory = {
@@ -160,10 +162,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getSimplePaginatedData(query: String) {
+    private fun getSimplePaginatedData(query: String) {
         val playlistsPager = createPager(
             clientApi = clientApi,
-            isLogged = spotifyAuthManager.isAuthenticated(),
+            isLogged = isLoggedIn,
             pagingSourceFactory = { api ->
                 SimplePlaylistsClientPagingSource(
                     spotifyApi = api,
@@ -185,10 +187,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getArtistsPaginatedData(query: String) {
+    private fun getArtistsPaginatedData(query: String) {
         val artistsPager = createPager(
             clientApi = clientApi,
-            isLogged = spotifyAuthManager.isAuthenticated(),
+            isLogged = isLoggedIn,
             pagingSourceFactory = { api ->
                 ArtistsClientPagingSource(
                     spotifyApi = api,

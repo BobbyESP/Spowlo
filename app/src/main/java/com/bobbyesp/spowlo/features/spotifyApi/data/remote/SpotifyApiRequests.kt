@@ -16,8 +16,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SpotifyApiRequests {
     private val isDebug = BuildConfig.DEBUG
-    private const val clientId = BuildConfig.CLIENT_ID
-    private const val clientSecret = BuildConfig.CLIENT_SECRET
+    private const val CLIENT_ID = BuildConfig.CLIENT_ID
+    private const val CLIENT_SECRET = BuildConfig.CLIENT_SECRET
     private var api: SpotifyAppApi? = null
     private var token: Token? = null
 
@@ -28,21 +28,24 @@ object SpotifyApiRequests {
         try {
             if (isDebug) Log.d(
                 "SpotifyApiRequests",
-                "Building API with client ID: $clientId and client secret: $clientSecret"
+                "Building API with client ID: $CLIENT_ID and client secret: $CLIENT_SECRET"
             )
-            token = spotifyAppApi(clientId, clientSecret).build().token
-            api = spotifyAppApi(clientId, clientSecret, token!!) {
+            token = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build().token
+            api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET, token!!) {
                 automaticRefresh = true
             }.build()
         } catch (e: Exception) {
             if (isDebug) Log.e("SpotifyApiRequests", "Error building API", e)
         } catch (e: SpotifyException.BadRequestException) {
             if (token != null && token!!.shouldRefresh() && recursionDepth < MAX_RECURSION_DEPTH) {
+                Log.i("SpotifyApiRequests", "Token expired, refreshing token; recursion depth: $recursionDepth of $MAX_RECURSION_DEPTH")
                 clearApi()
                 buildApi()
                 recursionDepth++
                 return
             }
+        } catch (e: NullPointerException) {
+            if (isDebug) Log.e("SpotifyApiRequests", "Error building API", e)
         }
     }
 
@@ -53,20 +56,21 @@ object SpotifyApiRequests {
 
     @Provides
     @Singleton
+    @Throws(IllegalStateException::class)
     suspend fun provideSpotifyApi(): SpotifyAppApi {
         if (api == null) {
             buildApi()
         }
-        return api!!
+        return api ?: throw IllegalStateException("Spotify API is null")
     }
 
     @Provides
     @Singleton
+    @Throws(IllegalStateException::class)
     suspend fun provideSpotifyToken(): Token {
         if (token == null) {
             buildApi()
         }
-        return token!!
+        return token ?: throw IllegalStateException("Spotify Token is null")
     }
-
 }

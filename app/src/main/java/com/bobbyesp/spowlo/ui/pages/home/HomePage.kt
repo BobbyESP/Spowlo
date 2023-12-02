@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,18 +30,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
-    viewModel: HomePageViewModel
+    viewModel: HomePageViewModel,
+    isLogged: Boolean,
+    onLoginRequest: () -> Unit
 ) {
     val navController = LocalNavController.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-
-    val isLoggedIn = viewState.value.loggedIn
-
-    LaunchedEffect(Unit) {
-        viewModel.getLoggedIn()
-    }
 
     Scaffold(
         topBar = {
@@ -81,13 +76,13 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isLoggedIn) {
+            if (isLogged) {
                 Text(text = "Logged in")
             } else {
                 Text(text = "Not logged in")
                 Button(
                     onClick = {
-                        viewModel.login()
+                        onLoginRequest()
                     }) {
                     Text(text = "Launch PKCE Auth flow")
                 }
