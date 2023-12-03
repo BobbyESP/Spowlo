@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.ui.components.cards.songs.horizontal
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,12 +39,14 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.coil.CoilImageState
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RecentlyPlayedSongCard(
     modifier: Modifier = Modifier,
     showSpotifyLogo: Boolean = true,
     playHistoryItem: PlayHistory,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     val track = playHistoryItem.track
     val albumArtPath = playHistoryItem.track.album.images.secondOrNull()?.url
@@ -50,7 +54,12 @@ fun RecentlyPlayedSongCard(
 
     Box(modifier) {
         Surface(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    onClick = { onClick() },
+                    onLongClick = { onLongClick() }
+                ),
             onClick = onClick,
             shape = MaterialTheme.shapes.small,
         ) {

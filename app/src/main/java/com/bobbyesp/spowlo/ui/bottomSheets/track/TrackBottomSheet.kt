@@ -169,7 +169,7 @@ fun TrackBottomSheet(
                 onClick = {
                     val notification = Notification(
                         title = "Downloading $trackName",
-                        subtitle = "TEST SUBTITLE",
+                        subtitle = "By $trackArtistsString",
                         timestamp = System.currentTimeMillis(),
                         entityInfo = SpEntityNotificationInfo(
                             name = trackName,

@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.home.notifications
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,13 +66,19 @@ fun NotificationsPage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it),
-            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp)
         ) {
             items(
                 count = notificationsAsList.size,
                 key = { index -> notificationsAsList[index].id }
             ) { notificationIndex ->
-                SongDownloadNotification(notification = notificationsAsList[notificationIndex], showBar = false)
+                SongDownloadNotification(
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                    notification = notificationsAsList[notificationIndex],
+                    showBar = false
+                )
             }
         }
     }

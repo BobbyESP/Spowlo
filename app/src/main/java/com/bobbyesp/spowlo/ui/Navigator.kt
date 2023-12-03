@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
@@ -153,7 +154,7 @@ fun Navigator(
 
     var isLogged: Boolean? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
     }
 
@@ -169,18 +170,18 @@ fun Navigator(
             label = "Navigation bar animated height"
         )
 
-        val playerBottomSheetState = rememberBottomSheetState(
+        val navBarAsBottomSheet = rememberBottomSheetState(
             dismissedBound = 0.dp,
             collapsedBound = bottomInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + MiniPlayerHeight,
             expandedBound = maxHeight,
         )
 
-        val playerAwareWindowInsets = when (configuration.orientation) {
+        val navBarAwareWindowInsets = when (configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                remember(bottomInset, shouldShowNavigationBar, navBarAsBottomSheet.isDismissed) {
                     var start = startInset
                     if (shouldShowNavigationBar) start += NavigationBarHeight
-                    if (!playerBottomSheetState.isDismissed) start += MiniPlayerHeight
+                    if (!navBarAsBottomSheet.isDismissed) start += MiniPlayerHeight
                     windowsInsets
                         .only(WindowInsetsSides.Vertical)
                         .add(WindowInsets(top = Constants.AppBarHeight, left = start))
@@ -188,10 +189,10 @@ fun Navigator(
             }
 
             Configuration.ORIENTATION_PORTRAIT -> {
-                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                remember(bottomInset, shouldShowNavigationBar, navBarAsBottomSheet.isDismissed) {
                     var bottom = bottomInset
                     if (shouldShowNavigationBar) bottom += NavigationBarHeight
-                    if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
+                    if (!navBarAsBottomSheet.isDismissed) bottom += MiniPlayerHeight
                     windowsInsets
                         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                         .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
@@ -199,10 +200,10 @@ fun Navigator(
             }
 
             else -> {
-                remember(bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed) {
+                remember(bottomInset, shouldShowNavigationBar, navBarAsBottomSheet.isDismissed) {
                     var bottom = bottomInset
                     if (shouldShowNavigationBar) bottom += NavigationBarHeight
-                    if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
+                    if (!navBarAsBottomSheet.isDismissed) bottom += MiniPlayerHeight
                     windowsInsets
                         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                         .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
@@ -213,7 +214,7 @@ fun Navigator(
 
         val scrollBehavior = appBarScrollBehavior(
             canScroll = {
-                (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
+                (navBarAsBottomSheet.isCollapsed || navBarAsBottomSheet.isDismissed)
             }
         )
 
@@ -235,7 +236,7 @@ fun Navigator(
         }
 
         CompositionLocalProvider(
-            LocalPlayerAwareWindowInsets provides playerAwareWindowInsets
+            LocalPlayerAwareWindowInsets provides navBarAwareWindowInsets
         ) {
             NavHost(
                 modifier = Modifier
@@ -254,7 +255,6 @@ fun Navigator(
                         HomePage(viewModel, isLogged ?: false, onLoginRequest = {
                             scope.launch {
                                 runBlocking(Dispatchers.IO) { loginManager.login() }
-                                isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
                             }
                         })
                     }
@@ -302,7 +302,7 @@ fun Navigator(
                     MetadataEntityBinder(metadataEntity = selectedMetadataEntity!!)
                 }
             }
-            PlayerAsBottomSheet(state = playerBottomSheetState, navController = navController)
+            PlayerAsBottomSheet(state = navBarAsBottomSheet, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
             val horizontalNavBar: @Composable () -> Unit = {
                 NavigationBar(
@@ -315,7 +315,7 @@ fun Navigator(
                                 )
                             } else {
                                 val slideOffset =
-                                    (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                    (bottomInset + NavigationBarHeight) * navBarAsBottomSheet.progress.coerceIn(
                                         0f, 1f
                                     )
                                 val hideOffset =
@@ -378,7 +378,7 @@ fun Navigator(
                                 )
                             } else {
                                 val slideOffset =
-                                    (startInset - NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                    (startInset - NavigationBarHeight) * navBarAsBottomSheet.progress.coerceIn(
                                         0f, 1f
                                     )
                                 val hideOffset =
@@ -489,7 +489,7 @@ fun Navigator(
                         }
 
                         SongDownloadNotification(
-                            modifier = Modifier.offset(y = offset),
+                            modifier = Modifier.offset(y = offset).fillMaxWidth(0.8f),
                             notification = notification
                         )
                     }

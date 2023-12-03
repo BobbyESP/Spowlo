@@ -372,11 +372,24 @@ private fun PageImplementation(
                     val item = recentlyPlayedSongs[index]
                     RecentlyPlayedSongCard(
                         modifier = Modifier.fillMaxWidth(),
-                        playHistoryItem = item
-                    ) {
-                        viewModel.selectTrackForSheet(item.track)
-                        showSheet = true
-                    }
+                        playHistoryItem = item,
+                        onClick = {
+                            val selectedMetadataEntity = MetadataEntity(
+                                type = SpotifyItemType.TRACKS,
+                                id = item.track.id,
+                            )
+
+                            navController.navigate(
+                                Route.MetadataEntityViewer.createRoute(
+                                    selectedMetadataEntity
+                                )
+                            )
+                        },
+                        onLongClick = {
+                            viewModel.selectTrackForSheet(item.track)
+                            showSheet = true
+                        }
+                    )
                     if (item != recentlyPlayedSongs.last()) {
                         Spacer(modifier = Modifier.height(8.dp))
                     }

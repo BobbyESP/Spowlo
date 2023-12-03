@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,7 +52,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
-import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.others.SearchingResult
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
@@ -62,6 +60,7 @@ import com.bobbyesp.spowlo.ui.components.text.AnimatedCounter
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel.Companion
+import com.bobbyesp.spowlo.utils.MetadataEntityUtil.navigateToEntity
 import com.bobbyesp.spowlo.utils.ui.pages.IdlePage
 import kotlinx.coroutines.launch
 
@@ -193,14 +192,11 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.TRACKS,
                                             onItemClick = { track ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.TRACKS,
-                                                    id = track.id,
-                                                )
-
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
+                                                navigateToEntity(
+                                                    navController = navController,
+                                                    metadataEntity = MetadataEntity(
+                                                        type = SpotifyItemType.TRACKS,
+                                                        id = track.id,
                                                     )
                                                 )
                                             }
@@ -218,14 +214,11 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.ALBUMS,
                                             onItemClick = { album ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.ALBUMS,
-                                                    id = album.id,
-                                                )
-
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
+                                                navigateToEntity(
+                                                    navController = navController,
+                                                    metadataEntity = MetadataEntity(
+                                                        type = SpotifyItemType.ALBUMS,
+                                                        id = album.id,
                                                     )
                                                 )
                                             }
@@ -243,14 +236,11 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.ARTISTS,
                                             onItemClick = { artist ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.ARTISTS,
-                                                    id = artist.id,
-                                                )
-
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
+                                                navigateToEntity(
+                                                    navController = navController,
+                                                    metadataEntity = MetadataEntity(
+                                                        type = SpotifyItemType.ARTISTS,
+                                                        id = artist.id,
                                                     )
                                                 )
                                             }
@@ -268,14 +258,11 @@ fun SearchPage(
                                             },
                                             itemType = SpotifyItemType.PLAYLISTS,
                                             onItemClick = { playlist ->
-                                                val selectedMetadataEntity = MetadataEntity(
-                                                    type = SpotifyItemType.PLAYLISTS,
-                                                    id = playlist.id,
-                                                )
-
-                                                navController.navigate(
-                                                    Route.MetadataEntityViewer.createRoute(
-                                                        selectedMetadataEntity
+                                                navigateToEntity(
+                                                    navController = navController,
+                                                    metadataEntity = MetadataEntity(
+                                                        type = SpotifyItemType.PLAYLISTS,
+                                                        id = playlist.id,
                                                     )
                                                 )
                                             }
@@ -368,7 +355,6 @@ fun <T : Any> ResultsList(
                 }
             }
         }
-        //TODO: while loading, show shimmer but not create items
         paginatedItems?.let {
             items(
                 count = it.itemCount,
@@ -411,7 +397,6 @@ fun <T : Any> ResultsList(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchTypeChip(
     modifier: Modifier,

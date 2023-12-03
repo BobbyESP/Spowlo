@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,11 +19,14 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
+import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import kotlinx.coroutines.delay
 
 @Composable
@@ -38,13 +42,23 @@ fun SongDownloadNotification(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            notification.entityInfo?.artworkUrl?.let { artworkUrl ->
+                AsyncImageImpl(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .size(52.dp)
+                        .padding(end = 8.dp),
+                    model = artworkUrl,
+                    contentDescription = "Song Artwork"
+                )
+            }
             Column {
                 Text(
                     text = notification.title,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
@@ -55,18 +69,20 @@ fun SongDownloadNotification(
                 if (showBar) {
                     var progress by remember { mutableFloatStateOf(1f) }
 
-                    LaunchedEffect(key1 = true, key2 = notification.id) {
+                    LaunchedEffect(key1 = true, key2 = notification) {
                         val animationTime = 4000L
                         val startTime = withFrameNanos { it }
                         while (withFrameNanos { it } - startTime < animationTime) {
-                            progress = ((withFrameNanos { it } - startTime) / animationTime.toFloat())
+                            progress =
+                                ((withFrameNanos { it } - startTime) / animationTime.toFloat())
                             delay(15) // Adjust the delay to change the smoothness of the animation
                         }
                         progress = 0f
                     }
                     val animatedProgressBar by animateFloatAsState(
                         targetValue = progress,
-                        animationSpec = tween(4000, easing = LinearEasing), label = "progressBarAnimation"
+                        animationSpec = tween(4000, easing = LinearEasing),
+                        label = "progressBarAnimation"
                     )
 
                     LinearProgressIndicator(
