@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.3.0-alpha16"
+agp = "8.3.0-alpha17"
 kotlin = "1.9.20"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.12.0"
@@ -25,6 +25,7 @@ compose-pagination = "3.2.1"
 
 #More UI
 androidx-paging = "3.2.1"
+orbital = "0.3.3"
 shimmer = "1.2.0"
 palette = "1.0.0"
 
@@ -117,6 +118,7 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 
 #Paging3
@@ -254,7 +256,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
 ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]
-accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-systemuicontroller", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
+accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
 compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]

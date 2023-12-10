@@ -11,12 +11,16 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.Environment
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DOWNLOAD_DIR
+import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
+import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.services.DownloaderKeepUpService
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.google.android.material.color.DynamicColors
@@ -50,7 +54,12 @@ class App : Application() {
         }
         applicationScope = CoroutineScope(SupervisorJob())
         DynamicColors.applyToActivitiesIfAvailable(this)
-
+        audioDownloadDir = DOWNLOAD_DIR.getString(
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                getString(R.string.app_name)
+            ).absolutePath
+        )
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
         appContext = applicationContext
@@ -94,6 +103,7 @@ class App : Application() {
         @SuppressLint("StaticFieldLeak") lateinit var appContext: Context
         private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
+        lateinit var audioDownloadDir: String
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
@@ -112,6 +122,12 @@ class App : Application() {
             override fun onServiceDisconnected(arg0: ComponentName) {
             }
         }
+
+        fun updateDownloadDir(path: String) {
+            audioDownloadDir = path
+            PreferencesUtil.encodeString(DOWNLOAD_DIR, path)
+        }
+
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName

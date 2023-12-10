@@ -77,6 +77,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
+import com.bobbyesp.spowlo.ui.pages.downloader.tasks.DownloaderTasksPage
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.home.notifications.NotificationsPage
@@ -128,7 +129,8 @@ fun Navigator(
             Route.HomeNavigator,
             Route.SearchNavigator,
             Route.UtilitiesNavigator,
-            Route.ProfileNavigator
+            Route.ProfileNavigator,
+            Route.DownloaderTasksNavigator
         )
     }
 
@@ -138,6 +140,7 @@ fun Navigator(
             Route.Search,
             Route.Utilities,
             Route.Profile,
+            Route.DownloaderTasks
         )
     }
 
@@ -288,8 +291,6 @@ fun Navigator(
                         ProfilePage(viewModel = viewModel)
                     }
                 }
-                settingsNavigation()
-
                 animatedComposable(
                     route = Route.MetadataEntityViewer.route,
                     arguments = listOf(navArgument(NavArgs.MetadataEntitySelected.key) {
@@ -301,6 +302,16 @@ fun Navigator(
 
                     MetadataEntityBinder(metadataEntity = selectedMetadataEntity!!)
                 }
+                navigation(
+                    route = Route.DownloaderTasksNavigator.route,
+                    startDestination = Route.DownloaderTasks.route,
+                ) {
+                    animatedComposable(Route.DownloaderTasks.route) {
+                        DownloaderTasksPage()
+                    }
+                }
+                settingsNavigation()
+
             }
             PlayerAsBottomSheet(state = navBarAsBottomSheet, navController = navController)
             //--------------------------------- Navigation Bar (moved from Scaffold) ---------------------------------//
@@ -489,7 +500,9 @@ fun Navigator(
                         }
 
                         SongDownloadNotification(
-                            modifier = Modifier.offset(y = offset).fillMaxWidth(0.8f),
+                            modifier = Modifier
+                                .offset(y = offset)
+                                .fillMaxWidth(0.8f),
                             notification = notification
                         )
                     }

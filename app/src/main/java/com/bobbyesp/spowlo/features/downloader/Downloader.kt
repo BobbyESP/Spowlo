@@ -19,6 +19,7 @@ object Downloader {
 
     data class DownloadInfo(
         val url: String,
+        val thumbnailUrl: String,
         val title: String,
         val artist: String,
         val type: SpotifyItemType,
@@ -74,7 +75,8 @@ object Downloader {
         artist = downloadInfo.artist,
         title = downloadInfo.title,
         state = DownloadTask.DownloadState.Running(0f),
-        type = downloadInfo.type
+        type = downloadInfo.type,
+        thumbnailUrl = downloadInfo.thumbnailUrl,
     ).run {
         val taskKey = this.toKey()
         mutableTaskList[taskKey] = this
@@ -87,7 +89,7 @@ object Downloader {
         taskKey: String,
         currentOutLine: String,
         progress: Float,
-        isPlaylist: Boolean = false
+        isMultipleTrack: Boolean = false
     ) {
         val oldValue = mutableTaskList[taskKey] ?: return
         val newValue = oldValue.run {
@@ -95,7 +97,7 @@ object Downloader {
                     currentOutLine
                 )
             ) return
-            when (isPlaylist) {
+            when (isMultipleTrack) {
                 true -> {
                     copy(
                         currentLine = currentOutLine,

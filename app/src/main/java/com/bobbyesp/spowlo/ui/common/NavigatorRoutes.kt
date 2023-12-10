@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lyrics
@@ -35,6 +36,7 @@ sealed class Route(
     data object UtilitiesNavigator : Route("utilities_navigator", "", Icons.Outlined.LocalPlay)
     data object ProfileNavigator : Route("profile_navigator", "", Icons.Default.Person)
     data object SettingsNavigator : Route("settings_navigator", "", Icons.Default.Settings)
+    data object DownloaderTasksNavigator : Route("downloader_tasks_navigator", "", Icons.Default.Download)
 
     //ROUTES
     data object Home : Route("home", "", Icons.Outlined.Home)
@@ -71,6 +73,7 @@ sealed class Route(
             "metadata_entity_viewer/${Uri.encode(Json.encodeToString<MetadataEntity>(metadataEntity))}"
     }
 
+    data object DownloaderTasks : Route("downloader_tasks", "", Icons.Default.Download)
 
     data object OnboardingPage : Route("onboarding_page", "")
     data object Settings : Route("settings_page", "", Icons.Default.Settings)

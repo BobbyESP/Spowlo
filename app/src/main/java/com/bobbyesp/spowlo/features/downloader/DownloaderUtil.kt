@@ -1,10 +1,10 @@
 package com.bobbyesp.spowlo.features.downloader
 
-import android.os.Environment
 import androidx.annotation.CheckResult
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
 import com.bobbyesp.spowlo.App
+import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.downloader.Downloader.onProcessEnded
 import com.bobbyesp.spowlo.features.downloader.Downloader.onProcessStarted
@@ -17,7 +17,6 @@ import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THREADS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getInt
-import java.io.File
 
 object DownloaderUtil {
 
@@ -48,11 +47,6 @@ object DownloaderUtil {
         pathBuilder: StringBuilder
     ): SpotDLRequest {
         return with(downloadPreferences) {
-            //TODO: CHANGE; TESTING
-            val audioDownloadDir = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "Spowlo"
-            ).absolutePath
             pathBuilder.append(audioDownloadDir)
             request.apply {
                 addOption("download", url)
@@ -68,6 +62,8 @@ object DownloaderUtil {
         downloaderPreferences: DownloaderPreferences = DownloaderPreferences(),
     ): Result<List<String>> {
         if(downloadInfo == null) return Result.failure(Exception(App.appContext.getString(R.string.song_info_null)))
+
+        val isMultipleTrack = downloadInfo.type != SpotifyItemType.TRACKS
 
         val pathBuilder = StringBuilder()
         val request = commonDownloadRequest(downloaderPreferences, downloadInfo.url, SpotDLRequest(), pathBuilder).apply {
@@ -88,7 +84,7 @@ object DownloaderUtil {
                 forceProcessDestroy = true,
                 callback = { progress, _, text ->
                     Downloader.updateTaskOutput(
-                        taskKey = taskId, currentOutLine = text, progress = progress, isPlaylist = false
+                        taskKey = taskId, currentOutLine = text, progress = progress, isMultipleTrack = isMultipleTrack
                     )
                 })
             val finalResponse = response.output.clearOutputWithEllipsis()

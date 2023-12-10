@@ -127,7 +127,6 @@ fun SmallSpotifySongCard(
         modifier
             .width(size)
             .clip(MaterialTheme.shapes.extraSmall)
-            .clickable(onClick = onClick)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick

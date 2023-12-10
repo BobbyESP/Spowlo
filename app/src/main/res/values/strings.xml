@@ -163,4 +163,7 @@
     <string name="downloading_song">Downloading song</string>
     <string name="download_failed">Download failed</string>
     <string name="notifications">Notifications</string>
+    <string name="no_running_downloads">No running downloads</string>
+    <string name="no_running_downloads_description">There is no running downloads on the app. Go ahead and download your best tunes!</string>
+    <string name="download_tasks">Download tasks</string>
 </resources>

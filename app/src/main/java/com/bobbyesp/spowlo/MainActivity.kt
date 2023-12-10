@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.AlertDialog
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         activity = this
-
+        enableEdgeToEdge()
         setContent {
             LaunchedEffect(true) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     val loginManager = hiltViewModel<LoginManagerViewModel>()
                     Navigator(loginManager)
+
                     if (corruptedCredentials) {
                         AlertDialog(
                             onDismissRequest = { corruptedCredentials = false },

@@ -188,7 +188,8 @@ fun TrackBottomSheet(
                                 url = spotifyUrl!!,
                                 title = trackName,
                                 artist = trackArtistsString,
-                                type = SpotifyItemType.TRACKS
+                                type = SpotifyItemType.TRACKS,
+                                thumbnailUrl = trackImage?: "",
                             ),
                             taskId = makeKey(trackName, trackArtistsString)
                         ).onSuccess {

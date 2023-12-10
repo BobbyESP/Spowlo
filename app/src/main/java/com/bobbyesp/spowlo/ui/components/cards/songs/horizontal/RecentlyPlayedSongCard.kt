@@ -57,8 +57,8 @@ fun RecentlyPlayedSongCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .combinedClickable(
-                    onClick = { onClick() },
-                    onLongClick = { onLongClick() }
+                    onClick = onClick,
+                    onLongClick = onLongClick
                 ),
             onClick = onClick,
             shape = MaterialTheme.shapes.small,

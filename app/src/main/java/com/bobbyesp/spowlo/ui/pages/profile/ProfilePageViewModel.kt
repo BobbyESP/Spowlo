@@ -1,9 +1,9 @@
 package com.bobbyesp.spowlo.ui.pages.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
@@ -35,6 +35,7 @@ import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +44,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,7 +84,7 @@ class ProfilePageViewModel @Inject constructor(
         activityWrapper.execute {
             registerSpotifyBroadcastReceiver(
                 spotifyBroadcastReceiver,
-                *SpotifyBroadcastType.values()
+                *SpotifyBroadcastType.entries.toTypedArray()
             )
         }
         spotifyBroadcastReceiver.addObserver(this)
@@ -102,10 +102,10 @@ class ProfilePageViewModel @Inject constructor(
     private fun loadPage() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                loadUserData()
+                loadUserData(this)
                 loadMostListenedArtists()
                 loadMostListenedSongs()
-                loadRecentlyPlayedSongs()
+                loadRecentlyPlayedSongs(this)
 
                 updateState(PageStateWithThrowable.Success)
             } catch (e: Exception) {
@@ -118,10 +118,10 @@ class ProfilePageViewModel @Inject constructor(
 
     fun reloadPage() {
         updateIsRefreshing(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (pageViewState.value.userInformation == null) {
-                    loadUserData()
+                    loadUserData(this)
                 }
                 loadMostListenedArtists()
                 loadMostListenedSongs()
@@ -168,10 +168,8 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadUserData() {
-        val deferredUserData = withContext(Dispatchers.IO) {
-            async { clientApi?.users?.getClientProfile() }
-        }
+    private suspend fun loadUserData(coroutineScope : CoroutineScope) {
+        val deferredUserData = coroutineScope.async { clientApi?.users?.getClientProfile() }
 
         val userInformation = deferredUserData.await()
 
@@ -204,13 +202,13 @@ class ProfilePageViewModel @Inject constructor(
         mutablePageViewState.update { it.copy(mostPlayedSongs = mostPlayedSongs) }
     }
 
-    private suspend fun loadRecentlyPlayedSongs() {
-        val recentlyPlayedSongs = withContext(Dispatchers.IO) {
+    private suspend fun loadRecentlyPlayedSongs(scope: CoroutineScope) {
+        val recentlyPlayedSongs = scope.async{
             clientApi?.player?.getRecentlyPlayed(limit = 25)?.items
         }
         mutablePageViewState.update {
             it.copy(
-                recentlyPlayedSongs = recentlyPlayedSongs ?: emptyList()
+                recentlyPlayedSongs = recentlyPlayedSongs.await() ?: emptyList()
             )
         }
     }

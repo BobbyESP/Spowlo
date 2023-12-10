@@ -42,6 +42,10 @@ object PreferencesUtil {
     fun String.getInt(default: Int = IntPreferenceDefaults.getOrElse(this) { 0 }): Int =
         kv.decodeInt(this, default)
 
+    /**
+     * @param default the default value to return if the key is not found
+     * @return the value of the key if found, otherwise the default value
+     */
     fun String.getString(default: String = StringPreferenceDefaults.getOrElse(this) { "" }): String =
         kv.decodeString(this) ?: default
 

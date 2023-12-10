@@ -199,6 +199,7 @@ dependencies {
     implementation(libs.bundles.accompanist)
     implementation(libs.material)
     implementation(libs.bundles.pagination)
+    implementation(libs.orbital)
 
     //Coil (For Jetpack Compose)
     implementation(libs.compose.coil)

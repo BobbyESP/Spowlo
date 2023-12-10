@@ -3,7 +3,6 @@ package com.bobbyesp.spowlo.features.downloader.domain
 import android.content.Context
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import com.bobbyesp.library.dto.Song
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.downloader.Downloader
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
@@ -17,6 +16,7 @@ data class DownloadTask(
     val type: SpotifyItemType,
     val taskName : String = "$title - $artist",
     val url: String,
+    val thumbnailUrl: String,
     val output: String = "",
     val currentLine: String? = null,
     val state: DownloadState
@@ -63,6 +63,16 @@ data class DownloadTask(
         data object Success : DownloadState()
         data object Cancelled : DownloadState()
         data class Failed(val error: String) : DownloadState()
+        companion object{
+            fun DownloadState.toTaskState(): TaskState {
+                return when(this) {
+                    is Running -> TaskState.RUNNING
+                    is Success -> TaskState.SUCCESS
+                    is Cancelled -> TaskState.CANCELLED
+                    is Failed -> TaskState.FAILED
+                }
+            }
+        }
     }
 
     fun onCopyError(context: Context, clipboardManager: ClipboardManager) {
@@ -83,17 +93,9 @@ data class DownloadTask(
     }
 }
 
-data class DownloadTaskItem(
-    val info: Song = Song(),
-    val spotifyUrl: String = "",
-    val name: String = "",
-    val artist: String = "",
-    val duration: Double = 0.0,
-    val isExplicit: Boolean = false,
-    val hasLyrics: Boolean = false,
-    val progress: Float = 0f,
-    val progressText: String = "",
-    val thumbnailUrl: String = "",
-    val taskId: String = "",
-    val output: String = "",
-)
+enum class TaskState {
+    RUNNING,
+    SUCCESS,
+    CANCELLED,
+    FAILED,
+}
