@@ -71,7 +71,8 @@ fun SettingsFormatsPage(onBackPressed: () -> Unit) {
             LazyColumn(
                 Modifier
                     .padding(it)
-                    .padding(horizontal = 16.dp)) {
+                    .padding(horizontal = 16.dp)
+            ) {
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.audio))
                 }

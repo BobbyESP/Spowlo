@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -32,10 +31,9 @@ import com.bobbyesp.spowlo.ui.components.download_tasks.TaskState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
-
-    val scope = rememberCoroutineScope()
-
+fun DownloadTasksPage(
+    onNavigateToDetail: (Int) -> Unit
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(modifier = Modifier
@@ -47,19 +45,18 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                     text = stringResource(R.string.download_tasks),
                     style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
                 )
-            }, actions = {
-            }, scrollBehavior = scrollBehavior
+            }, actions = {}, scrollBehavior = scrollBehavior
             )
         }) { paddings ->
         val clipboardManager = LocalClipboardManager.current
         LazyColumn(
-            modifier = Modifier.padding(paddings), contentPadding = PaddingValues(24.dp),
+            modifier = Modifier.padding(paddings),
+            contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(Downloader.mutableTaskList.values.toList()) {
                 it.run {
-                    DownloadingTaskItem(
-                        status = state.toStatus(),
+                    DownloadingTaskItem(status = state.toStatus(),
                         progress = if (state is Downloader.DownloadTask.State.Running) state.progress else 0f,
                         progressText = currentLine,
                         url = url,
@@ -72,15 +69,16 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                         },
                         onRestart = {
                             onRestart()
-                        }, onCopyLog = {
+                        },
+                        onCopyLog = {
                             onCopyLog(clipboardManager)
-                        }, onShowLog = {
+                        },
+                        onShowLog = {
                             onNavigateToDetail(hashCode())
                         },
                         onCopyLink = {
                             onCopyUrl(clipboardManager)
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -101,8 +99,7 @@ fun DownloadTasksPage(onNavigateToDetail: (Int) -> Unit) {
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(
-                            vertical = 24.dp,
-                            horizontal = 4.dp
+                            vertical = 24.dp, horizontal = 4.dp
                         )
                     )
                     Text(

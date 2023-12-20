@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.ui.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
@@ -17,7 +18,7 @@ inline val String.stringState
 
 inline val String.intState
     @Composable get() = remember {
-        mutableStateOf(this.getInt())
+        mutableIntStateOf(this.getInt())
     }
 
 fun String.containsEllipsis(): Boolean {

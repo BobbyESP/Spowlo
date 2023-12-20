@@ -187,7 +187,11 @@ class App : Application() {
 
         private fun getDayAsString(): String {
             val calendar = Calendar.getInstance()
-            return "${calendar.get(Calendar.DAY_OF_MONTH)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}"
+            return "${calendar.get(Calendar.DAY_OF_MONTH)}-${calendar.get(Calendar.MONTH) + 1}-${
+                calendar.get(
+                    Calendar.YEAR
+                )
+            }"
         }
 
         fun isFDroidBuild(): Boolean = packageInfo.versionName.contains("F-Droid")

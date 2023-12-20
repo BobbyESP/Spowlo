@@ -121,17 +121,12 @@ fun WebViewPage(
     }) { paddingValues ->
         val webViewClient = remember {
             object : AccompanistWebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
+                override fun onPageFinished(view: WebView, url: String?) {
                     super.onPageFinished(view, url)
                     if (url.isNullOrEmpty()) return
-                    /*                    cookieManager.getCookie(url)?.let { cookies ->
-                                            cookies.split("; ").forEach { cookieString ->
-                                                cookieSet.add(makeCookie(url, cookieString))
-                                            }
-                                        }
-                                        Log.d(TAG, "onPageFinished: $url, cookieSize=${cookieSet.size}")*/
                 }
             }
+
         }
         val webViewChromeClient = remember {
             object : AccompanistWebChromeClient() {

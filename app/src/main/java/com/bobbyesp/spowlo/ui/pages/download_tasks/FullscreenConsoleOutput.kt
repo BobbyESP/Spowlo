@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,7 +58,6 @@ private const val TAG = "TaskLogPage"
 fun FullscreenConsoleOutput(
     onBackPressed: () -> Unit, taskHashCode: Int
 ) {
-    Log.d(TAG, "TaskLogPage: $taskHashCode")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val task = Downloader.mutableTaskList.values.find { it.hashCode() == taskHashCode } ?: return
     val clipboardManager = LocalClipboardManager.current
@@ -65,7 +65,7 @@ fun FullscreenConsoleOutput(
     val minFontSize = 8
     val maxFontSize = 32
 
-    var mutableFontSize by remember { mutableStateOf(14) }
+    var mutableFontSize by remember { mutableIntStateOf(14) }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

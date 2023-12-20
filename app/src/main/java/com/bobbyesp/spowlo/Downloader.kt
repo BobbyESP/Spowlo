@@ -34,9 +34,9 @@ object Downloader {
             val itemCount: Int = 0,
         ) : State()
 
-        object DownloadingSong : State()
-        object FetchingInfo : State()
-        object Idle : State()
+        data object DownloadingSong : State()
+        data object FetchingInfo : State()
+        data object Idle : State()
     }
 
     fun makeKey(url: String, additionalString: String = UUID.randomUUID().toString()): String =
@@ -227,7 +227,6 @@ object Downloader {
                             }
                         )
                     )
-
                 }
 
                 false -> {

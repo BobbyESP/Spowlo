@@ -2,7 +2,6 @@ package com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.adamratzman.spotify.models.SimpleAlbum
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 

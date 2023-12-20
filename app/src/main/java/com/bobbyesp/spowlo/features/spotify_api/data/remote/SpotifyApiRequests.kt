@@ -17,7 +17,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.Job
 import javax.inject.Singleton
 
 @Module

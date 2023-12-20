@@ -69,9 +69,29 @@ object DownloaderUtil {
         val sdcard: Boolean = PreferencesUtil.getValue(SDCARD_DOWNLOAD),
         val sdcardUri: String = SDCARD_URI.getString(),
         val extraDirectory: String = PreferencesUtil.getExtraDirectory(),
+        val splitByMainArtist: Boolean = PreferencesUtil.getValue(SPLIT_BY_MAIN_ARTIST),
+        val splitByPlaylist: Boolean = PreferencesUtil.getValue(SPLIT_BY_PLAYLIST),
         val threads: Int = THREADS.getInt()
     )
 
+    private fun StringBuilder.buildPathExtensions(downloadPreferences: DownloadPreferences) {
+        when {
+            downloadPreferences.splitByMainArtist && downloadPreferences.splitByPlaylist -> {
+                this.append("/{list-name}/{artist}/")
+            }
+
+            downloadPreferences.splitByMainArtist -> {
+                this.append("/{artist}/")
+            }
+
+            downloadPreferences.splitByPlaylist -> {
+                this.append("/{list-name}/")
+            }
+            else -> {
+                return
+            }
+        }
+    }
     object CookieScheme {
         const val NAME = "name"
         const val VALUE = "value"
@@ -232,9 +252,7 @@ object DownloaderUtil {
 
                 pathBuilder.append(audioDownloadDir)
 
-                if (extraDirectory.isNotEmpty()) {
-                    pathBuilder.append("/").append(extraDirectory)
-                }
+                pathBuilder.buildPathExtensions(downloadPreferences)
 
                 Log.d(TAG, "downloadSong: $pathBuilder")
 
@@ -293,7 +311,7 @@ object DownloaderUtil {
                 .apply {
                     if (useSpotifyPreferences) {
                         if (spotifyClientID.isEmpty() || spotifyClientSecret.isEmpty()) return Result.failure(
-                            Throwable("Spotify client ID or secret is empty while you have the custom credentials option enabled! \n Please check your settings.")
+                            Throwable("Spotify client ID or secret is empty while you have the custom credentials option enabled! \nPlease check your settings.")
                         )
                         addOption("--client-id", spotifyClientID)
                         addOption("--client-secret", spotifyClientSecret)

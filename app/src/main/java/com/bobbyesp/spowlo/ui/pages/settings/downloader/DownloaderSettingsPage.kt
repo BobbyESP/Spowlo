@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cached
 import androidx.compose.material.icons.outlined.Filter
+import androidx.compose.material.icons.outlined.Splitscreen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +41,8 @@ import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.updateInt
+import com.bobbyesp.spowlo.utils.SPLIT_BY_MAIN_ARTIST
+import com.bobbyesp.spowlo.utils.SPLIT_BY_PLAYLIST
 import com.bobbyesp.spowlo.utils.THREADS
 import com.bobbyesp.spowlo.utils.USE_CACHING
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -48,7 +53,7 @@ fun DownloaderSettingsPage(
     onBackPressed: () -> Unit,
 ) {
 
-    var threadsNumber = THREADS.intState
+    val threadsNumber = THREADS.intState
 
     var useCache by remember {
         mutableStateOf(
@@ -61,6 +66,19 @@ fun DownloaderSettingsPage(
             PreferencesUtil.getValue(DONT_FILTER_RESULTS)
         )
     }
+
+    var splitByPlaylist by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(SPLIT_BY_PLAYLIST)
+        )
+    }
+
+    var splitByMainArtist by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(SPLIT_BY_MAIN_ARTIST)
+        )
+    }
+
 
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -95,23 +113,70 @@ fun DownloaderSettingsPage(
                     PreferenceSubtitle(text = stringResource(id = R.string.general))
                 }
                 item {
-                    ElevatedSettingsCard {
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                useCache = !useCache
-                                PreferencesUtil.updateValue(USE_CACHING, useCache)
-                            },
-                            checked = useCache,
-                            title = {
-                                Text(
-                                    text = stringResource(id = R.string.use_cache),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
-                            icon = Icons.Outlined.Cached,
-                            description = { Text(text = stringResource(id = R.string.use_cache_desc)) },
-                        )
-                    }
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            useCache = !useCache
+                            PreferencesUtil.updateValue(USE_CACHING, useCache)
+                        },
+                        checked = useCache,
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.use_cache),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = Icons.Outlined.Cached,
+                        description = { Text(text = stringResource(id = R.string.use_cache_desc)) },
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                topStart = 8.dp, topEnd = 8.dp
+                            )
+                        ),
+                    )
+
+                }
+
+                item {
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            splitByPlaylist = !splitByPlaylist
+                            PreferencesUtil.updateValue(SPLIT_BY_PLAYLIST, splitByPlaylist)
+                        },
+                        checked = splitByPlaylist,
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.split_playlist),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = Icons.Outlined.Splitscreen,
+                        description = { Text(text = stringResource(id = R.string.split_playlist_desc)) },
+                        clipCorners = false
+                    )
+                }
+
+                item {
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            splitByMainArtist = !splitByMainArtist
+                            PreferencesUtil.updateValue(SPLIT_BY_MAIN_ARTIST, splitByMainArtist)
+                        },
+                        checked = splitByMainArtist,
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.split_by_main_artist),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = Icons.Outlined.Splitscreen,
+                        description = { Text(text = stringResource(id = R.string.split_by_main_artist_desc)) },
+                        clipCorners = false,
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                bottomStart = 8.dp, bottomEnd = 8.dp
+                            )
+                        ),
+                    )
                 }
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.experimental_features))
@@ -162,7 +227,7 @@ fun DownloaderSettingsPage(
                                                 .weight(1f)
                                         )
                                         Text(
-                                            text = stringResource(id = R.string.threads_number) + ": " + threadsNumber.value.toString(),
+                                            text = stringResource(id = R.string.threads_number) + ": " + threadsNumber.intValue.toString(),
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 color = MaterialTheme.colorScheme.onSurface.copy(
                                                     alpha = 0.6f
@@ -184,9 +249,9 @@ fun DownloaderSettingsPage(
                                 }
                             }
                             Slider(
-                                value = threadsNumber.value.toFloat(),
+                                value = threadsNumber.intValue.toFloat(),
                                 onValueChange = {
-                                    threadsNumber.value = it.toInt()
+                                    threadsNumber.intValue = it.toInt()
                                     THREADS.updateInt(it.toInt())
                                 },
                                 valueRange = 1f..10f,

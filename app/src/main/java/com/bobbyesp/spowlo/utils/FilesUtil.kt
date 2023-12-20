@@ -28,22 +28,24 @@ import java.io.InputStream
 const val AUDIO_REGEX = "(mp3|aac|opus|m4a)$"
 
 object FilesUtil {
-
-    fun openFileFromResult(downloadResult: Result<List<String>>) {
-        val filePaths = downloadResult.getOrNull()
-        if (filePaths.isNullOrEmpty()) return
-        openFile(filePaths.first())
-    }
     fun readFile(file: File): String {
         return file.readText()
     }
 
-    fun openFile(path: String) =
+    fun openFileFromResult(downloadResult: Result<List<String>>) {
+        val filePaths = downloadResult.getOrNull()
+        if (filePaths.isNullOrEmpty()) return
+        openFile(filePaths.first()) {
+            ToastUtil.makeToastSuspend(context.getString(R.string.file_unavailable))
+        }
+    }
+
+    inline fun openFile(path: String, onFailureCallback: (Throwable) -> Unit) =
         path.runCatching {
             createIntentForOpeningFile(this)?.run { context.startActivity(this) }
                 ?: throw Exception()
         }.onFailure {
-            ToastUtil.makeToastSuspend(context.getString(R.string.file_unavailable))
+            onFailureCallback(it)
         }
 
     private fun createIntentForFile(path: String?): Intent? {
@@ -56,7 +58,7 @@ object FilesUtil {
                 } else if (File(this@runCatching).exists()) {
                     FileProvider.getUriForFile(
                         context,
-                        context.packageName + ".provider",
+                        context.getFileProvider(),
                         File(this@runCatching)
                     )
                 } else null
@@ -76,17 +78,20 @@ object FilesUtil {
         }
     }
 
+
     fun createIntentForSharingFile(path: String?): Intent? = createIntentForFile(path)?.apply {
         action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_STREAM, this.data)
-        type = "*/*"
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        putExtra(Intent.EXTRA_STREAM, data)
+        val mimeType = data?.let { context.contentResolver.getType(it) } ?: "media/*"
+        setDataAndType(this.data, mimeType)
         clipData = ClipData(
             null,
-            arrayOf("*/*"),
+            arrayOf(mimeType),
             ClipData.Item(data)
         )
     }
+
+    fun Context.getFileProvider() = "$packageName.provider"
 
     fun createIntentForShareAudioFile(path: String?): Intent? = createIntentForFile(path)?.apply {
         action = Intent.ACTION_SEND

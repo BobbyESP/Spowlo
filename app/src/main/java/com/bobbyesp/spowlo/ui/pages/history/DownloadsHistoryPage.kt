@@ -104,9 +104,9 @@ fun DownloadsHistoryPage(
         Log.d("DownloadsHistoryPage", songsList.toString())
     }
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState(),
-            canScroll = { true })
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState(),
+        canScroll = { true })
     val scope = rememberCoroutineScope()
 
     val fileSizeMap = remember(songsList.size) {
@@ -327,10 +327,13 @@ fun DownloadsHistoryPage(
                                     if (selectedItemIds.contains(id)) selectedItemIds.remove(id)
                                     else selectedItemIds.add(id)
                                 },
-                                onClick = { FilesUtil.openFile(songPath) }) {
+                                onClick = {
+                                    FilesUtil.openFile(songPath) {
+                                        Log.e("DownloadsHistoryPage", "Error opening file", it)
+                                    }
+                                }) {
                                 downloadsHistoryViewModel.showDrawer(
-                                    scope,
-                                    song
+                                    scope, song
                                 )
                             }
                         }

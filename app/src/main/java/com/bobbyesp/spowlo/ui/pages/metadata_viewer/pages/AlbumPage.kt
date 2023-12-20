@@ -32,8 +32,8 @@ import com.adamratzman.spotify.models.Album
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
-import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.songs.metadata_viewer.TrackComponent
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.dataStringToString
 
 @Composable

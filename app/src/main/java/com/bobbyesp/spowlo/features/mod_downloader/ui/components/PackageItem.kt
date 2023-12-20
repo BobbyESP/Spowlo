@@ -41,9 +41,11 @@ fun PackageItemComponent(
     version: String = "8.7.78.373",
     onCopyClick: () -> Unit = {},
 ) {
-    Surface(modifier = modifier
-        .clickable(onClick = onClick)
-        .padding(6.dp)) {
+    Surface(
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .padding(6.dp)
+    ) {
         Row(
             modifier = modifier
                 .fillMaxWidth(),

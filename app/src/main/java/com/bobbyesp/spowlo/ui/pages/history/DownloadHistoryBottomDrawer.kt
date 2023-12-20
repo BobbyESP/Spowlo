@@ -47,7 +47,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,10 +57,10 @@ import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.FilledTonalButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.LongTapTextButton
-import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.MultiChoiceItem
 import com.bobbyesp.spowlo.ui.components.OpenInSpotifyFilledButton
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
+import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.utils.FilesUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
 import kotlinx.coroutines.delay
@@ -102,7 +101,7 @@ fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewM
                 showDeleteDialog = !showDeleteDialog
             },
             onShareFile = {
-                FilesUtil.createIntentForShareAudioFile(path)?.runCatching {
+                FilesUtil.createIntentForSharingFile(path)?.runCatching {
                     context.startActivity(
                         Intent.createChooser(this, shareStringResource)
                     )
@@ -150,9 +149,11 @@ fun DownloadHistoryBottomDrawerImpl(
         drawerState = drawerState,
         sheetContent = {
             AnimatedVisibility(visible = !showDeleteInfo) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize()
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -277,7 +278,6 @@ fun DownloadHistoryBottomDrawerImpl(
                             songAuthor
                         ),
                         modifier = Modifier.padding(12.dp),
-                        textAlign = TextAlign.Justify
                     )
                     MultiChoiceItem(
                         modifier = Modifier.padding(horizontal = 12.dp),

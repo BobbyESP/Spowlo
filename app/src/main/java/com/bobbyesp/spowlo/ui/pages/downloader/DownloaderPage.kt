@@ -2,7 +2,6 @@ package com.bobbyesp.spowlo.ui.pages.downloader
 
 import android.Manifest
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -37,7 +36,6 @@ import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -93,7 +91,6 @@ import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.harmonizeWith
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
-import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -118,36 +115,13 @@ fun DownloaderPage(
     downloaderViewModel: DownloaderViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
+
     val storagePermission = rememberPermissionState(
         permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
     ) { b: Boolean ->
         if (b) {
             downloaderViewModel.startDownloadSong()
         } else {
-            ToastUtil.makeToast(R.string.permission_denied)
-        }
-    }
-
-    val notificationsPermission = rememberPermissionState(
-        permission = Manifest.permission.ACCESS_NOTIFICATION_POLICY
-    ) { b: Boolean ->
-        Log.d("DownloaderPage", "notificationsPermission: $b")
-        if (b) {
-            PreferencesUtil.updateValue(NOTIFICATION, true)
-        } else {
-            PreferencesUtil.updateValue(NOTIFICATION, false)
-            ToastUtil.makeToast(R.string.permission_denied)
-        }
-    }
-
-    val modernNotificationPermission = rememberPermissionState(
-        permission = Manifest.permission.POST_NOTIFICATIONS
-    ) { b: Boolean ->
-        Log.d("DownloaderPage", "modernNotificationPermission: $b")
-        if (b) {
-            PreferencesUtil.updateValue(NOTIFICATION, true)
-        } else {
-            PreferencesUtil.updateValue(NOTIFICATION, false)
             ToastUtil.makeToast(R.string.permission_denied)
         }
     }
@@ -174,10 +148,6 @@ fun DownloaderPage(
         if (CONFIGURE.getBoolean()) navigateToDownloaderSheet()
         else checkPermissionOrDownload()
         keyboardController?.hide()
-    }
-
-    val songCardClicked = {
-        onSongCardClicked()
     }
 
     var showConsoleOutput by remember { mutableStateOf(DEBUG.getBoolean()) }
@@ -212,7 +182,7 @@ fun DownloaderPage(
             },
             navigateToDownloads = navigateToDownloads,
             navigateToMods = navigateToMods,
-            onSongCardClicked = { songCardClicked() },
+            onSongCardClicked = { onSongCardClicked() },
             showOutput = showConsoleOutput,
             showSongCard = true,
             showDownloadProgress = taskState.taskId.isNotEmpty(),
@@ -228,7 +198,8 @@ fun DownloaderPage(
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
         with(viewState) {
-            DownloaderSettingsDialog(useDialog = useDialog,
+            DownloaderSettingsDialog(
+                useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
                 drawerState = drawerState,
                 confirm = { checkPermissionOrDownload() },
@@ -373,9 +344,6 @@ fun DownloaderPageImplementation(
                         ConsoleOutputComponent(
                             consoleOutput = progressText, modifier = Modifier.padding(top = 10.dp)
                         )
-                    }
-                    Button(onClick = { error("TEST FOR CRASH ACTIVITY") }) {
-                        Text(text = "Crash")
                     }
 
                     AnimatedVisibility(visible = errorState.isErrorOccurred()) {

@@ -254,15 +254,19 @@ fun <T : Any> ResultsList(
             }
     ) {
         stickyHeader {
-            Box(modifier = Modifier.fillMaxWidth().background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.surface,
-                        Color.Transparent
-                    ),
-                    startY = 30f,
-                )
-            )) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.surface,
+                                Color.Transparent
+                            ),
+                            startY = 30f,
+                        )
+                    )
+            ) {
 
                 Row(
                     modifier = Modifier

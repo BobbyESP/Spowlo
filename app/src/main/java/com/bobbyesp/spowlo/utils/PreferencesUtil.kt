@@ -59,6 +59,8 @@ const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 const val USE_CACHING = "use_caching"
 const val DONT_FILTER_RESULTS = "dont_filter_results"
 const val AUDIO_PROVIDER = "audio_provider"
+const val SPLIT_BY_PLAYLIST = "split_by_playlist"
+const val SPLIT_BY_MAIN_ARTIST = "split_by_main_artist"
 const val THREADS = "threads"
 
 const val SPOTDL_UPDATE = "spotdl_update"

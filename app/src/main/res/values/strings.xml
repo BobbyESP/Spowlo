@@ -185,7 +185,7 @@
     <string name="documentation_info">Please, know that this pages will be changed by FAQs and the actual full markdown files will be replaced in a future by the mentioned before.</string>
     <string name="delete_info">Delete song from the history</string>
     <string name="remove_song">Do you want to remove this song?</string>
-    <string name="remove_song_info">You are going to delete \"%1$s\" of \"%2$s\".</string>
+    <string name="remove_song_info">You are going to delete \"%1$s\" by \"%2$s\".</string>
     <string name="delete_file">Delete file from system</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="spotify_link">Spotify link</string>
@@ -337,4 +337,8 @@
     <string name="device_info">Device info</string>
     <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
     <string name="unknown_error_title">An unknown error has occurred!</string>
+    <string name="split_playlist">Split by playlist</string>
+    <string name="split_playlist_desc">Make the downloader split your downloads folder into folders with the name of the playlist</string>
+    <string name="split_by_main_artist">Split by main artist</string>
+    <string name="split_by_main_artist_desc">The downloader splits you downloads depending on the main artist of the song</string>
 </resources>
