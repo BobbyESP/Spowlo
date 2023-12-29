@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="follow_system">Follow system</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="grant">Grant</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="permission_not_granted">Permission not granted</string>
+    <string name="permission_not_granted_description">To access this feature of the app is required to grant some necessary permissions. Would you like to accept them?</string>
+    <string name="permission_not_granted_rationale_desc">If you do not grant the required permissions you won\\\'t be able to access this app functionality.</string>
+    <string name="permissions_to_grant">The permissions needed are:</string>
+    <string name="read_external_storage">Read external storage</string>
+    <string name="write_external_storage">Write external storage</string>
+    <string name="internet">Internet</string>
+    <string name="access_network_state">Access network state</string>
+    <string name="access_wifi_state">Access WiFi state</string>
+    <string name="change_wifi_state">Change WiFi state</string>
+    <string name="accept_permissions">Accept permissions</string>
+    <string name="read_media_audio">Read audio files</string>
+    <string name="filesize_mb" translatable="false">%.2f MB</string>
+    <string name="filesize_gb" translatable="false">%.2f GB</string>
+    <string name="paste_fail_msg">An error occurred while trying to paste the text</string>
+    <string name="paste_msg">Pasted!</string>
+</resources>
