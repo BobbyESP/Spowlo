@@ -50,6 +50,7 @@ landscapistCoil = "2.2.12"
 okhttp = "5.0.0-alpha.11"
 ktor = "2.3.7" #For me the best client
 retrofit = "2.9.0"
+brotli = "0.1.2"
 
 #Dependency injection
 hilt = "2.49"
@@ -159,6 +160,7 @@ ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 
 #Dependency injection
 compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose-nav" }
