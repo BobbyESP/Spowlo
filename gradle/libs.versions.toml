@@ -137,7 +137,6 @@ accompanist-pager-indicators = { group = "com.google.accompanist", name = "accom
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 
 #Shimmer
-qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 
 #Accompanist Material components
@@ -209,6 +208,9 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 #File utils
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
+
+#Others
+qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
 
 #Compose tooling and tests
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
