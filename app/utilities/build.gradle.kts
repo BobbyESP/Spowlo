@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -40,7 +39,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":color"))
+    implementation(project(":color")) //TODO: Make this an implementation based on flavor
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
     implementation(libs.mmkv)

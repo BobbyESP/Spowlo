@@ -32,7 +32,6 @@ palette = "1.0.0"
 
 #Navigation
 androidx-navigation = "2.7.6"
-androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
 kotlinx-coroutines = "1.7.3"
