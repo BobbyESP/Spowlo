@@ -12,6 +12,9 @@
             <option value="$PROJECT_DIR$/app/ui" />
             <option value="$PROJECT_DIR$/app/utilities" />
             <option value="$PROJECT_DIR$/color" />
+            <option value="$PROJECT_DIR$/ffmpeg" />
+            <option value="$PROJECT_DIR$/spotdl_lib" />
+            <option value="$PROJECT_DIR$/spotdl_utilities" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

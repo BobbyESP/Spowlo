@@ -21,6 +21,8 @@ androidx-compose-material3 = "1.2.0-beta01"
 compose-util = "1.5.4"
 accompanist = "0.32.0"
 compose-pagination = "3.2.1"
+commonsIo = "2.15.0"
+commonsCompress = "1.24.0"
 
 #More UI
 androidx-paging = "3.2.1"
@@ -200,6 +202,10 @@ google-services = { group = "com.google.gms", name = "google-services", version.
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+
+#File utils
+commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 
 #Compose tooling and tests
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
