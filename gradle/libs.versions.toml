@@ -160,6 +160,8 @@ ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
 brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 
 #Dependency injection
@@ -241,7 +243,7 @@ androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "and
 
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
-ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]
+ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
 compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]

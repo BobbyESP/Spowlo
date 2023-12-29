@@ -16,7 +16,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.decodeBase64String
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import java.lang.Character.UnicodeScript
 import java.lang.Integer.min
 import kotlin.math.abs
 
@@ -49,14 +48,12 @@ private const val HEAD_CUT_LIMIT = 30
  * Modified from [ViMusic](https://github.com/vfsfitvnm/ViMusic)
  */
 object KuGou {
-    var useTraditionalChinese: Boolean = false
-
     suspend fun getLyrics(title: String, artist: String, duration: Int): Result<String> =
         runCatching {
             val keyword = generateKeyword(title, artist)
             getLyricsCandidate(keyword, duration)?.let { candidate ->
                 downloadLyrics(candidate.id, candidate.accesskey).content.decodeBase64String()
-                    .normalize(keyword)
+                    .normalize()
             } ?: throw IllegalStateException("No lyrics candidate")
         }
 
@@ -68,13 +65,13 @@ object KuGou {
             if (duration == -1 || abs(it.duration - duration) <= DURATION_TOLERANCE) {
                 searchLyricsByHash(it.hash).candidates.firstOrNull()?.let { candidate ->
                     downloadLyrics(candidate.id, candidate.accesskey).content.decodeBase64String()
-                        .normalize(keyword)?.let(callback)
+                        .normalize().let(callback)
                 }
             }
         }
         searchLyricsByKeyword(keyword, duration).candidates.forEach { candidate ->
             downloadLyrics(candidate.id, candidate.accesskey).content.decodeBase64String()
-                .normalize(keyword)?.let(callback)
+                .normalize().let(callback)
         }
     }
 
@@ -147,7 +144,7 @@ object KuGou {
     fun generateKeyword(title: String, artist: String) =
         Keyword(normalizeTitle(title), normalizeArtist(artist))
 
-    private fun String.normalize(keyword: Keyword): String? =
+    private fun String.normalize(): String =
         replace("&apos;", "'").lines().filter { line -> line.matches(ACCEPTED_REGEX) }
             .let { lines ->
                 // Remove useless information such as singer, writer, composer, guitar, etc.
@@ -175,11 +172,6 @@ object KuGou {
     @Suppress("RegExpRedundantEscape")
     private val ACCEPTED_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\].*".toRegex()
     private val BANNED_REGEX = ".+].+[:：].+".toRegex()
-
-    private val JapaneseUnicodeScript = hashSetOf(
-        UnicodeScript.HIRAGANA,
-        UnicodeScript.KATAKANA,
-    )
 
     private const val DURATION_TOLERANCE = 8
 }
