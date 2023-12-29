@@ -523,21 +523,6 @@ fun InitialEntry(
         }
     }
 
-    LaunchedEffect(true) {
-        Log.d(TAG, "InitialEntry: Checking for mod updates")
-        if (PreferencesUtil.isNetworkAvailable()) {
-            val apiResult = ModsDownloaderAPIService.create().getAPIResponse()
-            if (apiResult.isSuccess) {
-                val apiResponse = apiResult.getOrNull()
-                if (apiResponse != null) {
-                    modsDownloaderViewModel.updateApiResponse(apiResponse)
-                }
-            } else {
-                ToastUtil.makeToast(context.getString(R.string.api_call_failed))
-            }
-        }
-    }
-
 //    LaunchedEffect(Unit) {
 //        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
 //        kotlin.runCatching {

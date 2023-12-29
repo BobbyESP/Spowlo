@@ -341,4 +341,5 @@
     <string name="split_playlist_desc">Make the downloader split your downloads folder into folders with the name of the playlist</string>
     <string name="split_by_main_artist">Split by main artist</string>
     <string name="split_by_main_artist_desc">The downloader splits you downloads depending on the main artist of the song</string>
+    <string name="mods_downloader_banned">The mods downloader has been deleted since Firebase (a Google hosting service) has disabled APKs downloading in the free version of the same. Please, consider using xManager as an alternative.</string>
 </resources>

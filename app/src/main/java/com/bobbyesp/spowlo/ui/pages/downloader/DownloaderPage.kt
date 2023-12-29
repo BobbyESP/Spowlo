@@ -29,6 +29,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.LibraryMusic
@@ -85,6 +86,7 @@ import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.ClearButton
 import com.bobbyesp.spowlo.ui.components.ConsoleOutputComponent
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
+import com.bobbyesp.spowlo.ui.components.SpowloDialog
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
 import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
@@ -134,6 +136,8 @@ fun DownloaderPage(
 
     val useDialog = LocalWindowWidthState.current != WindowWidthSizeClass.Compact
 
+    val (showModsBannedDialog, updateShowModsBannedDialog) = remember { mutableStateOf(false) }
+
     val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -181,7 +185,9 @@ fun DownloaderPage(
                 keyboardController?.hide()
             },
             navigateToDownloads = navigateToDownloads,
-            navigateToMods = navigateToMods,
+            navigateToMods = {
+                updateShowModsBannedDialog(!showModsBannedDialog)
+            },
             onSongCardClicked = { onSongCardClicked() },
             showOutput = showConsoleOutput,
             showSongCard = true,
@@ -207,6 +213,24 @@ fun DownloaderPage(
                 hide = { downloaderViewModel.hideDialog(scope, useDialog) })
         }
     }
+
+    if(showModsBannedDialog) {
+        SpowloDialog(
+            title = {
+                Text(text = stringResource(id = R.string.mods_downloader))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.mods_downloader_banned))
+            },
+            onDismissRequest = { updateShowModsBannedDialog(false) },
+            confirmButton = {
+                TextButton(onClick = { updateShowModsBannedDialog(false) }) {
+                    Text(text = stringResource(id = R.string.agree))
+                }
+            }
+        )
+    }
+
 }
 
 @OptIn(
