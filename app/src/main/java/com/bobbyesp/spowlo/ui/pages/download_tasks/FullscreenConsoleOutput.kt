@@ -56,7 +56,8 @@ private const val TAG = "TaskLogPage"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullscreenConsoleOutput(
-    onBackPressed: () -> Unit, taskHashCode: Int
+    onBackPressed: () -> Unit,
+    taskHashCode: Int
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val task = Downloader.mutableTaskList.values.find { it.hashCode() == taskHashCode } ?: return
