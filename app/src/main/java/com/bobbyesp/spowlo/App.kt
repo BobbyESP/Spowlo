@@ -10,8 +10,6 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.bobbyesp.utilities.utilities.Theme
 import com.google.android.material.color.DynamicColors
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,7 +20,6 @@ import kotlinx.coroutines.SupervisorJob
 class App: Application() {
     override fun onCreate() {
         MMKV.initialize(this)
-        Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)
         packageInfo = packageManager.run {
             if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
                 packageName, PackageManager.PackageInfoFlags.of(0)
