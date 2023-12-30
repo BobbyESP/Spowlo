@@ -24,7 +24,6 @@ fun PreConfiguredOutlinedTextField(
     minLines: Int = 1,
     returnModifiedValue: (String) -> Unit = {}
 ) {
-
     val (text, setText) = remember(value) { mutableStateOf(value) }
 
     SideEffect {

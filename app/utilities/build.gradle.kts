@@ -41,10 +41,13 @@ android {
 dependencies {
     implementation(project(":color")) //TODO: Make this an implementation based on flavor
     implementation(libs.core.ktx)
+    implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.kotlinx.datetime)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
     implementation(libs.material)
+    implementation(libs.coil)
+    implementation(libs.media3.common)
 
     //Accompanist libraries
     implementation(libs.bundles.accompanist)
