@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -86,6 +87,9 @@ class CrashHandlerActivity : ComponentActivity() {
                         log = FilesUtil.readFile(logFile)
                     }
 
+                    if(log.contains("java.lang.IllegalStateException: Migration didn't properly handle:")){
+                        Toast.makeText(this, "A database migration failed. Please clear app data and reopen the app.", Toast.LENGTH_LONG).show()
+                    }
                     CrashReportPage(
                         versionReport = versionReport,
                         errorMessage = log

@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Environment
 import android.os.IBinder
 import android.os.Looper
+import android.widget.Toast
 import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
@@ -81,7 +82,8 @@ class App : Application() {
         )
         if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
-            val logfile = createLogFile(this, e.stackTraceToString())
+            val stackTrace = e.stackTraceToString()
+            val logfile = createLogFile(this, stackTrace)
             startCrashReportActivity(logfile)
         }
     }

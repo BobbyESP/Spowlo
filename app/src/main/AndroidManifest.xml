@@ -16,6 +16,7 @@
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <queries>
         <intent>
@@ -99,6 +100,7 @@
 
         <service
             android:name=".DownloaderKeepUpService"
+            android:foregroundServiceType="dataSync"
             android:enabled="true"
             android:exported="false" />
 
