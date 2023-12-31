@@ -11,8 +11,8 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 
 object PaletteGenerator {
-    fun getDominantColor(bitmap: Bitmap): Color? {
-        Palette.from(bitmap).generate().let { palette ->
+    fun Bitmap.getDominantColor(): Color? {
+        Palette.from(this).generate().let { palette ->
             val color = palette.vibrantSwatch?.rgb?.let { Color(it) }
             Log.i("PaletteGenerator", "getDominantColor: $color")
             return color
