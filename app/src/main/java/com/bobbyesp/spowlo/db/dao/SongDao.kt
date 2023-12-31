@@ -76,4 +76,3 @@ interface SongDao : BaseDao<Song> {
     @Query("SELECT COUNT(1) FROM song WHERE liked")
     fun likedSongsCount(): Flow<Int>
 }
-
