@@ -4,6 +4,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -100,6 +102,16 @@ object Time {
             return "$date $time$amOrPm"
         }
     }
+
+    fun getTimeNow(): java.time.LocalDateTime {
+        val instant = Clock.System.now()
+        return instant.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+    }
+
+    fun getTimeNowKotlin(): LocalDateTime {
+        val instant = Clock.System.now()
+        return instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    }
 }
 
 fun String.calculateTimeDifference(): String {
@@ -144,4 +156,8 @@ fun Long.toInstant(): Instant {
 fun Long.toLocalDateTime(): LocalDateTime {
     val instant = this.toInstant()
     return instant.toLocalDateTime(TimeZone.currentSystemDefault())
+}
+
+fun LocalDateTime.toLong(): Long {
+    return this.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 }

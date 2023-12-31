@@ -4,6 +4,8 @@ import com.bobbyesp.utilities.utilities.DarkThemePreference
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.DARK_THEME_VALUE
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.DYNAMIC_COLOR
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.HIGH_CONTRAST
+import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MAX_PARALLEL_DOWNLOADS_EXO
+import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MAX_SONG_CACHE_SIZE
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MMKV_PREFERENCES_NAME
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.PALETTE_STYLE
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.THEME_COLOR
@@ -23,6 +25,8 @@ private val BooleanPreferenceDefaults: Map<String, Boolean> =
 private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
         DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
+        MAX_SONG_CACHE_SIZE to DefaultSongCacheSize,
+        MAX_PARALLEL_DOWNLOADS_EXO to DefaultMaxParallelDownloadsExo
     )
 
 object Preferences {
@@ -47,6 +51,23 @@ object Preferences {
     fun getValue(key: String): Boolean = key.getBoolean()
     fun encodeString(key: String, string: String) = key.updateString(string)
     fun containsKey(key: String) = kv.containsKey(key)
+
+    object EnumPrefs {
+        inline fun <reified T : Enum<T>> encodeValue(
+            key: String,
+            value: T
+        ) {
+            kv.encode(key, value.ordinal)
+        }
+
+        inline fun <reified T : Enum<T>> getValue(
+            key: String,
+            defaultValue: T
+        ): T {
+            val ordinal = kv.decodeInt(key, defaultValue.ordinal)
+            return enumValues<T>().getOrNull(ordinal) ?: defaultValue
+        }
+    }
 
     data class AppSettings(
         val darkTheme: DarkThemePreference = DarkThemePreference(),

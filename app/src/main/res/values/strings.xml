@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Spowlo</string>
     <string name="home">Home</string>
+    <string name="download">Download</string>
+    <plurals name="n_songs">
+        <item quantity="one">%d song</item>
+        <item quantity="many">%d songs</item>
+        <item quantity="other">%d songs</item>
+    </plurals>
 </resources>

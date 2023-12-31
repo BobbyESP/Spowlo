@@ -137,8 +137,12 @@ dependencies {
     //Ktor libraries
     implementation(libs.bundles.ktor)
 
+    //---------------Media3---------------//
+    implementation(libs.bundles.media3)
+
     //---------------Dependency Injection---------------//
     implementation(libs.bundles.hilt)
+    implementation(libs.androidx.media3.datasource.okhttp)
     ksp(libs.hilt.ext.compiler)
     ksp(libs.hilt.compiler)
 
@@ -162,10 +166,14 @@ dependencies {
 //    implementation(libs.firebase.analytics)
 //    implementation(libs.firebase.crashlytics)
 
+    //-------------------Youtube-------------------//
+    implementation(project(":innertube"))
+
     //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.qrcode.kotlin.android)
     implementation(libs.profileinstaller)
+    implementation(libs.kotlinx.datetime)
 
     //-------------------Testing-------------------//
     //Android testing libraries

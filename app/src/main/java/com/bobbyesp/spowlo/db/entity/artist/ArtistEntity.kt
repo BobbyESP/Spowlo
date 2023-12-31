@@ -3,8 +3,9 @@ package com.bobbyesp.spowlo.db.entity.artist
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.apache.commons.lang3.RandomStringUtils
-import java.time.LocalDateTime
+import com.bobbyesp.utilities.utilities.StringUtils
+import com.bobbyesp.utilities.utilities.Time
+import kotlinx.datetime.LocalDateTime
 
 @Immutable
 @Entity(tableName = "artist")
@@ -12,7 +13,7 @@ data class ArtistEntity(
     @PrimaryKey val id: String,
     val name: String,
     val thumbnailUrl: String? = null,
-    val lastUpdateTime: LocalDateTime = LocalDateTime.now(),
+    val lastUpdateTime: LocalDateTime = Time.getTimeNowKotlin(),
     val bookmarkedAt: LocalDateTime? = null,
 ) {
     val isYouTubeArtist: Boolean
@@ -22,10 +23,10 @@ data class ArtistEntity(
         get() = id.startsWith("LA")
 
     fun toggleLike() = copy(
-        bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
+        bookmarkedAt = if (bookmarkedAt != null) null else Time.getTimeNowKotlin()
     )
 
     companion object {
-        fun generateArtistId() = "LA" + RandomStringUtils.random(8, true, false)
+        fun generateArtistId() = "LA" + StringUtils.generateRandomString(length = 8, useLetters = true, useNumbers = false)
     }
 }

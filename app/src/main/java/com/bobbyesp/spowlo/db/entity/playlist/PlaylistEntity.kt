@@ -3,7 +3,7 @@ package com.bobbyesp.spowlo.db.entity.playlist
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.apache.commons.lang3.RandomStringUtils
+import com.bobbyesp.utilities.utilities.StringUtils
 
 @Immutable
 @Entity(tableName = "playlist")
@@ -16,6 +16,6 @@ data class PlaylistEntity(
         const val LIKED_PLAYLIST_ID = "LP_LIKED"
         const val DOWNLOADED_PLAYLIST_ID = "LP_DOWNLOADED"
 
-        fun generatePlaylistId() = "LP" + RandomStringUtils.random(8, true, false)
+        fun generatePlaylistId() = "LP" + StringUtils.generateRandomString(length = 8, useLetters = true, useNumbers = false)
     }
 }
