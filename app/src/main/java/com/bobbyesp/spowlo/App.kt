@@ -44,6 +44,7 @@ class App : Application() {
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
 
-        const val APP_FILE_PROVIDER = "com.bobbyesp.spowlo.fileprovider"
+        const val APP_PACKAGE_NAME = "com.bobbyesp.spowlo"
+        const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"
     }
 }

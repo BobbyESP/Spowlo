@@ -8,6 +8,7 @@ import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MAX_PARALLEL
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MAX_SONG_CACHE_SIZE
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.MMKV_PREFERENCES_NAME
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.PALETTE_STYLE
+import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.SEARCH_SOURCE
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.THEME_COLOR
 import com.bobbyesp.utilities.utilities.ui.DEFAULT_SEED_COLOR
 import com.google.android.material.color.DynamicColors
@@ -26,7 +27,8 @@ private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
         DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
         MAX_SONG_CACHE_SIZE to DefaultSongCacheSize,
-        MAX_PARALLEL_DOWNLOADS_EXO to DefaultMaxParallelDownloadsExo
+        MAX_PARALLEL_DOWNLOADS_EXO to DefaultMaxParallelDownloadsExo,
+        SEARCH_SOURCE to DefaultSearchSource
     )
 
 object Preferences {

@@ -1,17 +1,24 @@
 package com.bobbyesp.spowlo
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
+import androidx.core.util.Consumer
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.zionhuang.innertube.models.SongItem
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,13 +34,27 @@ class MainActivity : ComponentActivity() {
         activity = this
         enableEdgeToEdge()
         setContent {
+
+            DisposableEffect(Unit) {
+                val listener = Consumer<Intent> { intent ->
+                    val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri()
+                    ?: return@Consumer
+                    //processUri(uri, navController, coroutineScope)
+                }
+
+                addOnNewIntentListener(listener)
+                onDispose { removeOnNewIntentListener(listener) }
+            }
+
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 ) {
-                    Navigator()
+                    Navigator(
+                        handledIntent = intent,
+                    )
                 }
             }
         }
@@ -45,5 +66,12 @@ class MainActivity : ComponentActivity() {
         fun getActivity(): MainActivity {
             return activity
         }
+
+        const val ACTION_SEARCH = "${App.APP_PACKAGE_NAME}.action.SEARCH"
+        const val ACTION_SONGS = "${App.APP_PACKAGE_NAME}.action.SONGS"
+        const val ACTION_ALBUMS = "${App.APP_PACKAGE_NAME}.action.ALBUMS"
+        const val ACTION_PLAYLISTS = "${App.APP_PACKAGE_NAME}.action.PLAYLISTS"
+
+        var sharedSong: MutableState<SongItem?> = mutableStateOf(null)
     }
 }
