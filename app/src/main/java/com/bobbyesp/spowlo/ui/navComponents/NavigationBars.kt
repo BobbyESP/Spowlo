@@ -11,28 +11,15 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.bobbyesp.spowlo.ui.common.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.routesToShowInBottomBar
-import com.bobbyesp.ui.components.bottomsheets.dragable.DraggableBottomSheetState
-
-data class NavigationBarsProperties(
-    val currentRootRoute: MutableState<String>,
-    @Stable val navController: NavHostController,
-    val navBarCurrentHeight: Dp,
-    val neededInset: Dp,
-    val playerBottomSheetState: DraggableBottomSheetState
-)
 
 val horizontalNavBar: @Composable BoxWithConstraintsScope.(
     navigationBarsProperties: NavigationBarsProperties

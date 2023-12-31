@@ -54,6 +54,7 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.bundles.compose)
+    implementation(libs.material)
     implementation(libs.compose.tooling.preview)
 
     //Compose testing and tooling libraries
