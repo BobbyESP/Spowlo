@@ -27,6 +27,7 @@ commonsCompress = "1.24.0"
 #More UI
 androidx-paging = "3.2.1"
 qrcodeKotlinAndroid = "4.0.7"
+orbital = "0.3.3"
 shimmer = "1.0.3"
 palette = "1.0.0"
 
@@ -112,6 +113,7 @@ compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
+orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 
 #Paging3

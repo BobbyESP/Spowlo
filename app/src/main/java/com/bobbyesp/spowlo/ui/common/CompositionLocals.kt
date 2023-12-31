@@ -2,12 +2,14 @@ package com.bobbyesp.spowlo.ui.common
 
 import android.os.Build
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -41,8 +43,8 @@ val LocalPlayerInsetsAware =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalNotificationManager =
     compositionLocalOf<NotificationManager> { error("No notification manager instance provided") }
-
 val LocalStaticBottomSheetState = compositionLocalOf<StaticBottomSheetState> { error("No static bottom sheet state provided") }
+val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -51,12 +53,17 @@ fun AppLocalSettingsProvider(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+
     val appSettingsState = AppSettingsStateFlow.collectAsState().value
+
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
+
     val imageLoader = ImageLoader.Builder(context).build()
+
     val notificationManager by lazy { NotificationManagerImpl() }
     val staticBottomSheetState by lazy { StaticBottomSheetState() }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     appSettingsState.run {
         CompositionLocalProvider(
@@ -75,6 +82,7 @@ fun AppLocalSettingsProvider(
             LocalCoilImageLoader provides imageLoader,
             LocalNotificationManager provides notificationManager,
             LocalStaticBottomSheetState provides staticBottomSheetState,
+            LocalSnackbarHostState provides snackbarHostState,
         ) {
             content() //The content of the app
         }

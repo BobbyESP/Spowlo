@@ -128,6 +128,7 @@ dependencies {
     //Compose libraries
     implementation(libs.bundles.compose)
     implementation(libs.material)
+    implementation(libs.orbital)
 
     //Pagination
     implementation(libs.bundles.pagination)
