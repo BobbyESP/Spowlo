@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import androidx.room.Upsert
 
-interface BaseDao<T> {
+interface BaseDao<T: Any> {
     /**
      * Insert an entity in the database.
      * If there is a conflict, replace the entity

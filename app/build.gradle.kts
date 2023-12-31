@@ -150,7 +150,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
-    ksp(libs.room.compiler)
+    annotationProcessor(libs.room.compiler)
 
     //-------------------Key-value Storage-------------------//
     implementation(libs.mmkv)

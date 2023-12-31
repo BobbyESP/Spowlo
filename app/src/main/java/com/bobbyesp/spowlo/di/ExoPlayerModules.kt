@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
+import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -25,6 +26,11 @@ private const val NO_PLAYER_CACHE = -1
 @Module
 @InstallIn(SingletonComponent::class)
 object ExoPlayerModules {
+
+    @Singleton
+    @Provides
+    fun provideDatabaseProvider(@ApplicationContext context: Context): DatabaseProvider =
+        StandaloneDatabaseProvider(context)
     @Singleton
     @Provides
     @PlayerCache

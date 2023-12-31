@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
+import com.bobbyesp.utilities.utilities.Time
+import kotlinx.datetime.LocalDateTime
 
 @Immutable
 @Entity(
@@ -28,8 +29,8 @@ data class SongEntity(
 ) {
     fun toggleLike() = copy(
         liked = !liked,
-        inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary
+        inLibrary = if (!liked) inLibrary ?: Time.getTimeNowKotlin() else inLibrary
     )
 
-    fun toggleLibrary() = copy(inLibrary = if (inLibrary == null) LocalDateTime.now() else null)
+    fun toggleLibrary() = copy(inLibrary = if (inLibrary == null) Time.getTimeNowKotlin() else null)
 }

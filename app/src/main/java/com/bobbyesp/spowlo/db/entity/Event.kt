@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.bobbyesp.spowlo.db.entity.song.SongEntity
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 
 @Immutable
 @Entity(
