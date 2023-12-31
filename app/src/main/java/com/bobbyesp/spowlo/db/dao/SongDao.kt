@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Dao
-interface SongDao: BaseDao<Song> {
+interface SongDao : BaseDao<Song> {
     @Transaction
     @Query("SELECT * FROM song WHERE inLibrary IS NOT NULL ORDER BY rowId")
     fun songsByRowIdAsc(): Flow<List<Song>>
@@ -39,7 +39,7 @@ interface SongDao: BaseDao<Song> {
 
             SongSortType.PLAY_TIME -> songsByPlayTimeAsc()
         }.map {
-            if(descending) it.reversed() else it
+            if (descending) it.reversed() else it
         }
 
     @Transaction
@@ -70,7 +70,7 @@ interface SongDao: BaseDao<Song> {
 
             SongSortType.PLAY_TIME -> likedSongsByPlayTimeAsc()
         }.map {
-            if(descending) it.reversed() else it
+            if (descending) it.reversed() else it
         }
 
     @Query("SELECT COUNT(1) FROM song WHERE liked")

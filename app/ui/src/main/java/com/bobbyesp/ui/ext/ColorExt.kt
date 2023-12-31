@@ -9,6 +9,7 @@ import com.google.android.material.color.MaterialColors
 fun Color.applyOpacity(enabled: Boolean): Color {
     return if (enabled) this else this.copy(alpha = 0.62f)
 }
+
 @Composable
 fun Color.harmonizeWith(other: Color) =
     Color(MaterialColors.harmonize(this.toArgb(), other.toArgb()))

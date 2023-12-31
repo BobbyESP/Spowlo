@@ -73,11 +73,11 @@ data class ArtistItemsPage(
                     title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                     artists = renderer.subtitle?.runs?.splitBySeparator()?.firstOrNull()
                         ?.oddElements()?.map {
-                        Artist(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId
-                        )
-                    } ?: return null,
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            )
+                        } ?: return null,
                     album = null,
                     duration = null,
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl()

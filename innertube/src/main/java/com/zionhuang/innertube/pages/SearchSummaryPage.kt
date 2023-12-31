@@ -37,11 +37,11 @@ data class SearchSummaryPage(
                         } ?: return null,
                         album = subtitle.getOrNull(2)?.firstOrNull()
                             ?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
-                            Album(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId!!
-                            )
-                        },
+                                Album(
+                                    name = it.text,
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId!!
+                                )
+                            },
                         duration = subtitle.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                         thumbnail = renderer.thumbnail.musicThumbnailRenderer?.getThumbnailUrl()
                             ?: return null,
@@ -110,11 +110,11 @@ data class SearchSummaryPage(
                         } ?: return null,
                         album = secondaryLine.getOrNull(2)?.firstOrNull()
                             ?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
-                            Album(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId!!
-                            )
-                        },
+                                Album(
+                                    name = it.text,
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId!!
+                                )
+                            },
                         duration = secondaryLine.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                         thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                             ?: return null,

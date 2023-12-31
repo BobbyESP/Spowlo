@@ -14,7 +14,8 @@ fun Modifier.fadingEdge(
     right: Dp? = null,
     bottom: Dp? = null,
 ): Modifier {
-    return this.graphicsLayer(alpha = 0.99f)
+    return this
+        .graphicsLayer(alpha = 0.99f)
         .drawWithContent {
             drawContent()
             if (top != null) {

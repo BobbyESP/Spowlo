@@ -49,7 +49,7 @@ open class SpotDLUpdater {
 
         try {
             /*DELETE OLDER VERSION OF THE LIBRARY BINARY*/
-            if(spotdlDir.exists()) {
+            if (spotdlDir.exists()) {
                 FileUtils.deleteDirectory(spotdlDir)
             }
             /* Install the downloaded version */
@@ -91,7 +91,7 @@ open class SpotDLUpdater {
                         val oldVersion = sharedPrefsHelper[appContext, spotDLVersionKey]
 
                         Log.d(TAG, "New version: $newVersion, old version: $oldVersion")
-                        if(newVersion == oldVersion) {
+                        if (newVersion == oldVersion) {
                             Log.d(TAG, "No necessary update :)")
                             continuation.resume(null)
                         } else {
@@ -106,7 +106,7 @@ open class SpotDLUpdater {
         }
     }
 
-    private fun downloadUpdate(appContext: Context ,downloadUrl: String): File {
+    private fun downloadUpdate(appContext: Context, downloadUrl: String): File {
         val updateFile = File.createTempFile("spotdl", null, appContext.cacheDir)
         FileUtils.copyURLToFile(URL(downloadUrl), updateFile, 10000, 10000)
         return updateFile

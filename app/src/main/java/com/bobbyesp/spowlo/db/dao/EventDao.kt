@@ -5,6 +5,6 @@ import com.bobbyesp.spowlo.db.dao.common.BaseDao
 import com.bobbyesp.spowlo.db.entity.Event
 
 @Dao
-interface EventDao: BaseDao<Event> {
+interface EventDao : BaseDao<Event> {
     // Event queries and functions
 }

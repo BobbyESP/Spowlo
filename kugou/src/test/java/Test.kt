@@ -34,7 +34,8 @@ class Test {
 
         assertTrue(candidates != null)
 
-        val downloadedLyrics = KuGou.getLyrics(songName, artistName, song.data.info.first().duration)
+        val downloadedLyrics =
+            KuGou.getLyrics(songName, artistName, song.data.info.first().duration)
         println(downloadedLyrics)
         assertTrue(downloadedLyrics.isSuccess)
     }

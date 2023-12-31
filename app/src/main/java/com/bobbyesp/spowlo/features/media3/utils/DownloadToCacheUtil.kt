@@ -3,9 +3,7 @@
 package com.bobbyesp.spowlo.features.media3.utils
 
 import android.content.Context
-import android.net.ConnectivityManager
 import androidx.annotation.OptIn
-import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
@@ -18,6 +16,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import com.bobbyesp.spowlo.App.Companion.applicationScope
+import com.bobbyesp.spowlo.App.Companion.connectivityManager
 import com.bobbyesp.spowlo.db.SpowloMusicDatabase
 import com.bobbyesp.spowlo.db.entity.format.FormatEntity
 import com.bobbyesp.spowlo.features.media3.data.services.ExoDownloadService
@@ -48,19 +47,18 @@ class DownloadUtil @Inject constructor(
     @DownloadCache val downloadCache: SimpleCache,
     @PlayerCache val playerCache: SimpleCache,
     databaseProvider: DatabaseProvider,
-    private val database: SpowloMusicDatabase,
+    database: SpowloMusicDatabase,
 ) {
-    val formatDao = database.formatDao()
-    private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
+    private val formatDao = database.formatDao()
     private val audioQuality =
         Preferences.EnumPrefs.getValue<AudioQuality>(AUDIO_QUALITY, AudioQuality.AUTO)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
     private val dataSourceFactory = ResolvingDataSource.Factory(
         CacheDataSource.Factory().setCache(playerCache).setUpstreamDataSourceFactory(
-                OkHttpDataSource.Factory(
-                    OkHttpClient.Builder().proxy(YouTube.proxy).build()
-                )
+            OkHttpDataSource.Factory(
+                OkHttpClient.Builder().proxy(YouTube.proxy).build()
             )
+        )
     ) { dataSpec ->
         val mediaId = dataSpec.key ?: error("No media id")
         val length = if (dataSpec.length >= 0) dataSpec.length else 1
@@ -89,12 +87,12 @@ class DownloadUtil @Inject constructor(
             playerResponse.streamingData?.adaptiveFormats?.find { it.itag == playedFormat.itag }
         } else {
             playerResponse.streamingData?.adaptiveFormats?.filter { it.isAudio }?.maxByOrNull {
-                    it.bitrate * when (audioQuality) {
-                        AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                        AudioQuality.HIGH -> 1
-                        AudioQuality.LOW -> -1
-                    } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                }
+                it.bitrate * when (audioQuality) {
+                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) LOW_QUALITY else HIGH_QUALITY
+                    AudioQuality.HIGH -> HIGH_QUALITY
+                    AudioQuality.LOW -> LOW_QUALITY
+                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+            }
         }!!.let {
             // Specify range to avoid YouTube's throttling
             it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
@@ -159,5 +157,10 @@ class DownloadUtil @Inject constructor(
         }
         downloads.value = result
         downloadManager.addListener(downloadListener)
+    }
+
+    companion object {
+        private const val HIGH_QUALITY = 1
+        private const val LOW_QUALITY = -1
     }
 }

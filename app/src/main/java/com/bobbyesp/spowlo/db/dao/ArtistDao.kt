@@ -5,6 +5,6 @@ import com.bobbyesp.spowlo.db.dao.common.BaseDao
 import com.bobbyesp.spowlo.db.entity.Artist
 
 @Dao
-interface ArtistDao: BaseDao<Artist> {
+interface ArtistDao : BaseDao<Artist> {
     // Artist queries and functions
 }

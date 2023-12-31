@@ -169,11 +169,11 @@ object YouTube {
                     title = response.header?.musicDetailHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
                     artists = response.header.musicDetailHeaderRenderer.subtitle.runs?.splitBySeparator()
                         ?.getOrNull(1)?.oddElements()?.map {
-                        Artist(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId
-                        )
-                    }!!,
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            )
+                        }!!,
                     year = response.header.musicDetailHeaderRenderer.subtitle.runs.lastOrNull()?.text?.toIntOrNull(),
                     thumbnail = response.header.musicDetailHeaderRenderer.thumbnail.croppedSquareThumbnailRenderer?.getThumbnailUrl()!!
                 ),

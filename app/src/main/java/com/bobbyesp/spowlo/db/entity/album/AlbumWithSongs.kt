@@ -4,8 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.bobbyesp.spowlo.db.entity.artist.ArtistEntity
 import com.bobbyesp.spowlo.db.entity.Song
+import com.bobbyesp.spowlo.db.entity.artist.ArtistEntity
 import com.bobbyesp.spowlo.db.entity.song.SongEntity
 import com.bobbyesp.spowlo.db.entity.song.SortedSongAlbumMap
 

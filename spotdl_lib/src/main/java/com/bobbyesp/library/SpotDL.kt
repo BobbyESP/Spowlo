@@ -59,7 +59,8 @@ open class SpotDL {
     private var HOME: String? = null
     private var LDFLAGS: String? = null
 
-    private val ansiCleaner = Regex("(\\x1B[@-Z\\\\-_]|[\\x80-\\x9A\\x9C-\\x9F]|(?:\\x1B\\[|\\x9B)[0-?]*[ -/]*[@-~])")
+    private val ansiCleaner =
+        Regex("(\\x1B[@-Z\\\\-_]|[\\x80-\\x9A\\x9C-\\x9F]|(?:\\x1B\\[|\\x9B)[0-?]*[ -/]*[@-~])")
 
     private val isDebug = BuildConfig.DEBUG
 
@@ -148,6 +149,7 @@ open class SpotDL {
 
         initialized = true
     }
+
     @Throws(SpotDLException::class)
     private fun initPython(appContext: Context, pythonDir: File) {
 
@@ -276,7 +278,7 @@ open class SpotDL {
         request: SpotDLRequest,
         processId: String? = null,
         callback: ((Float, Long, String) -> Unit)? = null,
-        forceProcessDestroy : Boolean = false
+        forceProcessDestroy: Boolean = false
     ): SpotDLResponse {
         assertInit()
         //Check if the process ID already exists or not.
@@ -349,7 +351,7 @@ open class SpotDL {
             stdErrProcessor.join()
             process.waitFor()
         } catch (e: InterruptedException) {
-           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && forceProcessDestroy) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && forceProcessDestroy) {
                 process.destroyForcibly()
             }
             process.destroy()
@@ -374,7 +376,7 @@ open class SpotDL {
         if (exitCode > 0) {
             if (processId != null && !idProcessMap.containsKey(processId))
                 throw CancelledException()
-            if(!command.contains("--print-errors")) {
+            if (!command.contains("--print-errors")) {
                 throw SpotDLException("Error executing command: $command, exit code: $exitCode, stderr: $errClean \n\n stdout: $outClean")
             }
             if (!ignoreErrors(request, out)) {

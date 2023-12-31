@@ -17,7 +17,8 @@ import com.bobbyesp.spowlo.features.media3.utils.DownloadUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@OptIn(UnstableApi::class) @AndroidEntryPoint
+@OptIn(UnstableApi::class)
+@AndroidEntryPoint
 class ExoDownloadService : DownloadService(
     NOTIFICATION_ID,
     FOREGROUND_NOTIFICATION_UPDATE_INTERVAL,

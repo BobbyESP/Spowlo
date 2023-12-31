@@ -158,7 +158,8 @@ fun Navigator() {
 
         /*In-app notifications system*/
         val scope = rememberCoroutineScope()
-        val currentNotification by notificationsManager.getCurrentNotification().collectAsStateWithLifecycle()
+        val currentNotification by notificationsManager.getCurrentNotification()
+            .collectAsStateWithLifecycle()
 
         val notificationVisible = currentNotification != null
         if (notificationVisible) {
@@ -202,7 +203,10 @@ fun Navigator() {
                 ) {
                     composable(Route.HomeNavigator.Home.route) {
                         Scaffold { paddingValues ->
-                            Text(modifier = Modifier.consumeWindowInsets(paddingValues) ,text = "Hello, new Spowlo!")
+                            Text(
+                                modifier = Modifier.consumeWindowInsets(paddingValues),
+                                text = "Hello, new Spowlo!"
+                            )
                         }
                     }
                 }

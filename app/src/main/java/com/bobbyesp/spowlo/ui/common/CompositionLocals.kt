@@ -32,7 +32,8 @@ import com.skydoves.landscapist.coil.LocalCoilImageLoader
 
 
 val LocalDarkTheme = compositionLocalOf { DarkThemePreference() }
-val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR } //This is the color in which the app will be based on for creating the palette
+val LocalSeedColor =
+    compositionLocalOf { DEFAULT_SEED_COLOR } //This is the color in which the app will be based on for creating the palette
 val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
 val LocalWindowWidthState =
@@ -43,8 +44,10 @@ val LocalPlayerInsetsAware =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalNotificationManager =
     compositionLocalOf<NotificationManager> { error("No notification manager instance provided") }
-val LocalStaticBottomSheetState = compositionLocalOf<StaticBottomSheetState> { error("No static bottom sheet state provided") }
-val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
+val LocalStaticBottomSheetState =
+    compositionLocalOf<StaticBottomSheetState> { error("No static bottom sheet state provided") }
+val LocalSnackbarHostState =
+    compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable

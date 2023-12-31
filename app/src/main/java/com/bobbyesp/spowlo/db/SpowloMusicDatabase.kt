@@ -63,6 +63,7 @@ abstract class SpowloMusicDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
     abstract fun formatDao(): FormatDao
     abstract fun otherDao(): OtherDao
+
     companion object {
         const val DB_NAME = "spowlo_general_database.db"
     }

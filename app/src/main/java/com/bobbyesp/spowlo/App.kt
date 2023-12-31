@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
 @HiltAndroidApp
-class App: Application() {
+class App : Application() {
     override fun onCreate() {
         MMKV.initialize(this)
         packageInfo = packageManager.run {

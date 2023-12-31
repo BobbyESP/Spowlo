@@ -5,6 +5,6 @@ import com.bobbyesp.spowlo.db.dao.common.BaseDao
 import com.bobbyesp.spowlo.db.entity.Playlist
 
 @Dao
-interface PlaylistDao: BaseDao<Playlist> {
+interface PlaylistDao : BaseDao<Playlist> {
     // Playlist queries and functions
 }

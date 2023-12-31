@@ -16,6 +16,10 @@ data class PlaylistEntity(
         const val LIKED_PLAYLIST_ID = "LP_LIKED"
         const val DOWNLOADED_PLAYLIST_ID = "LP_DOWNLOADED"
 
-        fun generatePlaylistId() = "LP" + StringUtils.generateRandomString(length = 8, useLetters = true, useNumbers = false)
+        fun generatePlaylistId() = "LP" + StringUtils.generateRandomString(
+            length = 8,
+            useLetters = true,
+            useNumbers = false
+        )
     }
 }

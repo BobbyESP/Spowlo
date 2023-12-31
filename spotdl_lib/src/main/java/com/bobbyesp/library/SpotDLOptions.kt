@@ -16,7 +16,7 @@ open class SpotDLOptions {
     }
 
 
-    open fun addOption( option: String, argument: Number): SpotDLOptions {
+    open fun addOption(option: String, argument: Number): SpotDLOptions {
         if (!options.containsKey(option)) {
             val arguments = ArrayList<String>()
             arguments.add(argument.toString())

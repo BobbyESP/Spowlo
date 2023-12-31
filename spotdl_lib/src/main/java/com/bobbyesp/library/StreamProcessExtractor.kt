@@ -18,6 +18,7 @@ internal class StreamProcessExtractor(
 
     private val cleanOutRegex: Pattern =
         Pattern.compile("(\\x1B[@-Z\\\\-_]|[\\x80-\\x9A\\x9C-\\x9F]|(?:\\x1B\\[|\\x9B)[0-?]*[ -/]*[@-~])")
+
     init {
         start()
     }
@@ -46,7 +47,7 @@ internal class StreamProcessExtractor(
                 //clean output
                 val matcher: Matcher = cleanOutRegex.matcher(readLine)
                 val cleanLine = matcher.replaceAll("")
-                if(cleanLine != "") processOutputLine(cleanLine)
+                if (cleanLine != "") processOutputLine(cleanLine)
                 arrayOfLines.add(cleanLine)
                 buffer.setLength(0)
                 continue
@@ -63,25 +64,27 @@ internal class StreamProcessExtractor(
     }
 
 
-
     private fun processOutputLine(line: String) {
         //if is debug, print the line
         if (BuildConfig.DEBUG) Log.d(TAG, line)
         callback?.let { it(getProgress(line), getEta(line), line) }
     }
 
-    private fun getProgress(line: String): Float{
+    private fun getProgress(line: String): Float {
         //Get the two numbers before an % in the line
         val regex = Regex("(\\d+)%")
         val matchResult = regex.find(line)
         //Log the result
-        if (BuildConfig.DEBUG) Log.d(TAG, "Progress: ${matchResult?.groupValues?.get(1)?.toFloat() ?: 0f}")
+        if (BuildConfig.DEBUG) Log.d(
+            TAG,
+            "Progress: ${matchResult?.groupValues?.get(1)?.toFloat() ?: 0f}"
+        )
         PERCENT = matchResult?.groupValues?.get(1)?.toFloat() ?: 0f
         //divide percent by 100 to get a value between 0 and 1
         return PERCENT / 100f
     }
 
-    private fun getEta(line: String): Long{
+    private fun getEta(line: String): Long {
         //Get the estimated time from the numbers with this format "00:00:00
         val regex = Regex("(\\d+:\\d+:\\d+)")
         val matchResult = regex.find(line)
@@ -97,7 +100,7 @@ internal class StreamProcessExtractor(
 
     }
 
-    companion object{
+    companion object {
         private val TAG = StreamProcessExtractor::class.java.simpleName
 
         private var ETA: Long = -1

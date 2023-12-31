@@ -2,6 +2,7 @@ package com.bobbyesp.utilities.ext
 
 import kotlin.math.min
 import kotlin.random.Random
+
 fun <T> List<T>.subListNonStrict(length: Int, start: Int = 0) =
     subList(start, min(start + length, size))
 

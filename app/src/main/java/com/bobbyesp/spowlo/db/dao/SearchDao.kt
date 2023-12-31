@@ -5,6 +5,6 @@ import com.bobbyesp.spowlo.db.dao.common.BaseDao
 import com.zionhuang.innertube.models.SongItem
 
 @Dao
-interface SearchDao: BaseDao<SongItem> {
+interface SearchDao : BaseDao<SongItem> {
     // Search queries and functions
 }

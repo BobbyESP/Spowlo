@@ -1,4 +1,5 @@
 @file:OptIn(UnstableApi::class)
+
 package com.bobbyesp.spowlo.di
 
 import android.content.Context
@@ -31,6 +32,7 @@ object ExoPlayerModules {
     @Provides
     fun provideDatabaseProvider(@ApplicationContext context: Context): DatabaseProvider =
         StandaloneDatabaseProvider(context)
+
     @Singleton
     @Provides
     @PlayerCache

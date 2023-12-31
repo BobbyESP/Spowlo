@@ -53,7 +53,8 @@ class NotificationManagerImpl : NotificationManager {
     }
 
     override fun showLatestNotificationByTimestamp() {
-        val latestNotification: Notification? = _notifications.value.values.maxByOrNull { it.timestamp }
+        val latestNotification: Notification? =
+            _notifications.value.values.maxByOrNull { it.timestamp }
         latestNotification?.let {
             showNotification(it)
         }

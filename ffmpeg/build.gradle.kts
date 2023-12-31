@@ -47,7 +47,7 @@ dependencies {
     implementation(libs.commons.io)
 }
 
-afterEvaluate{
+afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("maven") {

@@ -86,7 +86,12 @@ fun PullRefreshIndicator(
             .size(IndicatorSize)
             .pullRefreshIndicatorTransform(state, scale)
             .shadow(if (showElevation) Elevation else 0.dp, SpinnerShape, clip = true)
-            .background(color = surfaceColorAtElevation(color = backgroundColor, elevation = Elevation), shape = SpinnerShape),
+            .background(
+                color = surfaceColorAtElevation(
+                    color = backgroundColor,
+                    elevation = Elevation
+                ), shape = SpinnerShape
+            ),
     ) {
         Crossfade(
             targetState = refreshing,

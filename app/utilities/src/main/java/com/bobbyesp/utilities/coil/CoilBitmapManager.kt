@@ -1,4 +1,6 @@
-@file:UnstableApi package com.bobbyesp.utilities.coil
+@file:UnstableApi
+
+package com.bobbyesp.utilities.coil
 
 import android.content.Context
 import android.graphics.Bitmap

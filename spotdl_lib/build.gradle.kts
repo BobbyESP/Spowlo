@@ -57,7 +57,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 }
 
-afterEvaluate{
+afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("maven") {
