@@ -2,6 +2,13 @@
     <string name="app_name">Spowlo</string>
     <string name="home">Home</string>
     <string name="download">Download</string>
+    <string name="search">Search</string>
+    <string name="search_local_library">Search in local library</string>
+    <string name="search_yt_music">Search in YouTube Music</string>
+    <string name="go_back">Go back</string>
+    <string name="settings">Settings</string>
+    <string name="local_library">Local library</string>
+    <string name="options_dialog">Options dialog</string>
     <plurals name="n_songs">
         <item quantity="one">%d song</item>
         <item quantity="many">%d songs</item>

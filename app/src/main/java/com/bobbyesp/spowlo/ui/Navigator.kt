@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -23,7 +24,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -37,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -47,10 +48,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ui.common.AppBarHeight
 import com.bobbyesp.spowlo.ui.common.CollapsedPlayerHeight
@@ -59,6 +63,7 @@ import com.bobbyesp.spowlo.ui.common.LocalNotificationManager
 import com.bobbyesp.spowlo.ui.common.LocalPlayerInsetsAware
 import com.bobbyesp.spowlo.ui.common.LocalSnackbarHostState
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
+import com.bobbyesp.spowlo.ui.common.NavArgs
 import com.bobbyesp.spowlo.ui.common.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.common.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.common.Route
@@ -66,17 +71,17 @@ import com.bobbyesp.spowlo.ui.common.routesWhereToShowNavBar
 import com.bobbyesp.spowlo.ui.navComponents.NavigationBarsProperties
 import com.bobbyesp.spowlo.ui.navComponents.horizontalNavBar
 import com.bobbyesp.spowlo.ui.navComponents.verticalNavBar
-import com.bobbyesp.ui.components.bottomsheets.dragable.rememberDraggableBottomSheetState
+import com.bobbyesp.spowlo.util.compose.playerSafePadding
+import com.bobbyesp.ui.components.bottomsheet.dragable.rememberDraggableBottomSheetState
+import com.bobbyesp.ui.util.appBarScrollBehavior
 import com.bobbyesp.utilities.audio.model.SearchSource
 import com.bobbyesp.utilities.utilities.preferences.Preferences
-import com.bobbyesp.utilities.utilities.preferences.Preferences.getBoolean
-import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.PAUSE_SEARCH_HISTORY
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.SEARCH_SOURCE
 import com.bobbyesp.utilities.utilities.ui.applyAlpha
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigator(
@@ -90,6 +95,12 @@ fun Navigator(
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
             navBackStackEntry?.destination?.parent?.route ?: Route.HomeNavigator.route
+        )
+    }
+
+    val currentRoute = rememberSaveable(navBackStackEntry, key = "currentRoute") {
+        mutableStateOf(
+            navBackStackEntry?.destination?.route ?: Route.HomeNavigator.Home.route
         )
     }
 
@@ -126,7 +137,6 @@ fun Navigator(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-
         /* Navigation and player */
         val navigationBarHeight by animateDpAsState(
             targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
@@ -144,24 +154,20 @@ fun Navigator(
         val playerInsetsPortrait = remember(
             bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed
         ) {
-            val bottom = bottomInset +
-                    (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) +
-                    (if (!playerBottomSheetState.isDismissed) CollapsedPlayerHeight else 0.dp)
+            val bottom =
+                bottomInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + (if (!playerBottomSheetState.isDismissed) CollapsedPlayerHeight else 0.dp)
 
-            windowsInsets
-                .only(sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+            windowsInsets.only(sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                 .add(insets = WindowInsets(top = AppBarHeight, bottom = bottom))
         }
 
         val playerInsetsLandscape = remember(
             bottomInset, shouldShowNavigationBar, playerBottomSheetState.isDismissed
         ) {
-            val start = startInset +
-                    (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) +
-                    (if (!playerBottomSheetState.isDismissed) CollapsedPlayerHeight else 0.dp)
+            val start =
+                startInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + (if (!playerBottomSheetState.isDismissed) CollapsedPlayerHeight else 0.dp)
 
-            windowsInsets
-                .only(sides = WindowInsetsSides.Vertical)
+            windowsInsets.only(sides = WindowInsetsSides.Vertical)
                 .add(insets = WindowInsets(top = AppBarHeight, left = start))
         }
 
@@ -189,23 +195,26 @@ fun Navigator(
                 }
             }
         }
-        var searchSource by remember {
-            mutableStateOf(Preferences.EnumPrefs.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
-        }
-
-        val searchBarFocusRequester = remember { FocusRequester() }
 
         val onSearch: (String) -> Unit = {
             if (it.isNotEmpty()) {
                 onActiveChange(false)
-                navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
-                if (!PAUSE_SEARCH_HISTORY.getBoolean()) {
+                navController.navigate(Route.Search.createRoute(it))
+//                if (!PAUSE_SEARCH_HISTORY.getBoolean()) {
 //                    database.query {
 //                        insert(SearchHistory(query = it))
-//                    }
-                }
+//                   }
+//                }
             }
         }
+
+        var searchSource by remember {
+            mutableStateOf(Preferences.EnumPrefs.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
+        }
+
+        val searchBarScrollBehavior = appBarScrollBehavior(canScroll = {
+            !currentRoute.value.startsWith("search/") && (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
+        })
 
         var openSearchImmediately: Boolean by remember {
             mutableStateOf(handledIntent?.action == MainActivity.ACTION_SEARCH)
@@ -246,41 +255,76 @@ fun Navigator(
         CompositionLocalProvider(
             LocalPlayerInsetsAware provides playerAwareInsets,
         ) {
-            NavHost(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                navController = navController,
-                startDestination = Route.HomeNavigator.route,
-                route = Route.MainHost.route,
-            ) {
-                navigation(
-                    route = Route.HomeNavigator.route,
-                    startDestination = Route.HomeNavigator.Home.route
+            Scaffold(
+                modifier = Modifier.playerSafePadding().fillMaxSize(),
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = snackbarHostState
+                    ) { dataReceived ->
+                        Snackbar(
+                            modifier = Modifier,
+                            snackbarData = dataReceived,
+                            containerColor = MaterialTheme.colorScheme.inverseSurface,
+                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                        )
+                    }
+                },
+            ) { scaffoldPadding ->
+                NavHost(
+                    modifier = Modifier
+                        .consumeWindowInsets(scaffoldPadding)
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    navController = navController,
+                    startDestination = Route.HomeNavigator.route,
+                    route = Route.MainHost.route,
                 ) {
-                    composable(Route.HomeNavigator.Home.route) {
-                        Scaffold { paddingValues ->
-                            Text(
-                                modifier = Modifier.consumeWindowInsets(paddingValues),
-                                text = "Hello, new Spowlo!"
-                            )
+                    dialog(Route.OptionsDialog.route) {
+
+                    }
+                    composable(
+                        route = Route.Search.route,
+                        arguments = listOf(navArgument(NavArgs.SearchQuery.key) {
+                            type = NavType.StringType
+                        })
+                    ) {
+
+                    }
+                    navigation(
+                        route = Route.HomeNavigator.route,
+                        startDestination = Route.HomeNavigator.Home.route
+                    ) {
+                        composable(Route.HomeNavigator.Home.route) {
+                            Scaffold(
+                                modifier = Modifier.playerSafePadding()
+                            ) { paddingValues ->
+                                Text(
+                                    modifier = Modifier.consumeWindowInsets(paddingValues),
+                                    text = "Hello, new Spowlo!"
+                                )
+                            }
                         }
                     }
                 }
             }
 
             AnimatedVisibility(
-                visible = shouldShowSearchBar, enter = fadeIn(), exit = fadeOut()
+                modifier = Modifier.align(Alignment.TopCenter),
+                visible = shouldShowSearchBar,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
-                SearchBar(
+                AppSearchBar(
                     query = query,
                     onQueryChange = onQueryChange,
                     onSearch = onSearch,
                     active = active,
                     onActiveChange = onActiveChange,
-                ) {
-
-                }
+                    searchSource = searchSource,
+                    onChangeSearchSource = { newSearchSource ->
+                        searchSource = newSearchSource
+                    },
+                )
             }
         }
 
@@ -308,10 +352,8 @@ fun Navigator(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black.applyAlpha(0.6f),
-                                Color.Transparent
-                            ),
-                            endY = 500f
+                                Color.Black.applyAlpha(0.6f), Color.Transparent
+                            ), endY = 500f
                         )
                     )
                     .fillMaxSize(), contentAlignment = Alignment.TopCenter
@@ -331,8 +373,7 @@ fun Navigator(
 
                         // Use transition to animate the card's appearance
                         val transition = updateTransition(
-                            targetState = cardVisible.value,
-                            label = "Card visibility transition"
+                            targetState = cardVisible.value, label = "Card visibility transition"
                         )
                         val offset by transition.animateDp(
                             transitionSpec = { tween(durationMillis = 500) },

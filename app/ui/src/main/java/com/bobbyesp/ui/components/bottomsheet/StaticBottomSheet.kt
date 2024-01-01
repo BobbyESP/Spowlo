@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.bottomsheets
+package com.bobbyesp.ui.components.bottomsheet
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility

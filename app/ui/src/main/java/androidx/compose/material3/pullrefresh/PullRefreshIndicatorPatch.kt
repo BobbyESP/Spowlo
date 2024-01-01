@@ -1,4 +1,4 @@
-package androidx.compose.mateiral3.pullrefresh
+package androidx.compose.material3.pullrefresh
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation

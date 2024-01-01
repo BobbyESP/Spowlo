@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.cards
+package com.bobbyesp.ui.components.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

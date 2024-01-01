@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.bobbyesp.spowlo.features.notification_manager.data.local.NotificationManager
 import com.bobbyesp.spowlo.features.notification_manager.data.local.NotificationManagerImpl
-import com.bobbyesp.ui.components.bottomsheets.StaticBottomSheetState
+import com.bobbyesp.ui.components.bottomsheet.StaticBottomSheetState
 import com.bobbyesp.utilities.utilities.DarkThemePreference
 import com.bobbyesp.utilities.utilities.Theme.paletteStyles
 import com.bobbyesp.utilities.utilities.preferences.Preferences.AppSettingsStateFlow

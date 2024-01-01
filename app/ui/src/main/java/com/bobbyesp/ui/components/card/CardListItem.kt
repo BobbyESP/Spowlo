@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.cards
+package com.bobbyesp.ui.components.card
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Card

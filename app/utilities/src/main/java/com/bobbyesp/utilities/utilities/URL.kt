@@ -8,4 +8,8 @@ object URL {
     fun getUrls(text: String): List<String> {
         return urlRegex.findAll(text).map { it.value }.toList()
     }
+
+    object URI {
+        const val UTF8 = "UTF-8"
+    }
 }

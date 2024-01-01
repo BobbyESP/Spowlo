@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.bottomsheets
+package com.bobbyesp.ui.components.bottomsheet
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.WindowInsets

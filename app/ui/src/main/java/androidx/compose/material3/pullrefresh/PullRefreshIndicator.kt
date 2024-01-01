@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidx.compose.mateiral3.pullrefresh
+package androidx.compose.material3.pullrefresh
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing

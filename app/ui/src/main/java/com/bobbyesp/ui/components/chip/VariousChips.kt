@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.chips
+package com.bobbyesp.ui.components.chip
 
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.AnimatedVisibility

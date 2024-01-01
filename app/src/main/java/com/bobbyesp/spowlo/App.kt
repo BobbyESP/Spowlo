@@ -15,6 +15,7 @@ import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.serialization.json.Json
 
 @HiltAndroidApp
 class App : Application() {
@@ -43,6 +44,12 @@ class App : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
+
+        val json = Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            encodeDefaults = true
+        }
 
         const val APP_PACKAGE_NAME = "com.bobbyesp.spowlo"
         const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"

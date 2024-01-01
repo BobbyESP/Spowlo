@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.buttons
+package com.bobbyesp.ui.components.button
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

@@ -1,4 +1,4 @@
-package com.bobbyesp.ui.components.bottomsheets.dragable
+package com.bobbyesp.ui.components.bottomsheet.dragable
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
