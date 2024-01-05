@@ -55,6 +55,7 @@ val routesToShowInBottomBar = listOf(
 
 val routesWhereToShowNavBar = listOf(
     Route.HomeNavigator.Home,
+    Route.OptionsDialog,
 )
 
 /**

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.navComponents
+package com.bobbyesp.spowlo.ui.components.navigation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable

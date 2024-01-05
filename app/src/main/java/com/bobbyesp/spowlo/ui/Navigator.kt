@@ -68,12 +68,13 @@ import com.bobbyesp.spowlo.ui.common.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.common.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.routesWhereToShowNavBar
-import com.bobbyesp.spowlo.ui.navComponents.NavigationBarsProperties
-import com.bobbyesp.spowlo.ui.navComponents.horizontalNavBar
-import com.bobbyesp.spowlo.ui.navComponents.verticalNavBar
+import com.bobbyesp.spowlo.ui.components.AppSearchBar
+import com.bobbyesp.spowlo.ui.components.OptionsDialog
+import com.bobbyesp.spowlo.ui.components.navigation.NavigationBarsProperties
+import com.bobbyesp.spowlo.ui.components.navigation.horizontalNavBar
+import com.bobbyesp.spowlo.ui.components.navigation.verticalNavBar
 import com.bobbyesp.spowlo.util.compose.playerSafePadding
 import com.bobbyesp.ui.components.bottomsheet.dragable.rememberDraggableBottomSheetState
-import com.bobbyesp.ui.util.appBarScrollBehavior
 import com.bobbyesp.utilities.audio.model.SearchSource
 import com.bobbyesp.utilities.utilities.preferences.Preferences
 import com.bobbyesp.utilities.utilities.preferences.PreferencesKeys.SEARCH_SOURCE
@@ -212,10 +213,6 @@ fun Navigator(
             mutableStateOf(Preferences.EnumPrefs.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
         }
 
-        val searchBarScrollBehavior = appBarScrollBehavior(canScroll = {
-            !currentRoute.value.startsWith("search/") && (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
-        })
-
         var openSearchImmediately: Boolean by remember {
             mutableStateOf(handledIntent?.action == MainActivity.ACTION_SEARCH)
         }
@@ -256,7 +253,9 @@ fun Navigator(
             LocalPlayerInsetsAware provides playerAwareInsets,
         ) {
             Scaffold(
-                modifier = Modifier.playerSafePadding().fillMaxSize(),
+                modifier = Modifier
+                    .playerSafePadding()
+                    .fillMaxSize(),
                 snackbarHost = {
                     SnackbarHost(
                         hostState = snackbarHostState
@@ -280,7 +279,7 @@ fun Navigator(
                     route = Route.MainHost.route,
                 ) {
                     dialog(Route.OptionsDialog.route) {
-
+                        OptionsDialog()
                     }
                     composable(
                         route = Route.Search.route,

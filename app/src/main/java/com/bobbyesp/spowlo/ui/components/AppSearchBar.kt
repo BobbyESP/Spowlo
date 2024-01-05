@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui
+package com.bobbyesp.spowlo.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.util.compose.playerSafePadding
 import com.bobbyesp.ui.components.image.ProfilePicture
 import com.bobbyesp.utilities.audio.model.SearchSource
@@ -115,7 +116,7 @@ fun BoxWithConstraintsScope.AppSearchBar(
                 }
                 AnimatedVisibility(visible = !active) {
                     ProfilePicture(name = "Bobby", size = 32, onClick = {
-                        navController.navigate("dialog")
+                        navController.navigate(Route.OptionsDialog.route)
                     })
                 }
             }

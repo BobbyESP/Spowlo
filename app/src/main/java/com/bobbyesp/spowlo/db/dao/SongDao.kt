@@ -27,7 +27,7 @@ interface SongDao : BaseDao<Song> {
     @Query("SELECT * FROM song WHERE inLibrary IS NOT NULL ORDER BY totalPlayTime")
     fun songsByPlayTimeAsc(): Flow<List<Song>>
 
-    fun songs(sortType: SongSortType, descending: Boolean) =
+    fun songs(sortType: SongSortType, descending: Boolean): Flow<List<Song>> =
         when (sortType) {
             SongSortType.CREATE_DATE -> songsByCreateDateAsc()
             SongSortType.NAME -> songsByNameAsc()
