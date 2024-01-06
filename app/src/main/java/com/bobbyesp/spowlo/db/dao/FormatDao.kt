@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FormatDao : BaseDao<FormatEntity> {
     @Query("SELECT * FROM format WHERE id = :id")
-    fun format(id: String?): Flow<FormatEntity?>
+    fun formatFlow(id: String?): Flow<FormatEntity?>
 }

@@ -71,7 +71,7 @@ class DownloadUtil @Inject constructor(
             return@Factory dataSpec.withUri(it.first.toUri())
         }
 
-        val playedFormat = runBlocking(Dispatchers.IO) { formatDao.format(mediaId).first() }
+        val playedFormat = runBlocking(Dispatchers.IO) { formatDao.formatFlow(mediaId).first() }
         val playerResponse = runBlocking(Dispatchers.IO) {
             YouTube.player(mediaId)
         }.getOrThrow()

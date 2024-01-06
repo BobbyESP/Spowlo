@@ -9,7 +9,6 @@ object PreferencesKeys {
     //------------YouTube----------------
     const val AUDIO_QUALITY = "audio_quality"
     const val SEARCH_SOURCE = "search_source"
-    const val PAUSE_SEARCH_HISTORY = "pause_search_history"
 
     //------------THEME----------------
     const val DARK_THEME_VALUE = "dark_theme_value"
