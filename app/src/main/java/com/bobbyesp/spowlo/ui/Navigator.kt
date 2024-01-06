@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -70,6 +71,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.routesWhereToShowNavBar
 import com.bobbyesp.spowlo.ui.components.AppSearchBar
 import com.bobbyesp.spowlo.ui.components.OptionsDialog
+import com.bobbyesp.spowlo.ui.components.PlayerBottomSheet
 import com.bobbyesp.spowlo.ui.components.navigation.NavigationBarsProperties
 import com.bobbyesp.spowlo.ui.components.navigation.horizontalNavBar
 import com.bobbyesp.spowlo.ui.components.navigation.verticalNavBar
@@ -279,7 +281,12 @@ fun Navigator(
                     route = Route.MainHost.route,
                 ) {
                     dialog(Route.OptionsDialog.route) {
-                        OptionsDialog()
+                        OptionsDialog(
+                            isPreview = false,
+                            onExit = {
+                                navController.popBackStack()
+                            }
+                        )
                     }
                     composable(
                         route = Route.Search.route,
@@ -301,6 +308,9 @@ fun Navigator(
                                     modifier = Modifier.consumeWindowInsets(paddingValues),
                                     text = "Hello, new Spowlo!"
                                 )
+                                Button(onClick = { playerBottomSheetState.expandSoft() }) {
+                                    Text(text = "Expand")
+                                }
                             }
                         }
                     }
@@ -327,6 +337,9 @@ fun Navigator(
             }
         }
 
+        PlayerBottomSheet(
+            state = playerBottomSheetState,
+        )
         when (configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 verticalNavBar(navBarProperties)

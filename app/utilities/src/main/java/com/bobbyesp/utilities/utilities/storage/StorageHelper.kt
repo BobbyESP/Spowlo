@@ -7,9 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object StorageHelper {
-    object Compose {
-
-    }
+    object Compose
 
     suspend fun writeTextToFile(context: Context, text: String, fileUri: Uri?) {
         withContext(Dispatchers.IO) {
