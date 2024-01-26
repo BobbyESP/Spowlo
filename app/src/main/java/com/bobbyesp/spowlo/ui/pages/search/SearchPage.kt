@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -58,6 +56,7 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardSh
 import com.bobbyesp.spowlo.ui.components.searchBar.QueryTextBox
 import com.bobbyesp.spowlo.ui.components.text.AnimatedCounter
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel.Companion
 import com.bobbyesp.spowlo.utils.MetadataEntityUtil.navigateToEntity
@@ -116,12 +115,7 @@ fun SearchPage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                bottom = bottomInsetsAsPadding.calculateBottomPadding(),
-                start = bottomInsetsAsPadding.calculateStartPadding(
-                    LocalLayoutDirection.current
-                )
-            ),
+            .playerSafePadding(),
     ) { paddingValues ->
         Column(
             modifier = Modifier

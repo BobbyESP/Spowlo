@@ -25,6 +25,7 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManager
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +39,7 @@ fun NotificationsPage(
     val notificationsAsList = notificationsMap.values.toList()
 
     Scaffold(
+        modifier = Modifier.playerSafePadding(),
         topBar = {
             SmallTopAppBar(
                 modifier = Modifier.fillMaxWidth(),

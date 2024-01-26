@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.bobbyesp.spowlo.App.Companion.USER_AGENT_HEADER
 import com.bobbyesp.spowlo.R
+import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import okhttp3.OkHttpClient
 
 @Composable
@@ -47,14 +48,7 @@ fun AsyncImageImpl(
     val context = LocalContext.current
 
     // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
-    val imageLoader = ImageLoader.Builder(context).memoryCache {
-        MemoryCache.Builder(context).maxSizePercent(0.05).build()
-    }.diskCache {
-        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache")).maxSizePercent(0.2)
-            .build()
-    }.okHttpClient {
-        OkHttpClient.Builder().build()
-    }.build()
+    val imageLoader = LocalCoilImageLoader.current
 
     val imageRequest =
         ImageRequest.Builder(context).addHeader("user-agent", USER_AGENT_HEADER).data(model)
@@ -73,7 +67,7 @@ fun AsyncImageImpl(
     } else {
         AsyncImage(
             model = imageRequest,
-            imageLoader = imageLoader,
+            imageLoader = imageLoader ?: ImageLoader.Builder(context).build(),
             onState = onState,
             filterQuality = filterQuality,
             transform = transform,

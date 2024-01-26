@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,9 +27,9 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.downloader.Downloader
 import com.bobbyesp.spowlo.features.downloader.domain.DownloadTask.DownloadState.Companion.toTaskState
-import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.others.download_tasks.DownloadingTaskItem
+import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,13 +37,11 @@ fun DownloaderTasksPage(
     onNavigateToDetail: (Int) -> Unit? = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val bottomInsetsAsPadding =
-        LocalPlayerAwareWindowInsets.current.asPaddingValues()
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .nestedScroll(scrollBehavior.nestedScrollConnection)
-        .padding(bottom = bottomInsetsAsPadding.calculateBottomPadding()),
+        .playerSafePadding(),
         topBar = {
             TopAppBar(title = {
                 Text(
@@ -60,9 +57,9 @@ fun DownloaderTasksPage(
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(Downloader.mutableTaskList.values.toList()) {
-                it.run {
-                    DownloadingTaskItem(taskItem = it, status = state.toTaskState())
+            items(Downloader.mutableTaskList.values.toList()) { download ->
+                download.run {
+                    DownloadingTaskItem(taskItem = download, status = state.toTaskState())
 //                    DownloadingTaskItem(status = state.toStatus(),
 //                        progress = if (state is Downloader.DownloadTask.State.Running) state.progress else 0f,
 //                        progressText = currentLine,

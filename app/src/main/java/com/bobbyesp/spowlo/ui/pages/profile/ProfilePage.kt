@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,7 +45,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -61,7 +58,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
-import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.buttons.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
@@ -73,6 +69,7 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
@@ -83,18 +80,12 @@ import kotlinx.coroutines.launch
 fun ProfilePage(
     viewModel: ProfilePageViewModel
 ) {
-    val bottomInsetsAsPadding =
-        LocalPlayerAwareWindowInsets.current.asPaddingValues()
-    val layoutDirection = LocalLayoutDirection.current
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
 
     Crossfade(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                bottom = bottomInsetsAsPadding.calculateBottomPadding(),
-                start = bottomInsetsAsPadding.calculateStartPadding(layoutDirection)
-            ),
+            .playerSafePadding(),
         targetState = viewState.value.state,
         label = "Main crossfade Profile Page"
     ) { state ->
