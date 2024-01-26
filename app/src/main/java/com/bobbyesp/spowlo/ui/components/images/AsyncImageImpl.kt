@@ -22,14 +22,11 @@ import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.bobbyesp.spowlo.App.Companion.USER_AGENT_HEADER
 import com.bobbyesp.spowlo.R
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
-import okhttp3.OkHttpClient
 
 @Composable
 fun AsyncImageImpl(
@@ -102,15 +99,7 @@ fun AsyncImageImpl(
 
     val context = LocalContext.current
 
-    val imageLoader = ImageLoader.Builder(context).memoryCache {
-        MemoryCache.Builder(context).maxSizePercent(0.05).build()
-    }.diskCache {
-        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache")).maxSizePercent(0.2)
-            .build()
-    }.okHttpClient {
-        OkHttpClient.Builder().build()
-    }.build()
-
+    val imageLoader = LocalCoilImageLoader.current
 
     val imageRequest =
         ImageRequest.Builder(context).addHeader("user-agent", USER_AGENT_HEADER).data(model)
@@ -120,7 +109,7 @@ fun AsyncImageImpl(
 
     AsyncImage(
         model = imageRequest,
-        imageLoader = imageLoader,
+        imageLoader = imageLoader ?: ImageLoader.Builder(context).build(),
         filterQuality = filterQuality,
         onError = onError,
         onLoading = onLoading,
