@@ -26,8 +26,6 @@ object Downloader {
     )
 
     private var currentJob: Job? = null
-    private var downloadResultTemp: Result<List<String>> =
-        Result.failure(Exception("No result yet"))
 
     //PROCESSES COUNT
     private val mutableProcessCount = MutableStateFlow(0)

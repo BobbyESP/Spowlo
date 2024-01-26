@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MetadataEntity(
     val type: SpotifyItemType = SpotifyItemType.TRACKS,
-    val id: String = ""
+    val id: String
 ): Parcelable

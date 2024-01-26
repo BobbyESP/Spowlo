@@ -111,7 +111,7 @@ object DownloaderUtil {
         preferences: DownloaderPreferences,
         path: String,
         sdcardUri: String?
-    ): Result<List<String>> {
+    ): Result<List<String>> { //Result<List<String>> return a list of paths where the songs are downloaded, but I don't think we need it
        //TODO: Add scanning to app db and media store
         return Result.success(listOf(path)) // <- this is the result of the download (PLACEHOLDER)
     }

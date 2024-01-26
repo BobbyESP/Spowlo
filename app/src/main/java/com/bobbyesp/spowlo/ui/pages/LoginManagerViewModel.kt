@@ -11,11 +11,11 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortene
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
@@ -46,10 +46,10 @@ class LoginManagerViewModel @Inject constructor(
             deleteEncryptedSharedPrefs()
         }
     }
-    suspend fun getLoggedIn() {
-        val logged = runBlocking(Dispatchers.IO) { spotifyAuthManager.isAuthenticated() }
+    suspend fun getLoggedIn(scope: CoroutineScope) {
+        val logged = scope.async { spotifyAuthManager.isAuthenticated() }
         mutableLoginManagerState.update {
-            it.copy(loggedIn = logged)
+            it.copy(loggedIn = logged.await())
         }
     }
 

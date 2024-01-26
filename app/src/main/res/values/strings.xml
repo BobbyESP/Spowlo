@@ -166,4 +166,10 @@
     <string name="no_running_downloads">No running downloads</string>
     <string name="no_running_downloads_description">There is no running downloads on the app. Go ahead and download your best tunes!</string>
     <string name="download_tasks">Download tasks</string>
+    <string name="download_log">Download log</string>
+    <string name="close">Close</string>
+    <string name="copy_output">Copy output</string>
+    <string name="font_size">Font size</string>
+    <string name="copy_error_report">Copy error report</string>
+    <string name="restart_task">Restart task</string>
 </resources>

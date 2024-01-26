@@ -100,6 +100,7 @@ import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
 import com.bobbyesp.spowlo.utils.ui.appBarScrollBehavior
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -158,7 +159,8 @@ fun Navigator(
     var isLogged: Boolean? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
-        isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
+        val loggedIn = withContext(Dispatchers.IO) { async {loginManager.isLogged() } }
+        isLogged = loggedIn.await()
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
@@ -213,7 +215,6 @@ fun Navigator(
                 }
             }
         }
-
 
         val scrollBehavior = appBarScrollBehavior(
             canScroll = {
