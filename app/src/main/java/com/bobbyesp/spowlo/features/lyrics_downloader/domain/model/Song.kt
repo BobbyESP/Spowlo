@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.features.lyrics_downloader.domain.model
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.adamratzman.spotify.models.Track
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -14,6 +15,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable
+@Immutable
 data class Song(
     val id: Long,
     val title: String,

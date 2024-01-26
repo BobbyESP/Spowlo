@@ -18,8 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
-import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManager
 import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManagerImpl
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManager
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
 import com.bobbyesp.spowlo.utils.theme.DarkThemePreference

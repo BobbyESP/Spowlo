@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.inapp_notifications.data.local
+package com.bobbyesp.spowlo.features.inapp_notifications.domain
 
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow

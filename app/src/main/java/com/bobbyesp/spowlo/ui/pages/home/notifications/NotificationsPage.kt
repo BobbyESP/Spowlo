@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManager
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManager
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 
