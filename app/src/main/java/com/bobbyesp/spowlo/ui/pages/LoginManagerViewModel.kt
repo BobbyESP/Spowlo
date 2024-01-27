@@ -46,6 +46,7 @@ class LoginManagerViewModel @Inject constructor(
             deleteEncryptedSharedPrefs()
         }
     }
+
     suspend fun getLoggedIn(scope: CoroutineScope) {
         val logged = scope.async { spotifyAuthManager.isAuthenticated() }
         mutableLoginManagerState.update {

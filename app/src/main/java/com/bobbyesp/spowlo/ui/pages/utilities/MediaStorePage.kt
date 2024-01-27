@@ -1,17 +1,18 @@
 package com.bobbyesp.spowlo.ui.pages.utilities
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,7 +32,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -74,6 +78,7 @@ fun MediaStorePage(
     onItemClicked: (Song) -> Unit
 ) {
     val context = LocalContext.current
+    val layoutDirection = LocalLayoutDirection.current
     val scope = rememberCoroutineScope()
 
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
@@ -93,6 +98,12 @@ fun MediaStorePage(
 
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val collapsedFraction by remember { mutableFloatStateOf(scrollBehavior.state.collapsedFraction) }
+    val safeCollapsedFraction = maxOf(0.05f, collapsedFraction)
+    val contraryCollapsedFraction by remember {
+        derivedStateOf { 1.0f - safeCollapsedFraction }
+    }
 
     Scaffold(topBar = {
         SmallTopAppBar(scrollBehavior = scrollBehavior, navigationIcon = {
@@ -120,8 +131,7 @@ fun MediaStorePage(
                 }, enabled = true
             ) {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search for songs"
+                    imageVector = Icons.Default.Search, contentDescription = "Search for songs"
                 )
             }
 
@@ -181,122 +191,149 @@ fun MediaStorePage(
                                 Text(text = stringResource(id = R.string.refresh))
                             }
                         }
-                    } else Column(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize()
-                    ) {
-                        AnimatedVisibility(
-                            modifier = Modifier.fillMaxWidth(),
-                            visible = wantsToSearch,
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .padding(paddingValues)
+                                .fillMaxSize()
                         ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Top
-                            ) {
-                                ExpandableSearchBar(
-                                    query = query,
-                                    onQueryChange = { query = it },
-                                    onSearch = { queryToSearch ->
-                                        val finalQuery = queryToSearch.trim()
-                                        viewModel.viewModelScope.launch {
-                                            viewModel.loadMediaStoreWithFilter(
-                                                context, finalQuery
-                                            )
+                            val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
 
-                                            viewModel.insertSearch(
-                                                finalQuery
-                                            )
-                                        }
-                                        activeFullscreenSearching = false
-                                    },
-                                    active = activeFullscreenSearching,
-                                    onActiveChange = { activeFullscreenSearching = it },
-                                    placeholderText = stringResource(id = R.string.search_for_songs),
-                                    leadingIcon = Icons.Default.Search,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
-                                            .fillMaxWidth()
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                        ) {
-                                            LargeCategoryTitle(
-                                                modifier = Modifier
-                                                    .padding(horizontal = 8.dp)
-                                                    .padding(top = 8.dp),
-                                                text = stringResource(id = R.string.filters)
-                                            )
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                val selectedFilter = viewState.value.filter
-                                                SingleChoiceChip(
-                                                    selected = selectedFilter == MediaStoreFilterType.TITLE,
-                                                    onClick = {
-                                                        viewModel.updateFilter(MediaStoreFilterType.TITLE)
-                                                    },
-                                                    label = stringResource(id = R.string.title)
-                                                )
-                                                SingleChoiceChip(
-                                                    selected = selectedFilter == MediaStoreFilterType.ARTIST,
-                                                    onClick = {
-                                                        viewModel.updateFilter(MediaStoreFilterType.ARTIST)
-                                                    },
-                                                    label = stringResource(id = R.string.artist)
-                                                )
-                                            }
-                                        }
-                                    }
-                                    HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .animateContentSize(),
-                                    ) {
-                                        items(allSearches) { search ->
-                                            RecentSearch(searchEntity = search, onDeleteClick = {
-                                                scope.launch(Dispatchers.IO) {
-                                                    viewModel.deleteSearchById(search.id)
-                                                }
-                                            }, onClick = {
-                                                scope.launch {
-                                                    viewModel.loadMediaStoreWithFilter(
-                                                        context, search.search, search.filter
-                                                    )
-                                                }
-                                                activeFullscreenSearching = false
-                                            })
-                                        }
-                                    }
+                            LazyVerticalGrid(
+                                columns = GridCells.Adaptive(125.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                contentPadding = PaddingValues(8.dp),
+                                modifier = Modifier.fillMaxSize(),
+                                state = lazyGridState
+                            ) {
+                                items(count = it.mediaStoreSongs.size,
+                                    key = { index -> it.mediaStoreSongs[index].id },
+                                    contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
+                                    val song = it.mediaStoreSongs[index]
+                                    LocalSongCard(song = song,
+                                        modifier = Modifier.animateItemPlacement(),
+                                        onClick = {
+                                            onItemClicked(song)
+                                        })
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(125.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            contentPadding = PaddingValues(8.dp),
-                            modifier = Modifier.fillMaxSize(),
-                            state = lazyGridState
+                        val paddingBasedOnOverlap = PaddingValues(
+                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp),
+                            start = paddingValues.calculateStartPadding(layoutDirection),
+                            end = paddingValues.calculateEndPadding(layoutDirection),
+                            bottom = paddingValues.calculateBottomPadding()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(paddingBasedOnOverlap),
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            items(count = it.mediaStoreSongs.size,
-                                key = { index -> it.mediaStoreSongs[index].id },
-                                contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
-                                val song = it.mediaStoreSongs[index]
-                                LocalSongCard(song = song, modifier = Modifier.animateItemPlacement(), onClick = {
-                                    onItemClicked(song)
-                                })
+                            AnimatedContent(
+                                targetState = wantsToSearch,
+                                modifier = Modifier.fillMaxWidth(),
+                                label = "Want to search animated searchbar"
+                            ) { pretendToSearch ->
+                                when (pretendToSearch) {
+                                    true -> {
+                                        ExpandableSearchBar(query = query,
+                                            onQueryChange = { query = it },
+                                            onSearch = { queryToSearch ->
+                                                val finalQuery = queryToSearch.trim()
+                                                viewModel.viewModelScope.launch {
+                                                    viewModel.loadMediaStoreWithFilter(
+                                                        context, finalQuery
+                                                    )
+
+                                                    viewModel.insertSearch(
+                                                        finalQuery
+                                                    )
+                                                }
+                                                activeFullscreenSearching = false
+                                            },
+                                            active = activeFullscreenSearching,
+                                            onActiveChange = { activeFullscreenSearching = it },
+                                            placeholderText = stringResource(id = R.string.search_for_songs),
+                                            leadingIcon = Icons.Default.Search,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                                    .fillMaxWidth()
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier
+                                                ) {
+                                                    LargeCategoryTitle(
+                                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                                        text = stringResource(id = R.string.filters)
+                                                    )
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        horizontalArrangement = Arrangement.spacedBy(
+                                                            2.dp
+                                                        ),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        val selectedFilter = viewState.value.filter
+                                                        SingleChoiceChip(
+                                                            selected = selectedFilter == MediaStoreFilterType.TITLE,
+                                                            onClick = {
+                                                                viewModel.updateFilter(
+                                                                    MediaStoreFilterType.TITLE
+                                                                )
+                                                            },
+                                                            label = stringResource(id = R.string.title)
+                                                        )
+                                                        SingleChoiceChip(
+                                                            selected = selectedFilter == MediaStoreFilterType.ARTIST,
+                                                            onClick = {
+                                                                viewModel.updateFilter(
+                                                                    MediaStoreFilterType.ARTIST
+                                                                )
+                                                            },
+                                                            label = stringResource(id = R.string.artist)
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                                            LazyColumn(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .animateContentSize(),
+                                            ) {
+                                                items(allSearches) { search ->
+                                                    RecentSearch(searchEntity = search,
+                                                        onDeleteClick = {
+                                                            scope.launch(Dispatchers.IO) {
+                                                                viewModel.deleteSearchById(
+                                                                    search.id
+                                                                )
+                                                            }
+                                                        },
+                                                        onClick = {
+                                                            scope.launch {
+                                                                viewModel.loadMediaStoreWithFilter(
+                                                                    context,
+                                                                    search.search,
+                                                                    search.filter
+                                                                )
+                                                            }
+                                                            activeFullscreenSearching = false
+                                                        })
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    false -> {
+
+                                    }
+                                }
                             }
                         }
                     }

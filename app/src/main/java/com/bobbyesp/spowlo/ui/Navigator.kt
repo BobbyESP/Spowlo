@@ -158,7 +158,7 @@ fun Navigator(
 
     var isLogged: Boolean? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         val loggedIn = withContext(Dispatchers.IO) { async {loginManager.isLogged() } }
         isLogged = loggedIn.await()
     }
