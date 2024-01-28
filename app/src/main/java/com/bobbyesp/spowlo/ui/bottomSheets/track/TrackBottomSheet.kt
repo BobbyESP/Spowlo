@@ -67,7 +67,6 @@ import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSI
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.time.TimeUtils.formatDuration
 import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.InternalLandscapistApi
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +76,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class, InternalLandscapistApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackBottomSheet(
     track: Track? = null,
