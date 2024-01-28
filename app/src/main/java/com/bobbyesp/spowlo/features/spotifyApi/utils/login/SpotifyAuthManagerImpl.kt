@@ -81,6 +81,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
             credentials.clear()
             true
         } catch (e: Throwable) {
+            Log.e("SpotifyAuthManager", "Error deleting credentials", e)
             false
         }
     }
