@@ -19,9 +19,6 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -146,9 +143,6 @@ fun LazyGridScope.PlayPauseDynamicItem(
     time : String = "00:00",
 ) {
     item {
-        val timeText by remember {
-            mutableStateOf(if(time.contains("-")) "00:00" else time)
-        }
         Surface(
             modifier = modifier
                 .clip(ShapeDefaults.Large)
@@ -173,7 +167,7 @@ fun LazyGridScope.PlayPauseDynamicItem(
                         contentDescription = stringResource(id = R.string.icon)
                     )
                     Text(
-                        text = "$timeText/00:30",
+                        text = if(time.contains("-")) "00:00/00:30" else "$time/00:30",
                         style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
