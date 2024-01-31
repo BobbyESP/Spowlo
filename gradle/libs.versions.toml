@@ -18,7 +18,7 @@ commonsCompress = "1.24.0"
 #Compose
 compose-bom = "2023.10.01"
 constraintLayout = "1.1.0-alpha13"
-androidx-compose-material3 = "1.2.0-alpha12"
+androidx-compose-material3 = "1.2.0-beta02"
 compose-util = "1.5.4"
 accompanist = "0.32.0"
 compose-pagination = "3.2.1"

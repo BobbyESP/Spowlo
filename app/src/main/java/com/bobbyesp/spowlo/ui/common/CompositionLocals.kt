@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -59,7 +60,7 @@ val LocalWindowWidthState =
 val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
 val LocalNotificationsManager =
-    compositionLocalOf<NotificationManager> { error("No notifications manager provided") }
+    staticCompositionLocalOf<NotificationManager> { error("No notifications manager provided") }
 val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
@@ -74,7 +75,9 @@ fun AppLocalSettingsProvider(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
     val imageLoader = ImageLoader.Builder(context).build()
-    val notificationManager by lazy { NotificationManagerImpl() }
+    val notificationManager = remember {
+        NotificationManagerImpl()
+    }
 
     appSettingsState.run {
         CompositionLocalProvider(
