@@ -220,7 +220,7 @@ fun MediaStorePage(
                             }
                         }
                         val paddingBasedOnOverlap = PaddingValues(
-                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp),
+                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp).coerceAtLeast(0.dp),
                             start = paddingValues.calculateStartPadding(layoutDirection),
                             end = paddingValues.calculateEndPadding(layoutDirection),
                             bottom = paddingValues.calculateBottomPadding()

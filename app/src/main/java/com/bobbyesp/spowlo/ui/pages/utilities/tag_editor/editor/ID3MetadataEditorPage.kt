@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Lyrics
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +42,6 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.CloseButton
-import com.bobbyesp.spowlo.ui.components.cards.CardListItem
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.tags.MetadataTag
@@ -195,34 +191,34 @@ fun EditMetadataPage(
                 )
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 60.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CardListItem(
-                modifier = Modifier.weight(0.55f),
-                leadingContentIcon = Icons.Default.Info,
-                applySemiBoldFontWeight = true,
-                headlineContentText = stringResource(
-                    id = R.string.mediastore_info
-                )
-            ) {
-                showMediaStoreInfoDialog = true
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            CardListItem(
-                modifier = Modifier.weight(0.45f),
-                leadingContentIcon = Icons.Default.Lyrics,
-                applySemiBoldFontWeight = true,
-                headlineContentText = stringResource(
-                    id = R.string.lyrics
-                )
-            ) {
-                TODO()
-            }
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .heightIn(max = 60.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            CardListItem(
+//                modifier = Modifier.weight(0.55f),
+//                leadingContentIcon = Icons.Default.Info,
+//                applySemiBoldFontWeight = true,
+//                headlineContentText = stringResource(
+//                    id = R.string.mediastore_info
+//                )
+//            ) {
+//                showMediaStoreInfoDialog = true
+//            }
+//            Spacer(modifier = Modifier.width(8.dp))
+//            CardListItem(
+//                modifier = Modifier.weight(0.45f),
+//                leadingContentIcon = Icons.Default.Lyrics,
+//                applySemiBoldFontWeight = true,
+//                headlineContentText = stringResource(
+//                    id = R.string.lyrics
+//                )
+//            ) {
+//                TODO()
+//            }
+//        }
 
         LargeCategoryTitle(
             modifier = Modifier.padding(vertical = 6.dp),
