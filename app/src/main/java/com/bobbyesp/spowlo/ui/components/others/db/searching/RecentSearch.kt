@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
+import com.bobbyesp.spowlo.data.local.db.searching.entity.SpotifySearchEntity
 import com.bobbyesp.spowlo.ui.components.others.tags.FilterTag
 import com.bobbyesp.spowlo.ui.ext.toDate
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
@@ -90,6 +91,58 @@ fun RecentSearch(
                         imageVector = localAsset(id = R.drawable.spotify_logo),
                         contentDescription = "Spotify logo"
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RecentSearch(
+    modifier: Modifier = Modifier,
+    searchEntity: SpotifySearchEntity,
+    onClick: () -> Unit = {},
+    onDeleteClick: (SpotifySearchEntity) -> Unit
+) {
+    Row(
+        modifier = modifier.clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(
+            onClick = { onDeleteClick(searchEntity) },
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Delete recent search"
+            )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 8.dp)
+        ) {
+            Text(
+                text = searchEntity.search,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+            )
+            Text(
+                text = searchEntity.date.toDate(),
+                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                ),
+                modifier = Modifier,
+                fontSize = 12.sp
+            )
+        }
+        Box(
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
+            Row {
+                if (searchEntity.type != null) {
+                    FilterTag(text = searchEntity.type.toComposableStringSingular())
                 }
             }
         }

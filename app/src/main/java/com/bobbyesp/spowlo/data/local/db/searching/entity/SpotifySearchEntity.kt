@@ -2,13 +2,12 @@ package com.bobbyesp.spowlo.data.local.db.searching.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.bobbyesp.spowlo.data.local.MediaStoreFilterType
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 
 @Entity
-data class SearchEntity(
+data class SpotifySearchEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val search: String,
-    val spotifySearch: Boolean,
     val date: Long = System.currentTimeMillis(),
-    val filter: MediaStoreFilterType? = null,
+    val type: SpotifyItemType? = null,
 )

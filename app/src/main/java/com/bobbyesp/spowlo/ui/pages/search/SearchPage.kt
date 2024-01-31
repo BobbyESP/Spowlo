@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -49,26 +49,25 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.common.LocalNavController
-import com.bobbyesp.spowlo.ui.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.spowlo.ui.components.dividers.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.others.SearchingResult
+import com.bobbyesp.spowlo.ui.components.others.db.searching.RecentSearch
 import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.searchBar.QueryTextBox
 import com.bobbyesp.spowlo.ui.components.text.AnimatedCounter
+import com.bobbyesp.spowlo.ui.components.text.SmallCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel.Companion
 import com.bobbyesp.spowlo.utils.MetadataEntityUtil.navigateToEntity
-import com.bobbyesp.spowlo.utils.ui.pages.IdlePage
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPage(
     viewModel: SearchViewModel,
 ) {
-    val bottomInsetsAsPadding =
-        LocalPlayerAwareWindowInsets.current.asPaddingValues()
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val navController = LocalNavController.current
 
@@ -80,37 +79,32 @@ fun SearchPage(
         viewModel.updateQuery(query)
     }
 
+    val onQueryChange: (String) -> Unit = {
+        onValueChange(it)
+        viewModel.updateQuery(it)
+    }
+
     val types = listOf(
-        SearchType(
-            searchType = SpotifyItemType.TRACKS,
-            onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.TRACKS)
-            }
-        ),
-        SearchType(
-            searchType = SpotifyItemType.ALBUMS,
-            onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ALBUMS)
-            }
-        ),
-        SearchType(
-            searchType = SpotifyItemType.ARTISTS,
-            onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ARTISTS)
-            }
-        ),
-        SearchType(
-            searchType = SpotifyItemType.PLAYLISTS,
-            onClick = {
-                viewModel.chooseSearchTypeAndSearch(SpotifyItemType.PLAYLISTS)
-            }
-        ),
+        SearchType(searchType = SpotifyItemType.TRACKS, onClick = {
+            viewModel.chooseSearchTypeAndSearch(SpotifyItemType.TRACKS)
+        }),
+        SearchType(searchType = SpotifyItemType.ALBUMS, onClick = {
+            viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ALBUMS)
+        }),
+        SearchType(searchType = SpotifyItemType.ARTISTS, onClick = {
+            viewModel.chooseSearchTypeAndSearch(SpotifyItemType.ARTISTS)
+        }),
+        SearchType(searchType = SpotifyItemType.PLAYLISTS, onClick = {
+            viewModel.chooseSearchTypeAndSearch(SpotifyItemType.PLAYLISTS)
+        }),
     )
 
     val paginatedTracks = viewState.searchedTracks?.collectAsLazyPagingItems()
     val paginatedAlbums = viewState.searchedAlbums?.collectAsLazyPagingItems()
     val paginatedArtists = viewState.searchedArtists?.collectAsLazyPagingItems()
     val paginatedPlaylists = viewState.searchedPlaylists?.collectAsLazyPagingItems()
+    val searchingHistory =
+        viewState.dbSearchHistory.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
     Scaffold(
         modifier = Modifier
@@ -122,19 +116,17 @@ fun SearchPage(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            QueryTextBox(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
+            QueryTextBox(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp),
                 query = query,
                 onValueChange = onValueChange,
                 onSearchCallback = {
                     viewModel.viewModelScope.launch {
                         viewModel.search()
                     }
-                }
-            )
+                })
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,7 +154,34 @@ fun SearchPage(
                 with(viewState) {
                     when (this.searchViewState) {
                         is Companion.SearchViewState.Idle -> {
-                            IdlePage()
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 8.dp)
+                            ) {
+                                SmallCategoryTitle(text = stringResource(id = R.string.search_history))
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f),
+                                ) {
+                                    itemsIndexed(items = searchingHistory,
+                                        key = { _, item -> item.id }) { _, item ->
+                                        RecentSearch(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .animateItemPlacement(),
+                                            searchEntity = item,
+                                            onClick = {
+                                                onQueryChange(item.search)
+                                                viewModel.chooseSearchTypeAndSearch(item.type ?: SpotifyItemType.TRACKS)
+                                            },
+                                        ) {
+                                            viewModel.deleteFromDbHistory(it.id)
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         is Companion.SearchViewState.Loading -> {
@@ -172,12 +191,12 @@ fun SearchPage(
                         is Companion.SearchViewState.Success -> {
                             Crossfade(
                                 modifier = Modifier.fillMaxSize(),
-                                targetState = activeSearchType, label = ""
+                                targetState = activeSearchType,
+                                label = ""
                             ) { searchType ->
                                 when (searchType) {
                                     SpotifyItemType.TRACKS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
+                                        ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedTracks,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
@@ -193,13 +212,11 @@ fun SearchPage(
                                                         id = track.id,
                                                     )
                                                 )
-                                            }
-                                        )
+                                            })
                                     }
 
                                     SpotifyItemType.ALBUMS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
+                                        ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedAlbums,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
@@ -215,13 +232,11 @@ fun SearchPage(
                                                         id = album.id,
                                                     )
                                                 )
-                                            }
-                                        )
+                                            })
                                     }
 
                                     SpotifyItemType.ARTISTS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
+                                        ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedArtists,
                                             itemName = { item -> item.name },
                                             itemArtists = { _ -> "" },
@@ -237,13 +252,11 @@ fun SearchPage(
                                                         id = artist.id,
                                                     )
                                                 )
-                                            }
-                                        )
+                                            })
                                     }
 
                                     SpotifyItemType.PLAYLISTS -> {
-                                        ResultsList(
-                                            modifier = Modifier.fillMaxSize(),
+                                        ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedPlaylists,
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.owner.displayName ?: "" },
@@ -259,8 +272,7 @@ fun SearchPage(
                                                         id = playlist.id,
                                                     )
                                                 )
-                                            }
-                                        )
+                                            })
                                     }
                                 }
                             }
@@ -318,8 +330,7 @@ fun <T : Any> ResultsList(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.surface,
-                                Color.Transparent
+                                MaterialTheme.colorScheme.surface, Color.Transparent
                             ),
                             startY = 30f,
                         )
@@ -359,8 +370,7 @@ fun <T : Any> ResultsList(
                     // Inside composable block
                     val item = paginatedItems[index] as T
                     SearchingResult(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         insideModifier = Modifier.padding(vertical = 6.dp),
                         name = itemName(item),
                         artists = itemArtists(item),
@@ -393,10 +403,7 @@ fun <T : Any> ResultsList(
 
 @Composable
 fun SearchTypeChip(
-    modifier: Modifier,
-    searchType: SpotifyItemType,
-    isActive: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier, searchType: SpotifyItemType, isActive: Boolean, onClick: () -> Unit
 ) {
     FilterChip(
         modifier = modifier,
@@ -409,6 +416,5 @@ fun SearchTypeChip(
 }
 
 private data class SearchType(
-    val searchType: SpotifyItemType,
-    val onClick: () -> Unit
+    val searchType: SpotifyItemType, val onClick: () -> Unit
 )

@@ -9,7 +9,7 @@ import com.bobbyesp.spowlo.data.local.db.searching.entity.SearchEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface SearchingDao {
+interface MediaStoreSearchingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(searches: List<SearchEntity>)
 

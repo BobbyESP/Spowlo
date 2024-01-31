@@ -9,6 +9,8 @@ import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
+import com.bobbyesp.spowlo.data.local.db.searching.SearchingHistoryDatabase
+import com.bobbyesp.spowlo.data.local.db.searching.entity.SpotifySearchEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ArtistsClientPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.SimpleAlbumsClientPagingSource
@@ -27,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,7 +39,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val spotifyAuthManager: SpotifyAuthManager
+    private val spotifyAuthManager: SpotifyAuthManager,
+    private val searchDb: SearchingHistoryDatabase,
 ) : ViewModel() {
     private val isLoggedIn = runBlocking(Dispatchers.IO) { spotifyAuthManager.isAuthenticated() }
     private val mutablePageViewState = MutableStateFlow(PageViewState())
@@ -46,6 +50,12 @@ class SearchViewModel @Inject constructor(
 
     private val clientApi = spotifyAuthManager.getSpotifyClientApi()
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            loadDbHistory()
+        }
+    }
+
     data class PageViewState(
         val searchViewState: SearchViewState = SearchViewState.Idle,
         val query: String = "",
@@ -54,7 +64,29 @@ class SearchViewModel @Inject constructor(
         val searchedAlbums: Flow<PagingData<SimpleAlbum>>? = null,
         val searchedArtists: Flow<PagingData<Artist>>? = null,
         val searchedPlaylists: Flow<PagingData<SimplePlaylist>>? = null,
+        val dbSearchHistory: Flow<List<SpotifySearchEntity>> = emptyFlow(),
     )
+
+    private fun loadDbHistory() {
+        val dbHistory = searchDb.spotifySearchingDao().getAllFlow()
+        mutablePageViewState.update {
+            it.copy(
+                dbSearchHistory = dbHistory
+            )
+        }
+    }
+
+    fun deleteFromDbHistory(searchId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                searchDb.spotifySearchingDao().deleteById(searchId)
+            }.onFailure {
+                //TODO
+            }.onSuccess {
+                //TODO
+            }
+        }
+    }
 
     private fun chooseSearchType(spotifyItemType: SpotifyItemType) {
         val actualFilter = pageViewState.value.activeSearchType
@@ -79,9 +111,9 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun search(
+        query: String = pageViewState.value.query,
         searchType: SpotifyItemType = pageViewState.value.activeSearchType,
     ) {
-        val query = pageViewState.value.query
         searchJob?.cancel()
         updateViewState(SearchViewState.Loading)
         searchJob = viewModelScope.launch {
@@ -104,6 +136,15 @@ class SearchViewModel @Inject constructor(
                     }
                 }
             }.onSuccess {
+                if (query.isNotEmpty()) {
+                    searchDb.spotifySearchingDao().insert(
+                        SpotifySearchEntity(
+                            id = 0,
+                            search = query,
+                            type = searchType,
+                        )
+                    )
+                }
                 updateViewState(SearchViewState.Success)
             }.onFailure {
                 updateViewState(SearchViewState.Error(it))
@@ -143,8 +184,7 @@ class SearchViewModel @Inject constructor(
             isLogged = isLoggedIn,
             pagingSourceFactory = { api ->
                 SimpleAlbumsClientPagingSource(
-                    spotifyApi = api,
-                    query = query
+                    spotifyApi = api, query = query
                 )
             },
             nonLoggedSourceFactory = {
