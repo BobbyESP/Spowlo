@@ -174,7 +174,7 @@ fun SearchPage(
                                             searchEntity = item,
                                             onClick = {
                                                 onQueryChange(item.search)
-                                                viewModel.chooseSearchTypeAndSearch(item.type ?: SpotifyItemType.TRACKS)
+                                                viewModel.chooseSearchTypeAndSearch(item.type ?: SpotifyItemType.TRACKS, addToDb = false)
                                             },
                                         ) {
                                             viewModel.deleteFromDbHistory(it.id)

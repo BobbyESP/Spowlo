@@ -101,11 +101,12 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun chooseSearchTypeAndSearch(searchType: SpotifyItemType) {
+    fun chooseSearchTypeAndSearch(searchType: SpotifyItemType, addToDb: Boolean = true) {
         chooseSearchType(searchType)
         viewModelScope.launch {
             if (pageViewState.value.query.isNotEmpty()) search(
-                searchType = searchType
+                searchType = searchType,
+                addToDb = addToDb
             )
         }
     }
@@ -113,6 +114,7 @@ class SearchViewModel @Inject constructor(
     suspend fun search(
         query: String = pageViewState.value.query,
         searchType: SpotifyItemType = pageViewState.value.activeSearchType,
+        addToDb: Boolean = true
     ) {
         searchJob?.cancel()
         updateViewState(SearchViewState.Loading)
@@ -136,7 +138,7 @@ class SearchViewModel @Inject constructor(
                     }
                 }
             }.onSuccess {
-                if (query.isNotEmpty()) {
+                if (query.isNotEmpty() && addToDb) {
                     searchDb.spotifySearchingDao().insert(
                         SpotifySearchEntity(
                             id = 0,
