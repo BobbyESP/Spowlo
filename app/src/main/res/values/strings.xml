@@ -173,4 +173,13 @@
     <string name="copy_error_report">Copy error report</string>
     <string name="restart_task">Restart task</string>
     <string name="search_history">Search history</string>
+    <string name="onboarding_title">Welcome to Spowlo!</string>
+    <string name="onboarding_desc">The best songs downloader app powered by SpotDL!</string>
+    <string name="start">Start</string>
+    <string name="next_step">Next step</string>
+    <string name="onboard_icon">Onboard icon</string>
+    <string name="what_is_spowlo">What is Spowlo?</string>
+    <string name="what_is_spowlo_desc">Spowlo is an Android GUI app for the amazing Python library SpotDL, which allows you to download songs from various sources embedding the data from Spotify</string>
+    <string name="access_account">Access to your Spotify account</string>
+    <string name="access_account_desc">Spowlo now allows you to login with your Spotify\'s account so you can download almost everything that you have saved on it!</string>
 </resources>

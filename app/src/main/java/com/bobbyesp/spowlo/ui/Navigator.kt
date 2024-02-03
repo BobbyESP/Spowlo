@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -42,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -355,8 +355,12 @@ fun Navigator(
                                 }
                             }
                         }
+
+                        val isEnabledBecauseOfLogin = if (route == Route.ProfileNavigator) isLogged == true else true
                         NavigationBarItem(
-                            modifier = Modifier.animateContentSize(),
+                            modifier = Modifier.animateContentSize().then(
+                                if (isEnabledBecauseOfLogin) Modifier else Modifier.alpha(0.5f)
+                            ),
                             selected = isSelected,
                             onClick = onClick,
                             icon = {
@@ -374,7 +378,7 @@ fun Navigator(
                                 )
                             },
                             alwaysShowLabel = false,
-                            enabled = if (route == Route.ProfileNavigator) isLogged == true else true
+                            enabled = isEnabledBecauseOfLogin
                         )
                     }
                 }
@@ -443,7 +447,6 @@ fun Navigator(
                 }
             }
             when (configuration.orientation) {
-
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     verticalNavBar()
                 }
