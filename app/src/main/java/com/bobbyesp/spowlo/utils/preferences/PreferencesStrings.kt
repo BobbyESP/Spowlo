@@ -8,6 +8,10 @@ object PreferencesStrings {
     //------------APP------------------
     const val UPDATE_CHANNEL = "update_channel"
     const val DOWNLOAD_DIR = "download_dir"
+    const val COMPLETED_ONBOARDING = "completed_onboarding"
+
+    //------------SPOTIFY-----------------
+    const val SKIPPED_LOGIN = "skipped_login"
 
     //------------TRACKS---------------
     const val STOP_AFTER_CLOSING_BS = "stop_after_closing_bs"

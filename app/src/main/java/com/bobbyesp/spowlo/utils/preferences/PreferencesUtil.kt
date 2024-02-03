@@ -1,10 +1,12 @@
 package com.bobbyesp.spowlo.utils.preferences
 
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.COMPLETED_ONBOARDING
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DARK_THEME_VALUE
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DYNAMIC_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.HIGH_CONTRAST
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.PALETTE_STYLE
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.SKIPPED_LOGIN
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THEME_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.THREADS
@@ -27,6 +29,8 @@ private val StringPreferenceDefaults: Map<String, String> =
 private val BooleanPreferenceDefaults: Map<String, Boolean> =
     mapOf(
         STOP_AFTER_CLOSING_BS to false,
+        COMPLETED_ONBOARDING to false,
+        SKIPPED_LOGIN to false,
     )
 
 private val IntPreferenceDefaults: Map<String, Int> =

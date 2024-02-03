@@ -42,14 +42,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.cards.OnboardingCard
+import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
 
 private const val CONTENT_ANIMATION_DURATION = 300
 
 @Composable
 fun Onboarding(
-    viewModel: OnboardingViewModel
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    loginAuthManager: LoginManagerViewModel
 ) {
     var onboardingStep by rememberSaveable(key = "onboardingStep") {
         mutableStateOf(OnboardingStep.WELCOME)
@@ -236,5 +239,21 @@ private fun Welcome(
                 text = stringResource(id = R.string.access_account_desc)
             )
         }
+    }
+}
+
+@Composable
+private fun Login(
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit,
+    onSkip: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        //TODO: Add login components for Spotify login
+        //In case of login, proceed with it.
+        //In case of skip, change the the SKIPPED_LOGIN preference to true and proceed to the next step (if you thought on more, Gabriel)
     }
 }
