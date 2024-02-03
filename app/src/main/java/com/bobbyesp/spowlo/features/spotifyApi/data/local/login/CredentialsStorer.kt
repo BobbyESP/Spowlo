@@ -9,7 +9,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class CredentialsStorer {
-   suspend fun createCredentials(context: Context): Boolean {
+    suspend fun createCredentials(context: Context): Boolean {
         return try {
             val credentials = withContext(Dispatchers.IO) {
                 async {
@@ -27,6 +27,7 @@ class CredentialsStorer {
             false
         }
     }
+
     fun provideCredentials(context: Context): SpotifyDefaultCredentialStore {
         val credentialStore by lazy { //Lazy so that it is only created when needed. When we call another time the same function, it will return the same instance, not a new one.
             SpotifyDefaultCredentialStore(

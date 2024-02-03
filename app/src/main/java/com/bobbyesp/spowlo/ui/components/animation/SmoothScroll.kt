@@ -35,7 +35,12 @@ fun Modifier.smoothVerticalOverscroll(
     val scope = rememberCoroutineScope()
     val overscrollOffset = remember { Animatable(0f, 0.5f) }
     val connection = remember(scope) {
-        SmoothVerticalOverscrollNestedScrollConnection(state, scope, overscrollOffset, animationSpec)
+        SmoothVerticalOverscrollNestedScrollConnection(
+            state,
+            scope,
+            overscrollOffset,
+            animationSpec
+        )
     }
     this
         .nestedScroll(connection)
@@ -52,7 +57,12 @@ fun Modifier.smoothVerticalScroll(
     val scope = rememberCoroutineScope()
     val overscrollOffset = remember { Animatable(0f, 0.5f) }
     val connection = remember(scope) {
-        SmoothVerticalOverscrollNestedScrollConnection(state, scope, overscrollOffset, animationSpec)
+        SmoothVerticalOverscrollNestedScrollConnection(
+            state,
+            scope,
+            overscrollOffset,
+            animationSpec
+        )
     }
     this
         .nestedScroll(connection)
@@ -75,7 +85,12 @@ fun Modifier.smoothVerticalScroll(
 ) = composed {
     val scope = rememberCoroutineScope()
     val connection = remember(scope) {
-        SmoothVerticalOverscrollNestedScrollConnection(state, scope, overscrollOffset, animationSpec)
+        SmoothVerticalOverscrollNestedScrollConnection(
+            state,
+            scope,
+            overscrollOffset,
+            animationSpec
+        )
     }
     this
         .nestedScroll(connection)

@@ -36,31 +36,32 @@ sealed class Route(
     data object UtilitiesNavigator : Route("utilities_navigator", "", Icons.Outlined.LocalPlay)
     data object ProfileNavigator : Route("profile_navigator", "", Icons.Default.Person)
     data object SettingsNavigator : Route("settings_navigator", "", Icons.Default.Settings)
-    data object DownloaderTasksNavigator : Route("downloader_tasks_navigator", "", Icons.Default.Download)
+    data object DownloaderTasksNavigator :
+        Route("downloader_tasks_navigator", "", Icons.Default.Download)
 
     //ROUTES
     data object Home : Route("home", "", Icons.Outlined.Home)
-        data object Notifications : Route("notifications", "", Icons.Default.Notifications)
+    data object Notifications : Route("notifications", "", Icons.Default.Notifications)
     data object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
-        data object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
-            data object SelectedSongLyrics :
-                Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
-                fun createRoute(selectedSong: SelectedSong) =
-                    "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
-            }
+    data object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
+    data object SelectedSongLyrics :
+        Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
+        fun createRoute(selectedSong: SelectedSong) =
+            "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
+    }
 
-        data object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
-            data object Editor : Route(
-                "tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}",
-                "",
-                Icons.Default.Edit
-            ) {
-                fun createRoute(selectedSong: SelectedSong) =
-                    "tag_editor/editor/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
-            }
+    data object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
+        data object Editor : Route(
+            "tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}",
+            "",
+            Icons.Default.Edit
+        ) {
+            fun createRoute(selectedSong: SelectedSong) =
+                "tag_editor/editor/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
         }
+    }
 
-        data object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
+    data object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
     data object Search : Route("search", "", Icons.Default.Search)
     data object Profile : Route("profile", "", Icons.Default.Person)
 

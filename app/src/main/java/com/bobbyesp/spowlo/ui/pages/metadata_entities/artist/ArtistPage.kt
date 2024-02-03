@@ -321,7 +321,7 @@ private fun MostPlayedTracks(
     modifier: Modifier = Modifier,
     artistName: String,
     tracksWithState: Resource<List<Track>>,
-    selectTrack : (Track) -> Unit = {}
+    selectTrack: (Track) -> Unit = {}
 ) {
     val navController = LocalNavController.current
     Crossfade(

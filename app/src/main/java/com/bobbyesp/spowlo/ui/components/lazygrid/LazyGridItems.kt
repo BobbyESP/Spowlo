@@ -37,7 +37,7 @@ val GridMenuItemHeight = 96.dp
 fun VerticalGridMenu(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    minSize : Dp = 120.dp,
+    minSize: Dp = 120.dp,
     content: LazyGridScope.() -> Unit,
 ) {
     LazyVerticalGrid(
@@ -52,7 +52,7 @@ fun VerticalGridMenu(
 fun HorizontalGridMenu(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    minSize : Dp = 120.dp,
+    minSize: Dp = 120.dp,
     content: LazyGridScope.() -> Unit,
 ) {
     LazyHorizontalGrid(
@@ -118,6 +118,7 @@ fun LazyGridScope.GridMenuItem(
         onClick = onClick
     )
 }
+
 fun LazyGridScope.GridMenuItem(
     modifier: Modifier = Modifier,
     icon: ImageVector,
@@ -128,7 +129,7 @@ fun LazyGridScope.GridMenuItem(
     GridMenuItem(
         modifier = modifier,
         icon = { icon },
-        title = title ,
+        title = title,
         enabled = enabled,
         onClick = onClick
     )
@@ -139,8 +140,8 @@ fun LazyGridScope.PlayPauseDynamicItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     enabled: Boolean = true,
-    playing : Boolean = false,
-    time : String = "00:00",
+    playing: Boolean = false,
+    time: String = "00:00",
 ) {
     item {
         Surface(
@@ -161,13 +162,13 @@ fun LazyGridScope.PlayPauseDynamicItem(
                     Alignment.CenterVertically
                 )
             ) {
-                if(playing) {
+                if (playing) {
                     Icon(
                         imageVector = Icons.Default.Pause,
                         contentDescription = stringResource(id = R.string.icon)
                     )
                     Text(
-                        text = if(time.contains("-")) "00:00/00:30" else "$time/00:30",
+                        text = if (time.contains("-")) "00:00/00:30" else "$time/00:30",
                         style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center,
                         maxLines = 1,

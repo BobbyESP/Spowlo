@@ -8,7 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import com.bobbyesp.spowlo.MainActivity
 
-class DownloaderKeepUpService: Service() {
+class DownloaderKeepUpService : Service() {
     override fun onBind(p0: Intent?): IBinder {
         val pendingIntent: PendingIntent =
             Intent(this, MainActivity::class.java).let { notificationIntent ->

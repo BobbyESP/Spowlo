@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(): ViewModel() {
+class OnboardingViewModel @Inject constructor() : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
     data class PageViewState(
-        val pageStage : OnboardingStep = OnboardingStep.MAIN,
+        val pageStage: OnboardingStep = OnboardingStep.MAIN,
     )
 }
 
@@ -22,5 +22,5 @@ enum class OnboardingStep {
 
 data class OnboardingPageData(
     val index: Int,
-    
-)
+
+    )

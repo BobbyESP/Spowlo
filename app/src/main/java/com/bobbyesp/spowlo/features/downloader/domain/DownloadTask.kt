@@ -14,7 +14,7 @@ data class DownloadTask(
     val title: String,
     val artist: String,
     val type: SpotifyItemType,
-    val taskName : String = "$title - $artist",
+    val taskName: String = "$title - $artist",
     val url: String,
     val thumbnailUrl: String,
     val output: String = "",
@@ -63,9 +63,9 @@ data class DownloadTask(
         data object Success : DownloadState()
         data object Cancelled : DownloadState()
         data class Failed(val error: String) : DownloadState()
-        companion object{
+        companion object {
             fun DownloadState.toTaskState(): TaskState {
-                return when(this) {
+                return when (this) {
                     is Running -> TaskState.RUNNING
                     is Success -> TaskState.SUCCESS
                     is Cancelled -> TaskState.CANCELLED
@@ -76,7 +76,7 @@ data class DownloadTask(
     }
 
     fun onCopyError(context: Context, clipboardManager: ClipboardManager) {
-        if(state is DownloadState.Failed) {
+        if (state is DownloadState.Failed) {
             clipboardManager.setText(AnnotatedString(state.error))
             ToastUtil.makeToastSuspend(context, context.getString(R.string.error_copied))
         } else {
@@ -89,7 +89,7 @@ data class DownloadTask(
     }
 
     fun onCancel() {
-        TODO( "Not yet implemented")
+        TODO("Not yet implemented")
     }
 }
 

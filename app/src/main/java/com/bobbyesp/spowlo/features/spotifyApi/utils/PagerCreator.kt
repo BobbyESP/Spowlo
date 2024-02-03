@@ -42,7 +42,10 @@ inline fun <T : Any> createPager(
             ).flow.cachedIn(coroutineScope)
         }
     } catch (e: TokenRefreshException) {
-        Log.e("PagerCreator", "createPager: ${e.message}. Using nonLoggedSourceFactory due to token refresh error.")
+        Log.e(
+            "PagerCreator",
+            "createPager: ${e.message}. Using nonLoggedSourceFactory due to token refresh error."
+        )
         Pager(
             config = pagerConfig,
             pagingSourceFactory = { nonLoggedSourceFactory() }

@@ -83,7 +83,7 @@ fun ArtistHorizontalCard(
             }
             Text(
                 text = artist.name,
-                modifier = Modifier.padding(start = if(showImage) 12.dp else 16.dp),
+                modifier = Modifier.padding(start = if (showImage) 12.dp else 16.dp),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
             )

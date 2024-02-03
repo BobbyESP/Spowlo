@@ -23,7 +23,7 @@ import javax.inject.Inject
 class LoginManagerViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val spotifyAuthManager: SpotifyAuthManager
-): ViewModel() {
+) : ViewModel() {
     private val mutableLoginManagerState = MutableStateFlow(LoginManagerState())
     val pageViewState = mutableLoginManagerState.asStateFlow()
     private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())

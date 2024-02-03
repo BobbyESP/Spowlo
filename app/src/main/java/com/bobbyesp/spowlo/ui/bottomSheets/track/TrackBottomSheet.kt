@@ -188,11 +188,14 @@ fun TrackBottomSheet(
                                 title = trackName,
                                 artist = trackArtistsString,
                                 type = SpotifyItemType.TRACKS,
-                                thumbnailUrl = trackImage?: "",
+                                thumbnailUrl = trackImage ?: "",
                             ),
                             taskId = makeKey(trackName, trackArtistsString)
                         ).onSuccess {
-                            ToastUtil.makeToastSuspend(context, context.getString(R.string.download_finished))
+                            ToastUtil.makeToastSuspend(
+                                context,
+                                context.getString(R.string.download_finished)
+                            )
                             notiManager.showNotification(
                                 Notification(
                                     title = "Download finished",
@@ -202,7 +205,10 @@ fun TrackBottomSheet(
                                 )
                             )
                         }.onFailure {
-                            ToastUtil.makeToastSuspend(context, context.getString(R.string.download_failed))
+                            ToastUtil.makeToastSuspend(
+                                context,
+                                context.getString(R.string.download_failed)
+                            )
                         }
                     }
                 }

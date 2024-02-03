@@ -8,6 +8,7 @@ object FilesUtil {
     fun readFile(file: File): String {
         return file.readText()
     }
+
     object SharedPreferences {
         fun deleteSharedPreferences(context: Context): Boolean {
             val sharedPrefsFile = File(context.applicationInfo.dataDir + "/shared_prefs")

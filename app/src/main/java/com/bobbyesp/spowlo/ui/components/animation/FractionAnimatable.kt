@@ -39,7 +39,12 @@ class FractionAnimatable(
         initialVelocity: Float = percentage.velocity / scale,
         block: (Animatable<Float, AnimationVector1D>.() -> Unit)? = null
     ): AnimationResult<Float, AnimationVector1D> {
-        return percentage.animateTo(targetValue * scale, animationSpec, initialVelocity * scale, block)
+        return percentage.animateTo(
+            targetValue * scale,
+            animationSpec,
+            initialVelocity * scale,
+            block
+        )
     }
 
     suspend fun snapTo(targetValue: Float) {

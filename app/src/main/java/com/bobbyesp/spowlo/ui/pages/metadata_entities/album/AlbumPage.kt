@@ -263,7 +263,7 @@ fun AlbumPageImplementation(
                     showTrackSheet = true
                 }
             }
-            if(albumData.totalTracks != 1) {
+            if (albumData.totalTracks != 1) {
                 loadStateContent(albumTracks) {
                     HorizontalSongCardShimmer(showSongImage = false)
                 }
@@ -309,7 +309,12 @@ fun AlbumPageImplementation(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AlbumHeader(modifier: Modifier, album: Album, dominantColor: Color, artistsString: String) {
+private fun AlbumHeader(
+    modifier: Modifier,
+    album: Album,
+    dominantColor: Color,
+    artistsString: String
+) {
 
     var showArtwork by remember {
         mutableStateOf(true)

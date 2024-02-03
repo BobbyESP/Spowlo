@@ -17,6 +17,6 @@ data class Notification(
     val subtitle: String,
     val duration: DURATION = DURATION.MEDIUM,
     val timestamp: Long = System.currentTimeMillis(),
-    val entityInfo : SpEntityNotificationInfo? = null,
+    val entityInfo: SpEntityNotificationInfo? = null,
     val content: @Composable (() -> Unit)? = null,
 )

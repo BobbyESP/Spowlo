@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ArtistSectionShimmer(
-    modifier : Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,

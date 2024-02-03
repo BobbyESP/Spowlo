@@ -168,7 +168,7 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadUserData(coroutineScope : CoroutineScope) {
+    private suspend fun loadUserData(coroutineScope: CoroutineScope) {
         val deferredUserData = coroutineScope.async { clientApi?.users?.getClientProfile() }
 
         val userInformation = deferredUserData.await()
@@ -203,7 +203,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadRecentlyPlayedSongs(scope: CoroutineScope) {
-        val recentlyPlayedSongs = scope.async{
+        val recentlyPlayedSongs = scope.async {
             clientApi?.player?.getRecentlyPlayed(limit = 25)?.items
         }
         mutablePageViewState.update {

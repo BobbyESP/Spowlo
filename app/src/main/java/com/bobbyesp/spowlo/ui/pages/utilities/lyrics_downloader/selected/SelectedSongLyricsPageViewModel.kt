@@ -120,7 +120,7 @@ class SelectedSongLyricsPageViewModel @Inject constructor(
 
     companion object {
         sealed class SelectedSongLyricsPageState {
-           data object Loading : SelectedSongLyricsPageState()
+            data object Loading : SelectedSongLyricsPageState()
             data class Loaded(val lyrics: String) : SelectedSongLyricsPageState()
             data class Error(val error: String) : SelectedSongLyricsPageState()
         }

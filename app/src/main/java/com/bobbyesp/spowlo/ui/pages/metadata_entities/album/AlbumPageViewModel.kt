@@ -40,7 +40,7 @@ class AlbumPageViewModel @Inject constructor(
     data class PageViewState(
         val state: AlbumPageState = AlbumPageState.Loading,
         val albumTracksPaginated: Flow<PagingData<SimpleTrack>> = emptyFlow(),
-        val trackForSheet : SimpleTrack? = null,
+        val trackForSheet: SimpleTrack? = null,
         val dominantColor: Color? = null,
     )
 

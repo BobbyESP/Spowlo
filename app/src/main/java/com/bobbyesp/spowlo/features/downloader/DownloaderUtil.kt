@@ -27,7 +27,7 @@ object DownloaderUtil {
     )
 
     fun threadsSelector(itemType: SpotifyItemType): Int {
-        return when(itemType) {
+        return when (itemType) {
             SpotifyItemType.TRACKS -> 1
             else -> THREADS.getInt()
         }
@@ -56,17 +56,23 @@ object DownloaderUtil {
     }
 
     @CheckResult
-    fun downloadSong( //TODO: Rethink parameters
+    fun downloadSong(
+        //TODO: Rethink parameters
         downloadInfo: Downloader.DownloadInfo? = null,
         taskId: String,
         downloaderPreferences: DownloaderPreferences = DownloaderPreferences(),
     ): Result<List<String>> {
-        if(downloadInfo == null) return Result.failure(Exception(App.appContext.getString(R.string.song_info_null)))
+        if (downloadInfo == null) return Result.failure(Exception(App.appContext.getString(R.string.song_info_null)))
 
         val isMultipleTrack = downloadInfo.type != SpotifyItemType.TRACKS
 
         val pathBuilder = StringBuilder()
-        val request = commonDownloadRequest(downloaderPreferences, downloadInfo.url, SpotDLRequest(), pathBuilder).apply {
+        val request = commonDownloadRequest(
+            downloaderPreferences,
+            downloadInfo.url,
+            SpotDLRequest(),
+            pathBuilder
+        ).apply {
             //add other options in here
             addOption("--threads", threadsSelector(downloadInfo.type).toString())
         }
@@ -76,7 +82,10 @@ object DownloaderUtil {
             downloadInfo = downloadInfo,
             taskName = taskId,
         )
-        ToastUtil.makeToastSuspend(App.appContext, App.appContext.getString(R.string.downloading_song))
+        ToastUtil.makeToastSuspend(
+            App.appContext,
+            App.appContext.getString(R.string.downloading_song)
+        )
         kotlin.runCatching {
             val response = SpotDL.getInstance().execute(
                 request = request,
@@ -84,18 +93,24 @@ object DownloaderUtil {
                 forceProcessDestroy = true,
                 callback = { progress, _, text ->
                     Downloader.updateTaskOutput(
-                        taskKey = taskId, currentOutLine = text, progress = progress, isMultipleTrack = isMultipleTrack
+                        taskKey = taskId,
+                        currentOutLine = text,
+                        progress = progress,
+                        isMultipleTrack = isMultipleTrack
                     )
                 })
             val finalResponse = response.output.clearOutputWithEllipsis()
             onTaskFinished(taskId, finalResponse, "NOTIFICATION TITLE")
         }.onFailure {
             it.printStackTrace()
-            if(it is SpotDL.CancelledException) {
+            if (it is SpotDL.CancelledException) {
                 return Result.failure(Exception(App.appContext.getString(R.string.download_cancelled)))
             }
             it.message.run {
-                if(this.isNullOrEmpty()) onTaskFinished(taskId, output = "PLACEHOLDER TEXT: The output of the process was empty.")
+                if (this.isNullOrEmpty()) onTaskFinished(
+                    taskId,
+                    output = "PLACEHOLDER TEXT: The output of the process was empty."
+                )
                 else onTaskFailed(taskId, this)
             }
         }
@@ -112,7 +127,7 @@ object DownloaderUtil {
         path: String,
         sdcardUri: String?
     ): Result<List<String>> { //Result<List<String>> return a list of paths where the songs are downloaded, but I don't think we need it
-       //TODO: Add scanning to app db and media store
+        //TODO: Add scanning to app db and media store
         return Result.success(listOf(path)) // <- this is the result of the download (PLACEHOLDER)
     }
 }

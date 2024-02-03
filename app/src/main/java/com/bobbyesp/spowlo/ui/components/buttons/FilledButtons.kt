@@ -26,7 +26,7 @@ fun FilledButtonWithIcon(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    enabled : Boolean = true,
+    enabled: Boolean = true,
     text: String
 ) {
     Button(

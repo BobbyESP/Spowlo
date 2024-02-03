@@ -48,7 +48,8 @@ val MetadataEntityParamType = object : NavType<MetadataEntity>(isNullableAllowed
 }
 
 @Suppress("DEPRECATION")
-inline fun <reified T : Parcelable> parcelableTypeOf() = object : NavType<T>(isNullableAllowed = false) {
+inline fun <reified T : Parcelable> parcelableTypeOf() =
+    object : NavType<T>(isNullableAllowed = false) {
         override fun get(bundle: Bundle, key: String): T? {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 bundle.getParcelable(key, getClassOfType<T>())

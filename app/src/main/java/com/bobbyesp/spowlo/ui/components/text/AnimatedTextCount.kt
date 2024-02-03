@@ -31,10 +31,10 @@ fun AnimatedCounter(
     Row(modifier = modifier) {
         val countString = count.toString()
         val oldCountString = oldCount.toString()
-        for(i in countString.indices) {
+        for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
-            val char = if(oldChar == newChar) {
+            val char = if (oldChar == newChar) {
                 oldCountString[i]
             } else {
                 countString[i]

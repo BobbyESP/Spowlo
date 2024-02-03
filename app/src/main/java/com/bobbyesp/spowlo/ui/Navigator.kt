@@ -159,7 +159,7 @@ fun Navigator(
     var isLogged: Boolean? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
-        val loggedIn = withContext(Dispatchers.IO) { async {loginManager.isLogged() } }
+        val loggedIn = withContext(Dispatchers.IO) { async { loginManager.isLogged() } }
         isLogged = loggedIn.await()
     }
 
@@ -223,7 +223,8 @@ fun Navigator(
         )
 
         val scope = rememberCoroutineScope()
-        val notificationState by notificationsManager.getCurrentNotification().collectAsStateWithLifecycle()
+        val notificationState by notificationsManager.getCurrentNotification()
+            .collectAsStateWithLifecycle()
 
         val notificationVisible = notificationState != null
         if (notificationVisible) {
@@ -373,7 +374,7 @@ fun Navigator(
                                 )
                             },
                             alwaysShowLabel = false,
-                            enabled = if(route == Route.ProfileNavigator) isLogged == true else true
+                            enabled = if (route == Route.ProfileNavigator) isLogged == true else true
                         )
                     }
                 }
@@ -436,7 +437,7 @@ fun Navigator(
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             }, alwaysShowLabel = false,
-                            enabled = if(route == Route.ProfileNavigator) isLogged == true else true
+                            enabled = if (route == Route.ProfileNavigator) isLogged == true else true
                         )
                     }
                 }
@@ -472,8 +473,7 @@ fun Navigator(
                             endY = 500f
                         )
                     )
-                    .fillMaxSize()
-                , contentAlignment = Alignment.TopCenter
+                    .fillMaxSize(), contentAlignment = Alignment.TopCenter
             ) {
                 val notification = notificationState
                 notification?.let {

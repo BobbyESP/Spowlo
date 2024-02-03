@@ -117,7 +117,8 @@ fun Modifier.animateSizeAndPosition(
                     }
                 }
                 // Calculates the *current* offset within the given LookaheadScope
-                val placementOffset = lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero)
+                val placementOffset =
+                    lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero)
                 // Calculates the delta between animated position in scope and current
                 // position in scope, and places the child at the delta offset. This puts
                 // the child layout at the animated position.
@@ -220,7 +221,8 @@ fun Modifier.animatePosition(
                     }
                 }
                 // Calculates the *current* offset within the given LookaheadScope
-                val placementOffset = lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero)
+                val placementOffset =
+                    lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero)
                 // Calculates the delta between animated position in scope and current
                 // position in scope, and places the child at the delta offset. This puts
                 // the child layout at the animated position.
@@ -359,7 +361,8 @@ fun Modifier.animatePlacementInScope(
                     }
                 }
                 // Calculates the *current* offset within the given LookaheadScope
-                val placementOffset = lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero).round()
+                val placementOffset =
+                    lookaheadScopeCoordinates.localPositionOf(coordinates, Offset.Zero).round()
                 // Calculates the delta between animated position in scope and current
                 // position in scope, and places the child at the delta offset. This puts
                 // the child layout at the animated position.

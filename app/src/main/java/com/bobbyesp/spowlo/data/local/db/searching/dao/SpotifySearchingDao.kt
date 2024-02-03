@@ -5,8 +5,9 @@ import androidx.room.Query
 import com.bobbyesp.spowlo.data.local.db.searching.entity.SpotifySearchEntity
 import com.bobbyesp.spowlo.utils.databases.BaseDao
 import kotlinx.coroutines.flow.Flow
+
 @Dao
-interface SpotifySearchingDao: BaseDao<SpotifySearchEntity> {
+interface SpotifySearchingDao : BaseDao<SpotifySearchEntity> {
     @Query("SELECT * FROM SpotifySearchEntity")
     fun getAllFlow(): Flow<List<SpotifySearchEntity>>
 

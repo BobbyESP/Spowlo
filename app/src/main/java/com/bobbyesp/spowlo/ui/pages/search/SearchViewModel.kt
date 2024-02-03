@@ -155,7 +155,7 @@ class SearchViewModel @Inject constructor(
     }
 
     //********************* CLIENT ***********************//
-    private suspend fun getTracksPaginatedData(query: String) {
+    private fun getTracksPaginatedData(query: String) {
         val tracksPager = createPager(
             clientApi = clientApi,
             isLogged = isLoggedIn,

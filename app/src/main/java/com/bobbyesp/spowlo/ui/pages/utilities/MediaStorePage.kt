@@ -220,7 +220,9 @@ fun MediaStorePage(
                             }
                         }
                         val paddingBasedOnOverlap = PaddingValues(
-                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp).coerceAtLeast(0.dp),
+                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp).coerceAtLeast(
+                                0.dp
+                            ),
                             start = paddingValues.calculateStartPadding(layoutDirection),
                             end = paddingValues.calculateEndPadding(layoutDirection),
                             bottom = paddingValues.calculateBottomPadding()
@@ -238,7 +240,8 @@ fun MediaStorePage(
                             ) { pretendToSearch ->
                                 when (pretendToSearch) {
                                     true -> {
-                                        ExpandableSearchBar(query = query,
+                                        ExpandableSearchBar(
+                                            query = query,
                                             onQueryChange = { query = it },
                                             onSearch = { queryToSearch ->
                                                 val finalQuery = queryToSearch.trim()

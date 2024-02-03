@@ -66,7 +66,7 @@ fun MetadataEntityItem(
             modifier = contentModifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if(listIndex != null) {
+            if (listIndex != null) {
                 Text(
                     text = "${listIndex + 1}.",
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -128,9 +128,15 @@ fun MetadataEntityItem(
                                 end = if (isExplicit) 6.dp else 0.dp
                             )
                         )
-                        if (isExplicit) ExplicitTag(if (hasLyrics) Modifier.padding(start = 6.dp) else Modifier.padding(end = 6.dp))
+                        if (isExplicit) ExplicitTag(
+                            if (hasLyrics) Modifier.padding(start = 6.dp) else Modifier.padding(
+                                end = 6.dp
+                            )
+                        )
                         MarqueeText(
-                            text = if(duration != null) artists + " • " + TimeUtils.formatDuration(duration.toLong()) else artists,
+                            text = if (duration != null) artists + " • " + TimeUtils.formatDuration(
+                                duration.toLong()
+                            ) else artists,
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

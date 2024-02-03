@@ -53,6 +53,11 @@ fun ProfilePhoto(
             .clip(CircleShape)
             .background(color = MaterialTheme.colorScheme.secondary)
     ) {
-        AsyncImageImpl(model = photoUrl, contentDescription = stringResource(id = R.string.profile_picture), modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+        AsyncImageImpl(
+            model = photoUrl,
+            contentDescription = stringResource(id = R.string.profile_picture),
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
     }
 }

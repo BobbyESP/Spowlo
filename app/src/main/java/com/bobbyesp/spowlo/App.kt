@@ -99,7 +99,10 @@ class App : Application() {
             spAuthManager.deleteCredentials()
             return true
         } catch (e: Exception) {
-            Log.e("App", "Error deleting encrypted shared prefs directly using the Spotify wrapper library. Trying other way...")
+            Log.e(
+                "App",
+                "Error deleting encrypted shared prefs directly using the Spotify wrapper library. Trying other way..."
+            )
         }
 
         return try {
@@ -121,7 +124,8 @@ class App : Application() {
 
 
     companion object {
-        @SuppressLint("StaticFieldLeak") lateinit var appContext: Context
+        @SuppressLint("StaticFieldLeak")
+        lateinit var appContext: Context
         private const val PRIVATE_DIRECTORY_SUFFIX = ".Spowlo"
         lateinit var clipboard: ClipboardManager
         lateinit var audioDownloadDir: String
@@ -130,7 +134,8 @@ class App : Application() {
         lateinit var packageInfo: PackageInfo
         const val USER_AGENT_HEADER =
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36 Edg/105.0.1343.53"
-        const val SPOTIFY_LOGO_URL = "https://www.liderlogo.es/wp-content/uploads/2022/12/pasted-image-0-4-1024x576.png"
+        const val SPOTIFY_LOGO_URL =
+            "https://www.liderlogo.es/wp-content/uploads/2022/12/pasted-image-0-4-1024x576.png"
 
         var isKeepUpServiceRunning = false
 

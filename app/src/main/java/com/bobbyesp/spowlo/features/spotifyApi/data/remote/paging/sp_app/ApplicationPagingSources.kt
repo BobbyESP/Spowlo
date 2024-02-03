@@ -361,9 +361,9 @@ class TrackAsSongPagingSource(
     }
 }
 
-class CustomPagingSource <T : Any>(
+class CustomPagingSource<T : Any>(
     private var pagingObject: PagingObject<T>,
-): PagingSource<Int, T>() {
+) : PagingSource<Int, T>() {
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition
     }

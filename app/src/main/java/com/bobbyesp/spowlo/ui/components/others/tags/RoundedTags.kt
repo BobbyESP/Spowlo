@@ -25,7 +25,11 @@ import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 
 @ExperimentalMaterial3Api
 @Composable
-fun RoundedTag(modifier: Modifier = Modifier, text: String, shape: Shape = MaterialTheme.shapes.medium) {
+fun RoundedTag(
+    modifier: Modifier = Modifier,
+    text: String,
+    shape: Shape = MaterialTheme.shapes.medium
+) {
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.secondaryContainer,

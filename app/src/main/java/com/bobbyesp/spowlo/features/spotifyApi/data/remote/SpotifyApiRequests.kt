@@ -38,7 +38,10 @@ object SpotifyApiRequests {
             if (isDebug) Log.e("SpotifyApiRequests", "Error building API", e)
         } catch (e: SpotifyException.BadRequestException) {
             if (token != null && token!!.shouldRefresh() && recursionDepth < MAX_RECURSION_DEPTH) {
-                Log.i("SpotifyApiRequests", "Token expired, refreshing token; recursion depth: $recursionDepth of $MAX_RECURSION_DEPTH")
+                Log.i(
+                    "SpotifyApiRequests",
+                    "Token expired, refreshing token; recursion depth: $recursionDepth of $MAX_RECURSION_DEPTH"
+                )
                 clearApi()
                 buildApi()
                 recursionDepth++

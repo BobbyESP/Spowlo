@@ -19,7 +19,7 @@ fun ExpandableText(modifier: Modifier = Modifier, text: String, maxLines: Int) {
     var canBeExpanded by remember { mutableStateOf(false) }
 
     Text(
-        modifier = if(canBeExpanded) modifier.clickable { expanded = !expanded } else modifier,
+        modifier = if (canBeExpanded) modifier.clickable { expanded = !expanded } else modifier,
         text = text,
         maxLines = if (expanded) Int.MAX_VALUE else maxLines,
         textAlign = TextAlign.Justify,
@@ -27,7 +27,7 @@ fun ExpandableText(modifier: Modifier = Modifier, text: String, maxLines: Int) {
         color = MaterialTheme.colorScheme.secondary,
         fontWeight = FontWeight.Medium,
         onTextLayout = {
-            if(!canBeExpanded) {
+            if (!canBeExpanded) {
                 canBeExpanded = it.hasVisualOverflow
             }
         }

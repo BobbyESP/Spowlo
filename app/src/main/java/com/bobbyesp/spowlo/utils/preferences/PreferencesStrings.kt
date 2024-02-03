@@ -8,6 +8,7 @@ object PreferencesStrings {
     //------------APP------------------
     const val UPDATE_CHANNEL = "update_channel"
     const val DOWNLOAD_DIR = "download_dir"
+
     //------------TRACKS---------------
     const val STOP_AFTER_CLOSING_BS = "stop_after_closing_bs"
 
