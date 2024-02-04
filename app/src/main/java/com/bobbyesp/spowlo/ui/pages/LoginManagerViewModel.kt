@@ -68,3 +68,9 @@ class LoginManagerViewModel @Inject constructor(
         }
     }
 }
+
+sealed class LoginState {
+    data object Loading : LoginState()
+    data class Error(val throwable: Throwable) : LoginState()
+    data object Success : LoginState()
+}

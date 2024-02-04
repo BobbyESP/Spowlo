@@ -182,4 +182,10 @@
     <string name="what_is_spowlo_desc">Spowlo is an Android GUI app for the amazing Python library SpotDL, which allows you to download songs from various sources embedding the data from Spotify</string>
     <string name="access_account">Access to your Spotify account</string>
     <string name="access_account_desc">Spowlo now allows you to login with your Spotify\'s account so you can download almost everything that you have saved on it!</string>
+    <string name="login_with_spotify">Login with Spotify</string>
+    <string name="login_with_spotify_description">By login with Spotify you will be able to access to your library, account statistics and more</string>
+    <string name="preffered_to_skip">I preffer to skip</string>
+    <string name="onboarding_finish_title">You have completed the setup!</string>
+    <string name="onboarding_finish_desc">Now, the power of Spowlo is all yours hahaa! Go and download anything you want!</string>
+    <string name="finish">Finish</string>
 </resources>

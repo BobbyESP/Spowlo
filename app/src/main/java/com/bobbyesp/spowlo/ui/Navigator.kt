@@ -82,6 +82,7 @@ import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.home.notifications.NotificationsPage
 import com.bobbyesp.spowlo.ui.pages.metadata_entities.MetadataEntityBinder
+import com.bobbyesp.spowlo.ui.pages.onboarding.Onboarding
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
 import com.bobbyesp.spowlo.ui.pages.search.SearchPage
@@ -95,6 +96,8 @@ import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.TagEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPage
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.spowlo.ui.theme.applyAlpha
+import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.COMPLETED_ONBOARDING
+import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getBoolean
 import com.bobbyesp.spowlo.utils.ui.Constants
 import com.bobbyesp.spowlo.utils.ui.Constants.MiniPlayerHeight
 import com.bobbyesp.spowlo.utils.ui.Constants.NavigationBarHeight
@@ -239,6 +242,12 @@ fun Navigator(
             }
         }
 
+        val startDestByPreferences = if (COMPLETED_ONBOARDING.getBoolean(false)) {
+            Route.HomeNavigator.route
+        } else {
+            Route.OnboardingPage.route
+        }
+
         CompositionLocalProvider(
             LocalPlayerAwareWindowInsets provides navBarAwareWindowInsets
         ) {
@@ -247,9 +256,14 @@ fun Navigator(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                 navController = navController,
-                startDestination = Route.HomeNavigator.route,
+                startDestination = startDestByPreferences,
                 route = Route.MainHost.route,
             ) {
+                animatedComposable(
+                    route = Route.OnboardingPage.route,
+                ) {
+                    Onboarding(loginAuthManager = loginManager)
+                }
                 navigation(
                     route = Route.HomeNavigator.route,
                     startDestination = Route.Home.route,
@@ -357,9 +371,11 @@ fun Navigator(
 
                         val isEnabledBecauseOfLogin = if (route == Route.ProfileNavigator) isLogged == true else true
                         NavigationBarItem(
-                            modifier = Modifier.animateContentSize().then(
-                                if (isEnabledBecauseOfLogin) Modifier else Modifier.alpha(0.5f)
-                            ),
+                            modifier = Modifier
+                                .animateContentSize()
+                                .then(
+                                    if (isEnabledBecauseOfLogin) Modifier else Modifier.alpha(0.5f)
+                                ),
                             selected = isSelected,
                             onClick = onClick,
                             icon = {
@@ -459,6 +475,61 @@ fun Navigator(
                 }
             }
         }
+        AnimatedVisibility(
+            visible = notificationVisible,
+            enter = fadeIn(), // You can customize enter and exit animations
+            exit = fadeOut() // As an example, fadeIn and fadeOut are used
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.applyAlpha(0.6f),
+                                Color.Transparent
+                            ),
+                            endY = 500f
+                        )
+                    )
+                    .fillMaxSize(), contentAlignment = Alignment.TopCenter
+            ) {
+                val notification = notificationState
+                notification?.let {
+                    if (notification.content != null) {
+                        notification.content.let { it() }
+                    } else {
+                        val cardVisible = remember { mutableStateOf(false) }
+                        if (!cardVisible.value) {
+                            scope.launch {
+                                delay(300) // Introduce a delay of 300ms
+                                cardVisible.value = true
+                            }
+                        }
+
+                        // Use transition to animate the card's appearance
+                        val transition = updateTransition(
+                            targetState = cardVisible.value,
+                            label = "Card visibility transition"
+                        )
+                        val offset by transition.animateDp(
+                            transitionSpec = { tween(durationMillis = 500) },
+                            label = "Card offset transition",
+                        ) { isVisible ->
+                            if (isVisible) 40.dp else (-100).dp
+                        }
+
+                        SongDownloadNotification(
+                            modifier = Modifier
+                                .offset(y = offset)
+                                .fillMaxWidth(0.8f),
+                            notification = notification
+                        )
+                    }
+                }
+            }
+        }
+
+        //TODO: MODIFY THIS FOR LOGIN
         AnimatedVisibility(
             visible = notificationVisible,
             enter = fadeIn(), // You can customize enter and exit animations
