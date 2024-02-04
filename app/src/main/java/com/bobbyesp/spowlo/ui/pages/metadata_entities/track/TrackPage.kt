@@ -150,7 +150,7 @@ private fun TrackPageImplementation(
     }
 
     val dominantColor = viewState.value.dominantColor ?: MaterialTheme.colorScheme.surface
-    val artistsFullString = trackData.artists.joinToString(", ") { artist -> artist.name }
+    val artistsFullString = trackData.artists.joinToString(", ") { artist -> artist.name ?: "" }
 
     val artistsList = viewState.value.artists
 

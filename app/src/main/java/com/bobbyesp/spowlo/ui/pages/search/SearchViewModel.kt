@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
@@ -48,11 +49,11 @@ class SearchViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    private val clientApi = spotifyAuthManager.getSpotifyClientApi()
-
+    private lateinit var clientApi: SpotifyClientApi
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadDbHistory()
+            clientApi = spotifyAuthManager.getSpotifyClientApi() ?: throw IllegalStateException("ClientApi is null")
         }
     }
 

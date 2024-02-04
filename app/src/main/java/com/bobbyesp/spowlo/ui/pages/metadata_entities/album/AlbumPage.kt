@@ -143,7 +143,7 @@ fun AlbumPageImplementation(
         mutableStateOf(false)
     }
 
-    val artistsString = albumData.artists.joinToString(", ") { artist -> artist.name }
+    val artistsString = albumData.artists.joinToString(", ") { artist -> artist.name ?: "" }
     val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.primary
 
     val albumTracks = viewState.albumTracksPaginated.collectAsLazyPagingItems()
@@ -248,7 +248,7 @@ fun AlbumPageImplementation(
                 contentType = albumTracks.itemContentType { "album_tracks" }
             ) {
                 val track = albumTracks[it] ?: return@items
-                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name }
+                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name ?: ""}
 
                 MetadataEntityItem(
                     contentModifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),

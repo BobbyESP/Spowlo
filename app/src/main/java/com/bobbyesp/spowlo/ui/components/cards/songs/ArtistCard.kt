@@ -94,7 +94,7 @@ fun ArtistCard(
                 modifier = Modifier.padding(8.dp)
             ) {
                 MarqueeText(
-                    text = artist.name,
+                    text = artist.name ?: "",
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
@@ -125,14 +125,14 @@ private fun ArtistCardPreview() {
     val genres: List<String> = listOf("Pop", "Rock", "Electronic")
 
     val images: List<SpotifyImage> = listOf(
-        SpotifyImage(640, "https://example.com/image1.jpg", 640),
-        SpotifyImage(300, "https://example.com/image2.jpg", 300),
-        SpotifyImage(64, "https://example.com/image3.jpg", 64)
+        SpotifyImage(640.00, "https://example.com/image1.jpg", 64.00),
+        SpotifyImage(300.00, "https://example.com/image2.jpg", 300.00),
+        SpotifyImage(64.00, "https://example.com/image3.jpg", 64.00)
     )
 
     val name: String = "Fake Artist"
 
-    val popularity: Int = 75
+    val popularity: Double = 75.00
 
     val type: String = "artist"
 

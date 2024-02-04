@@ -5,7 +5,7 @@ import com.adamratzman.spotify.SpotifyClientApi
 interface SpotifyAuthManager {
     suspend fun createCredentials(): Boolean
     fun launchLoginActivity()
-    fun getSpotifyClientApi(): SpotifyClientApi?
+    suspend fun getSpotifyClientApi(): SpotifyClientApi?
     suspend fun isAuthenticated(): Boolean
     fun shouldRefreshToken(): Boolean
     suspend fun refreshToken(): Boolean

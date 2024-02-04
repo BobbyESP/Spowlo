@@ -202,7 +202,7 @@ fun SearchPage(
                                         ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedTracks,
                                             itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name ?: "" } },
                                             itemArtworkUrl = { item ->
                                                 item.album.images.secondOrNull()?.url ?: ""
                                             },
@@ -222,7 +222,7 @@ fun SearchPage(
                                         ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedAlbums,
                                             itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name ?: "" } },
                                             itemArtworkUrl = { item ->
                                                 item.images.secondOrNull()?.url ?: ""
                                             },
@@ -241,7 +241,7 @@ fun SearchPage(
                                     SpotifyItemType.ARTISTS -> {
                                         ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedArtists,
-                                            itemName = { item -> item.name },
+                                            itemName = { item -> item.name ?: "" },
                                             itemArtists = { _ -> "" },
                                             itemArtworkUrl = { item ->
                                                 item.images.secondOrNull()?.url ?: ""

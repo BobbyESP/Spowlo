@@ -101,7 +101,7 @@ fun TrackBottomSheet(
 
     val trackName = track?.name ?: simpleTrack?.name ?: ""
     val trackArtists = track?.artists ?: simpleTrack?.artists ?: emptyList()
-    val trackArtistsString = trackArtists.joinToString(", ") { artist -> artist.name }
+    val trackArtistsString = trackArtists.joinToString(", ") { artist -> artist.name ?: "" }
     val trackImage = track?.album?.images?.firstOrNull()?.url
     val trackId = track?.id ?: simpleTrack?.id
 
@@ -252,7 +252,7 @@ fun TrackBottomSheet(
                 onClick = {
                     onDismiss()
 
-                    val mainArtist = trackArtists.first().name
+                    val mainArtist = trackArtists.first().name ?: ""
 
                     val selectedSongParcel = SelectedSong(
                         name = trackName,

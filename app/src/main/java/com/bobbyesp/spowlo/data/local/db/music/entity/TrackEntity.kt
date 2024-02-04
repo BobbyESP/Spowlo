@@ -51,7 +51,7 @@ fun Track.toTrackEntity(): TrackEntity {
     return TrackEntity(
         id = 1,
         name = name,
-        artists = artists.map { it.name },
+        artists = artists.map { it.name ?: "" },
         album = album.name,
         durationMs = durationMs,
         url = externalUrls.spotify,

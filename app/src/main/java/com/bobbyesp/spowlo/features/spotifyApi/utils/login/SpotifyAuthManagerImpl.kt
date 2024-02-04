@@ -10,6 +10,8 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -29,13 +31,13 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
     }
 
-    override fun getSpotifyClientApi(): SpotifyClientApi? {
+    override suspend fun getSpotifyClientApi(): SpotifyClientApi? {
         if (spotifyClientApi != null) {
             return spotifyClientApi
         }
 
         //Verify if the user is logged in and return the SpotifyClientApi if it is
-        spotifyClientApi = credentials.getSpotifyClientPkceApi { automaticRefresh = true }
+        spotifyClientApi = withContext(Dispatchers.IO) { credentials.getSpotifyClientPkceApi { automaticRefresh = true } }
         return spotifyClientApi
     }
 

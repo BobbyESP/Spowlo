@@ -130,7 +130,7 @@ fun RecentlyPlayedSongCard(
                                 fontWeight = FontWeight.Bold
                             )
                             MarqueeText(
-                                text = track.artists.joinToString(", ") { it.name },
+                                text = track.artists.joinToString(", ") { it.name ?: "" },
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )

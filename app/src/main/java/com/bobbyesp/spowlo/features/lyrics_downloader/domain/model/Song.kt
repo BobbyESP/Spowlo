@@ -83,7 +83,7 @@ fun List<Track>.toSongs(): List<Song> {
             Song(
                 id = 0,
                 title = it.name,
-                artist = it.artists.joinToString(", ") { artist -> artist.name },
+                artist = it.artists.joinToString(", ") { artist -> artist.name ?: "" },
                 album = it.album.name,
                 duration = it.durationMs.toDouble(),
                 path = it.externalUrls.spotify!!,
@@ -98,7 +98,7 @@ fun Track.toSong(): Song {
     return Song(
         id = 0,
         title = this.name,
-        artist = this.artists.joinToString(", ") { artist -> artist.name },
+        artist = this.artists.joinToString(", ") { artist -> artist.name ?: "" },
         album = this.album.name,
         duration = this.durationMs.toDouble(),
         path = this.externalUrls.spotify!!,

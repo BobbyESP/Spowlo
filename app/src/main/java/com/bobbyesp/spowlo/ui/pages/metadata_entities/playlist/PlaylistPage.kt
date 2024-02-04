@@ -245,7 +245,7 @@ private fun PlaylistPageImplementation(
                 contentType = playlistTracks.itemContentType()
             ) {
                 val track = playlistTracks[it] ?: return@items
-                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name }
+                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name ?: "" }
 
                 MetadataEntityItem(
                     contentModifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

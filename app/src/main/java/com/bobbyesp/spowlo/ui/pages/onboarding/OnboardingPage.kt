@@ -303,6 +303,9 @@ private fun Welcome(
             OnboardingCard(
                 icon = {
                     Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(MaterialTheme.shapes.small),
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
                         contentDescription = stringResource(id = R.string.onboard_icon),
                         tint = MaterialTheme.colorScheme.primary

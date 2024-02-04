@@ -12,6 +12,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.endpoints.client.ClientPersonalizationApi
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.PlayHistory
@@ -56,7 +57,8 @@ class ProfilePageViewModel @Inject constructor(
 ) : ViewModel(), SpotifyBroadcastObserver {
 
     private val tag = this::class.java.simpleName
-    private val clientApi by lazy { spotifyAuthManager.getSpotifyClientApi() }
+
+    private lateinit var clientApi: SpotifyClientApi
 
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -81,14 +83,17 @@ class ProfilePageViewModel @Inject constructor(
     private val spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
 
     init {
-        activityWrapper.execute {
-            registerSpotifyBroadcastReceiver(
-                spotifyBroadcastReceiver,
-                *SpotifyBroadcastType.entries.toTypedArray()
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            clientApi = async { spotifyAuthManager.getSpotifyClientApi() ?: throw IllegalStateException("ClientApi is null") }.await()
+            activityWrapper.execute {
+                registerSpotifyBroadcastReceiver(
+                    spotifyBroadcastReceiver,
+                    *SpotifyBroadcastType.entries.toTypedArray()
+                )
+            }
+            spotifyBroadcastReceiver.addObserver(this@ProfilePageViewModel)
+            loadPage(this)
         }
-        spotifyBroadcastReceiver.addObserver(this)
-        loadPage()
     }
 
     override fun onCleared() {
@@ -99,8 +104,8 @@ class ProfilePageViewModel @Inject constructor(
         super.onCleared()
     }
 
-    private fun loadPage() {
-        viewModelScope.launch(Dispatchers.IO) {
+    private fun loadPage(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             try {
                 loadUserData(this)
                 loadMostListenedArtists()
@@ -169,7 +174,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     private suspend fun loadUserData(coroutineScope: CoroutineScope) {
-        val deferredUserData = coroutineScope.async { clientApi?.users?.getClientProfile() }
+        val deferredUserData = coroutineScope.async { clientApi.users.getClientProfile() }
 
         val userInformation = deferredUserData.await()
 
@@ -181,7 +186,7 @@ class ProfilePageViewModel @Inject constructor(
             config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = {
                 ClientMostListenedArtistsPagingSource(
-                    spotifyApi = clientApi ?: throw Exception("ClientApi is null"),
+                    spotifyApi = clientApi,
                     timeRange = pageViewState.value.actualTimeRange
                 )
             }
@@ -194,7 +199,7 @@ class ProfilePageViewModel @Inject constructor(
             config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = {
                 ClientMostListenedSongsPagingSource(
-                    spotifyApi = clientApi ?: throw Exception("ClientApi is null"),
+                    spotifyApi = clientApi,
                     timeRange = pageViewState.value.actualTimeRange
                 )
             }
@@ -204,11 +209,11 @@ class ProfilePageViewModel @Inject constructor(
 
     private suspend fun loadRecentlyPlayedSongs(scope: CoroutineScope) {
         val recentlyPlayedSongs = scope.async {
-            clientApi?.player?.getRecentlyPlayed(limit = 25)?.items
+            clientApi.player.getRecentlyPlayed(limit = 25).items
         }
         mutablePageViewState.update {
             it.copy(
-                recentlyPlayedSongs = recentlyPlayedSongs.await() ?: emptyList()
+                recentlyPlayedSongs = recentlyPlayedSongs.await()
             )
         }
     }
@@ -216,7 +221,7 @@ class ProfilePageViewModel @Inject constructor(
     suspend fun sameSongAsBroadcastVerifier() {
         viewModelScope.launch(Dispatchers.IO) {
             val apiPlayingSong = try {
-                clientApi?.player?.getCurrentlyPlaying()
+                clientApi.player.getCurrentlyPlaying()
             } catch (e: Exception) {
                 Log.e(tag, "sameSongAsBroadcastVerifier: ", e)
                 null
@@ -245,7 +250,7 @@ class ProfilePageViewModel @Inject constructor(
     }
 
     suspend fun searchSongByIdAndUpdateUi(id: String) {
-        val track = clientApi?.tracks?.getTrack(id)
+        val track = clientApi.tracks.getTrack(id)
         mutablePageViewState.update { it.copy(actualTrack = track) }
     }
 

@@ -169,7 +169,7 @@ fun ArtistPage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            artistName = viewPageState.artist.name,
+                            artistName = viewPageState.artist.name ?: stringResource(id = R.string.unknown),
                             tracksWithState = artistTopTracks,
                             selectTrack = {
                                 viewModel.selectTrackForSheet(it)
@@ -185,7 +185,7 @@ fun ArtistPage(
                             enter = fadeIn() + slideInVertically(),
                             exit = fadeOut() + slideOutVertically()
                         ) {
-                            Text(text = viewPageState.artist.name)
+                            viewPageState.artist.name?.let { Text(text = it) }
                         }
                     },
                     navigationIcon = {
@@ -251,7 +251,7 @@ private fun ArtistHeader(modifier: Modifier, artist: Artist) {
                 )
             }
             AutoResizableText(
-                text = artist.name,
+                text = artist.name ?: stringResource(id = R.string.unknown),
                 modifier = Modifier
                     .align(Alignment.BottomCenter),
                 maxLines = 1,

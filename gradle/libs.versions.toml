@@ -72,7 +72,7 @@ customTabs = "1.7.0"
 markdown = "0.3.7"
 
 #Spotify API
-spotify-apiHandler = "4.0.3"
+spotify-apiHandler = "4.1.0"
 spotify-appRemote = "0.8.0"
 
 #Spotify Downloader

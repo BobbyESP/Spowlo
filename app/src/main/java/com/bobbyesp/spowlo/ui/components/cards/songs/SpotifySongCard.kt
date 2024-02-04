@@ -100,7 +100,7 @@ fun SpotifySongCard(
                     fontWeight = FontWeight.Bold
                 )
                 MarqueeText(
-                    text = track.artists.joinToString(", ") { it.name },
+                    text = track.artists.joinToString(", ") { it.name ?: "" },
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -202,7 +202,7 @@ fun SmallSpotifySongCard(
                         maxLines = 1
                     )
                     Text(
-                        text = track.artists.joinToString(", ") { it.name },
+                        text = track.artists.joinToString(", ") { it.name ?: ""},
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         ),
