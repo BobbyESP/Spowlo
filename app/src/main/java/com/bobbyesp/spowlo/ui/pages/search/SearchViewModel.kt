@@ -49,11 +49,11 @@ class SearchViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    private lateinit var clientApi: SpotifyClientApi
+    private var clientApi: SpotifyClientApi? = null
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadDbHistory()
-            clientApi = spotifyAuthManager.getSpotifyClientApi() ?: throw IllegalStateException("ClientApi is null")
+            clientApi = spotifyAuthManager.getSpotifyClientApi() ?: return@launch
         }
     }
 

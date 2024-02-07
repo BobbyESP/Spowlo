@@ -188,4 +188,7 @@
     <string name="onboarding_finish_title">You have completed the setup!</string>
     <string name="onboarding_finish_desc">Now, the power of Spowlo is all yours hahaa! Go and download anything you want!</string>
     <string name="finish">Finish</string>
+    <string name="trying_to_login">Trying to login...</string>
+    <string name="logged_in">Logged in</string>
+    <string name="logged_in_desc">Nice! You are now logged into your Spotify account!</string>
 </resources>

@@ -78,7 +78,7 @@ fun OnboardingCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant.compositeOver(MaterialTheme.colorScheme.background))
+            .background(MaterialTheme.colorScheme.surfaceVariant.compositeOver(MaterialTheme.colorScheme.primary))
             .padding(16.dp)
     ) {
         Surface(

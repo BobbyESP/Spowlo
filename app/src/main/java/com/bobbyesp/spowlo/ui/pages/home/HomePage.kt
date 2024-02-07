@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomePage(
     viewModel: HomePageViewModel,
-    isLogged: Boolean,
+    isLogged: Boolean?,
     onLoginRequest: () -> Unit
 ) {
     val navController = LocalNavController.current
@@ -76,15 +76,21 @@ fun HomePage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isLogged) {
-                Text(text = "Logged in")
-            } else {
-                Text(text = "Not logged in")
-                Button(
-                    onClick = {
-                        onLoginRequest()
-                    }) {
-                    Text(text = "Launch PKCE Auth flow")
+            when (isLogged) {
+                true -> {
+                    Text(text = "Logged in")
+                }
+                false -> {
+                    Text(text = "Not logged in")
+                    Button(
+                        onClick = {
+                            onLoginRequest()
+                        }) {
+                        Text(text = "Launch PKCE Auth flow")
+                    }
+                }
+                null -> {
+                    Text(text = "Checking login status...")
                 }
             }
             Button(onClick = {

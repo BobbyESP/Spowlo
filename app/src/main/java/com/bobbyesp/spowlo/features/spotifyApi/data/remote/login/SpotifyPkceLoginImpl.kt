@@ -38,5 +38,4 @@ class SpotifyPkceLoginImpl : AbstractSpotifyPkceLoginActivity() {
         exception.printStackTrace()
         ToastUtil.makeToast(context, "Auth failed: ${exception.message}")
     }
-
 }

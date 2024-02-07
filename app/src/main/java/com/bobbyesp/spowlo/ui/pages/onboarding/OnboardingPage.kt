@@ -1,8 +1,10 @@
 package com.bobbyesp.spowlo.ui.pages.onboarding
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -10,12 +12,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,8 +29,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Start
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,6 +42,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
@@ -63,8 +71,12 @@ private const val CONTENT_ANIMATION_DURATION = 300
 fun Onboarding(
     loginAuthManager: LoginManagerViewModel
 ) {
-
     val navController = LocalNavController.current
+
+    LaunchedEffect(Unit) {
+        loginAuthManager.getLoggedIn(this)
+    }
+
     var onboardingStep by rememberSaveable(key = "onboardingStep") {
         mutableStateOf(OnboardingStep.WELCOME)
     }
@@ -252,7 +264,8 @@ fun Onboarding(
                     }, onSkip = {
                         PreferencesStrings.SKIPPED_LOGIN.updateBoolean(true)
                         onNextStep()
-                    })
+                    }, loginViewModel = loginAuthManager
+                    )
                 }
 
                 OnboardingStep.FINISH -> {
@@ -287,7 +300,6 @@ fun Onboarding(
             }
         }
     }
-
 }
 
 @Composable
@@ -304,7 +316,7 @@ private fun Welcome(
                 icon = {
                     Icon(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(32.dp)
                             .clip(MaterialTheme.shapes.small),
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
                         contentDescription = stringResource(id = R.string.onboard_icon),
@@ -327,6 +339,89 @@ private fun Welcome(
 
 @Composable
 private fun Login(
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit,
+    onSkip: () -> Unit,
+    loginViewModel: LoginManagerViewModel
+) {
+    val loginManagerState by loginViewModel.pageViewState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = loginManagerState.isTryingToLogin) {
+        Log.i("Login", "Trying to login: ${loginManagerState.isTryingToLogin}")
+        loginViewModel.getLoggedIn(this)
+    }
+    Crossfade(
+        targetState = loginManagerState.isTryingToLogin,
+        animationSpec = tween(300),
+        label = "Crossfade login state animation"
+    ) { isTryingToLogin ->
+        when (isTryingToLogin) {
+            true -> {
+                Box(
+                    modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(id = R.string.trying_to_login),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            false -> {
+                when(loginManagerState.loggedIn) {
+                    true -> {
+                        isLoggedStage(modifier)
+                    }
+                    false -> {
+                        awaitingLogin(modifier, onLogin, onSkip)
+                    }
+                    null -> {
+                        Text(text = "Awaiting login state")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun isLoggedStage(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clip(MaterialTheme.shapes.small)
+                    .padding(16.dp)
+                    .size(72.dp),
+                imageVector = Icons.Rounded.DoneAll,
+                contentDescription = stringResource(id = R.string.logged_in),
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                text = stringResource(id = R.string.logged_in_desc),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun awaitingLogin(
     modifier: Modifier = Modifier, onLogin: () -> Unit, onSkip: () -> Unit
 ) {
     Column(
@@ -337,9 +432,9 @@ private fun Login(
         Icon(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primary)
+                .clip(MaterialTheme.shapes.small)
                 .padding(16.dp)
-                .size(72.dp)
-                .clip(MaterialTheme.shapes.small),
+                .size(72.dp),
             imageVector = ImageVector.vectorResource(id = R.drawable.spotify_logo),
             contentDescription = "Spotify logo",
             tint = MaterialTheme.colorScheme.onPrimary

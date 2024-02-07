@@ -270,7 +270,7 @@ fun Navigator(
                 ) {
                     animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
-                        HomePage(viewModel, isLogged ?: false, onLoginRequest = {
+                        HomePage(viewModel, isLogged, onLoginRequest = {
                             scope.launch {
                                 runBlocking(Dispatchers.IO) { loginManager.login() }
                             }
