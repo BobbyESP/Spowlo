@@ -57,12 +57,13 @@ object LyricsUtil {
         val lines = this.lines
         val syncedLyricsResponse = StringBuilder()
 
-        for (line in lines) {
+        for (i in lines.indices) {
+            val line = lines[i]
             if (line.words.isBlank()) continue
             with(syncedLyricsResponse) {
                 append("[${line.timeTag}] ${line.words}")
-                //if the line is not the last one, append a new line, else do nothing
-                if (line != lines.last()) append("\n")
+                //if the next line is not blank, append a new line, else do nothing
+                if (i < lines.size - 1 && lines[i + 1].words.isNotBlank()) append("\n")
             }
         }
 

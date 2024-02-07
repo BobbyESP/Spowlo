@@ -4,15 +4,9 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -84,14 +78,14 @@ fun LyricsDownloaderPage(
                         fontWeight = FontWeight.Normal
                     )
                 },
-                fabs = {
-                    FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Download,
-                            contentDescription = "Download all lyrics"
-                        )
-                    }
-                },
+//                fabs = {
+//                    FloatingActionButton(modifier = Modifier.imePadding(), onClick = { /*TODO*/ }) {
+//                        Icon(
+//                            imageVector = Icons.Outlined.Download,
+//                            contentDescription = "Download all lyrics"
+//                        )
+//                    }
+//                },
                 onItemClicked = { song ->
                     val artistsList = song.artist.toList()
                     val mainArtist = artistsList.first()
