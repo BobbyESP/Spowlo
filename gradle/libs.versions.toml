@@ -28,10 +28,10 @@ androidx-paging = "3.2.1"
 orbital = "0.3.3"
 shimmer = "1.2.0"
 palette = "1.0.0"
+scrollbar = "1.9.0"
 
 #Navigation
 androidx-navigation = "2.7.6"
-androidx-compose-hilt-navigation = "1.0.0"
 
 #Coroutines
 kotlinx-coroutines = "1.7.3"
@@ -47,7 +47,7 @@ landscapistCoil = "2.2.13"
 
 #Network
 okhttp = "5.0.0-alpha.11"
-ktor = "2.3.7" #For me the best client
+ktor = "2.3.8" #For me the best client
 retrofit = "2.9.0"
 
 #Dependency injection
@@ -120,6 +120,7 @@ compose-constraintLayout = { group = "androidx.constraintlayout", name = "constr
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
+scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", version.ref = "scrollbar" }
 
 #Paging3
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
@@ -259,7 +260,7 @@ ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
 compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
-hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
+hilt-ksp = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]

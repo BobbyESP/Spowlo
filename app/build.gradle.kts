@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
 }
 
 sealed class Version(
@@ -61,6 +60,10 @@ android {
         }
     }
 
+    val localProperties = Properties().apply {
+        load(project.rootDir.resolve("local.properties").inputStream())
+    }
+
     compileSdk = 34
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
@@ -108,12 +111,11 @@ android {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
             if (keystorePropertiesFile.exists()) signingConfig = signingConfigs.getByName("debug")
-            //add client id and secret to build config
             buildConfigField(
-                "String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\""
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
             )
             buildConfigField(
-                "String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\""
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
             )
             buildConfigField(
                 "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
@@ -129,9 +131,11 @@ android {
             packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
-            buildConfigField("String", "CLIENT_ID", "\"${project.properties["CLIENT_ID"]}\"")
             buildConfigField(
-                "String", "CLIENT_SECRET", "\"${project.properties["CLIENT_SECRET"]}\""
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+            )
+            buildConfigField(
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
             )
             buildConfigField(
                 "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
@@ -211,7 +215,7 @@ dependencies {
 
     //DI (Dependency Injection - Hilt)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hilt.kapt)
+    ksp(libs.bundles.hilt.ksp)
 
     //Database powered by Room
     implementation(libs.room.runtime)
@@ -244,14 +248,11 @@ dependencies {
     //Chrome Custom Tabs
     implementation(libs.chrome.custom.tabs)
 
-    //MD Parser
-    implementation(libs.markdown)
-
-    //Shimmer
-    implementation(libs.shimmer)
-
-    //BottomSheets
+    //UI Utils
     implementation(libs.modalBottomSheet)
+    implementation(libs.markdown)
+    implementation(libs.shimmer)
+    implementation(libs.scrollbar) //Scrollbar for Jetpack Compose LazyColumn, Column...
 
     //Metadata editor
     implementation(libs.metadata.manager)

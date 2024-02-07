@@ -2,7 +2,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.ksp)
 }
 apply(plugin = "dagger.hilt.android.plugin")
 
@@ -44,7 +44,7 @@ dependencies {
 
     //DI (Dependency Injection - Hilt)
     implementation(libs.bundles.hilt)
-    kapt(libs.bundles.hilt.kapt)
+    ksp(libs.bundles.hilt.ksp)
 
     //Media3
     implementation(libs.bundles.media3)
