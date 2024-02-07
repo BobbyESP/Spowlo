@@ -1,14 +1,14 @@
 [versions]
 #General, lifecycle and core
 agp = "8.4.0-alpha04"
-kotlin = "1.9.20"
+kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.12.0"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.8.2"
-compose-compiler = "1.5.4"
-ksp = "1.9.20-1.0.14"
+compose-compiler = "1.5.8"
+ksp = "1.9.22-1.0.17"
 material = "1.11.0"
 media3 = "1.2.1"
 leakcanary = "2.12"

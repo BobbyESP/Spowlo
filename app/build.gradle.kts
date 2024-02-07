@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 sealed class Version(
@@ -215,7 +216,7 @@ dependencies {
 
     //DI (Dependency Injection - Hilt)
     implementation(libs.bundles.hilt)
-    ksp(libs.bundles.hilt.ksp)
+    kapt(libs.bundles.hilt.ksp) //Not using KSP because of bugs with BuildConfig
 
     //Database powered by Room
     implementation(libs.room.runtime)

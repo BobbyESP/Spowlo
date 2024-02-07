@@ -66,6 +66,8 @@ import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import my.nanihadesuka.compose.LazyGridVerticalScrollbar
+import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -96,8 +98,7 @@ fun MediaStorePage(
         mutableStateOf(false)
     }
 
-
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val collapsedFraction by remember { mutableFloatStateOf(scrollBehavior.state.collapsedFraction) }
     val safeCollapsedFraction = maxOf(0.05f, collapsedFraction)
@@ -198,29 +199,38 @@ fun MediaStorePage(
                                 .fillMaxSize()
                         ) {
                             val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
-
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(125.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                contentPadding = PaddingValues(8.dp),
-                                modifier = Modifier.fillMaxSize(),
-                                state = lazyGridState
+                            LazyGridVerticalScrollbar(
+                                state = lazyGridState,
+                                thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                                rightSide = true
                             ) {
-                                items(count = it.mediaStoreSongs.size,
-                                    key = { index -> it.mediaStoreSongs[index].id },
-                                    contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
-                                    val song = it.mediaStoreSongs[index]
-                                    LocalSongCard(song = song,
-                                        modifier = Modifier.animateItemPlacement(),
-                                        onClick = {
-                                            onItemClicked(song)
-                                        })
+                                LazyVerticalGrid(
+                                    columns = GridCells.Adaptive(125.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    contentPadding = PaddingValues(8.dp),
+                                    modifier = Modifier.fillMaxSize(),
+                                    state = lazyGridState
+                                ) {
+                                    items(count = it.mediaStoreSongs.size,
+                                        key = { index -> it.mediaStoreSongs[index].id },
+                                        contentType = { index -> it.mediaStoreSongs[index].id.toString() }) { index ->
+                                        val song = it.mediaStoreSongs[index]
+                                        LocalSongCard(song = song,
+                                            modifier = Modifier.animateItemPlacement(),
+                                            onClick = {
+                                                onItemClicked(song)
+                                            })
+                                    }
                                 }
+
+
                             }
                         }
                         val paddingBasedOnOverlap = PaddingValues(
-                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 16.dp).coerceAtLeast(
+                            top = (paddingValues.calculateTopPadding() * contraryCollapsedFraction - 10.dp).coerceAtLeast(
                                 0.dp
                             ),
                             start = paddingValues.calculateStartPadding(layoutDirection),
