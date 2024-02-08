@@ -16,7 +16,7 @@ commonsIo = "2.15.0"
 commonsCompress = "1.24.0"
 
 #Compose
-compose-bom = "2023.10.01"
+compose-bom = "2024.01.00"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.0-beta02"
 compose-util = "1.5.4"
@@ -80,6 +80,7 @@ spotdlversion = "-SNAPSHOT"
 
 #Metadata manager
 kyantTaglib = "2023.7.7"
+taglib = "7549247959"
 
 #Firebase, GMS...
 firebaseAuth = "22.3.1"
@@ -218,6 +219,7 @@ spotdl-android-commonUtilities = { group = "com.github.bobbyesp.spotdl-android",
 
 # Metadata manager
 metadata-manager = { group = "com.github.Kyant0", name = "tag", version.ref = "kyantTaglib" }
+taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
 
 #Chrome Custom Tabs
 chrome-custom-tabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }

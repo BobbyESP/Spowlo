@@ -84,6 +84,7 @@ fun TagEditorPage(
                         mainArtist = mainArtist,
                         localSongPath = song.path,
                         artworkPath = song.albumArtPath,
+                        fileName = song.fileName
                     )
 
                     navController.navigate(

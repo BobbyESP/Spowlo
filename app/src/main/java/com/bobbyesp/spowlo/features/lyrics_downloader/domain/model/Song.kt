@@ -23,7 +23,8 @@ data class Song(
     val album: String,
     @Serializable(with = UriSerializer::class) val albumArtPath: Uri? = null,
     val duration: Double,
-    val path: String
+    val path: String,
+    val fileName: String? = null
 ) : Parcelable {
     constructor(parcel: android.os.Parcel) : this(
         parcel.readLong(),
@@ -32,6 +33,7 @@ data class Song(
         parcel.readString()!!,
         parcel.readParcelable(Uri::class.java.classLoader),
         parcel.readDouble(),
+        parcel.readString()!!,
         parcel.readString()!!
     )
 
@@ -43,6 +45,7 @@ data class Song(
         parcel.writeParcelable(albumArtPath, flags)
         parcel.writeDouble(duration)
         parcel.writeString(path)
+        parcel.writeString(fileName)
     }
 
     override fun describeContents(): Int {
@@ -87,7 +90,8 @@ fun List<Track>.toSongs(): List<Song> {
                 album = it.album.name,
                 duration = it.durationMs.toDouble(),
                 path = it.externalUrls.spotify!!,
-                albumArtPath = it.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) }
+                albumArtPath = it.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) },
+                fileName = ""
             )
         )
     }
@@ -102,7 +106,8 @@ fun Track.toSong(): Song {
         album = this.album.name,
         duration = this.durationMs.toDouble(),
         path = this.externalUrls.spotify!!,
-        albumArtPath = this.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) }
+        albumArtPath = this.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) },
+        fileName = ""
     )
 }
 

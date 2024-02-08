@@ -4,22 +4,21 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kyant.tag.Metadata
-import com.kyant.tag.Metadata.Companion.getLyrics
+import com.bobbyesp.spowlo.data.local.MediaStoreReceiver
+import com.kyant.taglib.Metadata
+import com.kyant.taglib.TagLib
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -29,35 +28,33 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         val lyrics: String = ""
     )
 
-    suspend fun loadTrackMetadata(path: String) {
+    fun loadTrackMetadata(path: String, fileName: String) {
         updateState(ID3MetadataEditorPageState.Loading)
 
         try {
-            val metadataDeferred = withContext(Dispatchers.IO) {
-                async { Metadata.getMetadata(path) }
+            MediaStoreReceiver.getFileDescriptorFromPath(context, path).let { songFd ->
+                val metadata = TagLib.getMetadata(
+                    songFd?.dup()?.detachFd() ?: throw Exception("File descriptor is null"),
+                    fileName = fileName,
+                    readLyrics = true
+                )
+                if (metadata == null) {
+                    updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
+                    return
+                }
+                updateLyrics(metadata.propertyMap["LYRICS"]?.get(0) ?: "")
+                updateState(ID3MetadataEditorPageState.Success(metadata))
             }
-
-            val metadata = metadataDeferred.await()
-
-            if (metadata == null) {
-                updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
-                return
-            }
-            getSongEmbeddedLyrics(path)
-
-            updateState(ID3MetadataEditorPageState.Success(metadata))
         } catch (e: Exception) {
             updateState(ID3MetadataEditorPageState.Error(e))
         }
     }
 
-    private suspend fun getSongEmbeddedLyrics(path: String) {
+    private fun getSongEmbeddedLyrics(path: String, fileName: String) {
         try {
-            val lyricsDeferred = withContext(Dispatchers.IO) {
-                async { getLyrics(path) }
-            }
-
-            val lyrics = lyricsDeferred.await()
+            val songFd = MediaStoreReceiver.getFileDescriptorFromPath(context, path)
+                ?: throw Exception("File descriptor is null")
+            val lyrics = TagLib.getLyrics(songFd.fd, path)
 
             if (lyrics.isNullOrEmpty()) {
                 return
@@ -69,8 +66,27 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
-    suspend fun saveMetadata(newMetadata: Metadata, path: String) {
-
+    fun saveMetadata(newMetadata: Metadata, path: String, fileName: String): Boolean {
+        try {
+            MediaStoreReceiver.getFileDescriptorFromPath(context, path).let { songFd ->
+                val fd = songFd?.dup()?.detachFd() ?: throw Exception("File descriptor is null")
+                Log.i(
+                    "ID3MetadataEditorPageViewModel",
+                    "Metadata saved successfully. New metadata: $newMetadata"
+                )
+                return TagLib.savePropertyMap(
+                    fd,
+                    fileName = fileName,
+                    propertyMap = newMetadata.propertyMap
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(
+                "ID3MetadataEditorPageViewModel",
+                "Error while trying to save metadata: ${e.message}"
+            )
+            return false
+        }
     }
 
     fun sameMetadata(oldMetadata: Metadata, newMetadata: Metadata): Boolean {
@@ -88,12 +104,10 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     }
 
     private fun updateLyrics(lyrics: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            mutablePageViewState.update {
-                it.copy(
-                    lyrics = lyrics
-                )
-            }
+        mutablePageViewState.update {
+            it.copy(
+                lyrics = lyrics
+            )
         }
     }
 

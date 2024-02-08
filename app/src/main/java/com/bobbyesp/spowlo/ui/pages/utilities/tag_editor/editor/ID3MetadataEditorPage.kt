@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImagePainter
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
@@ -53,11 +54,9 @@ import com.bobbyesp.spowlo.ui.ext.joinOrNullToString
 import com.bobbyesp.spowlo.ui.ext.toMinutes
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ID3MetadataEditorPageViewModel.Companion
 import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.alertDialogs.MediaStoreInfoDialog
-import com.kyant.tag.Metadata
-import com.kyant.tag.Tags
-import com.kyant.tag.Tags.Companion.toTags
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.bobbyesp.spowlo.utils.mediastore.FileMetadata
+import com.bobbyesp.spowlo.utils.mediastore.FileMetadata.Companion.toFileMetadata
+import com.kyant.taglib.Metadata
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,10 +67,20 @@ fun ID3MetadataEditorPage(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val pageStage = viewState.state
     val navController = LocalNavController.current
-    val viewModelScope = viewModel.viewModelScope
+
+    var updatedMetadata by remember {
+        mutableStateOf<Metadata?>(null)
+    }
+
+    val updateOuterMetadata: (Metadata) -> Unit = { newData ->
+        updatedMetadata = newData
+    }
 
     LaunchedEffect(true) {
-        viewModel.loadTrackMetadata(selectedSong.localSongPath!!)
+        viewModel.loadTrackMetadata(
+            selectedSong.localSongPath!!,
+            fileName = selectedSong.fileName!!
+        )
     }
 
     Scaffold(
@@ -82,9 +91,21 @@ fun ID3MetadataEditorPage(
                         navController.popBackStack()
                     }
                 }, actions = {
-//                    TextButton(onClick = { }) {
-//                        Text(text = stringResource(id = R.string.save))
-//                    }
+                    TextButton(
+                        onClick = {
+                            val saved = viewModel.saveMetadata(
+                                updatedMetadata!!,
+                                selectedSong.localSongPath!!,
+                                selectedSong.fileName!!
+                            )
+                            Log.i("ID3MetadataEditorPage", "Saved: $saved")
+                            if (saved) {
+                                navController.popBackStack()
+                            }
+                            //TODO: Save the metadata, but first open a confirmation dialog
+                        }) {
+                        Text(text = stringResource(id = R.string.save))
+                    }
                 }, title = {
                     Column(
                         modifier = Modifier.fillMaxWidth()
@@ -113,21 +134,20 @@ fun ID3MetadataEditorPage(
                 }
 
                 is Companion.ID3MetadataEditorPageState.Success -> {
-                    var metadataCopyState by remember {
-                        mutableStateOf(
-                            actualPageState.metadata.toTags().copy()
-                        )
+                    LaunchedEffect(key1 = actualPageState.metadata) {
+                        updateOuterMetadata(actualPageState.metadata)
                     }
 
                     EditMetadataPage(
                         modifier = Modifier.fillMaxSize(),
-                        metadataCopy = actualPageState.metadata.toTags(),
+                        metadataCopy = actualPageState.metadata.propertyMap.toFileMetadata(),
                         metadata = actualPageState.metadata,
                         selectedSong = selectedSong,
-                    ) { updatedMetadata ->
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            metadataCopyState = updatedMetadata
-                        }
+                    ) { newFileMetadata ->
+                        val newMetadata =
+                            actualPageState.metadata.copy(propertyMap = newFileMetadata.toPropertyMap())
+
+                        updateOuterMetadata(newMetadata)
                     }
                 }
 
@@ -143,14 +163,15 @@ fun ID3MetadataEditorPage(
 fun EditMetadataPage(
     modifier: Modifier = Modifier,
     metadata: Metadata,
-    metadataCopy: Tags,
+    metadataCopy: FileMetadata,
     selectedSong: SelectedSong,
-    onSaveNewMetadata: (Tags) -> Unit,
+    onSaveNewMetadata: (FileMetadata) -> Unit,
 ) {
     val artworkUri = selectedSong.artworkPath
     var showArtwork by remember { mutableStateOf(true) }
     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
+    val audioStats = metadata.audioProperties
     val scrollState = rememberScrollState()
 
     Column(
@@ -240,12 +261,12 @@ fun EditMetadataPage(
                 MetadataTag(
                     modifier = Modifier.weight(0.5f),
                     typeOfMetadata = stringResource(id = R.string.bitrate),
-                    metadata = metadata.bitrate.toString() + " kbps"
+                    metadata = audioStats.bitrate.toString() + " kbps"
                 )
                 MetadataTag(
                     modifier = Modifier.weight(0.5f),
                     typeOfMetadata = stringResource(id = R.string.sample_rate),
-                    metadata = metadata.sampleRate.toString() + " Hz"
+                    metadata = audioStats.sampleRate.toString() + " Hz"
                 )
             }
             Row(
@@ -256,12 +277,12 @@ fun EditMetadataPage(
                 MetadataTag(
                     modifier = Modifier.weight(0.5f),
                     typeOfMetadata = stringResource(id = R.string.channels),
-                    metadata = metadata.channels.toString()
+                    metadata = audioStats.channels.toString()
                 )
                 MetadataTag(
                     modifier = Modifier.weight(0.5f),
                     typeOfMetadata = stringResource(id = R.string.duration),
-                    metadata = metadata.lengthInMilliseconds.toMinutes()
+                    metadata = audioStats.length.toMinutes()
                 )
             }
         }
@@ -278,7 +299,7 @@ fun EditMetadataPage(
         ) { title ->
             onSaveNewMetadata(
                 metadataCopy.copy(
-                    title = listOf(title)
+                    title = arrayOf(title)
                 )
             )
         }
@@ -290,7 +311,7 @@ fun EditMetadataPage(
         ) { artists ->
             onSaveNewMetadata(
                 metadataCopy.copy(
-                    artist = artists.split(",").map { it.trim() }
+                    artist = artists.split(",").map { it.trim() }.toTypedArray()
                 )
             )
         }
@@ -302,7 +323,7 @@ fun EditMetadataPage(
         ) { album ->
             onSaveNewMetadata(
                 metadataCopy.copy(
-                    album = listOf(album)
+                    album = arrayOf(album)
                 )
             )
         }
@@ -314,7 +335,7 @@ fun EditMetadataPage(
         ) { artists ->
             onSaveNewMetadata(
                 metadataCopy.copy(
-                    albumArtist = artists.split(",").map { it.trim() }
+                    albumArtist = artists.split(",").map { it.trim() }.toTypedArray()
                 )
             )
         }
@@ -332,7 +353,7 @@ fun EditMetadataPage(
                 ) { trackNumber ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            trackNumber = listOf(trackNumber)
+                            trackNumber = arrayOf(trackNumber)
                         )
                     )
                 }
@@ -344,7 +365,7 @@ fun EditMetadataPage(
                 ) { discNumber ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            discNumber = listOf(discNumber)
+                            discNumber = arrayOf(discNumber)
                         )
                     )
                 }
@@ -359,7 +380,7 @@ fun EditMetadataPage(
                 ) { date ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            date = listOf(date)
+                            date = arrayOf(date)
                         )
                     )
                 }
@@ -371,7 +392,7 @@ fun EditMetadataPage(
                 ) { genre ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            genre = listOf(genre)
+                            genre = arrayOf(genre)
                         )
                     )
                 }
@@ -395,7 +416,7 @@ fun EditMetadataPage(
                 ) { composer ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            composer = listOf(composer)
+                            composer = arrayOf(composer)
                         )
                     )
                 }
@@ -407,7 +428,7 @@ fun EditMetadataPage(
                 ) { lyricist ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            lyricist = listOf(lyricist)
+                            lyricist = arrayOf(lyricist)
                         )
                     )
                 }
@@ -422,7 +443,7 @@ fun EditMetadataPage(
                 ) { conductor ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            conductor = listOf(conductor)
+                            conductor = arrayOf(conductor)
                         )
                     )
                 }
@@ -434,7 +455,7 @@ fun EditMetadataPage(
                 ) { remixer ->
                     onSaveNewMetadata(
                         metadataCopy.copy(
-                            remixer = listOf(remixer)
+                            remixer = arrayOf(remixer)
                         )
                     )
                 }
@@ -446,7 +467,7 @@ fun EditMetadataPage(
             ) { performer ->
                 onSaveNewMetadata(
                     metadataCopy.copy(
-                        performer = listOf(performer)
+                        performer = arrayOf(performer)
                     )
                 )
             }

@@ -19,3 +19,7 @@ fun Int.bigQuantityFormatter(): String {
         else -> "${this / 1000000000} B"
     }
 }
+
+fun Int.toMinutes(): String {
+    return java.text.SimpleDateFormat("mm:ss").format(java.util.Date(this.toLong()))
+}

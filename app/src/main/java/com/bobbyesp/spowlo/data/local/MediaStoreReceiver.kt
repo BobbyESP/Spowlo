@@ -1,14 +1,17 @@
 package com.bobbyesp.spowlo.data.local
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
 import com.bobbyesp.spowlo.BuildConfig
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
+import java.io.FileNotFoundException
 
 object MediaStoreReceiver {
 
@@ -53,6 +56,7 @@ object MediaStoreReceiver {
                 val duration = cursor.getDouble(durationColumn)
                 val albumId = cursor.getLong(albumIdColumn)
                 val path = cursor.getString(pathColumn)
+                val fileName = path.substring(path.lastIndexOf("/") + 1)
 
                 val songArtworkUri = Uri.parse("content://media/external/audio/albumart")
                 val imgUri = ContentUris.withAppendedId(
@@ -60,7 +64,7 @@ object MediaStoreReceiver {
                     albumId
                 )
 
-                val song = Song(id, title, artist, album, imgUri, duration, path)
+                val song = Song(id, title, artist, album, imgUri, duration, path, fileName)
                 songs.add(song)
             }
         }
@@ -123,6 +127,7 @@ object MediaStoreReceiver {
                 val duration = cursor.getDouble(durationColumn)
                 val albumId = cursor.getLong(albumIdColumn)
                 val path = cursor.getString(pathColumn)
+                val fileName = path.substring(path.lastIndexOf("/") + 1)
 
                 val songArtworkUri = Uri.parse("content://media/external/audio/albumart")
                 val imgUri = ContentUris.withAppendedId(
@@ -130,12 +135,42 @@ object MediaStoreReceiver {
                     albumId
                 )
 
-                val song = Song(id, title, artist, album, imgUri, duration, path)
+                val song = Song(id, title, artist, album, imgUri, duration, path, fileName)
                 songs.add(song)
             }
         }
 
         return songs
+    }
+
+    @SuppressLint("Range")
+    fun getFileDescriptorFromPath(context: Context, filePath: String): ParcelFileDescriptor? {
+        val resolver: ContentResolver = context.contentResolver
+        val uri: Uri = MediaStore.Files.getContentUri("external")
+
+        val projection = arrayOf(MediaStore.Files.FileColumns._ID)
+        val selection = "${MediaStore.Files.FileColumns.DATA}=?"
+        val selectionArgs = arrayOf(filePath)
+
+        resolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val fileId: Int =
+                    cursor.getInt(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID))
+                if (fileId == -1) {
+                    return null
+                } else {
+                    val fileUri: Uri = Uri.withAppendedPath(uri, fileId.toString())
+
+                    try {
+                        return resolver.openFileDescriptor(fileUri, "r")
+                    } catch (e: FileNotFoundException) {
+                        Log.e("MediaStoreReceiver", "File not found: ${e.message}")
+                    }
+                }
+            }
+        }
+
+        return null
     }
 
 }

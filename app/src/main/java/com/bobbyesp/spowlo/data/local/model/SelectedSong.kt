@@ -13,4 +13,5 @@ data class SelectedSong(
     val mainArtist: String,
     val localSongPath: String? = null,
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
+    val fileName: String? = null
 ) : Parcelable

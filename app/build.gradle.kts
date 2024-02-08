@@ -256,7 +256,7 @@ dependencies {
     implementation(libs.scrollbar) //Scrollbar for Jetpack Compose LazyColumn, Column...
 
     //Metadata editor
-    implementation(libs.metadata.manager)
+    implementation(libs.taglib)
 
     //Compose testing libs
     implementation(libs.compose.tooling.preview)
