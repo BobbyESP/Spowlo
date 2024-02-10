@@ -95,7 +95,8 @@ enum class PermissionType {
     INTERNET,
     ACCESS_NETWORK_STATE,
     ACCESS_WIFI_STATE,
-    CHANGE_WIFI_STATE;
+    CHANGE_WIFI_STATE,
+    MANAGE_EXTERNAL_STORAGE;
 
     @SuppressLint("InlinedApi")
     fun getPermissionString(): String {
@@ -107,6 +108,7 @@ enum class PermissionType {
             ACCESS_WIFI_STATE -> android.Manifest.permission.ACCESS_WIFI_STATE
             CHANGE_WIFI_STATE -> android.Manifest.permission.CHANGE_WIFI_STATE
             READ_MEDIA_AUDIO -> android.Manifest.permission.READ_MEDIA_AUDIO
+            MANAGE_EXTERNAL_STORAGE -> android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
         }
     }
 
@@ -120,6 +122,7 @@ enum class PermissionType {
             ACCESS_WIFI_STATE -> stringResource(R.string.access_wifi_state)
             CHANGE_WIFI_STATE -> stringResource(R.string.change_wifi_state)
             READ_MEDIA_AUDIO -> stringResource(R.string.read_media_audio)
+            MANAGE_EXTERNAL_STORAGE -> stringResource(R.string.manage_external_storage)
         }
     }
 }
@@ -133,6 +136,7 @@ fun String.toPermissionType(): PermissionType {
         android.Manifest.permission.ACCESS_WIFI_STATE -> PermissionType.ACCESS_WIFI_STATE
         android.Manifest.permission.CHANGE_WIFI_STATE -> PermissionType.CHANGE_WIFI_STATE
         android.Manifest.permission.READ_MEDIA_AUDIO -> PermissionType.READ_MEDIA_AUDIO
+        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE -> PermissionType.MANAGE_EXTERNAL_STORAGE
         else -> throw IllegalArgumentException("Unknown permission string")
     }
 }

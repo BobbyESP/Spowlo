@@ -144,9 +144,13 @@ object MediaStoreReceiver {
     }
 
     @SuppressLint("Range")
-    fun getFileDescriptorFromPath(context: Context, filePath: String): ParcelFileDescriptor? {
+    fun getFileDescriptorFromPath(
+        context: Context,
+        filePath: String,
+        mode: String = "r"
+    ): ParcelFileDescriptor? {
         val resolver: ContentResolver = context.contentResolver
-        val uri: Uri = MediaStore.Files.getContentUri("external")
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
         val projection = arrayOf(MediaStore.Files.FileColumns._ID)
         val selection = "${MediaStore.Files.FileColumns.DATA}=?"
@@ -160,9 +164,8 @@ object MediaStoreReceiver {
                     return null
                 } else {
                     val fileUri: Uri = Uri.withAppendedPath(uri, fileId.toString())
-
                     try {
-                        return resolver.openFileDescriptor(fileUri, "r")
+                        return resolver.openFileDescriptor(fileUri, mode)
                     } catch (e: FileNotFoundException) {
                         Log.e("MediaStoreReceiver", "File not found: ${e.message}")
                     }

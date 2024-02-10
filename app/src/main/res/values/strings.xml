@@ -191,4 +191,5 @@
     <string name="trying_to_login">Trying to login...</string>
     <string name="logged_in">Logged in</string>
     <string name="logged_in_desc">Nice! You are now logged into your Spotify account!</string>
+    <string name="manage_external_storage">Manage external storage</string>
 </resources>

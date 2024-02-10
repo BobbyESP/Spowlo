@@ -30,7 +30,7 @@ fun TagEditorPage(
 ) {
     val currentApiVersion = Build.VERSION.SDK_INT
 
-    val targetPermission = when {
+    val readAudioFiles = when {
         currentApiVersion < Build.VERSION_CODES.Q -> Manifest.permission.READ_EXTERNAL_STORAGE
 
         currentApiVersion < Build.VERSION_CODES.S -> Manifest.permission.READ_EXTERNAL_STORAGE
@@ -38,13 +38,13 @@ fun TagEditorPage(
         else -> Manifest.permission.READ_MEDIA_AUDIO
     }
 
-    val storagePermissionState = rememberPermissionState(permission = targetPermission)
+    val storagePermissionState = rememberPermissionState(permission = readAudioFiles)
     val navController = LocalNavController.current
 
     PermissionRequestHandler(permissionState = storagePermissionState,
         deniedContent = { shouldShowRationale ->
             PermissionNotGrantedDialog(
-                neededPermissions = listOf(targetPermission.toPermissionType()),
+                neededPermissions = listOf(readAudioFiles.toPermissionType()),
                 onGrantRequest = {
                     storagePermissionState.launchPermissionRequest()
                 },

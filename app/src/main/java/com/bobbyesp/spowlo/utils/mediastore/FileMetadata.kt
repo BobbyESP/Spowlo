@@ -6,45 +6,45 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FileMetadata(
     // Basic tags
-    val title: Array<String>? = null,
-    val album: Array<String>? = null,
-    val artist: Array<String>? = null,
-    val albumArtist: Array<String>? = null,
-    val subtitle: Array<String>? = null,
-    val trackNumber: Array<String>? = null,
-    val discNumber: Array<String>? = null,
-    val date: Array<String>? = null,
-    val originalDate: Array<String>? = null,
-    val genre: Array<String>? = null,
-    val comment: Array<String>? = null,
+    var title: Array<String>? = null,
+    var album: Array<String>? = null,
+    var artist: Array<String>? = null,
+    var albumArtist: Array<String>? = null,
+    var subtitle: Array<String>? = null,
+    var trackNumber: Array<String>? = null,
+    var discNumber: Array<String>? = null,
+    var date: Array<String>? = null,
+    var originalDate: Array<String>? = null,
+    var genre: Array<String>? = null,
+    var comment: Array<String>? = null,
 
     // Sort names
-    val titleSort: Array<String>? = null,
-    val albumSort: Array<String>? = null,
-    val artistSort: Array<String>? = null,
-    val albumArtistSort: Array<String>? = null,
-    val composerSort: Array<String>? = null,
+    var titleSort: Array<String>? = null,
+    var albumSort: Array<String>? = null,
+    var artistSort: Array<String>? = null,
+    var albumArtistSort: Array<String>? = null,
+    var composerSort: Array<String>? = null,
 
     // Credits
-    val composer: Array<String>? = null,
-    val lyricist: Array<String>? = null,
-    val conductor: Array<String>? = null,
-    val remixer: Array<String>? = null,
-    val performer: Array<String>? = null,
+    var composer: Array<String>? = null,
+    var lyricist: Array<String>? = null,
+    var conductor: Array<String>? = null,
+    var remixer: Array<String>? = null,
+    var performer: Array<String>? = null,
 
     // Other tags
-    val isrc: Array<String>? = null,
-    val asin: Array<String>? = null,
-    val bpm: Array<String>? = null,
-    val encodedBy: Array<String>? = null,
-    val mood: Array<String>? = null,
-    val media: Array<String>? = null,
-    val label: Array<String>? = null,
-    val catalogNumber: Array<String>? = null,
-    val barcode: Array<String>? = null,
-    val releaseCountry: Array<String>? = null,
-    val releaseStatus: Array<String>? = null,
-    val releaseType: Array<String>? = null
+    var isrc: Array<String>? = null,
+    var asin: Array<String>? = null,
+    var bpm: Array<String>? = null,
+    var encodedBy: Array<String>? = null,
+    var mood: Array<String>? = null,
+    var media: Array<String>? = null,
+    var label: Array<String>? = null,
+    var catalogNumber: Array<String>? = null,
+    var barcode: Array<String>? = null,
+    var releaseCountry: Array<String>? = null,
+    var releaseStatus: Array<String>? = null,
+    var releaseType: Array<String>? = null
 ) {
     companion object {
         fun PropertyMap.toFileMetadata(): FileMetadata {
@@ -82,6 +82,43 @@ data class FileMetadata(
                 releaseCountry = this["RELEASECOUNTRY"],
                 releaseStatus = this["RELEASESTATUS"],
                 releaseType = this["RELEASETYPE"]
+            )
+        }
+        fun FileMetadata.deepCopy(): FileMetadata {
+            return FileMetadata(
+                title = title?.copyOf(),
+                album = album?.copyOf(),
+                artist = artist?.copyOf(),
+                albumArtist = albumArtist?.copyOf(),
+                subtitle = subtitle?.copyOf(),
+                trackNumber = trackNumber?.copyOf(),
+                discNumber = discNumber?.copyOf(),
+                date = date?.copyOf(),
+                originalDate = originalDate?.copyOf(),
+                genre = genre?.copyOf(),
+                comment = comment?.copyOf(),
+                titleSort = titleSort?.copyOf(),
+                albumSort = albumSort?.copyOf(),
+                artistSort = artistSort?.copyOf(),
+                albumArtistSort = albumArtistSort?.copyOf(),
+                composerSort = composerSort?.copyOf(),
+                composer = composer?.copyOf(),
+                lyricist = lyricist?.copyOf(),
+                conductor = conductor?.copyOf(),
+                remixer = remixer?.copyOf(),
+                performer = performer?.copyOf(),
+                isrc = isrc?.copyOf(),
+                asin = asin?.copyOf(),
+                bpm = bpm?.copyOf(),
+                encodedBy = encodedBy?.copyOf(),
+                mood = mood?.copyOf(),
+                media = media?.copyOf(),
+                label = label?.copyOf(),
+                catalogNumber = catalogNumber?.copyOf(),
+                barcode = barcode?.copyOf(),
+                releaseCountry = releaseCountry?.copyOf(),
+                releaseStatus = releaseStatus?.copyOf(),
+                releaseType = releaseType?.copyOf()
             )
         }
     }

@@ -22,19 +22,22 @@ fun PreConfiguredOutlinedTextField(
     singleLine: Boolean = false,
     maxLines: Int = 1,
     minLines: Int = 1,
-    returnModifiedValue: (String) -> Unit = {}
+    onValueChange: (String) -> Unit = {}
 ) {
 
     val (text, setText) = remember(value) { mutableStateOf(value) }
 
     SideEffect {
-        if (!text.isNullOrEmpty()) returnModifiedValue(text)
+        if (!text.isNullOrEmpty()) onValueChange(text)
     }
 
     OutlinedTextField(
         modifier = modifier,
         value = text ?: "",
-        onValueChange = setText,
+        onValueChange = {
+            setText(it)
+            onValueChange(it)
+        },
         label = { Text(text = label) },
         enabled = enabled,
         readOnly = readOnly,
