@@ -15,7 +15,8 @@ sealed class Version(
     open val versionMajor: Int,
     val versionMinor: Int,
     val versionPatch: Int,
-    val versionBuild: Int = 0
+    val versionBuild: Int = 0,
+    val commitId: String = ""
 ) {
     abstract fun toVersionName(): String
     class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
@@ -37,10 +38,10 @@ sealed class Version(
     }
 
     class Alpha(
-        versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
-    ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+        versionMajor: Int, versionMinor: Int, versionPatch: Int, commitId: String
+    ) : Version(versionMajor, versionMinor, versionPatch, commitId = commitId) {
         override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$versionBuild"
+            "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$commitId"
     }
 }
 
@@ -52,7 +53,7 @@ val currentVersion: Version = Version.Alpha(
     versionMajor = 2,
     versionMinor = 0,
     versionPatch = 0,
-    versionBuild = commitSignature.toInt()
+    commitId = commitSignature
 )
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")

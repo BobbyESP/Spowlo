@@ -68,7 +68,7 @@ import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.AudioPropertyBar
 import com.bobbyesp.spowlo.ui.components.others.StackedProfilePictures
 import com.bobbyesp.spowlo.ui.components.text.ExtraLargeCategoryTitle
-import com.bobbyesp.spowlo.ui.ext.toCompleteString
+import com.bobbyesp.spowlo.ui.ext.toFormattedString
 import com.bobbyesp.spowlo.utils.data.Resource
 import com.bobbyesp.spowlo.utils.time.TimeUtils
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
@@ -130,7 +130,7 @@ private fun TrackPageImplementation(
 ) {
     var showSheet by remember { mutableStateOf(false) }
 
-    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
 
     val config = LocalConfiguration.current
     val navController = LocalNavController.current
@@ -139,7 +139,7 @@ private fun TrackPageImplementation(
         (config.screenHeightDp / 3.25) //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
 
     val foundTrack = loadedState.track
-    val images = viewState.value.artistsImages
+    val images = viewState.artistsImages
 
     var showImage by remember {
         mutableStateOf(true)
@@ -149,10 +149,10 @@ private fun TrackPageImplementation(
         mutableStateOf(foundTrack)
     }
 
-    val dominantColor = viewState.value.dominantColor ?: MaterialTheme.colorScheme.surface
+    val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.surface
     val artistsFullString = trackData.artists.joinToString(", ") { artist -> artist.name ?: "" }
 
-    val artistsList = viewState.value.artists
+    val artistsList = viewState.artists
 
     val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
 
@@ -302,19 +302,25 @@ private fun TrackPageImplementation(
                             )
                         ) {
                             Text(
-                                text = trackData.album.releaseDate.toCompleteString(),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
+                                text = trackData.album.releaseDate.toFormattedString(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Normal
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = TimeUtils.formatDurationWithText(trackData.durationMs.toLong()),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
                 }
+            }
+            item {
+                ExtraLargeCategoryTitle(
+                    modifier = Modifier.padding(start = 6.dp),
+                    text = stringResource(id = R.string.artists)
+                )
             }
             items(artistsList) { artist ->
                 ArtistHorizontalCard(
@@ -341,7 +347,7 @@ private fun TrackPageImplementation(
                 )
             }
             item {
-                when (val audioData = viewState.value.audioFeaturesData) {
+                when (val audioData = viewState.audioFeaturesData) {
                     is Resource.Error -> {
                         Text(text = audioData.message)
                     }

@@ -6,6 +6,7 @@ import com.bobbyesp.spowlo.R
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -73,4 +74,18 @@ fun String.toTimestampInMillis(): Long {
         val dateWithoutMillis = dateFormatWithoutMillis.parse(this)
         dateWithoutMillis?.time ?: 0
     }
+}
+
+//given day, month and year, return the localized date string. Formatted as "dd MMMM yyyy"
+fun getDate(day: Int?, month: Int?, year: Int?): String {
+    val calendar = java.util.Calendar.getInstance()
+    calendar.set(year ?: 0, month?.minus(1) ?: 0, day ?: 0)
+    val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+    return dateFormat.format(calendar.time)
+}
+
+fun getDate(instant: Instant): String {
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+    return dateFormat.format(localDateTime.toJavaLocalDateTime())
 }
