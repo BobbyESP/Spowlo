@@ -18,12 +18,6 @@ sealed class Version(
     val versionBuild: Int = 0
 ) {
     abstract fun toVersionName(): String
-    class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-beta.$versionBuild"
-    }
-
     class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
         Version(versionMajor, versionMinor, versionPatch) {
         override fun toVersionName(): String = "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -35,12 +29,30 @@ sealed class Version(
         override fun toVersionName(): String =
             "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
     }
+
+    class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
+        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+        override fun toVersionName(): String =
+            "${versionMajor}.${versionMinor}.${versionPatch}-beta.$versionBuild"
+    }
+
+    class Alpha(
+        versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
+    ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+        override fun toVersionName(): String =
+            "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$versionBuild"
+    }
 }
 
-val currentVersion: Version = Version.Stable(
+val commitSignature = providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+}.standardOutput.asText.get().substringBefore("\n")
+
+val currentVersion: Version = Version.Alpha(
     versionMajor = 2,
     versionMinor = 0,
     versionPatch = 0,
+    versionBuild = commitSignature.toInt()
 )
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
