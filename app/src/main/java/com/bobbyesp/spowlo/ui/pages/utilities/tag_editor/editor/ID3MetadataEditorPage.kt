@@ -69,15 +69,18 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
     var propertiesCopy: FileMetadata? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
-        viewModel.loadTrackMetadata(selectedSong.localSongPath!!, selectedSong.fileName!!)
+        viewModel.loadTrackMetadata(
+            path = selectedSong.localSongPath!!,
+            fileName = selectedSong.fileName!!
+        )
     }
 
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
-        viewState.metadata?.copy(
+        newMetadata = viewState.metadata?.copy(
             propertyMap = propertiesCopy!!.toPropertyMap()
         )!!,
-        path!!,
-        fileName!!,
+        path = path!!,
+        fileName = fileName!!
     )
 
     Scaffold(

@@ -25,6 +25,7 @@ import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
+import com.bobbyesp.spowlo.ui.pages.utilities.tag_editor.editor.ON_WRITE_DATA_REQUEST_CODE
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -81,6 +82,13 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         stopService(Intent(this, SpowloMediaService::class.java))
         isMusicPlayerServiceOn = false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ON_WRITE_DATA_REQUEST_CODE) {
+            //Do something
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

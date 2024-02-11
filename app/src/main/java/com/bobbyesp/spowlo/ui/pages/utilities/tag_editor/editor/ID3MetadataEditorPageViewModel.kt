@@ -15,8 +15,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.io.IOException
 import javax.inject.Inject
 
+const val ON_WRITE_DATA_REQUEST_CODE = 1
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
     @ApplicationContext private val context: Context
@@ -34,9 +36,10 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         updateState(ID3MetadataEditorPageState.Loading)
 
         try {
-            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r").use { songFd ->
+            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
+                val fd = songFd.dup()?.detachFd() ?: throw IOException("File descriptor is null")
                 val metadata = TagLib.getMetadata(
-                    songFd?.dup()?.detachFd() ?: throw Exception("File descriptor is null"),
+                    fd,
                     fileName = fileName,
                     readLyrics = true
                 )
@@ -44,11 +47,12 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                     updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
                     return
                 }
-                updateLyrics(metadata.propertyMap["LYRICS"]?.get(0) ?: "")
+                val lyrics = metadata.propertyMap["LYRICS"]?.get(0) ?: ""
+                updateLyrics(lyrics)
                 updateMetadata(metadata)
                 updateState(ID3MetadataEditorPageState.Success(metadata))
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             Log.e(
                 "ID3MetadataEditorPageViewModel",
                 "Error while trying to load metadata: ${e.message}"
@@ -57,18 +61,17 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
-    private var permissionRequestCount = 0
-    private val maxPermissionRequests = 3 // Set a limit for permission requests
-
     fun saveMetadata(
+        context: Context = this.context, // Added missing context parameter
         newMetadata: Metadata,
         path: String,
-        fileName: String,
-        callback: ((() -> Unit) -> Unit)? = null
+        fileName: String
     ): Boolean {
         return try {
-            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")?.let { songFd ->
-                val fd = songFd.dup()?.detachFd() ?: throw Exception("File descriptor is null")
+            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
+                ?.let { fileDescriptor ->
+                    val fd = fileDescriptor.dup()?.detachFd()
+                        ?: throw IOException("File descriptor is null") // IOException instead of generic Exception
                 TagLib.savePropertyMap(
                     fd,
                     fileName = fileName,
@@ -87,23 +90,14 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                 val intentSender =
                     recoverableSecurityException.userAction.actionIntent.intentSender
                 ActivityCompat.startIntentSenderForResult(
-                    MainActivity.getActivity(), intentSender, 1,
+                    MainActivity.getActivity(), intentSender, ON_WRITE_DATA_REQUEST_CODE,
                     null, 0, 0, 0, null
                 )
-
-                if (permissionRequestCount < maxPermissionRequests) {
-                    callback?.invoke {
-                        saveMetadata(newMetadata, path, fileName, callback)
-                    }
-                    permissionRequestCount++
-                } else {
-                    Log.i("ID3MetadataEditorPageViewModel", "Permission request limit reached")
-                }
             } else {
                 throw RuntimeException(securityException.message, securityException)
             }
             false
-        } catch (e: Exception) {
+        } catch (e: IOException) { // Catching IOException specifically
             Log.e(
                 "ID3MetadataEditorPageViewModel",
                 "Error while trying to save metadata: ${e.message}"
@@ -112,6 +106,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             false
         }
     }
+
 
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {
