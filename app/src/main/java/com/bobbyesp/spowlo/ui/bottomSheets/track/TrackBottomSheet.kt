@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.bottomSheets.track
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -43,13 +44,12 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.miniplayer_service.service.MediaServiceHandler
 import com.bobbyesp.miniplayer_service.service.MediaState
 import com.bobbyesp.miniplayer_service.service.PlayerEvent
-import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
 import com.bobbyesp.spowlo.features.downloader.Downloader
-import com.bobbyesp.spowlo.features.downloader.Downloader.makeKey
 import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification.Companion.toNotification
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.SpEntityNotificationInfo
 import com.bobbyesp.spowlo.features.lyrics_downloader.domain.model.Song
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
@@ -69,6 +69,8 @@ import com.bobbyesp.spowlo.utils.time.TimeUtils.formatDuration
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -89,7 +91,7 @@ fun TrackBottomSheet(
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
     val navController = LocalNavController.current
-    val notiManager = LocalNotificationsManager.current
+    val notificationsManager = LocalNotificationsManager.current
 
     val stopPlayingAfterClosing = STOP_AFTER_CLOSING_BS.getBoolean()
 
@@ -166,51 +168,39 @@ fun TrackBottomSheet(
                 icon = Icons.Default.Download,
                 title = { stringResource(id = R.string.download) },
                 onClick = {
-                    val notification = Notification(
-                        title = "Downloading $trackName",
-                        subtitle = "By $trackArtistsString",
-                        timestamp = System.currentTimeMillis(),
-                        entityInfo = SpEntityNotificationInfo(
-                            name = trackName,
-                            artist = trackArtistsString,
-                            artworkUrl = trackImage,
-                            downloadUrl = spotifyUrl,
-                            itemType = SpotifyItemType.TRACKS,
-                        ),
-                        content = null
+                    val downloadInfo = Downloader.DownloadInfo(
+                        title = trackName,
+                        artist = trackArtistsString,
+                        thumbnailUrl = trackImage ?: "",
+                        url = spotifyUrl!!,
+                        type = SpotifyItemType.TRACKS
                     )
-                    notiManager.showNotification(notification)
-                    //TODO: MOVE TO VIEW MODEL
-                    App.applicationScope.launch(Dispatchers.IO) {
-                        DownloaderUtil.downloadSong(
-                            downloadInfo = Downloader.DownloadInfo(
-                                url = spotifyUrl!!,
-                                title = trackName,
-                                artist = trackArtistsString,
-                                type = SpotifyItemType.TRACKS,
-                                thumbnailUrl = trackImage ?: "",
-                            ),
-                            taskId = makeKey(trackName, trackArtistsString)
-                        ).onSuccess {
-                            ToastUtil.makeToastSuspend(
-                                context,
-                                context.getString(R.string.download_finished)
-                            )
-                            notiManager.showNotification(
+                    val notification = downloadInfo.toNotification()
+                    viewModel.downloadSong(
+                        downloadInfo = downloadInfo,
+                        onSuccess = {
+                            notificationsManager.showNotification(
                                 Notification(
                                     title = "Download finished",
-                                    subtitle = "TEST SUBTITLE",
+                                    subtitle = "The song has been downloaded successfully. ${downloadInfo.title} by ${downloadInfo.artist}",
                                     timestamp = System.currentTimeMillis(),
                                     content = null
                                 )
                             )
-                        }.onFailure {
-                            ToastUtil.makeToastSuspend(
-                                context,
-                                context.getString(R.string.download_failed)
+                        },
+                        onFailure = {
+                            notificationsManager.showNotification(
+                                Notification(
+                                    title = "Download failed",
+                                    subtitle = "The download failed. Please try again.",
+                                    timestamp = System.currentTimeMillis(),
+                                    content = null
+                                )
                             )
                         }
-                    }
+                    )
+                    notificationsManager.showNotification(notification)
+
                 }
             )
             GridMenuItem(
@@ -303,6 +293,7 @@ fun TrackBottomSheet(
 
 @HiltViewModel
 class TrackBottomSheetViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val serviceHandler: MediaServiceHandler
 ) : ViewModel() {
 
@@ -325,6 +316,40 @@ class TrackBottomSheetViewModel @Inject constructor(
                         }
                     }
                 }
+            }
+        }
+    }
+
+    fun generateNotification(downloadInfo: Downloader.DownloadInfo): Notification =
+        with(downloadInfo) {
+            Notification(
+                title = title,
+                subtitle = artist,
+                timestamp = System.currentTimeMillis(),
+                entityInfo = SpEntityNotificationInfo(
+                    name = title,
+                    artist = artist,
+                    artworkUrl = thumbnailUrl,
+                    downloadUrl = url,
+                    itemType = SpotifyItemType.TRACKS,
+                ),
+            )
+        }
+
+    fun downloadSong(
+        scope: CoroutineScope = viewModelScope,
+        downloadInfo: Downloader.DownloadInfo,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        scope.launch(Dispatchers.IO) {
+            DownloaderUtil.downloadSong(
+                downloadInfo = downloadInfo,
+                taskId = Downloader.makeKey(downloadInfo.title, downloadInfo.artist)
+            ).onSuccess {
+                onSuccess()
+            }.onFailure {
+                onFailure()
             }
         }
     }

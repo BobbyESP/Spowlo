@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManagerImpl
+import com.bobbyesp.spowlo.features.inapp_notifications.data.local.NotificationManagerSaver
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManager
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.AppSettingsStateFlow
@@ -75,7 +76,8 @@ fun AppLocalSettingsProvider(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
     val imageLoader = ImageLoader.Builder(context).build()
-    val notificationManager = remember {
+    val notificationManager =
+        rememberSaveable(key = "notificationsManager", saver = NotificationManagerSaver()) {
         NotificationManagerImpl()
     }
 

@@ -16,10 +16,10 @@ commonsIo = "2.15.0"
 commonsCompress = "1.24.0"
 
 #Compose
-compose-bom = "2024.01.00"
+compose-bom = "2024.02.00"
 constraintLayout = "1.1.0-alpha13"
-androidx-compose-material3 = "1.2.0-beta02"
-compose-util = "1.5.4"
+androidx-compose-material3 = "1.2.0"
+compose-util = "1.6.1"
 accompanist = "0.32.0"
 compose-pagination = "3.2.1"
 
@@ -31,7 +31,7 @@ palette = "1.0.0"
 scrollbar = "1.9.0"
 
 #Navigation
-androidx-navigation = "2.7.6"
+androidx-navigation = "2.7.7"
 
 #Coroutines
 kotlinx-coroutines = "1.7.3"
@@ -85,7 +85,7 @@ taglib = "7549247959"
 #Firebase, GMS...
 firebaseAuth = "22.3.1"
 gmsPlayServicesAuth = "20.7.0"
-googleServices = "4.4.0"
+googleServices = "4.4.1"
 
 #Tests
 junit = "4.13.2"

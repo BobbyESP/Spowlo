@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -175,12 +176,22 @@ fun MediaStorePage(
                                 .padding(paddingValues)
                                 .fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                alignment = Alignment.CenterVertically
+                            )
                         ) {
                             Text(
                                 text = stringResource(id = R.string.no_songs_found),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold
+                            )
+                            HorizontalDivider(modifier = Modifier.fillMaxWidth(0.9f))
+                            Text(
+                                text = stringResource(id = R.string.first_open_media_store),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
                             )
                             Button(onClick = {
                                 scope.launch(Dispatchers.IO) {

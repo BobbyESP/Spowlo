@@ -411,31 +411,6 @@ private fun TrackPageImplementation(
                     }
                 }
             }
-
-//            item {
-//                ExtraLargeCategoryTitle(
-//                    modifier = Modifier.padding(start = 6.dp),
-//                    text = stringResource(id = R.string.audio_analysis)
-//                )
-//            }
-//
-//            item {
-//                when (val audioData = viewState.value.audioAnalysisData) {
-//                    is Resource.Error -> {
-//                        Text(text = audioData.message)
-//                    }
-//
-//                    is Resource.Loading -> {
-//                        CircularProgressIndicator()
-//                    }
-//
-//                    is Resource.Success -> {
-//                        val successData = audioData.data
-//
-//
-//                    }
-//                }
-//            }
         }
         if (showSheet) {
             TrackBottomSheet(track = trackData) {

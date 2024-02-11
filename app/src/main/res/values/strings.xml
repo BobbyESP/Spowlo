@@ -192,4 +192,5 @@
     <string name="logged_in">Logged in</string>
     <string name="logged_in_desc">Nice! You are now logged into your Spotify account!</string>
     <string name="manage_external_storage">Manage external storage</string>
+    <string name="first_open_media_store">If this is the first time that you try to see your library in Spowlo, this is a completely normal behavior. Try reloading the page in the below button.</string>
 </resources>

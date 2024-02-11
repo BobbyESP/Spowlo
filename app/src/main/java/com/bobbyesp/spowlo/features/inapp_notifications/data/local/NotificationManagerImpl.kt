@@ -2,6 +2,7 @@ package com.bobbyesp.spowlo.features.inapp_notifications.data.local
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.saveable.Saver
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManager
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,6 +83,10 @@ class NotificationManagerImpl : NotificationManager {
         return _notifications.values.toList()
     }
 
+    override fun getNotificationsSnapshot(): Map<Int, Notification> {
+        return _notifications
+    }
+
     /**
      * This method is used to get all the notifications that have been shown in the current session
      * @return a list of notifications
@@ -89,4 +94,11 @@ class NotificationManagerImpl : NotificationManager {
     override fun getNotificationMapFlow(): MutableMap<Int, Notification> {
         return notifications
     }
+}
+
+fun NotificationManagerSaver(): Saver<NotificationManager, Map<Int, Notification>> {
+    return Saver(
+        save = { notificationManager -> notificationManager.getNotificationsSnapshot().toMap() },
+        restore = { NotificationManagerImpl().apply { notifications.putAll(it) } }
+    )
 }

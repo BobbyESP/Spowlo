@@ -11,5 +11,6 @@ interface NotificationManager {
     fun dismissNotification()
     fun getNotification(notificationId: Int): Notification?
     fun getSessionNotifications(): List<Notification>
+    fun getNotificationsSnapshot(): Map<Int, Notification>
     fun getNotificationMapFlow(): MutableMap<Int, Notification>
 }
