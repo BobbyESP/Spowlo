@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.onboarding
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -62,6 +61,7 @@ import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.buttons.LoginWithSpotify
 import com.bobbyesp.spowlo.ui.components.cards.OnboardingCard
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
+import com.bobbyesp.spowlo.ui.pages.LoginState
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.updateBoolean
 
@@ -73,7 +73,7 @@ fun Onboarding(
 ) {
     val navController = LocalNavController.current
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         loginAuthManager.getLoggedIn(this)
     }
 
@@ -346,17 +346,21 @@ private fun Login(
 ) {
     val loginManagerState by loginViewModel.pageViewState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = loginManagerState.isTryingToLogin) {
-        Log.i("Login", "Trying to login: ${loginManagerState.isTryingToLogin}")
-        loginViewModel.getLoggedIn(this)
-    }
     Crossfade(
-        targetState = loginManagerState.isTryingToLogin,
+        targetState = loginManagerState.loggedIn,
         animationSpec = tween(300),
         label = "Crossfade login state animation"
-    ) { isTryingToLogin ->
-        when (isTryingToLogin) {
-            true -> {
+    ) { loginState ->
+        when (loginState) {
+            LoginState.LOGGED_IN -> {
+                IsLoggedStage(modifier)
+            }
+
+            LoginState.NOT_LOGGED_IN -> {
+                AwaitingLogin(modifier, onLogin, onSkip)
+            }
+
+            LoginState.CHECKING_STATUS -> {
                 Box(
                     modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
@@ -370,26 +374,12 @@ private fun Login(
                     )
                 }
             }
-
-            false -> {
-                when(loginManagerState.loggedIn) {
-                    true -> {
-                        isLoggedStage(modifier)
-                    }
-                    false -> {
-                        awaitingLogin(modifier, onLogin, onSkip)
-                    }
-                    null -> {
-                        Text(text = "Awaiting login state")
-                    }
-                }
-            }
         }
     }
 }
 
 @Composable
-private fun isLoggedStage(
+private fun IsLoggedStage(
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -421,7 +411,7 @@ private fun isLoggedStage(
 }
 
 @Composable
-fun awaitingLogin(
+fun AwaitingLogin(
     modifier: Modifier = Modifier, onLogin: () -> Unit, onSkip: () -> Unit
 ) {
     Column(

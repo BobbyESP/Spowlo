@@ -37,7 +37,6 @@ data class Notification(
                 ),
             )
         }
-
         fun from(
             title: String,
             subtitle: String,

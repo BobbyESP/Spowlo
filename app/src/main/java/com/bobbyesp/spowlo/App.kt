@@ -18,6 +18,7 @@ import androidx.core.content.getSystemService
 import com.bobbyesp.ffmpeg.FFmpeg
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
+import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManagerImpl
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.utils.files.FilesUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DOWNLOAD_DIR
@@ -78,27 +79,29 @@ class App : Application() {
         }
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
             val stackTrace = e.stackTraceToString()
-//            if(stackTrace.contains("contained an invalid tag (zero)")) {
-//                Log.i("App", "Spotify API dependency credentials file is invalid or broken; going to delete it and restart the activity")
-//                val spAuthManager by lazy { SpotifyAuthManagerImpl(context) }
-//                deleteEncryptedSharedPrefs(spAuthManager)
-//                val intent = Intent(context, SpCredsCrashRestartActivity::class.java)
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                context.startActivity(intent)
-//                return@setDefaultUncaughtExceptionHandler
-//            } else {
-//                Log.i("App", "Uncaught exception", e)
-//            }
+            if (stackTrace.contains("contained an invalid tag (zero)")) {
+                Log.i(
+                    "App",
+                    "Spotify API dependency credentials file is invalid or broken; going to delete it and restart the activity"
+                )
+                val spAuthManager by lazy { SpotifyAuthManagerImpl(context) }
+                deleteEncryptedSharedPrefs(spAuthManager)
+                val intent = Intent(context, SpCredsCrashRestartActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                context.startActivity(intent)
+                return@setDefaultUncaughtExceptionHandler
+            } else {
+                Log.i("App", "Uncaught exception", e)
+            }
             val logfile = createLogFile(this, stackTrace)
             startCrashReportActivity(logfile)
         }
     }
 
     private fun deleteEncryptedSharedPrefs(spAuthManager: SpotifyAuthManager): Boolean {
-        try {
-            spAuthManager.deleteCredentials()
+        if (spAuthManager.deleteCredentials()) {
             return true
-        } catch (e: Exception) {
+        } else {
             Log.e(
                 "App",
                 "Error deleting encrypted shared prefs directly using the Spotify wrapper library. Trying other way..."

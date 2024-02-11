@@ -33,7 +33,7 @@ class LoginManagerViewModel @Inject constructor(
 
     data class LoginManagerState(
         val isTryingToLogin: Boolean = false,
-        val loggedIn: Boolean? = null
+        val loggedIn: LoginState = LoginState.CHECKING_STATUS
     )
 
     init {
@@ -61,15 +61,13 @@ class LoginManagerViewModel @Inject constructor(
     }
 
     suspend fun getLoggedIn(scope: CoroutineScope) {
-        updateLoggedInState(null)
+        updateLoggedInState(LoginState.CHECKING_STATUS)
         val logged = scope.async { isLogged() }
-        mutableLoginManagerState.update {
-            it.copy(loggedIn = logged.await())
-        }
+        updateLoggedInState(logged.await())
     }
 
-    suspend fun isLogged(): Boolean {
-        return spotifyAuthManager.isAuthenticated()
+    suspend fun isLogged(): LoginState {
+        return LoginState.fromBoolean(spotifyAuthManager.isAuthenticated())
     }
 
     private fun deleteEncryptedSharedPrefs() {
@@ -82,9 +80,21 @@ class LoginManagerViewModel @Inject constructor(
         }
     }
 
-    private fun updateLoggedInState(logged: Boolean?) {
+    private fun updateLoggedInState(state: LoginState) {
         mutableLoginManagerState.update {
-            it.copy(loggedIn = logged)
+            it.copy(loggedIn = state)
+        }
+    }
+}
+
+enum class LoginState {
+    CHECKING_STATUS,
+    LOGGED_IN,
+    NOT_LOGGED_IN;
+
+    companion object {
+        fun fromBoolean(logged: Boolean): LoginState {
+            return if (logged) LOGGED_IN else NOT_LOGGED_IN
         }
     }
 }

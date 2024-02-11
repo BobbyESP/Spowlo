@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.pages.LoginState
 import com.bobbyesp.spowlo.utils.files.FilesUtil
 import kotlinx.coroutines.launch
 
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomePage(
     viewModel: HomePageViewModel,
-    isLogged: Boolean?,
+    isLogged: LoginState,
     onLoginRequest: () -> Unit
 ) {
     val navController = LocalNavController.current
@@ -77,10 +78,11 @@ fun HomePage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (isLogged) {
-                true -> {
+                LoginState.LOGGED_IN -> {
                     Text(text = "Logged in")
                 }
-                false -> {
+
+                LoginState.NOT_LOGGED_IN -> {
                     Text(text = "Not logged in")
                     Button(
                         onClick = {
@@ -89,7 +91,8 @@ fun HomePage(
                         Text(text = "Launch PKCE Auth flow")
                     }
                 }
-                null -> {
+
+                LoginState.CHECKING_STATUS -> {
                     Text(text = "Checking login status...")
                 }
             }

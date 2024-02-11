@@ -38,7 +38,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -77,6 +76,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
+import com.bobbyesp.spowlo.ui.pages.LoginState
 import com.bobbyesp.spowlo.ui.pages.downloader.tasks.DownloaderTasksPage
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
@@ -106,7 +106,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -122,6 +121,8 @@ fun Navigator(
     val density = LocalDensity.current
 
     val notificationsManager = LocalNotificationsManager.current
+
+    val loginManagerState by loginManager.pageViewState.collectAsStateWithLifecycle()
 
     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
     val startInset = with(density) {
@@ -159,10 +160,8 @@ fun Navigator(
                 routesToShowNavBar.fastAny { it.route == navBackStackEntry?.destination?.route }
     }
 
-    var isLogged: Boolean? by remember { mutableStateOf(null) }
-
     LaunchedEffect(true) {
-        isLogged = withContext(Dispatchers.IO) { loginManager.isLogged() }
+        loginManager.getLoggedIn(this)
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
@@ -270,7 +269,7 @@ fun Navigator(
                 ) {
                     animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
-                        HomePage(viewModel, isLogged, onLoginRequest = {
+                        HomePage(viewModel, loginManagerState.loggedIn, onLoginRequest = {
                             scope.launch {
                                 runBlocking(Dispatchers.IO) { loginManager.login() }
                             }
@@ -369,7 +368,8 @@ fun Navigator(
                             }
                         }
 
-                        val isEnabledBecauseOfLogin = if (route == Route.ProfileNavigator) isLogged == true else true
+                        val isEnabledBecauseOfLogin =
+                            if (route == Route.ProfileNavigator) loginManagerState.loggedIn == LoginState.LOGGED_IN else true
                         NavigationBarItem(
                             modifier = Modifier
                                 .animateContentSize()
@@ -438,6 +438,8 @@ fun Navigator(
                             }
 
                         }
+                        val isEnabledBecauseOfLogin =
+                            if (route == Route.ProfileNavigator) loginManagerState.loggedIn == LoginState.LOGGED_IN else true
                         NavigationRailItem(
                             modifier = Modifier.animateContentSize(),
                             selected = isSelected,
@@ -456,7 +458,7 @@ fun Navigator(
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             }, alwaysShowLabel = false,
-                            enabled = if (route == Route.ProfileNavigator) isLogged == true else true
+                            enabled = isEnabledBecauseOfLogin
                         )
                     }
                 }
