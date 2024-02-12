@@ -53,6 +53,7 @@ import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -78,6 +79,7 @@ import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
 import com.bobbyesp.spowlo.ui.pages.LoginState
 import com.bobbyesp.spowlo.ui.pages.downloader.tasks.DownloaderTasksPage
+import com.bobbyesp.spowlo.ui.pages.downloader.tasks.FullscreenConsoleOutput
 import com.bobbyesp.spowlo.ui.pages.home.HomePage
 import com.bobbyesp.spowlo.ui.pages.home.HomePageViewModel
 import com.bobbyesp.spowlo.ui.pages.home.notifications.NotificationsPage
@@ -141,11 +143,7 @@ fun Navigator(
 
     val routesToShowNavBar = remember {
         listOf(
-            Route.Home,
-            Route.Search,
-            Route.Utilities,
-            Route.Profile,
-            Route.DownloaderTasks
+            Route.Home, Route.Search, Route.Utilities, Route.Profile, Route.DownloaderTasks
         )
     }
 
@@ -156,8 +154,7 @@ fun Navigator(
     }
 
     val shouldShowNavigationBar = remember(navBackStackEntry) {
-        navBackStackEntry?.destination?.route == null ||
-                routesToShowNavBar.fastAny { it.route == navBackStackEntry?.destination?.route }
+        navBackStackEntry?.destination?.route == null || routesToShowNavBar.fastAny { it.route == navBackStackEntry?.destination?.route }
     }
 
     LaunchedEffect(true) {
@@ -188,8 +185,7 @@ fun Navigator(
                     var start = startInset
                     if (shouldShowNavigationBar) start += NavigationBarHeight
                     if (!navBarAsBottomSheet.isDismissed) start += MiniPlayerHeight
-                    windowsInsets
-                        .only(WindowInsetsSides.Vertical)
+                    windowsInsets.only(WindowInsetsSides.Vertical)
                         .add(WindowInsets(top = Constants.AppBarHeight, left = start))
                 }
             }
@@ -199,8 +195,7 @@ fun Navigator(
                     var bottom = bottomInset
                     if (shouldShowNavigationBar) bottom += NavigationBarHeight
                     if (!navBarAsBottomSheet.isDismissed) bottom += MiniPlayerHeight
-                    windowsInsets
-                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    windowsInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                         .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
                 }
             }
@@ -210,18 +205,15 @@ fun Navigator(
                     var bottom = bottomInset
                     if (shouldShowNavigationBar) bottom += NavigationBarHeight
                     if (!navBarAsBottomSheet.isDismissed) bottom += MiniPlayerHeight
-                    windowsInsets
-                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    windowsInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                         .add(WindowInsets(top = Constants.AppBarHeight, bottom = bottom))
                 }
             }
         }
 
-        val scrollBehavior = appBarScrollBehavior(
-            canScroll = {
-                (navBarAsBottomSheet.isCollapsed || navBarAsBottomSheet.isDismissed)
-            }
-        )
+        val scrollBehavior = appBarScrollBehavior(canScroll = {
+            (navBarAsBottomSheet.isCollapsed || navBarAsBottomSheet.isDismissed)
+        })
 
         val scope = rememberCoroutineScope()
         val notificationState by notificationsManager.getCurrentNotification()
@@ -321,7 +313,21 @@ fun Navigator(
                     startDestination = Route.DownloaderTasks.route,
                 ) {
                     animatedComposable(Route.DownloaderTasks.route) {
-                        DownloaderTasksPage()
+                        DownloaderTasksPage {
+                            navController.navigate(Route.FullScreenLog.createRoute(it))
+                        }
+                    }
+
+                    animatedComposableVariant(
+                        Route.FullScreenLog.route,
+                        arguments = listOf(navArgument(NavArgs.DownloaderTaskId.key) {
+                            type = NavType.IntType
+                        })
+                    ) {
+                        val downloaderTaskId = it.arguments?.getInt(NavArgs.DownloaderTaskId.key)!!
+                        FullscreenConsoleOutput(onBackPressed = {
+                            navController.popBackStack()
+                        }, taskHashCode = downloaderTaskId)
                     }
                 }
                 settingsNavigation()
@@ -370,30 +376,23 @@ fun Navigator(
 
                         val isEnabledBecauseOfLogin =
                             if (route == Route.ProfileNavigator) loginManagerState.loggedIn == LoginState.LOGGED_IN else true
-                        NavigationBarItem(
-                            modifier = Modifier
-                                .animateContentSize()
-                                .then(
-                                    if (isEnabledBecauseOfLogin) Modifier else Modifier.alpha(0.5f)
-                                ),
-                            selected = isSelected,
-                            onClick = onClick,
-                            icon = {
-                                Icon(
-                                    imageVector = route.icon ?: return@NavigationBarItem,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = route.title,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-                            },
-                            alwaysShowLabel = false,
-                            enabled = isEnabledBecauseOfLogin
+                        NavigationBarItem(modifier = Modifier
+                            .animateContentSize()
+                            .then(
+                                if (isEnabledBecauseOfLogin) Modifier else Modifier.alpha(0.5f)
+                            ), selected = isSelected, onClick = onClick, icon = {
+                            Icon(
+                                imageVector = route.icon ?: return@NavigationBarItem,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }, label = {
+                            Text(
+                                text = route.title,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }, alwaysShowLabel = false, enabled = isEnabledBecauseOfLogin
                         )
                     }
                 }
@@ -457,7 +456,8 @@ fun Navigator(
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                            }, alwaysShowLabel = false,
+                            },
+                            alwaysShowLabel = false,
                             enabled = isEnabledBecauseOfLogin
                         )
                     }
@@ -487,10 +487,8 @@ fun Navigator(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black.applyAlpha(0.6f),
-                                Color.Transparent
-                            ),
-                            endY = 500f
+                                Color.Black.applyAlpha(0.6f), Color.Transparent
+                            ), endY = 500f
                         )
                     )
                     .fillMaxSize(), contentAlignment = Alignment.TopCenter
@@ -510,8 +508,7 @@ fun Navigator(
 
                         // Use transition to animate the card's appearance
                         val transition = updateTransition(
-                            targetState = cardVisible.value,
-                            label = "Card visibility transition"
+                            targetState = cardVisible.value, label = "Card visibility transition"
                         )
                         val offset by transition.animateDp(
                             transitionSpec = { tween(durationMillis = 500) },
@@ -542,10 +539,8 @@ fun Navigator(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black.applyAlpha(0.6f),
-                                Color.Transparent
-                            ),
-                            endY = 500f
+                                Color.Black.applyAlpha(0.6f), Color.Transparent
+                            ), endY = 500f
                         )
                     )
                     .fillMaxSize(), contentAlignment = Alignment.TopCenter
@@ -565,8 +560,7 @@ fun Navigator(
 
                         // Use transition to animate the card's appearance
                         val transition = updateTransition(
-                            targetState = cardVisible.value,
-                            label = "Card visibility transition"
+                            targetState = cardVisible.value, label = "Card visibility transition"
                         )
                         val offset by transition.animateDp(
                             transitionSpec = { tween(durationMillis = 500) },

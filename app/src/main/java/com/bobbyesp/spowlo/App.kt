@@ -84,37 +84,58 @@ class App : Application() {
                     "App",
                     "Spotify API dependency credentials file is invalid or broken; going to delete it and restart the activity"
                 )
-                val spAuthManager by lazy { SpotifyAuthManagerImpl(context) }
+                val spAuthManager = SpotifyAuthManagerImpl(context)
                 deleteEncryptedSharedPrefs(spAuthManager)
-                val intent = Intent(context, SpCredsCrashRestartActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                context.startActivity(intent)
-                return@setDefaultUncaughtExceptionHandler
+                startSpotifyBridgeActivity()
+            } else if (stackTrace.contains("Signature/MAC verification failed")) {
+                Log.i(
+                    "App",
+                    "Spotify API dependency credentials file is invalid or broken; going to delete shared preferences and restart the activity"
+                )
+                deleteSharedPrefs()
+                startSpotifyBridgeActivity()
             } else {
                 Log.i("App", "Uncaught exception", e)
+                val logfile = createLogFile(this, stackTrace)
+                startCrashReportActivity(logfile)
             }
-            val logfile = createLogFile(this, stackTrace)
-            startCrashReportActivity(logfile)
         }
     }
 
     private fun deleteEncryptedSharedPrefs(spAuthManager: SpotifyAuthManager): Boolean {
-        if (spAuthManager.deleteCredentials()) {
-            return true
-        } else {
-            Log.e(
-                "App",
-                "Error deleting encrypted shared prefs directly using the Spotify wrapper library. Trying other way..."
-            )
-        }
-
         return try {
-            FilesUtil.SharedPreferences.deleteSharedPreferences(this@App)
-            true
+            if (spAuthManager.deleteCredentials()) {
+                Log.i(
+                    "App",
+                    "Encrypted shared prefs deleted successfully by using Spotify Auth Manager"
+                )
+                true
+            } else {
+                deleteSharedPrefs()
+            }
         } catch (e: Exception) {
-            Log.e("App", "Error deleting encrypted shared prefs file", e)
+            Log.e("App", "Error deleting encrypted shared prefs", e)
             false
         }
+    }
+
+    private fun deleteSharedPrefs(): Boolean {
+        return try {
+            Log.i(
+                "App",
+                "Going to delete shared preferences file because of an error in the Spotify API dependency credentials file"
+            )
+            FilesUtil.SharedPreferences.deleteSharedPreferences(this@App)
+        } catch (e: Exception) {
+            Log.e("App", "Error deleting shared prefs file", e)
+            false
+        }
+    }
+
+    private fun startSpotifyBridgeActivity() {
+        val intent = Intent(context, SpCredsCrashRestartActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
     }
 
     private fun startCrashReportActivity(logfilePath: String) {

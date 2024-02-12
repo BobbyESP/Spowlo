@@ -59,7 +59,9 @@ fun DownloaderTasksPage(
         ) {
             items(Downloader.mutableTaskList.values.toList()) { download ->
                 download.run {
-                    DownloadingTaskItem(taskItem = download, status = state.toTaskState())
+                    DownloadingTaskItem(taskItem = download, status = state.toTaskState()) {
+                        onNavigateToDetail(hashCode())
+                    }
 //                    DownloadingTaskItem(status = state.toStatus(),
 //                        progress = if (state is Downloader.DownloadTask.State.Running) state.progress else 0f,
 //                        progressText = currentLine,

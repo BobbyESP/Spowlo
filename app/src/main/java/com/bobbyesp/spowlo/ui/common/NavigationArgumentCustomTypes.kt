@@ -14,9 +14,9 @@ import kotlinx.serialization.json.Json
 val SelectedSongParamType = object : NavType<SelectedSong>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): SelectedSong? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable("localSelectedSong", SelectedSong::class.java)
+            bundle.getParcelable(NavArgs.SelectedSong.key, SelectedSong::class.java)
         } else {
-            bundle.getParcelable("localSelectedSong")
+            bundle.getParcelable(NavArgs.SelectedSong.key)
         }
     }
 
@@ -29,12 +29,13 @@ val SelectedSongParamType = object : NavType<SelectedSong>(isNullableAllowed = f
     }
 }
 
+@Suppress("DEPRECATION")
 val MetadataEntityParamType = object : NavType<MetadataEntity>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): MetadataEntity? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable("selectedMetadataEntity", MetadataEntity::class.java)
+            bundle.getParcelable(NavArgs.MetadataEntitySelected.key, MetadataEntity::class.java)
         } else {
-            bundle.getParcelable("selectedMetadataEntity")
+            bundle.getParcelable(NavArgs.MetadataEntitySelected.key)
         }
     }
 

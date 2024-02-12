@@ -4,17 +4,18 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Lyrics
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LocalPlay
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.LocalPlay
+import androidx.compose.material.icons.rounded.Lyrics
+import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Terminal
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.data.local.model.SelectedSong
@@ -31,26 +32,26 @@ sealed class Route(
     data object MainHost : Route("main_host", "")
 
     //NAVIGATORS
-    data object HomeNavigator : Route("home_navigator", "", Icons.Default.Home)
-    data object SearchNavigator : Route("search_navigator", "", Icons.Default.Search)
-    data object UtilitiesNavigator : Route("utilities_navigator", "", Icons.Outlined.LocalPlay)
-    data object ProfileNavigator : Route("profile_navigator", "", Icons.Default.Person)
-    data object SettingsNavigator : Route("settings_navigator", "", Icons.Default.Settings)
+    data object HomeNavigator : Route("home_navigator", "", Icons.Rounded.Home)
+    data object SearchNavigator : Route("search_navigator", "", Icons.Rounded.Search)
+    data object UtilitiesNavigator : Route("utilities_navigator", "", Icons.Rounded.LocalPlay)
+    data object ProfileNavigator : Route("profile_navigator", "", Icons.Rounded.Person)
+    data object SettingsNavigator : Route("settings_navigator", "", Icons.Rounded.Settings)
     data object DownloaderTasksNavigator :
-        Route("downloader_tasks_navigator", "", Icons.Default.Download)
+        Route("downloader_tasks_navigator", "", Icons.Rounded.Download)
 
     //ROUTES
-    data object Home : Route("home", "", Icons.Outlined.Home)
-    data object Notifications : Route("notifications", "", Icons.Default.Notifications)
-    data object Utilities : Route("utilities", "", Icons.Outlined.LocalPlay)
-    data object LyricsDownloader : Route("lyrics_downloader", "", Icons.Default.Lyrics)
+    data object Home : Route("home", "", Icons.Rounded.Home)
+    data object Notifications : Route("notifications", "", Icons.Rounded.Notifications)
+    data object Utilities : Route("utilities", "", Icons.Rounded.LocalPlay)
+    data object LyricsDownloader : Route("lyrics_downloader", "", Icons.Rounded.Lyrics)
     data object SelectedSongLyrics :
-        Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Default.Lyrics) {
+        Route("selected_song/{${NavArgs.SelectedSong.key}}", "", Icons.Rounded.Lyrics) {
         fun createRoute(selectedSong: SelectedSong) =
             "selected_song/${Uri.encode(Json.encodeToString<SelectedSong>(selectedSong))}"
     }
 
-    data object TagEditor : Route("tag_editor", "", Icons.Default.Edit) {
+    data object TagEditor : Route("tag_editor", "", Icons.Rounded.Edit) {
         data object Editor : Route(
             "tag_editor/editor/{${NavArgs.TagEditorSelectedSong.key}}",
             "",
@@ -61,23 +62,26 @@ sealed class Route(
         }
     }
 
-    data object MiniplayerPage : Route("miniplayer", "", Icons.Default.MusicNote)
-    data object Search : Route("search", "", Icons.Default.Search)
-    data object Profile : Route("profile", "", Icons.Default.Person)
+    data object MiniplayerPage : Route("miniplayer", "", Icons.Rounded.MusicNote)
+    data object Search : Route("search", "", Icons.Rounded.Search)
+    data object Profile : Route("profile", "", Icons.Rounded.Person)
 
     data object MetadataEntityViewer : Route(
         "metadata_entity_viewer/{${NavArgs.MetadataEntitySelected.key}}",
         "",
-        Icons.Default.MusicNote
+        Icons.Rounded.MusicNote
     ) {
         fun createRoute(metadataEntity: MetadataEntity) =
             "metadata_entity_viewer/${Uri.encode(Json.encodeToString<MetadataEntity>(metadataEntity))}"
     }
 
-    data object DownloaderTasks : Route("downloader_tasks", "", Icons.Default.Download)
-
+    data object DownloaderTasks : Route("downloader_tasks", "", Icons.Rounded.Download)
+    data object FullScreenLog :
+        Route("fullscreen_log/{${NavArgs.DownloaderTaskId.key}}", "", Icons.Rounded.Terminal) {
+        fun createRoute(downloaderTaskId: Int) = "fullscreen_log/$downloaderTaskId"
+    }
     data object OnboardingPage : Route("onboarding_page", "")
-    data object Settings : Route("settings_page", "", Icons.Default.Settings)
+    data object Settings : Route("settings_page", "", Icons.Rounded.Settings)
 
     class StringUtils(
         private val context: Context
@@ -121,5 +125,6 @@ sealed class Route(
 enum class NavArgs(val key: String) {
     SelectedSong(key = "selectedSong"),
     TagEditorSelectedSong(key = "tagEditorSelectedSong"),
-    MetadataEntitySelected(key = "metadataEntitySelected")
+    MetadataEntitySelected(key = "metadataEntitySelected"),
+    DownloaderTaskId(key = "downloaderTaskId")
 }
