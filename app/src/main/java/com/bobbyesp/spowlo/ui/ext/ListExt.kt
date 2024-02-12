@@ -124,7 +124,7 @@ fun List<String>.formatArtists(): String {
     }
 }
 
-fun List<SimpleArtist>.formatArtists(): String {
+fun List<SimpleArtist>.formatArtistsName(): String {
     return when (size) {
         0 -> ""
         1 -> first().name ?: ""

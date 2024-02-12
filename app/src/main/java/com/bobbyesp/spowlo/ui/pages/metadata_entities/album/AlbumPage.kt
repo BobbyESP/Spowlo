@@ -70,7 +70,7 @@ import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
 import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
-import com.bobbyesp.spowlo.ui.ext.formatArtists
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.toCompleteString
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
@@ -142,7 +142,7 @@ fun AlbumPageImplementation(
         mutableStateOf(false)
     }
 
-    val artistsString = albumData.artists.formatArtists()
+    val artistsString = albumData.artists.formatArtistsName()
     val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.primary
 
     val albumTracks = viewState.albumTracksPaginated.collectAsLazyPagingItems()
