@@ -215,7 +215,6 @@ fun MediaStorePage(
                                 thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 thumbSelectedColor = MaterialTheme.colorScheme.primary,
                                 selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                                rightSide = true
                             ) {
                                 LazyVerticalGrid(
                                     columns = GridCells.Adaptive(125.dp),

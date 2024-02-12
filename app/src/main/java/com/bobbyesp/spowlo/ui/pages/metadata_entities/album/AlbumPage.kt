@@ -33,10 +33,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +57,6 @@ import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Album
 import com.bobbyesp.spowlo.App.Companion.SPOTIFY_LOGO_URL
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.spotifyApi.utils.AlbumSaver
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
@@ -71,12 +70,15 @@ import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
 import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.ext.formatArtists
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.toCompleteString
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
+import my.nanihadesuka.compose.LazyColumnScrollbar
+import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
 @Composable
 fun AlbumPage(
@@ -134,16 +136,13 @@ fun AlbumPageImplementation(
 
     val navController = LocalNavController.current
 
-    val foundAlbum = loadedState.album
+    val albumData = loadedState.album
 
-    val albumData by rememberSaveable(stateSaver = AlbumSaver) {
-        mutableStateOf(foundAlbum)
-    }
     var showTrackSheet by remember {
         mutableStateOf(false)
     }
 
-    val artistsString = albumData.artists.joinToString(", ") { artist -> artist.name ?: "" }
+    val artistsString = albumData.artists.formatArtists()
     val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.primary
 
     val albumTracks = viewState.albumTracksPaginated.collectAsLazyPagingItems()
@@ -154,6 +153,12 @@ fun AlbumPageImplementation(
         state = rememberTopAppBarState(),
         canScroll = { true },
     )
+
+    val transparentAppBar by remember {
+        derivedStateOf {
+            lazyColumnState.firstVisibleItemIndex == 0
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -168,6 +173,11 @@ fun AlbumPageImplementation(
                         navController.popBackStack()
                     }
                 },
+                colors = if (transparentAppBar) {
+                    TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                } else {
+                    TopAppBarDefaults.topAppBarColors()
+                },
                 actions = {
 
                 },
@@ -175,125 +185,135 @@ fun AlbumPageImplementation(
             )
         },
     ) { paddingValues ->
-        LazyColumn(
-            state = lazyColumnState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+        LazyColumnScrollbar(
+            listState = lazyColumnState,
+            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            thumbSelectedColor = MaterialTheme.colorScheme.primary,
+            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
         ) {
-            item {
-                AlbumHeader(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    album = albumData,
-                    dominantColor = dominantColor,
-                    artistsString = artistsString
-                )
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .padding(top = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    LazyRow(
+            LazyColumn(
+                state = lazyColumnState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            ) {
+                item {
+                    AlbumHeader(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = 16.dp),
+                        album = albumData,
+                        dominantColor = dominantColor,
+                        artistsString = artistsString
+                    )
+                }
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                            .padding(top = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        item {
-                            RoundedTag(
-                                text = albumData.albumType.name,
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = albumData.totalTracks.toString() + " " + stringResource(id = R.string.tracks),
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = stringResource(id = R.string.popularity) + ": " + albumData.popularity.toString(),
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = albumData.releaseDate.toCompleteString(),
-                            )
-                        }
-                        item {
-                            RoundedTag(
-                                text = albumData.label,
-                            )
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            item {
+                                RoundedTag(
+                                    text = albumData.albumType.name,
+                                )
+                            }
+                            item {
+                                RoundedTag(
+                                    text = albumData.totalTracks.toString() + " " + stringResource(
+                                        id = R.string.tracks
+                                    ),
+                                )
+                            }
+                            item {
+                                RoundedTag(
+                                    text = stringResource(id = R.string.popularity) + ": " + albumData.popularity.toString(),
+                                )
+                            }
+                            item {
+                                RoundedTag(
+                                    text = albumData.releaseDate.toCompleteString(),
+                                )
+                            }
+                            item {
+                                RoundedTag(
+                                    text = albumData.label,
+                                )
+                            }
                         }
                     }
                 }
-            }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 8.dp,
-                        vertical = 12.dp
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            horizontal = 8.dp,
+                            vertical = 12.dp
+                        )
                     )
-                )
-            }
-            items(
-                count = albumTracks.itemCount,
-                key = albumTracks.itemKey { item -> item.id },
-                contentType = albumTracks.itemContentType { "album_tracks" }
-            ) {
-                val track = albumTracks[it] ?: return@items
-                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name ?: ""}
-
-                MetadataEntityItem(
-                    contentModifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
-                    songName = track.name,
-                    artists = trackArtists,
-                    listIndex = it,
-                    isExplicit = track.explicit,
-                    duration = track.durationMs,
-                    onClick = {}
+                }
+                items(
+                    count = albumTracks.itemCount,
+                    key = albumTracks.itemKey { item -> item.id },
+                    contentType = albumTracks.itemContentType { "album_tracks" }
                 ) {
-                    viewModel.selectTrackForSheet(track)
-                    showTrackSheet = true
+                    val track = albumTracks[it] ?: return@items
+                    val trackArtists =
+                        track.artists.joinToString(", ") { artist -> artist.name ?: "" }
+
+                    MetadataEntityItem(
+                        contentModifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+                        songName = track.name,
+                        artists = trackArtists,
+                        listIndex = it,
+                        isExplicit = track.explicit,
+                        duration = track.durationMs,
+                        onClick = {}
+                    ) {
+                        viewModel.selectTrackForSheet(track)
+                        showTrackSheet = true
+                    }
                 }
-            }
-            if (albumData.totalTracks != 1) {
-                loadStateContent(albumTracks) {
-                    HorizontalSongCardShimmer(showSongImage = false)
+                if (albumData.totalTracks != 1) {
+                    loadStateContent(albumTracks) {
+                        HorizontalSongCardShimmer(showSongImage = false)
+                    }
                 }
-            }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 8.dp,
-                        vertical = 12.dp
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            horizontal = 8.dp,
+                            vertical = 12.dp
+                        )
                     )
-                )
-            }
-            item {
-                Text(
-                    text = stringResource(id = R.string.copyright),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, bottom = 8.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-            items(albumData.copyrights) { copyright ->
-                Text(
-                    text = "(${copyright.type.identifier})" + " " + copyright.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                }
+                item {
+                    Text(
+                        text = stringResource(id = R.string.copyright),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, bottom = 8.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+                items(albumData.copyrights) { copyright ->
+                    Text(
+                        text = "(${copyright.type.identifier})" + " " + copyright.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
             }
         }
         if (showTrackSheet && viewState.trackForSheet != null) {

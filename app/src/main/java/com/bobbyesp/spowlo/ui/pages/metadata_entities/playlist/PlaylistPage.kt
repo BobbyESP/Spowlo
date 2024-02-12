@@ -36,10 +36,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +60,6 @@ import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Playlist
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.spotifyApi.utils.PlaylistSaver
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
@@ -82,6 +81,8 @@ import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
+import my.nanihadesuka.compose.LazyColumnScrollbar
+import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
 @Composable
 fun PlaylistPage(
@@ -135,10 +136,8 @@ private fun PlaylistPageImplementation(
 
     val navController = LocalNavController.current
 
-    val foundPlaylist = loadedState.playlist
-    val playlistData by rememberSaveable(stateSaver = PlaylistSaver) {
-        mutableStateOf(foundPlaylist)
-    }
+    val playlistData = loadedState.playlist
+
     val playlistTracks = viewState.playlistTracksPaginated.collectAsLazyPagingItems()
     val collaborative = playlistData.collaborative
     val collaborativeString =
@@ -153,6 +152,12 @@ private fun PlaylistPageImplementation(
         state = rememberTopAppBarState(),
         canScroll = { true },
     )
+
+    val transparentAppBar by remember {
+        derivedStateOf {
+            lazyColumnState.firstVisibleItemIndex == 0
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -170,112 +175,125 @@ private fun PlaylistPageImplementation(
                 actions = {
 
                 },
+                colors = if (transparentAppBar) {
+                    TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                } else {
+                    TopAppBarDefaults.topAppBarColors()
+                },
                 scrollBehavior = scrollBehavior,
             )
         },
     ) { paddingValues ->
-        LazyColumn(
-            state = lazyColumnState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+        LazyColumnScrollbar(
+            listState = lazyColumnState,
+            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            thumbSelectedColor = MaterialTheme.colorScheme.primary,
+            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
         ) {
-            item {
-                PlaylistHeader(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp), playlist = playlistData
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                ) {
-                    LazyRow(
+            LazyColumn(
+                state = lazyColumnState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            ) {
+                item {
+                    PlaylistHeader(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = 16.dp), playlist = playlistData
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                     ) {
-                        item {
-                            RoundedTag(text = playlistData.type)
-                        }
-                        item {
-                            RoundedTagWithIcon(
-                                text = collaborativeString,
-                                icon = if (collaborative) Icons.Default.Person else Icons.Default.PersonOff
-                            )
-                        }
-                        item {
-                            RoundedTag(text = "${playlistData.tracks.total} ${stringResource(id = R.string.tracks)}")
-                        }
-                        item {
-                            RoundedTagWithIcon(
-                                text = "${playlistData.followers.total} ${
-                                    stringResource(
-                                        id = R.string.followers
-                                    )
-                                }", icon = Icons.Default.Person
-                            )
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            item {
+                                RoundedTag(text = playlistData.type)
+                            }
+                            item {
+                                RoundedTagWithIcon(
+                                    text = collaborativeString,
+                                    icon = if (collaborative) Icons.Default.Person else Icons.Default.PersonOff
+                                )
+                            }
+                            item {
+                                RoundedTag(text = "${playlistData.tracks.total} ${stringResource(id = R.string.tracks)}")
+                            }
+                            item {
+                                RoundedTagWithIcon(
+                                    text = "${playlistData.followers.total} ${
+                                        stringResource(
+                                            id = R.string.followers
+                                        )
+                                    }", icon = Icons.Default.Person
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 8.dp,
-                        vertical = 12.dp
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            horizontal = 8.dp,
+                            vertical = 12.dp
+                        )
                     )
-                )
-            }
-
-            items(
-                count = playlistTracks.itemCount,
-                key = playlistTracks.itemKey(),
-                contentType = playlistTracks.itemContentType()
-            ) {
-                val track = playlistTracks[it] ?: return@items
-                val trackArtists = track.artists.joinToString(", ") { artist -> artist.name ?: "" }
-
-                MetadataEntityItem(
-                    contentModifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    songName = track.name,
-                    artists = trackArtists,
-                    isExplicit = track.explicit,
-                    duration = track.durationMs,
-                    imageUrl = track.album.images.firstOrNull()?.url ?: "",
-                    isPlaylist = true,
-                    onClick = {}
-                ) {
-                    viewModel.selectTrackForSheet(track)
-                    showTrackSheet = true
                 }
-            }
-            loadStateContent(playlistTracks) {
-                HorizontalSongCardShimmer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    showSongImage = true
-                )
-            }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 8.dp,
-                        vertical = 12.dp
+
+                items(
+                    count = playlistTracks.itemCount,
+                    key = playlistTracks.itemKey(),
+                    contentType = playlistTracks.itemContentType()
+                ) {
+                    val track = playlistTracks[it] ?: return@items
+                    val trackArtists =
+                        track.artists.joinToString(", ") { artist -> artist.name ?: "" }
+
+                    MetadataEntityItem(
+                        contentModifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        songName = track.name,
+                        artists = trackArtists,
+                        isExplicit = track.explicit,
+                        duration = track.durationMs,
+                        imageUrl = track.album.images.firstOrNull()?.url ?: "",
+                        isPlaylist = true,
+                        onClick = {}
+                    ) {
+                        viewModel.selectTrackForSheet(track)
+                        showTrackSheet = true
+                    }
+                }
+                loadStateContent(playlistTracks) {
+                    HorizontalSongCardShimmer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 6.dp),
+                        showSongImage = true
                     )
-                )
+                }
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            horizontal = 8.dp,
+                            vertical = 12.dp
+                        )
+                    )
+                }
             }
         }
         if (showTrackSheet && viewState.trackForSheet != null) {
