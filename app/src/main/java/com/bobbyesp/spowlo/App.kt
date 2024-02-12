@@ -21,6 +21,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManagerImpl
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.utils.files.FilesUtil
+import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.DOWNLOAD_DIR
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesUtil.getString
@@ -93,6 +94,10 @@ class App : Application() {
                     "Spotify API dependency credentials file is invalid or broken; going to delete shared preferences and restart the activity"
                 )
                 deleteSharedPrefs()
+                ToastUtil.makeToastSuspend(
+                    this,
+                    context.getString(R.string.restart_app_corrupted_creds)
+                )
                 MainActivity.getActivity().finish()
             } else {
                 Log.i("App", "Uncaught exception", e)
