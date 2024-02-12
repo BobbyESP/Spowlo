@@ -96,7 +96,7 @@ class NotificationManagerImpl : NotificationManager {
     }
 }
 
-fun NotificationManagerSaver(): Saver<NotificationManager, Map<Int, Notification>> {
+fun NotificationManagerSaver(): Saver<NotificationManager, Map<Int, Notification>> { //TODO: CHANGE THIS. CRASHES BECAUSE OF PARCELABLE
     return Saver(
         save = { notificationManager -> notificationManager.getNotificationsSnapshot().toMap() },
         restore = { NotificationManagerImpl().apply { notifications.putAll(it) } }
