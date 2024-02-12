@@ -93,7 +93,7 @@ class App : Application() {
                     "Spotify API dependency credentials file is invalid or broken; going to delete shared preferences and restart the activity"
                 )
                 deleteSharedPrefs()
-                startSpotifyBridgeActivity()
+                MainActivity.getActivity().finish()
             } else {
                 Log.i("App", "Uncaught exception", e)
                 val logfile = createLogFile(this, stackTrace)
@@ -177,7 +177,6 @@ class App : Application() {
             audioDownloadDir = path
             PreferencesUtil.encodeString(DOWNLOAD_DIR, path)
         }
-
 
         fun getVersionReport(): String {
             val versionName = packageInfo.versionName
