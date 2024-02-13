@@ -60,8 +60,6 @@ fun RecentlyPlayedSongCard(
                     onClick = onClick,
                     onLongClick = onLongClick
                 ),
-            onClick = onClick,
-            shape = MaterialTheme.shapes.small,
         ) {
             Column(Modifier.fillMaxWidth()) {
                 Row(

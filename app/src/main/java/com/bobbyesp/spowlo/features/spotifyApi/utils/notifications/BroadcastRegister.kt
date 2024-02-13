@@ -5,7 +5,6 @@ import android.content.IntentFilter
 import android.os.Build
 import com.adamratzman.spotify.notifications.AbstractSpotifyBroadcastReceiver
 import com.adamratzman.spotify.notifications.SpotifyBroadcastType
-import com.bobbyesp.spowlo.MainActivity
 
 fun Context.registerSpBroadcastReceiver(
     receiver: AbstractSpotifyBroadcastReceiver,
@@ -16,7 +15,7 @@ fun Context.registerSpBroadcastReceiver(
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.registerReceiver(
-            MainActivity.spotifyBroadcastReceiver,
+            receiver,
             filter,
             Context.RECEIVER_EXPORTED
         )

@@ -22,12 +22,10 @@ import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
 import com.adamratzman.spotify.notifications.SpotifyMetadataChangedData
 import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
 import com.adamratzman.spotify.notifications.SpotifyQueueChangedData
-import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.MainActivity.Companion.spotifyBroadcastReceiver
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastObserver
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedSongsPagingSource
-import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
@@ -78,9 +76,8 @@ class ProfilePageViewModel @Inject constructor(
         val actualTimeRange: ClientPersonalizationApi.TimeRange = ClientPersonalizationApi.TimeRange.ShortTerm
     )
 
-    private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
-
     init {
+        spotifyBroadcastReceiver.addObserver(this)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 clientApi = withContext(Dispatchers.IO) {

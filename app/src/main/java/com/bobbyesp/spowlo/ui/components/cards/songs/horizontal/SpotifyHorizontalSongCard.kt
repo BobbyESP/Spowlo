@@ -35,6 +35,7 @@ import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.PlayingIndicator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.utils.localAsset
 
@@ -135,10 +136,11 @@ fun SpotifyHorizontalSongCard(
                             MarqueeText(
                                 text = track?.name ?: song?.title ?: "",
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                basicGradientColor = MaterialTheme.colorScheme.background
                             )
                             MarqueeText(
-                                text = track?.artists?.joinToString(", ") { it.name ?: "" }
+                                text = track?.artists?.formatArtistsName()
                                     ?: song?.artist ?: "",
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

@@ -457,7 +457,7 @@ fun AwaitingLogin(
             contentPadding = PaddingValues(16.dp),
             shape = MaterialTheme.shapes.small
         ) {
-            Text(text = stringResource(id = R.string.preffered_to_skip))
+            Text(text = stringResource(id = R.string.preferred_to_skip))
         }
     }
 }

@@ -184,7 +184,7 @@
     <string name="access_account_desc">Spowlo now allows you to login with your Spotify\'s account so you can download almost everything that you have saved on it!</string>
     <string name="login_with_spotify">Login with Spotify</string>
     <string name="login_with_spotify_description">By login with Spotify you will be able to access to your library, account statistics and more</string>
-    <string name="preffered_to_skip">I preffer to skip</string>
+    <string name="preferred_to_skip">I prefer to skip</string>
     <string name="onboarding_finish_title">You have completed the setup!</string>
     <string name="onboarding_finish_desc">Now, the power of Spowlo is all yours hahaa! Go and download anything you want!</string>
     <string name="finish">Finish</string>
@@ -194,4 +194,5 @@
     <string name="manage_external_storage">Manage external storage</string>
     <string name="first_open_media_store">If this is the first time that you try to see your library in Spowlo, this is a completely normal behavior. Try reloading the page in the below button.</string>
     <string name="restart_app_corrupted_creds">Spotify credentials were corrupted. Restart the app</string>
+    <string name="data_time_range">Data time range</string>
 </resources>

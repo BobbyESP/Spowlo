@@ -31,6 +31,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -59,7 +62,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
 import com.bobbyesp.spowlo.ui.common.Route
-import com.bobbyesp.spowlo.ui.components.buttons.SegmentedControl
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
@@ -70,6 +72,7 @@ import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.playerSafePadding
+import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
@@ -146,34 +149,16 @@ private fun PageImplementation(
 
     val userInfo = viewState.value.userInformation
 
+    val dateRanges = listOf(
+        stringResource(id = R.string.four_weeks),
+        stringResource(id = R.string.six_months),
+        stringResource(id = R.string.all_time)
+    )
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                SegmentedControl(
-                    items = listOf(
-                        stringResource(id = R.string.four_weeks),
-                        stringResource(id = R.string.six_months),
-                        stringResource(id = R.string.all_time)
-                    ),
-                    onItemSelection = {
-                        viewModel.updateTimeRangeAndReload(it)
-                    },
-                    cornerRadius = 50,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .align(
-                            Alignment.CenterHorizontally
-                        ),
-                )
-            }
         }
     )
     { paddingValues ->
@@ -182,7 +167,7 @@ private fun PageImplementation(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp),
                 userScrollEnabled = true,
             ) {
                 stickyHeader(key = "header_profilePage") {
@@ -253,6 +238,32 @@ private fun PageImplementation(
                         }
                     }
                 }
+                item {
+                    LargeCategoryTitle(text = stringResource(id = R.string.data_time_range))
+                }
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        SingleChoiceSegmentedButtonRow {
+                            dateRanges.forEachIndexed { index, date ->
+                                SegmentedButton(
+                                    selected = viewState.value.actualTimeRange.toInt() == index,
+                                    onClick = {
+                                        viewModel.updateTimeRangeAndReload(index)
+                                    },
+                                    shape = SegmentedButtonDefaults.itemShape(
+                                        index = index,
+                                        count = dateRanges.size
+                                    ),
+                                ) {
+                                    Text(text = date)
+                                }
+                            }
+                        }
+                    }
+                }
                 if (pageState.actualTrack != null) {
                     item {
                         LargeCategoryTitle(text = stringResource(id = R.string.listening_now))
@@ -262,9 +273,21 @@ private fun PageImplementation(
                             modifier = Modifier,
                             isPlaying = pageState.playbackState?.playing ?: false,
                             track = pageState.actualTrack,
+                            onLongClick = {
+                                viewModel.selectTrackForSheet(pageState.actualTrack)
+                                showSheet = true
+                            }
                         ) {
-                            viewModel.selectTrackForSheet(pageState.actualTrack)
-                            showSheet = true
+                            val selectedMetadataEntity = MetadataEntity(
+                                type = SpotifyItemType.TRACKS,
+                                id = pageState.actualTrack.id,
+                            )
+
+                            navController.navigate(
+                                Route.MetadataEntityViewer.createRoute(
+                                    selectedMetadataEntity
+                                )
+                            )
                         }
                     }
                 }
@@ -362,7 +385,9 @@ private fun PageImplementation(
                 ) { index ->
                     val item = recentlyPlayedSongs[index]
                     RecentlyPlayedSongCard(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.extraSmall),
                         playHistoryItem = item,
                         onClick = {
                             val selectedMetadataEntity = MetadataEntity(

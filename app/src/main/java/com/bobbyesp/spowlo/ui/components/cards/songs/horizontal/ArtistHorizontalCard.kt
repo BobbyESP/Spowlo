@@ -70,7 +70,7 @@ fun ArtistHorizontalCard(
                         showImage =
                             state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
                     },
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Crop,
                 )
             } else {
                 PlaceholderCreator(
