@@ -20,8 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.adamratzman.spotify.notifications.SpotifyBroadcastType
 import com.bobbyesp.miniplayer_service.service.SpowloMediaService
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastReceiver
+import com.bobbyesp.spowlo.features.spotifyApi.utils.notifications.registerSpBroadcastReceiver
 import com.bobbyesp.spowlo.ui.Navigator
 import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
@@ -45,6 +47,10 @@ class MainActivity : AppCompatActivity() {
         }
         activity = this
         spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
+        registerSpBroadcastReceiver(
+            spotifyBroadcastReceiver,
+            *SpotifyBroadcastType.entries.toTypedArray()
+        )
         enableEdgeToEdge()
         setContent {
             LaunchedEffect(true) {

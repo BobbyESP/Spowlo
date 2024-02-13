@@ -19,7 +19,6 @@ import com.adamratzman.spotify.models.PlayHistory
 import com.adamratzman.spotify.models.SpotifyUserInformation
 import com.adamratzman.spotify.models.Track
 import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
-import com.adamratzman.spotify.notifications.SpotifyBroadcastType
 import com.adamratzman.spotify.notifications.SpotifyMetadataChangedData
 import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
 import com.adamratzman.spotify.notifications.SpotifyQueueChangedData
@@ -30,7 +29,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientM
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedSongsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
-import com.bobbyesp.spowlo.features.spotifyApi.utils.notifications.registerSpBroadcastReceiver
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
@@ -83,14 +81,6 @@ class ProfilePageViewModel @Inject constructor(
     private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
 
     init {
-        // Assuming activityWrapper is still needed, adjust accordingly if it's not.
-        activityWrapper.execute {
-            registerSpBroadcastReceiver(
-                spotifyBroadcastReceiver,
-                *SpotifyBroadcastType.entries.toTypedArray()
-            )
-        }
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 clientApi = withContext(Dispatchers.IO) {
@@ -107,11 +97,7 @@ class ProfilePageViewModel @Inject constructor(
         }
     }
 
-
     override fun onCleared() {
-        activityWrapper.execute {
-            unregisterReceiver(spotifyBroadcastReceiver)
-        }
         spotifyBroadcastReceiver.removeObserver(this)
         super.onCleared()
     }
