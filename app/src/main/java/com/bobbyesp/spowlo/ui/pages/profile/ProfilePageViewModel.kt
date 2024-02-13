@@ -23,14 +23,14 @@ import com.adamratzman.spotify.notifications.SpotifyBroadcastType
 import com.adamratzman.spotify.notifications.SpotifyMetadataChangedData
 import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
 import com.adamratzman.spotify.notifications.SpotifyQueueChangedData
-import com.adamratzman.spotify.notifications.registerSpotifyBroadcastReceiver
 import com.bobbyesp.spowlo.MainActivity
+import com.bobbyesp.spowlo.MainActivity.Companion.spotifyBroadcastReceiver
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastObserver
-import com.bobbyesp.spowlo.features.spotifyApi.data.local.notifications.SpotifyBroadcastReceiver
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientMostListenedSongsPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.ActivityCallsShortener
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
+import com.bobbyesp.spowlo.features.spotifyApi.utils.notifications.registerSpBroadcastReceiver
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.PageStateWithThrowable
@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,21 +81,32 @@ class ProfilePageViewModel @Inject constructor(
     )
 
     private val activityWrapper = ActivityCallsShortener(MainActivity.getActivity())
-    private val spotifyBroadcastReceiver = SpotifyBroadcastReceiver()
 
     init {
+        // Assuming activityWrapper is still needed, adjust accordingly if it's not.
+        activityWrapper.execute {
+            registerSpBroadcastReceiver(
+                spotifyBroadcastReceiver,
+                *SpotifyBroadcastType.entries.toTypedArray()
+            )
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
-            clientApi = async { spotifyAuthManager.getSpotifyClientApi() ?: throw IllegalStateException("ClientApi is null") }.await()
-            activityWrapper.execute {
-                registerSpotifyBroadcastReceiver(
-                    spotifyBroadcastReceiver,
-                    *SpotifyBroadcastType.entries.toTypedArray()
-                )
+            try {
+                clientApi = withContext(Dispatchers.IO) {
+                    spotifyAuthManager.getSpotifyClientApi()
+                } ?: throw IllegalStateException("ClientApi is null")
+
+                // You may need to adjust this if loadPage() requires IO operations.
+                loadPage(this@launch)
+            } catch (e: Exception) {
+                // Handle exceptions appropriately.
+                // For example, show an error message to the user.
+                Log.e("ProfilePageViewModel", "Error initializing clientApi: ${e.message}", e)
             }
-            spotifyBroadcastReceiver.addObserver(this@ProfilePageViewModel)
-            loadPage(this)
         }
     }
+
 
     override fun onCleared() {
         activityWrapper.execute {

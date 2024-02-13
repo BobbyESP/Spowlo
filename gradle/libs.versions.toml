@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.4.0-alpha04"
+agp = "8.4.0-alpha09"
 kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.12.0"

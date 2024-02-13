@@ -25,9 +25,7 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
-
             <category android:name="android.intent.category.BROWSABLE" />
-
             <data android:scheme="https" />
         </intent>
     </queries>
@@ -49,10 +47,11 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Spowlo">
-
             <intent-filter>
+                <action android:name="com.spotify.music.playbackstatechanged" />
+                <action android:name="com.spotify.music.queuechanged" />
+                <action android:name="com.spotify.music.metadatachanged" />
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -76,9 +75,7 @@
         <receiver
             android:name=".features.spotifyApi.data.local.notifications.SpotifyBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"
-            android:permission=""
-            tools:ignore="ExportedReceiver" />
+            android:exported="true" />
 
         <activity
             android:name="com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl"
