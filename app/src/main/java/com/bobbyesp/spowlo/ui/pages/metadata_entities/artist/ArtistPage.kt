@@ -72,7 +72,7 @@ import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.buttons.OutlinedButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.modifiers.fadingEdge
-import com.bobbyesp.spowlo.ui.components.others.own_shimmer.ArtistSectionShimmer
+import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTag
 import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTagWithIcon
 import com.bobbyesp.spowlo.ui.components.text.AutoResizableText
@@ -88,8 +88,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistPage(
-    viewModel: ArtistPageViewModel,
-    artistId: String
+    viewModel: ArtistPageViewModel, artistId: String
 ) {
     LaunchedEffect(artistId) {
         viewModel.loadArtist(artistId)
@@ -123,10 +122,7 @@ fun ArtistPage(
     }
 
     Crossfade(
-        targetState = pageState,
-        modifier = Modifier
-            .fillMaxSize(),
-        label = "Artist Page Crossfade"
+        targetState = pageState, modifier = Modifier.fillMaxSize(), label = "Artist Page Crossfade"
     ) { viewPageState ->
         when (viewPageState) {
             is ArtistPageViewModel.Companion.ArtistPageState.Error -> {
@@ -147,14 +143,12 @@ fun ArtistPage(
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
                     state = lazyListState,
-                    contentPadding = LocalPlayerAwareWindowInsets.current
-                        .add(
-                            WindowInsets(
-                                top = -WindowInsets.systemBars.asPaddingValues()
-                                    .calculateTopPadding() - AppBarHeight
-                            )
+                    contentPadding = LocalPlayerAwareWindowInsets.current.add(
+                        WindowInsets(
+                            top = -WindowInsets.systemBars.asPaddingValues()
+                                .calculateTopPadding() - AppBarHeight
                         )
-                        .asPaddingValues(),
+                    ).asPaddingValues(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -165,17 +159,16 @@ fun ArtistPage(
                         HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
                     }
                     item(key = "top_tracks_artist") {
-                        MostPlayedTracks(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            artistName = viewPageState.artist.name ?: stringResource(id = R.string.unknown),
+                        MostPlayedTracks(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                            artistName = viewPageState.artist.name
+                                ?: stringResource(id = R.string.unknown),
                             tracksWithState = artistTopTracks,
                             selectTrack = {
                                 viewModel.selectTrackForSheet(it)
                                 showTrackSheet = true
-                            }
-                        )
+                            })
                     }
                 }
                 TopAppBar(
@@ -193,8 +186,7 @@ fun ArtistPage(
                             navController.popBackStack()
                         }
                     },
-                    actions = {
-                    },
+                    actions = {},
                     scrollBehavior = scrollBehavior,
                     colors = if (transparentAppBar) {
                         TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -241,8 +233,7 @@ private fun ArtistHeader(modifier: Modifier, artist: Artist) {
                         .fadingEdge(
                             top = WindowInsets.systemBars
                                 .asPaddingValues()
-                                .calculateTopPadding() + AppBarHeight,
-                            bottom = 64.dp
+                                .calculateTopPadding() + AppBarHeight, bottom = 64.dp
                         )
                         .fillMaxWidth(),
                     model = artistImage,
@@ -252,8 +243,7 @@ private fun ArtistHeader(modifier: Modifier, artist: Artist) {
             }
             AutoResizableText(
                 text = artist.name ?: stringResource(id = R.string.unknown),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter),
+                modifier = Modifier.align(Alignment.BottomCenter),
                 maxLines = 1,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
@@ -338,12 +328,11 @@ private fun MostPlayedTracks(
                 ) {
                     Text(
                         text = stringResource(
-                            id = R.string.top_tracks,
-                            artistName
+                            id = R.string.top_tracks, artistName
                         ),
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
                     Column(
@@ -354,8 +343,7 @@ private fun MostPlayedTracks(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         trackList.data?.take(6)?.forEachIndexed { index, track ->
-                            CompactSpotifyHorizontalSongCard(
-                                track = track,
+                            CompactSpotifyHorizontalSongCard(track = track,
                                 modifier = Modifier.height(54.dp),
                                 listIndex = index,
                                 onClick = {
@@ -372,8 +360,7 @@ private fun MostPlayedTracks(
                                 },
                                 onLongClick = {
                                     selectTrack(track)
-                                }
-                            )
+                                })
                         }
                     }
                 }
@@ -384,9 +371,26 @@ private fun MostPlayedTracks(
             }
 
             is Resource.Loading -> {
-                ArtistSectionShimmer(
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.top_tracks, artistName
+                        ),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    repeat(6) {
+                        HorizontalSongCardShimmer(
+                            modifier = Modifier.fillMaxWidth(), showSpacing = true
+                        )
+                    }
+                }
             }
 
         }

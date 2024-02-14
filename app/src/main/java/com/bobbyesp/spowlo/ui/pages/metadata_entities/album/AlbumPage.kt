@@ -76,7 +76,6 @@ import com.bobbyesp.spowlo.ui.ext.toCompleteString
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
@@ -126,7 +125,7 @@ fun AlbumPage(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSerializationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumPageImplementation(
     viewModel: AlbumPageViewModel,

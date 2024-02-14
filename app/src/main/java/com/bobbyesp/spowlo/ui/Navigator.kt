@@ -74,6 +74,7 @@ import com.bobbyesp.spowlo.ui.common.animatedComposableVariant
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.components.bottomsheets.NavigationBarAnimationSpec
 import com.bobbyesp.spowlo.ui.components.bottomsheets.rememberBottomSheetState
+import com.bobbyesp.spowlo.ui.components.cards.notifications.LoginStateNotificationCard
 import com.bobbyesp.spowlo.ui.components.cards.notifications.SongDownloadNotification
 import com.bobbyesp.spowlo.ui.ext.getParcelable
 import com.bobbyesp.spowlo.ui.pages.LoginManagerViewModel
@@ -223,7 +224,7 @@ fun Navigator(
         if (notificationVisible) {
             DisposableEffect(notificationState) {
                 val job = scope.launch {
-                    delay(4000L)
+                    delay(notificationState!!.duration.time)
                     notificationsManager.dismissNotification()
                 }
 
@@ -528,9 +529,18 @@ fun Navigator(
             }
         }
 
+        val showLoggingNotification = remember { mutableStateOf(true) }
+
+        LaunchedEffect(key1 = loginManagerState.loggedIn) {
+            if (loginManagerState.loggedIn == LoginState.LOGGED_IN || loginManagerState.loggedIn == LoginState.NOT_LOGGED_IN) {
+                delay(3000)
+                showLoggingNotification.value = false
+            }
+        }
+
         //TODO: MODIFY THIS FOR LOGIN
         AnimatedVisibility(
-            visible = notificationVisible,
+            visible = showLoggingNotification.value,
             enter = fadeIn(), // You can customize enter and exit animations
             exit = fadeOut() // As an example, fadeIn and fadeOut are used
         ) {
@@ -545,38 +555,33 @@ fun Navigator(
                     )
                     .fillMaxSize(), contentAlignment = Alignment.TopCenter
             ) {
-                val notification = notificationState
-                notification?.let {
-                    if (notification.content != null) {
-                        notification.content.let { it() }
-                    } else {
-                        val cardVisible = remember { mutableStateOf(false) }
-                        if (!cardVisible.value) {
-                            scope.launch {
-                                delay(300) // Introduce a delay of 300ms
-                                cardVisible.value = true
-                            }
+                val cardVisible = remember { mutableStateOf(false) }
+                LaunchedEffect(key1 = cardVisible) {
+                    if (!cardVisible.value) {
+                        scope.launch {
+                            delay(300) // Introduce a delay of 300ms
+                            cardVisible.value = true
                         }
-
-                        // Use transition to animate the card's appearance
-                        val transition = updateTransition(
-                            targetState = cardVisible.value, label = "Card visibility transition"
-                        )
-                        val offset by transition.animateDp(
-                            transitionSpec = { tween(durationMillis = 500) },
-                            label = "Card offset transition",
-                        ) { isVisible ->
-                            if (isVisible) 40.dp else (-100).dp
-                        }
-
-                        SongDownloadNotification(
-                            modifier = Modifier
-                                .offset(y = offset)
-                                .fillMaxWidth(0.8f),
-                            notification = notification
-                        )
                     }
                 }
+
+                // Use transition to animate the card's appearance
+                val transition = updateTransition(
+                    targetState = cardVisible.value, label = "Card visibility transition"
+                )
+                val offset by transition.animateDp(
+                    transitionSpec = { tween(durationMillis = 500) },
+                    label = "Card offset transition",
+                ) { isVisible ->
+                    if (isVisible) 40.dp else (-100).dp
+                }
+
+                LoginStateNotificationCard(
+                    modifier = Modifier
+                        .offset(y = offset)
+                        .fillMaxWidth(0.8f),
+                    loginState = loginManagerState.loggedIn
+                )
             }
         }
     }

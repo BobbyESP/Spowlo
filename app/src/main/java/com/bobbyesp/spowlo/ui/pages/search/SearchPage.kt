@@ -56,6 +56,7 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.HorizontalSongCardSh
 import com.bobbyesp.spowlo.ui.components.searchBar.QueryTextBox
 import com.bobbyesp.spowlo.ui.components.text.AnimatedCounter
 import com.bobbyesp.spowlo.ui.components.text.SmallCategoryTitle
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
@@ -202,7 +203,7 @@ fun SearchPage(
                                         ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedTracks,
                                             itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name ?: "" } },
+                                            itemArtists = { item -> item.artists.formatArtistsName() },
                                             itemArtworkUrl = { item ->
                                                 item.album.images.secondOrNull()?.url ?: ""
                                             },
@@ -222,7 +223,7 @@ fun SearchPage(
                                         ResultsList(modifier = Modifier.fillMaxSize(),
                                             paginatedItems = paginatedAlbums,
                                             itemName = { item -> item.name },
-                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name ?: "" } },
+                                            itemArtists = { item -> item.artists.formatArtistsName() },
                                             itemArtworkUrl = { item ->
                                                 item.images.secondOrNull()?.url ?: ""
                                             },

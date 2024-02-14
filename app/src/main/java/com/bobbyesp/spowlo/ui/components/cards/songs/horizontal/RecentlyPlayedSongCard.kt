@@ -32,6 +32,7 @@ import com.adamratzman.spotify.models.PlayHistory
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
 import com.bobbyesp.spowlo.utils.localAsset
 import com.bobbyesp.spowlo.utils.time.calculateTimeDifference
@@ -128,7 +129,7 @@ fun RecentlyPlayedSongCard(
                                 fontWeight = FontWeight.Bold
                             )
                             MarqueeText(
-                                text = track.artists.joinToString(", ") { it.name ?: "" },
+                                text = track.artists.formatArtistsName(),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )

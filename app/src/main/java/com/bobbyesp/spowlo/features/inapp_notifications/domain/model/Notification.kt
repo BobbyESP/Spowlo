@@ -6,17 +6,18 @@ import com.bobbyesp.spowlo.features.downloader.Downloader
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import kotlin.random.Random
 
-enum class DURATION(val duration: Long) {
+enum class DURATION(val time: Long) {
     SHORT(3000),
     MEDIUM(4000),
     LONG(8000),
+    INFINITE(Long.MAX_VALUE),
 }
 
 @Stable
 data class Notification(
     val id: Int = Random.nextInt(),
-    val title: String,
-    val subtitle: String,
+    val title: String = "",
+    val subtitle: String = "",
     val duration: DURATION = DURATION.MEDIUM,
     val timestamp: Long = System.currentTimeMillis(),
     val entityInfo: SpEntityNotificationInfo? = null,

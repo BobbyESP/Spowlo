@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
@@ -63,12 +65,23 @@ fun SmallSongCardShimmer(
 @Composable
 fun HorizontalSongCardShimmer(
     modifier: Modifier = Modifier,
-    showSongImage: Boolean = true
+    showSongImage: Boolean = true,
+    showSpacing: Boolean = false
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (showSpacing) {
+            Text(
+                text = "  ",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .padding(end = 4.dp)
+            )
+        }
         if (showSongImage) {
             Box(
                 Modifier
@@ -116,6 +129,21 @@ private fun HorizontalSongCardShimmerPreview() {
         )
     }
 }
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun HorizontalSongCardShimmerPreviewSpacing() {
+    SpowloTheme {
+        HorizontalSongCardShimmer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            showSpacing = true
+        )
+    }
+}
+
 
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)

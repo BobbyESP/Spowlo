@@ -188,11 +188,16 @@
     <string name="onboarding_finish_title">You have completed the setup!</string>
     <string name="onboarding_finish_desc">Now, the power of Spowlo is all yours hahaa! Go and download anything you want!</string>
     <string name="finish">Finish</string>
-    <string name="trying_to_login">Trying to login...</string>
+    <string name="trying_to_login">Trying to login…</string>
     <string name="logged_in">Logged in</string>
     <string name="logged_in_desc">Nice! You are now logged into your Spotify account!</string>
     <string name="manage_external_storage">Manage external storage</string>
     <string name="first_open_media_store">If this is the first time that you try to see your library in Spowlo, this is a completely normal behavior. Try reloading the page in the below button.</string>
     <string name="restart_app_corrupted_creds">Spotify credentials were corrupted. Restart the app</string>
     <string name="data_time_range">Data time range</string>
+    <string name="checking_login_status">Checking login status…</string>
+    <string name="please_wait_login">Please wait until the authentication flow is done</string>
+    <string name="logged_in_desc_card">Now you can access to your library and more</string>
+    <string name="not_logged_in">Not logged in</string>
+    <string name="not_logged_in_desc_card">The auth flow hasn\'t been completed successfully</string>
 </resources>

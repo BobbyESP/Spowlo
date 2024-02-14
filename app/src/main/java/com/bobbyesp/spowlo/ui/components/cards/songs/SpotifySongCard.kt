@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.components.cards.songs
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -25,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
@@ -33,8 +31,8 @@ import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.images.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.secondOrNull
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.localAsset
 
 @Composable
@@ -179,7 +177,7 @@ fun SmallSpotifySongCard(
             ) {
                 if (number != null) {
                     Text(
-                        text = "$number.",
+                        text = "$number",
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         ),
@@ -202,7 +200,7 @@ fun SmallSpotifySongCard(
                         maxLines = 1
                     )
                     Text(
-                        text = track.artists.joinToString(", ") { it.name ?: ""},
+                        text = track.artists.formatArtistsName(),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         ),
@@ -212,13 +210,5 @@ fun SmallSpotifySongCard(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun Test() {
-    SpowloTheme {
     }
 }

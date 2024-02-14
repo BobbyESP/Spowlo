@@ -70,7 +70,7 @@ fun SongDownloadNotification(
                     var progress by remember { mutableFloatStateOf(1f) }
 
                     LaunchedEffect(key1 = true, key2 = notification) {
-                        val animationTime = notification.duration.duration
+                        val animationTime = notification.duration.time
                         val startTime = withFrameNanos { it }
                         while (withFrameNanos { it } - startTime < animationTime) {
                             progress =

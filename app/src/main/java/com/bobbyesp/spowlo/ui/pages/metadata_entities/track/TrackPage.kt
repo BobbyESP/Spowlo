@@ -68,6 +68,7 @@ import com.bobbyesp.spowlo.ui.components.images.PlaceholderCreator
 import com.bobbyesp.spowlo.ui.components.others.AudioPropertyBar
 import com.bobbyesp.spowlo.ui.components.others.StackedProfilePictures
 import com.bobbyesp.spowlo.ui.components.text.ExtraLargeCategoryTitle
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.toFormattedString
 import com.bobbyesp.spowlo.utils.data.Resource
 import com.bobbyesp.spowlo.utils.time.TimeUtils
@@ -150,7 +151,7 @@ private fun TrackPageImplementation(
     }
 
     val dominantColor = viewState.dominantColor ?: MaterialTheme.colorScheme.surface
-    val artistsFullString = trackData.artists.joinToString(", ") { artist -> artist.name ?: "" }
+    val artistsFullString = trackData.artists.formatArtistsName()
 
     val artistsList = viewState.artists
 

@@ -61,6 +61,7 @@ import com.bobbyesp.spowlo.ui.components.bottomsheets.BottomSheet
 import com.bobbyesp.spowlo.ui.components.lazygrid.GridMenuItem
 import com.bobbyesp.spowlo.ui.components.lazygrid.PlayPauseDynamicItem
 import com.bobbyesp.spowlo.ui.components.lazygrid.VerticalGridMenu
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.utils.localAsset
 import com.bobbyesp.spowlo.utils.notifications.ToastUtil
 import com.bobbyesp.spowlo.utils.preferences.PreferencesStrings.STOP_AFTER_CLOSING_BS
@@ -103,7 +104,7 @@ fun TrackBottomSheet(
 
     val trackName = track?.name ?: simpleTrack?.name ?: ""
     val trackArtists = track?.artists ?: simpleTrack?.artists ?: emptyList()
-    val trackArtistsString = trackArtists.joinToString(", ") { artist -> artist.name ?: "" }
+    val trackArtistsString = trackArtists.formatArtistsName()
     val trackImage = track?.album?.images?.firstOrNull()?.url
     val trackId = track?.id ?: simpleTrack?.id
 

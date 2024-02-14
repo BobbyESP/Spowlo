@@ -61,7 +61,6 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.MetadataEntity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
-import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.components.cards.songs.ArtistCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.SmallSpotifySongCard
 import com.bobbyesp.spowlo.ui.components.cards.songs.horizontal.RecentlyPlayedSongCard
@@ -71,6 +70,7 @@ import com.bobbyesp.spowlo.ui.components.others.own_shimmer.SmallSongCardShimmer
 import com.bobbyesp.spowlo.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.spowlo.ui.ext.getId
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
+import com.bobbyesp.spowlo.ui.ext.navigateToMetadataEntity
 import com.bobbyesp.spowlo.ui.ext.playerSafePadding
 import com.bobbyesp.spowlo.ui.ext.toInt
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
@@ -283,11 +283,7 @@ private fun PageImplementation(
                                 id = pageState.actualTrack.id,
                             )
 
-                            navController.navigate(
-                                Route.MetadataEntityViewer.createRoute(
-                                    selectedMetadataEntity
-                                )
-                            )
+                            navController.navigateToMetadataEntity(selectedMetadataEntity)
                         }
                     }
                 }
@@ -316,11 +312,8 @@ private fun PageImplementation(
                                     id = item.id,
                                 )
 
-                                navController.navigate(
-                                    Route.MetadataEntityViewer.createRoute(
-                                        selectedMetadataEntity
-                                    )
-                                )
+                                navController.navigateToMetadataEntity(selectedMetadataEntity)
+
                             }
                         }
                     }
@@ -354,11 +347,8 @@ private fun PageImplementation(
                                         id = item.id,
                                     )
 
-                                    navController.navigate(
-                                        Route.MetadataEntityViewer.createRoute(
-                                            selectedMetadataEntity
-                                        )
-                                    )
+                                    navController.navigateToMetadataEntity(selectedMetadataEntity)
+
                                 },
                                 onLongClick = {
                                     viewModel.selectTrackForSheet(item)
@@ -395,11 +385,8 @@ private fun PageImplementation(
                                 id = item.track.id,
                             )
 
-                            navController.navigate(
-                                Route.MetadataEntityViewer.createRoute(
-                                    selectedMetadataEntity
-                                )
-                            )
+                            navController.navigateToMetadataEntity(selectedMetadataEntity)
+
                         },
                         onLongClick = {
                             viewModel.selectTrackForSheet(item.track)

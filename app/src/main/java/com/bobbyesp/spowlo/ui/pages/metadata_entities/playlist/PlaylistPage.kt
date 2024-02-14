@@ -75,6 +75,7 @@ import com.bobbyesp.spowlo.ui.components.others.tags.RoundedTagWithIcon
 import com.bobbyesp.spowlo.ui.components.text.ExpandableText
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.ui.components.topbars.SmallTopAppBar
+import com.bobbyesp.spowlo.ui.ext.formatArtistsName
 import com.bobbyesp.spowlo.ui.ext.loadStateContent
 import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
@@ -262,7 +263,7 @@ private fun PlaylistPageImplementation(
                 ) {
                     val track = playlistTracks[it] ?: return@items
                     val trackArtists =
-                        track.artists.joinToString(", ") { artist -> artist.name ?: "" }
+                        track.artists.formatArtistsName()
 
                     MetadataEntityItem(
                         contentModifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
