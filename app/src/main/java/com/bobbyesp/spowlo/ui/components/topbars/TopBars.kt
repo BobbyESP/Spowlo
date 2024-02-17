@@ -74,7 +74,7 @@ fun SmallTopAppBar(
 @Preview
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SmallTopAppBarPreview() {
+private fun SmallTopAppBarPreview() {
     SpowloTheme {
         SmallTopAppBar(titleText = "Title")
     }
@@ -84,7 +84,7 @@ fun SmallTopAppBarPreview() {
 @Preview
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun LargeTopAppBarPreview() {
+private fun LargeTopAppBarPreview() {
     SpowloTheme {
         LargeTopAppBar(title = { Text(text = "Title") })
     }

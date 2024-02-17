@@ -1,8 +1,8 @@
 package com.bobbyesp.spowlo.ui.components.buttons
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -14,7 +14,7 @@ import com.bobbyesp.spowlo.R
 fun BackButton(onClick: () -> Unit) {
     IconButton(modifier = Modifier, onClick = onClick) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
             contentDescription = stringResource(R.string.back),
         )
     }
@@ -24,7 +24,7 @@ fun BackButton(onClick: () -> Unit) {
 fun CloseButton(onClick: () -> Unit) {
     IconButton(modifier = Modifier, onClick = onClick) {
         Icon(
-            imageVector = Icons.Default.Close,
+            imageVector = Icons.Rounded.Close,
             contentDescription = stringResource(R.string.back),
         )
     }

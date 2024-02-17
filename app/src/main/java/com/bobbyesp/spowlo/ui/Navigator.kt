@@ -55,7 +55,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
@@ -90,6 +89,7 @@ import com.bobbyesp.spowlo.ui.pages.profile.ProfilePage
 import com.bobbyesp.spowlo.ui.pages.profile.ProfilePageViewModel
 import com.bobbyesp.spowlo.ui.pages.search.SearchPage
 import com.bobbyesp.spowlo.ui.pages.search.SearchViewModel
+import com.bobbyesp.spowlo.ui.pages.settings.SettingsPage
 import com.bobbyesp.spowlo.ui.pages.utilities.MediaStorePageViewModel
 import com.bobbyesp.spowlo.ui.pages.utilities.UtilitiesPage
 import com.bobbyesp.spowlo.ui.pages.utilities.lyrics_downloader.main.LyricsDownloaderPage
@@ -538,7 +538,6 @@ fun Navigator(
             }
         }
 
-        //TODO: MODIFY THIS FOR LOGIN
         AnimatedVisibility(
             visible = showLoggingNotification.value,
             enter = fadeIn(), // You can customize enter and exit animations
@@ -644,8 +643,8 @@ private fun NavGraphBuilder.settingsNavigation() {
         route = Route.SettingsNavigator.route,
         startDestination = Route.Settings.route,
     ) {
-        composable(Route.Settings.route) {
-            TODO()
+        animatedComposable(Route.Settings.route) {
+            SettingsPage()
         }
     }
 }
