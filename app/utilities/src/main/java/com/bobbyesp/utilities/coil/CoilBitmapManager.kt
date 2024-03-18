@@ -21,6 +21,10 @@ class CoilBitmapManager(
     private val context: Context,
     private val scope: CoroutineScope,
 ) : androidx.media3.common.util.BitmapLoader {
+    override fun supportsMimeType(mimeType: String): Boolean {
+        return mimeType.startsWith("image/")
+    }
+
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> =
         scope.future(Dispatchers.IO) {
             BitmapFactory.decodeByteArray(data, 0, data.size)
@@ -44,8 +48,4 @@ class CoilBitmapManager(
                 throw ExecutionException(e)
             }
         }
-
-    override fun loadBitmap(uri: Uri, options: BitmapFactory.Options?): ListenableFuture<Bitmap> {
-        return loadBitmap(uri)
-    }
 }

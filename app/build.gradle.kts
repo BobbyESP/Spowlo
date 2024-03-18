@@ -6,7 +6,7 @@ plugins {
 //    alias(libs.plugins.google.gms)
     alias(libs.plugins.hilt)
 //    id("com.google.firebase.crashlytics")
-    alias(libs.plugins.androidx.baselineprofile)
+//    alias(libs.plugins.androidx.baselineprofile)
 }
 
 sealed class Version(

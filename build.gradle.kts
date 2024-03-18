@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.google.gms) apply false
     alias(libs.plugins.androidTest) apply false
-    alias(libs.plugins.androidx.baselineprofile) apply false
+//    alias(libs.plugins.androidx.baselineprofile) apply false
 }
 
 buildscript {
