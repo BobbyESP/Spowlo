@@ -1,6 +1,12 @@
 package com.zionhuang.innertube.pages
 
-import com.zionhuang.innertube.models.Album
+import com.zionhuang.innertube.ext.album
+import com.zionhuang.innertube.ext.artists
+import com.zionhuang.innertube.ext.isExplicit
+import com.zionhuang.innertube.ext.radioEndpoint
+import com.zionhuang.innertube.ext.shuffleEndpoint
+import com.zionhuang.innertube.ext.thumbnailUrl
+import com.zionhuang.innertube.ext.title
 import com.zionhuang.innertube.models.AlbumItem
 import com.zionhuang.innertube.models.Artist
 import com.zionhuang.innertube.models.ArtistItem
@@ -16,45 +22,25 @@ object SearchSuggestionPage {
             renderer.isSong -> {
                 SongItem(
                     id = renderer.playlistItemData?.videoId ?: return null,
-                    title = renderer.flexColumns.firstOrNull()
-                        ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
-                        ?.text ?: return null,
-                    artists = renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
-                        ?.getOrNull(1)?.oddElements()?.map {
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId
-                            )
-                        } ?: return null,
-                    album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
-                        ?.let {
-                            Album(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
-                            )
-                        },
+                    title = renderer.title() ?: return null,
+                    artists = renderer.artists() ?: return null,
+                    album = renderer.album(),
                     duration = null,
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    thumbnail = renderer.thumbnailUrl()
                         ?: return null,
-                    explicit = renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
-                    } != null
+                    explicit = renderer.isExplicit()
                 )
             }
 
             renderer.isArtist -> {
                 ArtistItem(
                     id = renderer.navigationEndpoint?.browseEndpoint?.browseId ?: return null,
-                    title = renderer.flexColumns.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text
+                    title = renderer.title()
                         ?: return null,
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    thumbnail = renderer.thumbnailUrl()
                         ?: return null,
-                    shuffleEndpoint = renderer.menu?.menuRenderer?.items
-                        ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MUSIC_SHUFFLE" }
-                        ?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
-                    radioEndpoint = renderer.menu?.menuRenderer?.items
-                        ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MIX" }
-                        ?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint
+                    shuffleEndpoint = renderer.shuffleEndpoint(),
+                    radioEndpoint = renderer.radioEndpoint()
                 )
             }
 
@@ -78,11 +64,9 @@ object SearchSuggestionPage {
                         )
                     } ?: return null,
                     year = secondaryLine.lastOrNull()?.firstOrNull()?.text?.toIntOrNull(),
-                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    thumbnail = renderer.thumbnailUrl()
                         ?: return null,
-                    explicit = renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
-                    } != null
+                    explicit = renderer.isExplicit()
                 )
             }
 

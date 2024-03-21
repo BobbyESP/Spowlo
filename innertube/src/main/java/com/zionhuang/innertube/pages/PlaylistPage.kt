@@ -1,12 +1,14 @@
 package com.zionhuang.innertube.pages
 
-import com.zionhuang.innertube.models.Album
-import com.zionhuang.innertube.models.Artist
+import com.zionhuang.innertube.ext.album
+import com.zionhuang.innertube.ext.artists
+import com.zionhuang.innertube.ext.duration
+import com.zionhuang.innertube.ext.isExplicit
+import com.zionhuang.innertube.ext.thumbnailUrl
+import com.zionhuang.innertube.ext.title
 import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
 import com.zionhuang.innertube.models.SongItem
-import com.zionhuang.innertube.models.oddElements
-import com.zionhuang.innertube.utils.parseTime
 
 data class PlaylistPage(
     val playlist: PlaylistItem,
@@ -18,29 +20,13 @@ data class PlaylistPage(
         fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): SongItem? {
             return SongItem(
                 id = renderer.playlistItemData?.videoId ?: return null,
-                title = renderer.flexColumns.firstOrNull()
-                    ?.musicResponsiveListItemFlexColumnRenderer?.text
-                    ?.runs?.firstOrNull()?.text ?: return null,
-                artists = renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.oddElements()
-                    ?.map {
-                        Artist(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId
-                        )
-                    } ?: return null,
-                album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
-                    ?.let {
-                        Album(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
-                        )
-                    },
-                duration = renderer.fixedColumns?.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text?.parseTime(),
-                thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                title = renderer.title() ?: return null,
+                artists = renderer.artists() ?: return null,
+                album = renderer.album(),
+                duration = renderer.duration(),
+                thumbnail = renderer.thumbnailUrl()
                     ?: return null,
-                explicit = renderer.badges?.find {
-                    it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
-                } != null,
+                explicit = renderer.isExplicit(),
                 endpoint = renderer.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint
             )
         }

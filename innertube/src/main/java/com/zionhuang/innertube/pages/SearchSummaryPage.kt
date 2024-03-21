@@ -1,5 +1,9 @@
 package com.zionhuang.innertube.pages
 
+import com.zionhuang.innertube.ext.isExplicit
+import com.zionhuang.innertube.ext.playlistId
+import com.zionhuang.innertube.ext.thumbnailUrl
+import com.zionhuang.innertube.ext.title
 import com.zionhuang.innertube.models.Album
 import com.zionhuang.innertube.models.AlbumItem
 import com.zionhuang.innertube.models.Artist
@@ -146,11 +150,9 @@ data class SearchSummaryPage(
                     AlbumItem(
                         browseId = renderer.navigationEndpoint?.browseEndpoint?.browseId
                             ?: return null,
-                        playlistId = renderer.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchPlaylistEndpoint?.playlistId
+                        playlistId = renderer.playlistId()
                             ?: return null,
-                        title = renderer.flexColumns.firstOrNull()
-                            ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
-                            ?.firstOrNull()?.text ?: return null,
+                        title = renderer.title() ?: return null,
                         artists = secondaryLine.getOrNull(1)?.oddElements()?.map {
                             Artist(
                                 name = it.text,
@@ -158,11 +160,9 @@ data class SearchSummaryPage(
                             )
                         } ?: return null,
                         year = secondaryLine.getOrNull(2)?.firstOrNull()?.text?.toIntOrNull(),
-                        thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                        thumbnail = renderer.thumbnailUrl()
                             ?: return null,
-                        explicit = renderer.badges?.find {
-                            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
-                        } != null
+                        explicit = renderer.isExplicit()
                     )
                 }
 
@@ -170,9 +170,7 @@ data class SearchSummaryPage(
                     PlaylistItem(
                         id = renderer.navigationEndpoint?.browseEndpoint?.browseId?.removePrefix("VL")
                             ?: return null,
-                        title = renderer.flexColumns.firstOrNull()
-                            ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
-                            ?.firstOrNull()?.text ?: return null,
+                        title = renderer.title() ?: return null,
                         author = secondaryLine.getOrNull(1)?.firstOrNull()?.let {
                             Artist(
                                 name = it.text,
