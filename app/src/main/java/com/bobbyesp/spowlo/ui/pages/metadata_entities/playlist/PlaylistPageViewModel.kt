@@ -9,6 +9,8 @@ import androidx.paging.PagingData
 import com.adamratzman.spotify.models.Playlist
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.client.ClientPlaylistTracksAsTracksPagingSource
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.PlaylistTracksAsTracksPagingSource
@@ -16,6 +18,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.createPager
 import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -82,6 +85,24 @@ class PlaylistPageViewModel @Inject constructor(
             it.copy(
                 playlistTracksPaginated = playlistTracksPager!!
             )
+        }
+    }
+
+    fun downloadPlaylist(
+        scope: CoroutineScope = viewModelScope,
+        downloadInfo: Downloader.DownloadInfo,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        scope.launch(Dispatchers.IO) {
+            DownloaderUtil.downloadSong(
+                downloadInfo = downloadInfo,
+                taskId = Downloader.makeKey(downloadInfo.title, downloadInfo.artist)
+            ).onSuccess {
+                onSuccess()
+            }.onFailure {
+                onFailure()
+            }
         }
     }
 

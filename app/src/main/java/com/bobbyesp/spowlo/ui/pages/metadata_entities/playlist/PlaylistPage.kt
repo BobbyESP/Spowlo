@@ -18,13 +18,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOff
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.PublicOff
+import androidx.compose.material.icons.rounded.Album
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,8 +60,13 @@ import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Playlist
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification.Companion.toNotification
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.LocalNotificationsManager
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.buttons.OutlinedButtonWithIcon
@@ -81,7 +86,6 @@ import com.bobbyesp.spowlo.utils.ui.pages.ErrorPage
 import com.bobbyesp.spowlo.utils.ui.pages.LoadingPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
@@ -127,7 +131,7 @@ fun PlaylistPage(
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlaylistPageImplementation(
     viewModel: PlaylistPageViewModel,
@@ -138,7 +142,6 @@ private fun PlaylistPageImplementation(
     val navController = LocalNavController.current
 
     val playlistData = loadedState.playlist
-
     val playlistTracks = viewState.playlistTracksPaginated.collectAsLazyPagingItems()
     val collaborative = playlistData.collaborative
     val collaborativeString =
@@ -147,6 +150,8 @@ private fun PlaylistPageImplementation(
     var showTrackSheet by remember {
         mutableStateOf(false)
     }
+
+    val notificationsManager = LocalNotificationsManager.current
 
     val lazyColumnState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -202,7 +207,33 @@ private fun PlaylistPageImplementation(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp), playlist = playlistData
-                    )
+                    ) { playlistDownloadInfo ->
+                        val notification = playlistDownloadInfo.toNotification()
+                        viewModel.downloadPlaylist(
+                            downloadInfo = playlistDownloadInfo,
+                            onSuccess = {
+                                notificationsManager.showNotification(
+                                    Notification(
+                                        title = "Download finished",
+                                        subtitle = "The playlist has been downloaded successfully. ${playlistDownloadInfo.title} by ${playlistDownloadInfo.artist}",
+                                        timestamp = System.currentTimeMillis(),
+                                        content = null
+                                    )
+                                )
+                            },
+                            onFailure = {
+                                notificationsManager.showNotification(
+                                    Notification(
+                                        title = "Download failed",
+                                        subtitle = "The download failed. Please try again.",
+                                        timestamp = System.currentTimeMillis(),
+                                        content = null
+                                    )
+                                )
+                            }
+                        )
+                        notificationsManager.showNotification(notification)
+                    }
                 }
 
                 item {
@@ -313,9 +344,9 @@ private fun PlaylistPageImplementation(
 private fun PlaylistHeader(
     modifier: Modifier,
     playlist: Playlist,
-    dominantColor: Color = MaterialTheme.colorScheme.primary
+    dominantColor: Color = MaterialTheme.colorScheme.primary,
+    onDownload: (Downloader.DownloadInfo) -> Unit = {}
 ) {
-
     var showArtwork by remember {
         mutableStateOf(true)
     }
@@ -330,6 +361,8 @@ private fun PlaylistHeader(
         if (isPublic) stringResource(id = R.string.public_string) else stringResource(
             id = R.string.private_string
         )
+
+    val playlistUrl = playlist.externalUrls.spotify
 
     Box(
         modifier = modifier.fillMaxWidth()
@@ -369,7 +402,7 @@ private fun PlaylistHeader(
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(MaterialTheme.shapes.small),
-                        icon = Icons.Default.Album,
+                        icon = Icons.Rounded.Album,
                         colorful = false
                     )
                 }
@@ -421,7 +454,16 @@ private fun PlaylistHeader(
                 //create two buttons with a padding between them that fill the max width
                 FilledButtonWithIcon(
                     modifier = Modifier.weight(1f),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val downloadInfo = Downloader.DownloadInfo(
+                            title = playlist.name,
+                            artist = playlist.owner.displayName ?: "Unknown",
+                            thumbnailUrl = playlistArtwork,
+                            url = playlistUrl ?: throw Exception("No URL found for playlist"),
+                            type = SpotifyItemType.TRACKS
+                        )
+                        onDownload(downloadInfo)
+                    },
                     icon = Icons.Default.Download,
                     enabled = playlist.public ?: true,
                     text = stringResource(id = R.string.download)

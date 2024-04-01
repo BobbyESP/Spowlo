@@ -7,7 +7,7 @@ import com.bobbyesp.spowlo.features.inapp_notifications.domain.NotificationManag
 import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class NotificationManagerImpl : NotificationManager {
+object NotificationManagerImpl : NotificationManager {
     init {
         Log.i("NotificationManager", "NotificationManagerImpl created")
     }
@@ -99,6 +99,6 @@ class NotificationManagerImpl : NotificationManager {
 fun NotificationManagerSaver(): Saver<NotificationManager, Map<Int, Notification>> { //TODO: CHANGE THIS. CRASHES BECAUSE OF PARCELABLE
     return Saver(
         save = { notificationManager -> notificationManager.getNotificationsSnapshot().toMap() },
-        restore = { NotificationManagerImpl().apply { notifications.putAll(it) } }
+        restore = { NotificationManagerImpl.apply { notifications.putAll(it) } }
     )
 }

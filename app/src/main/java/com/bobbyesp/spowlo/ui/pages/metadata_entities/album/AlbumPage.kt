@@ -57,8 +57,13 @@ import coil.compose.AsyncImagePainter
 import com.adamratzman.spotify.models.Album
 import com.bobbyesp.spowlo.App.Companion.SPOTIFY_LOGO_URL
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification
+import com.bobbyesp.spowlo.features.inapp_notifications.domain.model.Notification.Companion.toNotification
+import com.bobbyesp.spowlo.features.spotifyApi.data.local.model.SpotifyItemType
 import com.bobbyesp.spowlo.ui.bottomSheets.track.TrackBottomSheet
 import com.bobbyesp.spowlo.ui.common.LocalNavController
+import com.bobbyesp.spowlo.ui.common.LocalNotificationsManager
 import com.bobbyesp.spowlo.ui.components.buttons.BackButton
 import com.bobbyesp.spowlo.ui.components.buttons.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.buttons.OutlinedButtonWithIcon
@@ -134,6 +139,7 @@ fun AlbumPageImplementation(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
 
     val navController = LocalNavController.current
+    val notificationsManager = LocalNotificationsManager.current
 
     val albumData = loadedState.album
 
@@ -204,7 +210,34 @@ fun AlbumPageImplementation(
                         album = albumData,
                         dominantColor = dominantColor,
                         artistsString = artistsString
-                    )
+                    ) { albumDownloadInfo ->
+                        val notification = albumDownloadInfo.toNotification()
+
+                        viewModel.downloadAlbum(
+                            downloadInfo = albumDownloadInfo,
+                            onSuccess = {
+                                notificationsManager.showNotification(
+                                    Notification(
+                                        title = "Download finished",
+                                        subtitle = "The album has been downloaded successfully. ${albumDownloadInfo.title} by ${albumDownloadInfo.artist}",
+                                        timestamp = System.currentTimeMillis(),
+                                        content = null
+                                    )
+                                )
+                            },
+                            onFailure = {
+                                notificationsManager.showNotification(
+                                    Notification(
+                                        title = "Download failed",
+                                        subtitle = "The download failed. Please try again.",
+                                        timestamp = System.currentTimeMillis(),
+                                        content = null
+                                    )
+                                )
+                            }
+                        )
+                        notificationsManager.showNotification(notification)
+                    }
                 }
                 item {
                     Column(
@@ -332,7 +365,8 @@ private fun AlbumHeader(
     modifier: Modifier,
     album: Album,
     dominantColor: Color,
-    artistsString: String
+    artistsString: String,
+    onDownload: (Downloader.DownloadInfo) -> Unit = {}
 ) {
 
     var showArtwork by remember {
@@ -439,7 +473,17 @@ private fun AlbumHeader(
                 //create two buttons with a padding between them that fill the max width
                 FilledButtonWithIcon(
                     modifier = Modifier.weight(1f),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val downloadInfo = Downloader.DownloadInfo(
+                            title = album.name,
+                            artist = album.artists.formatArtistsName(),
+                            thumbnailUrl = albumArtwork,
+                            url = album.externalUrls.spotify
+                                ?: throw Exception("No URL found for album"),
+                            type = SpotifyItemType.TRACKS
+                        )
+                        onDownload(downloadInfo)
+                    },
                     icon = Icons.Default.Download,
                     text = stringResource(id = R.string.download)
                 )

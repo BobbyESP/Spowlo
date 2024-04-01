@@ -74,7 +74,7 @@ fun AppLocalSettingsProvider(
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
     val imageLoader = ImageLoader.Builder(context).build()
-    val notificationManager = NotificationManagerImpl()
+    val notificationManager = NotificationManagerImpl
 //        rememberSaveable(key = "notificationsManager", saver = NotificationManagerSaver()) {
 //        NotificationManagerImpl()
 //    }

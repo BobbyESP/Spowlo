@@ -13,10 +13,13 @@ import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Album
 import com.adamratzman.spotify.models.SimpleTrack
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.downloader.Downloader
+import com.bobbyesp.spowlo.features.downloader.DownloaderUtil
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.paging.sp_app.AlbumTracksPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -78,6 +81,24 @@ class AlbumPageViewModel @Inject constructor(
             it.copy(
                 albumTracksPaginated = albumTracksPager
             )
+        }
+    }
+
+    fun downloadAlbum(
+        scope: CoroutineScope = viewModelScope,
+        downloadInfo: Downloader.DownloadInfo,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        scope.launch(Dispatchers.IO) {
+            DownloaderUtil.downloadSong(
+                downloadInfo = downloadInfo,
+                taskId = Downloader.makeKey(downloadInfo.title, downloadInfo.artist)
+            ).onSuccess {
+                onSuccess()
+            }.onFailure {
+                onFailure()
+            }
         }
     }
 
