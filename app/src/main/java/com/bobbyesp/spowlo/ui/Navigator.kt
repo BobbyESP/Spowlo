@@ -38,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -529,17 +530,17 @@ fun Navigator(
             }
         }
 
-        val showLoggingNotification = remember { mutableStateOf(true) }
+        var showLoggingNotification by rememberSaveable(key = "loginState") { mutableStateOf(true) }
 
         LaunchedEffect(key1 = loginManagerState.loggedIn) {
             if (loginManagerState.loggedIn == LoginState.LOGGED_IN || loginManagerState.loggedIn == LoginState.NOT_LOGGED_IN) {
-                delay(3000)
-                showLoggingNotification.value = false
+                delay(1500)
+                showLoggingNotification = false
             }
         }
 
         AnimatedVisibility(
-            visible = showLoggingNotification.value,
+            visible = showLoggingNotification,
             enter = fadeIn(), // You can customize enter and exit animations
             exit = fadeOut() // As an example, fadeIn and fadeOut are used
         ) {
