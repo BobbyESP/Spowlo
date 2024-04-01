@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.4.0-alpha09"
+agp = "8.4.0-alpha13"
 kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.12.0"
@@ -10,17 +10,17 @@ activity-compose = "1.8.2"
 compose-compiler = "1.5.8"
 ksp = "1.9.22-1.0.17"
 material = "1.11.0"
-media3 = "1.2.1"
-leakcanary = "2.12"
+media3 = "1.3.0"
+leakcanary = "2.13"
 commonsIo = "2.15.0"
 commonsCompress = "1.24.0"
 
 #Compose
-compose-bom = "2024.02.00"
+compose-bom = "2024.03.00"
 constraintLayout = "1.1.0-alpha13"
-androidx-compose-material3 = "1.2.0"
-compose-util = "1.6.1"
-accompanist = "0.32.0"
+androidx-compose-material3 = "1.2.1"
+compose-util = "1.6.4"
+accompanist = "0.34.0"
 compose-pagination = "3.2.1"
 
 #More UI
@@ -34,7 +34,7 @@ scrollbar = "1.9.0"
 androidx-navigation = "2.7.7"
 
 #Coroutines
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0"
 
 #Serialization and more related
 kotlinx-datetime = "0.5.0"
@@ -42,7 +42,7 @@ kotlinx-serializationJson = "1.6.2"
 kotlinx-collectionsImmutable = "0.3.6"
 
 #Image loading
-coil = "2.5.0"
+coil = "2.6.0"
 landscapistCoil = "2.2.13"
 
 #Network
@@ -51,9 +51,9 @@ ktor = "2.3.8" #For me the best client
 retrofit = "2.9.0"
 
 #Dependency injection
-hilt = "2.50"
-hilt-ext = "1.1.0"
-hilt-compose-nav = "1.1.0"
+hilt = "2.51"
+hilt-ext = "1.2.0"
+hilt-compose-nav = "1.2.0"
 
 #Database
 room = "2.6.1"
@@ -66,7 +66,7 @@ mmkv = "1.3.2"
 simpleStorage = "1.5.5"
 
 #Chrome custom tabs
-customTabs = "1.7.0"
+customTabs = "1.8.0"
 
 #Markdown handler
 markdown = "0.3.7"
@@ -84,7 +84,7 @@ taglib = "7549247959"
 
 #Firebase, GMS...
 firebaseAuth = "22.3.1"
-gmsPlayServicesAuth = "20.7.0"
+gmsPlayServicesAuth = "21.0.0"
 googleServices = "4.4.1"
 
 #Tests

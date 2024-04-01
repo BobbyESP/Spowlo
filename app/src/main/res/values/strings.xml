@@ -200,4 +200,6 @@
     <string name="logged_in_desc_card">Now you can access to your library and more</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="not_logged_in_desc_card">The auth flow hasn\'t been completed successfully</string>
+    <string name="metadator">Metadator</string>
+    <string name="metadator_description">Metadator is a metadata editor app for Android created by me. Spowlo in early versions had this feature, but the development of it is now focused in a separated app so we can create lighter apps for specific uses.</string>
 </resources>

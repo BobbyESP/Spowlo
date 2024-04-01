@@ -38,4 +38,16 @@ class CredentialsStorer {
         }
         return credentialStore
     }
+
+    suspend fun provideCredentialsAsync(context: Context): SpotifyDefaultCredentialStore {
+        return withContext(Dispatchers.IO) {
+            async {
+                SpotifyDefaultCredentialStore(
+                    clientId = BuildConfig.CLIENT_ID,
+                    redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE,
+                    applicationContext = context
+                )
+            }.await()
+        }
+    }
 }
