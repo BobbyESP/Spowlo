@@ -11,6 +11,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.data.local.login.CredentialsStore
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.pkceClassBackTo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException
@@ -33,8 +34,8 @@ suspend fun <T> checkSpotifyApiIsValid(
     val classToGoBackTo: Class<out Activity> = activity::class.java
 
     try {
-        val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer().provideCredentials(applicationContext)
+        val apiCredentials = withContext(Dispatchers.IO) {
+            async { CredentialsStorer.provideCredentials(applicationContext) }.await()
         }
         val api = apiCredentials.getSpotifyClientPkceApi()
             ?: throw SpotifyException.ReAuthenticationNeededException() //CAUTION HERE
@@ -42,8 +43,8 @@ suspend fun <T> checkSpotifyApiIsValid(
         return block(api)
     } catch (e: SpotifyException) {
         e.printStackTrace()
-        val apiCredentials = withContext(Dispatchers.Main) {
-            CredentialsStorer().provideCredentials(applicationContext)
+        val apiCredentials = withContext(Dispatchers.IO) {
+            CredentialsStorer.provideCredentials(applicationContext)
         }
 
         if (!alreadyTriedToReauthenticate) {

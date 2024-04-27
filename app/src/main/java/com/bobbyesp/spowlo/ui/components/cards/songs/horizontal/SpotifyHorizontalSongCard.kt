@@ -171,7 +171,7 @@ fun CompactSpotifyHorizontalSongCard(
     onLongClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
-    val albumArtPath = track.album.images.secondOrNull()?.url
+    val albumArtPath = track.album.images?.secondOrNull()?.url
     Surface(
         modifier = modifier
             .fillMaxWidth()

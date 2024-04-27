@@ -351,7 +351,7 @@ fun AlbumPageImplementation(
         if (showTrackSheet && viewState.trackForSheet != null) {
             TrackBottomSheet(
                 simpleTrack = viewState.trackForSheet,
-                artworkForSimpleTrack = albumData.images.firstOrNull()?.url ?: SPOTIFY_LOGO_URL,
+                artworkForSimpleTrack = albumData.images?.firstOrNull()?.url ?: SPOTIFY_LOGO_URL,
             ) {
                 showTrackSheet = false
             }
@@ -377,7 +377,7 @@ private fun AlbumHeader(
     val imageSize =
         (config.screenHeightDp / 3.25) //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
 
-    val albumArtwork = album.images.firstOrNull()?.url ?: ""
+    val albumArtwork = album.images?.firstOrNull()?.url ?: ""
 
     Box(
         modifier = modifier.fillMaxWidth()

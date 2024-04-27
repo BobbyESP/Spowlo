@@ -10,18 +10,15 @@ import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.features.spotifyApi.data.local.login.CredentialsStorer
 import com.bobbyesp.spowlo.features.spotifyApi.data.remote.login.SpotifyPkceLoginImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class SpotifyAuthManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SpotifyAuthManager {
-
-    private val credentialsStorer by lazy { CredentialsStorer() }
-
+    private val credentialsStorer by lazy { CredentialsStorer }
     private var spotifyClientApi: SpotifyClientApi? = null
+
     private val credentials = credentialsStorer.provideCredentials(context)
     private val activityWrapper by lazy { ActivityCallsShortener(MainActivity.getActivity()) }
 
@@ -37,7 +34,7 @@ class SpotifyAuthManagerImpl @Inject constructor(
         }
 
         //Verify if the user is logged in and return the SpotifyClientApi if it is
-        spotifyClientApi = withContext(Dispatchers.IO) { credentials.getSpotifyClientPkceApi { automaticRefresh = true } }
+        spotifyClientApi = credentials.getSpotifyClientPkceApi { automaticRefresh = true }
         return spotifyClientApi
     }
 

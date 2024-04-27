@@ -347,7 +347,7 @@ private fun Login(
     val loginManagerState by loginViewModel.pageViewState.collectAsStateWithLifecycle()
 
     Crossfade(
-        targetState = loginManagerState.loggedIn,
+        targetState = loginManagerState.loginState,
         animationSpec = tween(300),
         label = "Crossfade login state animation"
     ) { loginState ->

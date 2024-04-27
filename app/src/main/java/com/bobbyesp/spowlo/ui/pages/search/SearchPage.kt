@@ -205,7 +205,7 @@ fun SearchPage(
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.formatArtistsName() },
                                             itemArtworkUrl = { item ->
-                                                item.album.images.secondOrNull()?.url ?: ""
+                                                item.album.images?.secondOrNull()?.url ?: ""
                                             },
                                             itemType = SpotifyItemType.TRACKS,
                                             onItemClick = { track ->
@@ -225,7 +225,7 @@ fun SearchPage(
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.artists.formatArtistsName() },
                                             itemArtworkUrl = { item ->
-                                                item.images.secondOrNull()?.url ?: ""
+                                                item.images?.secondOrNull()?.url ?: ""
                                             },
                                             itemType = SpotifyItemType.ALBUMS,
                                             onItemClick = { album ->
@@ -245,7 +245,7 @@ fun SearchPage(
                                             itemName = { item -> item.name ?: "" },
                                             itemArtists = { _ -> "" },
                                             itemArtworkUrl = { item ->
-                                                item.images.secondOrNull()?.url ?: ""
+                                                item.images?.secondOrNull()?.url ?: ""
                                             },
                                             itemType = SpotifyItemType.ARTISTS,
                                             onItemClick = { artist ->
@@ -265,7 +265,7 @@ fun SearchPage(
                                             itemName = { item -> item.name },
                                             itemArtists = { item -> item.owner.displayName ?: "" },
                                             itemArtworkUrl = { item ->
-                                                item.images.firstOrNull()?.url ?: ""
+                                                item.images?.firstOrNull()?.url ?: ""
                                             },
                                             itemType = SpotifyItemType.PLAYLISTS,
                                             onItemClick = { playlist ->

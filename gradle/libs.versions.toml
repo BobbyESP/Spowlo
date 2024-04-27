@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.4.0-alpha13"
+agp = "8.5.0-alpha06"
 kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
 core-ktx = "1.12.0"
@@ -57,7 +57,7 @@ hilt-compose-nav = "1.2.0"
 
 #Database
 room = "2.6.1"
-datastore = "1.0.0"
+datastore = "1.1.0"
 
 #High performance Key-value storage
 mmkv = "1.3.2"
@@ -72,7 +72,7 @@ customTabs = "1.8.0"
 markdown = "0.3.7"
 
 #Spotify API
-spotify-apiHandler = "4.1.0"
+spotify-apiHandler = "4.1.1"
 spotify-appRemote = "0.8.0"
 
 #Spotify Downloader

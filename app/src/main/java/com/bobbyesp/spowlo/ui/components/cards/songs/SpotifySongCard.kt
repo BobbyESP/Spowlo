@@ -42,7 +42,7 @@ fun SpotifySongCard(
     onClick: () -> Unit,
     showSpotifyLogo: Boolean = true
 ) {
-    val albumArtPath = track.album.images.secondOrNull()?.url
+    val albumArtPath = track.album.images?.secondOrNull()?.url
 
     Box(
         modifier
@@ -119,7 +119,7 @@ fun SmallSpotifySongCard(
     number: Int? = null,
     showSpotifyLogo: Boolean = true
 ) {
-    val albumArtPath = track.album.images.secondOrNull()?.url
+    val albumArtPath = track.album.images?.secondOrNull()?.url
 
     Box(
         modifier

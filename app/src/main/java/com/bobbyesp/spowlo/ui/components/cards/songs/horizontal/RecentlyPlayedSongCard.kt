@@ -50,7 +50,7 @@ fun RecentlyPlayedSongCard(
     onLongClick: () -> Unit = {}
 ) {
     val track = playHistoryItem.track
-    val albumArtPath = playHistoryItem.track.album.images.secondOrNull()?.url
+    val albumArtPath = playHistoryItem.track.album.images?.secondOrNull()?.url
     var showArtwork by remember { mutableStateOf(true) }
 
     Box(modifier) {

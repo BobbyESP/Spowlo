@@ -302,7 +302,7 @@ private fun PlaylistPageImplementation(
                         artists = trackArtists,
                         isExplicit = track.explicit,
                         duration = track.durationMs,
-                        imageUrl = track.album.images.firstOrNull()?.url ?: "",
+                        imageUrl = track.album.images?.firstOrNull()?.url ?: "",
                         isPlaylist = true,
                         onClick = {}
                     ) {
@@ -331,7 +331,7 @@ private fun PlaylistPageImplementation(
         if (showTrackSheet && viewState.trackForSheet != null) {
             TrackBottomSheet(
                 track = viewState.trackForSheet,
-                artworkForSimpleTrack = viewState.trackForSheet.album.images.firstOrNull()?.url
+                artworkForSimpleTrack = viewState.trackForSheet.album.images?.firstOrNull()?.url
                     ?: App.SPOTIFY_LOGO_URL,
             ) {
                 showTrackSheet = false
@@ -355,7 +355,7 @@ private fun PlaylistHeader(
     val imageSize =
         (config.screenHeightDp / 3.25) //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
 
-    val playlistArtwork = playlist.images.firstOrNull()?.url ?: ""
+    val playlistArtwork = playlist.images?.firstOrNull()?.url ?: ""
     val isPublic = playlist.public ?: true
     val isPublicString =
         if (isPublic) stringResource(id = R.string.public_string) else stringResource(

@@ -13,6 +13,7 @@ import com.bobbyesp.spowlo.features.spotifyApi.utils.login.SpotifyAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,11 +34,11 @@ class LoginManagerViewModel @Inject constructor(
 
     data class LoginManagerState(
         val isTryingToLogin: Boolean = false,
-        val loggedIn: LoginState = LoginState.CHECKING_STATUS
+        val loginState: LoginState = LoginState.CHECKING_STATUS
     )
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getLoggedIn(viewModelScope)
         }
     }
@@ -62,8 +63,8 @@ class LoginManagerViewModel @Inject constructor(
 
     suspend fun getLoggedIn(scope: CoroutineScope) {
         updateLoggedInState(LoginState.CHECKING_STATUS)
-        val logged = scope.async { isLogged() }
-        updateLoggedInState(logged.await())
+        val logged = scope.async { isLogged() }.await()
+        updateLoggedInState(logged)
     }
 
     suspend fun isLogged(): LoginState {
@@ -82,7 +83,7 @@ class LoginManagerViewModel @Inject constructor(
 
     private fun updateLoggedInState(state: LoginState) {
         mutableLoginManagerState.update {
-            it.copy(loggedIn = state)
+            it.copy(loginState = state)
         }
     }
 }

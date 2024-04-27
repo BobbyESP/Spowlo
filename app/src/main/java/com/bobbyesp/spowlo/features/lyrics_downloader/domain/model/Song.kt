@@ -90,7 +90,7 @@ fun List<Track>.toSongs(): List<Song> {
                 album = it.album.name,
                 duration = it.durationMs.toDouble(),
                 path = it.externalUrls.spotify!!,
-                albumArtPath = it.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) },
+                albumArtPath = it.album.images?.firstOrNull()?.url?.let { url -> Uri.parse(url) },
                 fileName = ""
             )
         )
@@ -106,7 +106,7 @@ fun Track.toSong(): Song {
         album = this.album.name,
         duration = this.durationMs.toDouble(),
         path = this.externalUrls.spotify!!,
-        albumArtPath = this.album.images.firstOrNull()?.url?.let { url -> Uri.parse(url) },
+        albumArtPath = this.album.images?.firstOrNull()?.url?.let { url -> Uri.parse(url) },
         fileName = ""
     )
 }

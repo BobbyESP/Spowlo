@@ -8,46 +8,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
-class CredentialsStorer {
+object CredentialsStorer {
+    lateinit var credentials: SpotifyDefaultCredentialStore
+
+    init {
+        Log.i("CredentialsStorer", "CredentialsStorer initialized")
+    }
+
     suspend fun createCredentials(context: Context): Boolean {
-        return try {
-            val credentials = withContext(Dispatchers.IO) {
-                async {
-                    SpotifyDefaultCredentialStore(
-                        clientId = BuildConfig.CLIENT_ID,
-                        redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE,
-                        applicationContext = context
-                    ).encryptedPreferences
-                }
+        return withContext(Dispatchers.IO) {
+            try {
+                async { provideCredentials(context) }.await()
+                true
+            } catch (e: Exception) {
+                Log.e("CredentialsStorer", "Error creating credentials", e)
+                false
             }
-            credentials.await()
-            true
-        } catch (e: Throwable) {
-            Log.e("CredentialsStorer", "Error creating credentials", e)
-            false
         }
     }
 
     fun provideCredentials(context: Context): SpotifyDefaultCredentialStore {
-        val credentialStore by lazy { //Lazy so that it is only created when needed. When we call another time the same function, it will return the same instance, not a new one.
-            SpotifyDefaultCredentialStore(
+        if (!::credentials.isInitialized) {
+            credentials = SpotifyDefaultCredentialStore(
                 clientId = BuildConfig.CLIENT_ID,
                 redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE,
                 applicationContext = context
             )
         }
-        return credentialStore
+        return credentials
     }
 
-    suspend fun provideCredentialsAsync(context: Context): SpotifyDefaultCredentialStore {
-        return withContext(Dispatchers.IO) {
-            async {
-                SpotifyDefaultCredentialStore(
-                    clientId = BuildConfig.CLIENT_ID,
-                    redirectUri = BuildConfig.SPOTIFY_REDIRECT_URI_PKCE,
-                    applicationContext = context
-                )
-            }.await()
-        }
-    }
 }

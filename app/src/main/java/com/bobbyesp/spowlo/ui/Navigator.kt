@@ -263,7 +263,7 @@ fun Navigator(
                 ) {
                     animatedComposable(Route.Home.route) {
                         val viewModel = hiltViewModel<HomePageViewModel>()
-                        HomePage(viewModel, loginManagerState.loggedIn, onLoginRequest = {
+                        HomePage(viewModel, loginManagerState.loginState, onLoginRequest = {
                             scope.launch {
                                 runBlocking(Dispatchers.IO) { loginManager.login() }
                             }
@@ -377,7 +377,7 @@ fun Navigator(
                         }
 
                         val isEnabledBecauseOfLogin =
-                            if (route == Route.ProfileNavigator) loginManagerState.loggedIn == LoginState.LOGGED_IN else true
+                            if (route == Route.ProfileNavigator) loginManagerState.loginState == LoginState.LOGGED_IN else true
                         NavigationBarItem(modifier = Modifier
                             .animateContentSize()
                             .then(
@@ -440,7 +440,7 @@ fun Navigator(
 
                         }
                         val isEnabledBecauseOfLogin =
-                            if (route == Route.ProfileNavigator) loginManagerState.loggedIn == LoginState.LOGGED_IN else true
+                            if (route == Route.ProfileNavigator) loginManagerState.loginState == LoginState.LOGGED_IN else true
                         NavigationRailItem(
                             modifier = Modifier.animateContentSize(),
                             selected = isSelected,
@@ -532,8 +532,8 @@ fun Navigator(
 
         var showLoggingNotification by rememberSaveable(key = "loginState") { mutableStateOf(true) }
 
-        LaunchedEffect(key1 = loginManagerState.loggedIn) {
-            if (loginManagerState.loggedIn == LoginState.LOGGED_IN || loginManagerState.loggedIn == LoginState.NOT_LOGGED_IN) {
+        LaunchedEffect(key1 = loginManagerState.loginState) {
+            if (loginManagerState.loginState == LoginState.LOGGED_IN || loginManagerState.loginState == LoginState.NOT_LOGGED_IN) {
                 delay(1500)
                 showLoggingNotification = false
             }
@@ -580,7 +580,7 @@ fun Navigator(
                     modifier = Modifier
                         .offset(y = offset)
                         .fillMaxWidth(0.8f),
-                    loginState = loginManagerState.loggedIn
+                    loginState = loginManagerState.loginState
                 )
             }
         }

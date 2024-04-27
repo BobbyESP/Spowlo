@@ -44,7 +44,7 @@ fun ArtistCard(
     onClick: () -> Unit
 ) {
     var showArtwork by remember { mutableStateOf(true) }
-    val artistImage = artist.images.thirdOrNull()?.url
+    val artistImage = artist.images?.thirdOrNull()?.url
 
     Surface(
         modifier = modifier

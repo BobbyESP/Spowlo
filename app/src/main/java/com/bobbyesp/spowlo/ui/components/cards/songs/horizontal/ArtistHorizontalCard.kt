@@ -38,7 +38,7 @@ fun ArtistHorizontalCard(
     onClick: () -> Unit
 ) {
     val imageSize = 52.dp
-    val profilePic = artist.images.firstOrNull()?.url ?: ""
+    val profilePic = artist.images?.firstOrNull()?.url ?: ""
 
     var showImage by remember {
         mutableStateOf(true)

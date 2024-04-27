@@ -55,7 +55,7 @@ fun Track.toTrackEntity(): TrackEntity {
         album = album.name,
         durationMs = durationMs,
         url = externalUrls.spotify,
-        artworkUri = album.images.firstOrNull()?.url?.let { Uri.parse(it) },
+        artworkUri = album.images?.firstOrNull()?.url?.let { Uri.parse(it) },
         spotifyId = id
     )
 }

@@ -148,6 +148,7 @@ private fun PageImplementation(
     }
 
     val userInfo = viewState.value.userInformation
+    val userImages = userInfo?.images
 
     val dateRanges = listOf(
         stringResource(id = R.string.four_weeks),
@@ -214,7 +215,7 @@ private fun PageImplementation(
                             ) {
                                 AsyncImageImpl(
                                     modifier = Modifier.fillMaxSize(),
-                                    model = userInfo.images.lastIndex.let { userInfo.images[it].url },
+                                    model = userImages?.firstOrNull()?.url ?: "",
                                     contentDescription = "Song cover",
                                     contentScale = ContentScale.FillBounds,
                                 )

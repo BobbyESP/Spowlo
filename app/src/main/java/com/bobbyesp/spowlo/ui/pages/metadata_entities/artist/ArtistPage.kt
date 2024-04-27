@@ -198,7 +198,7 @@ fun ArtistPage(
                 if (showTrackSheet && viewState.trackForSheet != null) {
                     TrackBottomSheet(
                         track = viewState.trackForSheet,
-                        artworkForSimpleTrack = viewState.trackForSheet!!.album.images.firstOrNull()?.url
+                        artworkForSimpleTrack = viewState.trackForSheet!!.album.images?.firstOrNull()?.url
                             ?: App.SPOTIFY_LOGO_URL,
                     ) {
                         showTrackSheet = false
@@ -212,7 +212,7 @@ fun ArtistPage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ArtistHeader(modifier: Modifier, artist: Artist) {
-    val artistImage = artist.images.firstOrNull()?.url
+    val artistImage = artist.images?.firstOrNull()?.url
     val followersFormatted =
         artist.followers.total?.bigQuantityFormatter() ?: stringResource(id = R.string.unknown)
     Column(

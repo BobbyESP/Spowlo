@@ -155,7 +155,7 @@ private fun TrackPageImplementation(
 
     val artistsList = viewState.artists
 
-    val artworkUrl = trackData.album.images.firstOrNull()?.url ?: ""
+    val artworkUrl = trackData.album.images?.firstOrNull()?.url ?: ""
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = rememberTopAppBarState(),
@@ -194,7 +194,7 @@ private fun TrackPageImplementation(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            if (trackData.album.images.firstOrNull()?.url != null) {
+            if (trackData.album.images?.firstOrNull()?.url != null) {
                 item {
                     Box(
                         modifier = Modifier
