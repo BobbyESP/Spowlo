@@ -99,9 +99,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -110,15 +107,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":app:ui"))
     implementation(project(":app:utilities"))
-    implementation(libs.m3color)
+
     //---------------Core----------------//
     implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
 
     //---------------User Interface---------------//
     //Core UI libraries
-    implementation(platform(libs.compose.bom))
+    implementation(platform(libs.compose.bom.canary))
+    implementation(libs.compose.ui.utilities)
+    implementation(project(":app:ui"))
     api(libs.material)
 
     //Accompanist libraries
@@ -178,7 +176,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     //Compose testing and tooling libraries
-    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom.canary))
     androidTestImplementation(libs.compose.test.junit4)
     implementation(libs.compose.tooling.preview)
     debugImplementation(libs.compose.tooling)

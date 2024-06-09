@@ -2,7 +2,6 @@ package com.bobbyesp.spowlo.ui.components.navigation
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,10 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.common.NavigationBarHeight
 import com.bobbyesp.spowlo.ui.common.Route
 import com.bobbyesp.spowlo.ui.common.routesToShowInBottomBar
 
@@ -37,24 +34,7 @@ val horizontalNavBar: @Composable BoxWithConstraintsScope.(
 
     NavigationBar(
         modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .offset {
-                if (navBarCurrentHeight == 0.dp) {
-                    IntOffset(
-                        x = 0, y = (bottomInset + NavigationBarHeight).roundToPx()
-                    )
-                } else {
-                    val slideOffset =
-                        (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
-                            0f, 1f
-                        )
-                    val hideOffset =
-                        (bottomInset + NavigationBarHeight) * (1 - navBarCurrentHeight / NavigationBarHeight)
-                    IntOffset(
-                        x = 0, y = (slideOffset + hideOffset).roundToPx()
-                    )
-                }
-            },
+            .align(Alignment.BottomCenter),
     ) {
         routesToShowInBottomBar.forEach { route ->
             val isSelected = currentRootRoute.value == route.route
@@ -109,23 +89,7 @@ val verticalNavBar: @Composable BoxWithConstraintsScope.(
     val navBarAsBottomSheet = navBarProperties.playerBottomSheetState
 
     NavigationRail(
-        modifier = Modifier.offset {
-            if (navigationBarHeight == 0.dp) {
-                IntOffset(
-                    y = 0, x = (startInset - NavigationBarHeight).roundToPx()
-                )
-            } else {
-                val slideOffset =
-                    (startInset - NavigationBarHeight) * navBarAsBottomSheet.progress.coerceIn(
-                        0f, 1f
-                    )
-                val hideOffset =
-                    (startInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                IntOffset(
-                    y = 0, x = (slideOffset - hideOffset).roundToPx()
-                )
-            }
-        },
+        modifier = Modifier,
         header = {
             Icon(
                 modifier = Modifier.size(48.dp),

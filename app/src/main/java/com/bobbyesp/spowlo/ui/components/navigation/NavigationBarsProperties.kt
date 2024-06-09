@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavHostController
-import com.bobbyesp.ui.components.bottomsheet.dragable.DraggableBottomSheetState
+import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 
 data class NavigationBarsProperties(
     val currentRootRoute: MutableState<String>,

@@ -7,9 +7,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.utilities.utilities.URL.URI.UTF8
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.net.URLEncoder
 
 sealed class Route(
     val route: String,
@@ -40,7 +38,7 @@ sealed class Route(
          * @return The route with the given query.
          */
         fun createRoute(query: String): String {
-            return "search/${URLEncoder.encode(query, UTF8)}"
+            return "search/$query"
         }
     }
 }

@@ -43,19 +43,20 @@ android {
 }
 
 dependencies {
-    api(libs.m3color)
+    implementation(platform(libs.compose.bom.canary))
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
-    implementation(libs.material)
     implementation(libs.coil)
     implementation(libs.bundles.coroutines)
     //Accompanist libraries
     implementation(libs.bundles.accompanist)
+    api(libs.material)
+    api(libs.compose.ui.utilities)
 
-    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom.canary))
     androidTestImplementation(libs.compose.test.junit4)
     implementation(libs.compose.tooling.preview)
     debugImplementation(libs.compose.tooling)

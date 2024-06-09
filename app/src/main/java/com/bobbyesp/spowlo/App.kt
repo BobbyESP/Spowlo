@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.bobbyesp.utilities.utilities.Theme
+import com.bobbyesp.utilities.Theme
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp

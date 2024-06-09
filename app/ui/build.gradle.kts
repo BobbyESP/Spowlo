@@ -53,14 +53,14 @@ android {
 }
 
 dependencies {
-
+    implementation(platform(libs.compose.bom.canary))
     implementation(libs.core.ktx)
     implementation(libs.bundles.compose)
     implementation(libs.material)
+    implementation(libs.compose.ui.utilities)
     implementation(libs.compose.tooling.preview)
 
     //Compose testing and tooling libraries
-    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.test.junit4)
     debugImplementation(libs.compose.tooling)
     debugImplementation(libs.compose.test.manifest)

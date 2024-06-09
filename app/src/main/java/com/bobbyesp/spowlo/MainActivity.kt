@@ -1,17 +1,13 @@
 package com.bobbyesp.spowlo
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
-import androidx.core.util.Consumer
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.bobbyesp.spowlo.ui.Navigator
@@ -34,18 +30,6 @@ class MainActivity : ComponentActivity() {
         activity = this
         enableEdgeToEdge()
         setContent {
-
-            DisposableEffect(Unit) {
-                val listener = Consumer<Intent> { intent ->
-                    val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri()
-                    ?: return@Consumer
-                    //processUri(uri, navController, coroutineScope)
-                }
-
-                addOnNewIntentListener(listener)
-                onDispose { removeOnNewIntentListener(listener) }
-            }
-
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
                 SpowloTheme(
