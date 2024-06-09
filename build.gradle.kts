@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.kotlin.compose.compiler) apply false
 //    alias(libs.plugins.androidx.baselineprofile) apply false
 }
 

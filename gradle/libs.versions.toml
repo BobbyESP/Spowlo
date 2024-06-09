@@ -109,6 +109,7 @@ compose-material3-windowSizeClass = { group = "androidx.compose.material3", name
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 m3color = { module = "com.github.Kyant0:m3color", version.ref = "m3color" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 #Paging3
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
@@ -125,12 +126,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 
 #Accompanist
-accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
-accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
-accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 
 #Shimmer
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
@@ -202,7 +198,6 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmark-macro-junit4" }
 profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3DatasourceOkhttp" }
 
 [plugins]
@@ -220,7 +215,7 @@ androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "and
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
 ktor = ["ktor-android", "ktor-okhttp", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
-accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout"]
+accompanist = ["accompanist-permissions"]
 compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]

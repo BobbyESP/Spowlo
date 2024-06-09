@@ -119,6 +119,7 @@ dependencies {
     //---------------User Interface---------------//
     //Core UI libraries
     implementation(platform(libs.compose.bom))
+    api(libs.material)
 
     //Accompanist libraries
     implementation(libs.bundles.accompanist)

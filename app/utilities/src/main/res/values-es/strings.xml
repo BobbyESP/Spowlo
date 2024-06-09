@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="follow_system">Seguir al sistema</string>
+    <string name="on">Encendido</string>
+    <string name="off">Apagado</string>
+    <string name="grant">Conceder</string>
+    <string name="dismiss">Denegar</string>
+    <string name="title">Título</string>
+    <string name="artist">Artista</string>
+    <string name="permission_not_granted">Permiso no concedido</string>
+    <string name="permission_not_granted_description">Para acceder a esta funcionalidad de la aplicación se requiere de algún permiso. Te gustaría aceptarlo?</string>
+    <string name="permission_not_granted_rationale_desc">Si no le concedes a la aplicación los permisos necesarios no podrás acceder a esta funcionalidad.</string>
+    <string name="permissions_to_grant">Los permisos necesarios son:</string>
+    <string name="accept_permissions">Aceptar permisos</string>
+    <string name="read_external_storage">Leer almacenamiento externo</string>
+    <string name="write_external_storage">Escribir almacenamiento externo</string>
+    <string name="internet">Internet</string>
+    <string name="access_network_state">Acceder al estado de la red</string>
+    <string name="access_wifi_state">Acceder al estado del WiFi</string>
+    <string name="change_wifi_state">Cambiar el estado del WiFi</string>
+    <string name="read_media_audio">Leer archivos de audio</string>
+    <string name="manage_external_storage">Administrar almacenamiento externo</string>
+</resources>

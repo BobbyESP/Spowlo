@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="retry">Reintentar</string>
+    <string name="back">Atrás</string>
+    <string name="undo">Deshacer</string>
+    <string name="successfully_refreshed">Refrescado correctamente</string>
+    <string name="refreshing">Refrescando</string>
+    <string name="release_to_refresh">Soltar para refrescar</string>
+    <string name="pull_to_refresh">Tirar para refrescar</string>
+    <string name="copied_to_clipboard">Copiado al portapapeles</string>
+    <string name="error">Error</string>
+    <string name="unknown_error_title">Ha ocurrido un error desconocido!</string>
+</resources>

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.compose.compiler)
 }
 
@@ -31,24 +33,31 @@ android {
     buildFeatures {
         compose = true
     }
+    composeCompiler {
+        enableStrongSkippingMode = true
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation(libs.m3color)
+    api(libs.m3color)
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
+    implementation(libs.material)
     implementation(libs.coil)
-    implementation(libs.media3.common)
-
+    implementation(libs.bundles.coroutines)
     //Accompanist libraries
     implementation(libs.bundles.accompanist)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.test.junit4)
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.tooling)
+    debugImplementation(libs.compose.test.manifest)
 }
