@@ -2,4 +2,13 @@
 <resources>
     <string name="retry">Retry</string>
     <string name="back">Back</string>
+    <string name="undo">Undo</string>
+    <string name="successfully_refreshed">Successfully refreshed</string>
+    <string name="refreshing">Refreshing</string>
+    <string name="release_to_refresh">Release to refresh</string>
+    <string name="pull_to_refresh">Pull to refresh</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="error">Error</string>
+    <string name="unknown_error_title">An unknown error has occurred!</string>
+    <string name="open_settings">Open settings</string>
 </resources>

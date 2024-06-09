@@ -1,6 +1,7 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
 }
 
 android {
@@ -30,22 +31,17 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation(project(":color")) //TODO: Make this an implementation based on flavor
+    implementation(libs.m3color)
     implementation(libs.core.ktx)
-    implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.kotlinx.datetime)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
-    implementation(libs.material)
     implementation(libs.coil)
     implementation(libs.media3.common)
 

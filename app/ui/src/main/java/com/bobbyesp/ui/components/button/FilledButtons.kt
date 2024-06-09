@@ -18,7 +18,8 @@ fun FilledButtonWithIcon(
     onClick: () -> Unit,
     icon: ImageVector,
     enabled: Boolean = true,
-    text: String
+    text: String,
+    contentDescription: String? = null
 ) {
     Button(
         modifier = modifier,
@@ -30,7 +31,7 @@ fun FilledButtonWithIcon(
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = null
+            contentDescription = contentDescription
         )
         Text(
             modifier = Modifier.padding(start = 6.dp),
@@ -44,7 +45,8 @@ fun FilledTonalButtonWithIcon(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    text: String
+    text: String,
+    contentDescription: String? = null
 ) {
     FilledTonalButton(
         modifier = modifier,
@@ -55,7 +57,7 @@ fun FilledTonalButtonWithIcon(
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = null
+            contentDescription = contentDescription
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),

@@ -24,6 +24,7 @@ fun CardListItem(
     headlineContentText: String,
     applySemiBoldFontWeight: Boolean = true,
     onClick: () -> Unit,
+    contentDescription: String? = null
 ) {
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
@@ -36,7 +37,7 @@ fun CardListItem(
             leadingContent = {
                 Icon(
                     imageVector = leadingContentIcon,
-                    contentDescription = "Leading content icon"
+                    contentDescription = contentDescription
                 )
             }, headlineContent = {
                 Text(

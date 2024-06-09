@@ -19,7 +19,8 @@ fun OutlinedButtonWithIcon(
     onClick: () -> Unit,
     icon: ImageVector,
     text: String,
-    contentColor: Color = MaterialTheme.colorScheme.primary
+    contentColor: Color = MaterialTheme.colorScheme.primary,
+    contentDescription: String? = null
 ) {
     OutlinedButton(
         modifier = modifier,
@@ -31,7 +32,7 @@ fun OutlinedButtonWithIcon(
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = null
+            contentDescription = contentDescription
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),

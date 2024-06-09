@@ -79,8 +79,7 @@ fun MarqueeText(
     softWrap: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current.plus(TextStyle()),
-    sideGradientColor: Color = Color.Transparent,
-    basicGradientColor: Color = Color.Transparent,
+    sideGradient: MarqueeTextGradientOptions = MarqueeTextGradientOptions(),
     customEasing: Easing? = null,
 ) {
     val createText = @Composable { localModifier: Modifier ->
@@ -166,9 +165,19 @@ fun MarqueeText(
             }
             gradient = subcompose(MarqueeLayers.EdgesGradient) {
                 Row {
-                    GradientEdge(basicGradientColor, sideGradientColor)
-                    Spacer(Modifier.weight(1f))
-                    GradientEdge(sideGradientColor, basicGradientColor)
+                    if (sideGradient.left) {
+                        GradientEdge(
+                            startColor = sideGradient.color,
+                            endColor = Color.Transparent
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (sideGradient.right) {
+                        GradientEdge(
+                            startColor = Color.Transparent,
+                            endColor = sideGradient.color
+                        )
+                    }
                 }
             }.first().measure(constraints.copy(maxHeight = mainText.height))
         }
@@ -202,6 +211,10 @@ private fun GradientEdge(
     )
 }
 
-
+data class MarqueeTextGradientOptions(
+    val color: Color = Color.Transparent,
+    val right: Boolean = true,
+    val left: Boolean = true
+)
 private enum class MarqueeLayers { MainText, SecondaryText, EdgesGradient }
 private data class TextLayoutInfo(val textWidth: Int, val containerWidth: Int)

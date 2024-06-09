@@ -38,7 +38,7 @@ fun ProfilePicture(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                fontSize = (size/1.5).sp,
+                fontSize = (size / 1.5).sp,
                 text = firstLetter,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,

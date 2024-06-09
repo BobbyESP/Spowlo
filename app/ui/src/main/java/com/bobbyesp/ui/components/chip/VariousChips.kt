@@ -14,7 +14,6 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -170,7 +169,6 @@ fun OutlinedButtonChipWithIndex(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SingleChoiceChip(
     modifier: Modifier = Modifier,

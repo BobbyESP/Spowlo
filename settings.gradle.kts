@@ -23,7 +23,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "spowlo"
 include(":app")
-include(":color")
 include(":app:utilities")
 include(":app:ui")
 include(":innertube")

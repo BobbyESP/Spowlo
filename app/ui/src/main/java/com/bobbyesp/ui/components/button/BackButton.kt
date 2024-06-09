@@ -3,6 +3,7 @@ package com.bobbyesp.ui.components.button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -38,7 +39,7 @@ fun DynamicButton(
     isIcon1: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(modifier = modifier, onClick = onClick) {
+    FilledTonalIconButton(modifier = modifier, onClick = onClick) {
         if (isIcon1) {
             icon()
         } else {

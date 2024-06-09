@@ -1,32 +1,32 @@
 [versions]
 #General, lifecycle and core
 agp = "8.4.1"
-firebaseCrashlyticsGradle = "2.9.9"
+firebaseCrashlyticsGradle = "3.0.1"
 gradle = "8.4.1"
-kotlin = "1.9.21"
-appcompat = "1.7.0-alpha03"
-core-ktx = "1.12.0"
-legacySupportV4 = "1.0.0"
-lifecycle-runtime-ktx = "2.7.0"
-activity-compose = "1.8.2"
+kotlin = "2.0.0"
+appcompat = "1.7.0"
+core-ktx = "1.13.1"
+lifecycle-runtime-ktx = "2.8.1"
+activity-compose = "1.9.0"
 compose-compiler = "1.5.6"
-ksp = "1.9.21-1.0.15"
+ksp = "2.0.0-1.0.21"
+m3color = "2024.3"
 material = "1.11.0"
-media3 = "1.3.0"
-leakcanary = "2.12"
+media3 = "1.3.1"
+leakcanary = "2.13"
 #Compose
-compose-bom = "2024.02.02"
+compose-bom = "2024.05.00"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
-compose-util = "1.6.3"
-accompanist = "0.32.0"
-compose-pagination = "3.2.1"
+compose-util = "1.6.7"
+accompanist = "0.34.0"
+compose-pagination = "3.3.0"
 commonsIo = "2.15.0"
 commonsCompress = "1.24.0"
 
 #More UI
-androidx-paging = "3.2.1"
-qrcodeKotlinAndroid = "4.0.7"
+androidx-paging = "3.3.0"
+qrcodeKotlinAndroid = "4.1.0"
 orbital = "0.3.3"
 shimmer = "1.0.3"
 palette = "1.0.0"
@@ -35,15 +35,15 @@ palette = "1.0.0"
 androidx-navigation = "2.7.7"
 
 #Coroutines
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.1"
-kotlinx-serializationJson = "1.6.0"
+kotlinx-serializationJson = "1.6.3"
 kotlinx-collectionsImmutable = "0.3.7"
 
 #Image loading
-coil = "2.5.0"
+coil = "2.6.0"
 landscapistCoil = "2.2.13"
 
 #Network
@@ -53,12 +53,12 @@ retrofit = "2.9.0"
 brotli = "0.1.2"
 
 #Dependency injection
-hilt = "2.50"
+hilt = "2.51"
 hilt-ext = "1.2.0"
 
 #Database
 room = "2.6.1"
-datastore = "1.0.0"
+datastore = "1.1.1"
 
 #High performance Key-value storage
 mmkv = "1.3.2"
@@ -68,13 +68,6 @@ customTabs = "1.8.0"
 
 #Markdown handler
 markdown = "0.3.7"
-
-#Firebase, GMS...
-firebaseAuth = "22.3.1"
-gmsPlayServicesAuth = "21.0.0"
-googleServices = "4.4.1"
-firebaseBom = "32.7.4"
-
 #Tests
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
@@ -83,20 +76,21 @@ espresso-core = "3.5.1"
 #Modal Bottom Sheet
 modalSheet = "1.0.0"
 uiautomator = "2.3.0"
-benchmark-macro-junit4 = "1.2.3"
-androidx-baselineprofile = "1.2.3"
+benchmark-macro-junit4 = "1.2.4"
+androidx-baselineprofile = "1.2.4"
 profileinstaller = "1.3.1"
-materialVersion = "1.11.0"
-media3DatasourceOkhttp = "1.3.0"
+materialVersion = "1.12.0"
+media3DatasourceOkhttp = "1.3.1"
 
 [libraries]
+#Build (Gradle)
+
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 #Core libraries
 core-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-compose-viewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
@@ -113,7 +107,7 @@ compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
-orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
+m3color = { module = "com.github.Kyant0:m3color", version.ref = "m3color" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 
 #Paging3
@@ -129,7 +123,6 @@ kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotli
 #Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
 
 #Accompanist
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
@@ -142,18 +135,10 @@ accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist
 #Shimmer
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 
-#Accompanist Material components
-accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
-
 #Image loading
 compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapistCoil" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
-
-#Network
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 
 #Ktor (also network)
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
@@ -201,18 +186,6 @@ markdown = { group = "com.github.jeziellago", name = "compose-markdown", version
 #Chrome Custom Tabs
 chrome-custom-tabs = { group = "androidx.browser", name = "browser", version.ref = "customTabs" }
 
-#Firebase and GMS
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuth" }
-gms-playservices-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "gmsPlayServicesAuth" }
-google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-
-#File utils
-commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
-
 #Others
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
 
@@ -233,28 +206,24 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3DatasourceOkhttp" }
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-androidTest = { id = "com.android.test", version.ref = "agp" }
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
 
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat"]
-ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
-accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
-compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
+ktor = ["ktor-android", "ktor-okhttp", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
+accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout"]
+compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
-googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 media3 = ["media3-exoplayer", "media3-ui", "media3-session", "media3-common"]

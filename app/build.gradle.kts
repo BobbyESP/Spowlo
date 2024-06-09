@@ -1,12 +1,10 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
-//    alias(libs.plugins.google.gms)
     alias(libs.plugins.hilt)
-//    id("com.google.firebase.crashlytics")
-//    alias(libs.plugins.androidx.baselineprofile)
 }
 
 sealed class Version(
@@ -112,9 +110,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":color"))
     implementation(project(":app:ui"))
     implementation(project(":app:utilities"))
+    implementation(libs.m3color)
     //---------------Core----------------//
     implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
 
@@ -127,9 +125,6 @@ dependencies {
 
     //Compose libraries
     implementation(libs.bundles.compose)
-    implementation(libs.material)
-    implementation(libs.orbital)
-
     //Pagination
     implementation(libs.bundles.pagination)
 
