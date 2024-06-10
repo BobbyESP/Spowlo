@@ -1,16 +1,16 @@
 package com.bobbyesp.spowlo.presentation.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,39 +38,54 @@ fun OptionsDialog(
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 8.dp
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            IconButton(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.CenterStart),
-                onClick = {
-                    onExit()
-                }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = stringResource(
-                        id = R.string.go_back
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterStart),
+                    onClick = {
+                        onExit()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = stringResource(
+                            id = R.string.close
+                        )
                     )
+                }
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    style = MaterialTheme.typography.headlineLarge,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = if (isPreview) null else unbounded
                 )
             }
-            Text(
-                text = stringResource(id = R.string.app_name),
+
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
-                style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = if (isPreview) null else unbounded
-            )
+                    .padding(bottom = 12.dp)
+                    .padding(horizontal = 8.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                tonalElevation = 8.dp
+            ) {
+                Text("This is just a test")
+            }
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable

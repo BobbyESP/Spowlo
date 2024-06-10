@@ -1,33 +1,35 @@
 package com.bobbyesp.spowlo.presentation
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Square
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.util.fastAny
+import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,19 +37,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.bobbyesp.spowlo.MainActivity
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.bobbyesp.spowlo.ext.formatAsClassToRoute
-import com.bobbyesp.spowlo.features.search.SearchSource
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
+import com.bobbyesp.spowlo.presentation.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.common.Route
-import com.bobbyesp.spowlo.presentation.common.childRoutesForProvider
+import com.bobbyesp.spowlo.presentation.common.asProviderRoute
+import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
-import com.bobbyesp.spowlo.presentation.components.ytmusic.YtMusicAppSearchBar
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
-import com.bobbyesp.utilities.preferences.Preferences
-import com.bobbyesp.utilities.preferences.PreferencesKeys.YouTube.SEARCH_SOURCE
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -58,6 +59,7 @@ fun Navigator(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val focusManager = LocalFocusManager.current
+    val windowWidthClass = LocalWindowWidthState.current
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
@@ -70,72 +72,87 @@ fun Navigator(
         )
     }
 
-    val currentProvider = rememberSaveable(navBackStackEntry, key = "currentProvider") {
+    val currentProviderRoot = rememberSaveable(navBackStackEntry, key = "currentProvider") {
         mutableStateOf(
-            navBackStackEntry?.destination?.parent?.parent?.route ?: Route.Spotify::class.qualifiedName!!
+            navBackStackEntry?.destination?.parent?.parent?.route
+                ?: Route.Spotify::class.qualifiedName!!
         )
+    }
+
+    var currentProvider: Route by remember("provider") {
+        mutableStateOf(Route.Spotify)
+    }
+
+    LaunchedEffect(currentProviderRoot) {
+        currentProvider = currentProviderRoot.value.asProviderRoute()
     }
 
     val snackbarHostState = LocalSnackbarHostState.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+//    val (query, onQueryChange) = rememberSaveable(key = "searchQuery") {
+//        mutableStateOf("")
+//    }
+//    var active by rememberSaveable {
+//        mutableStateOf(false)
+//    }
+//    val onActiveChange: (Boolean) -> Unit = { newActive ->
+//        active = newActive
+//        if (!newActive) {
+//            focusManager.clearFocus()
+//            if (childRoutesForProvider(currentProviderRoot.value).fastAny { it.formatAsClassToRoute() == currentRoute.value }) {
+//                onQueryChange("")
+//            }
+//        }
+//    }
+//
+//    val onSearch: (String) -> Unit = {
+//        if (it.isNotEmpty()) {
+//            onActiveChange(false)
+//            navController.navigate(Route.Spotify.SearchNavigator.Search(it))
+//        }
+//    }
+//
+//    var searchSource by remember {
+//        mutableStateOf(Preferences.Enumerations.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
+//    }
+//
+//    var openSearchImmediately: Boolean by remember {
+//        mutableStateOf(handledIntent?.action == MainActivity.ACTION_SEARCH)
+//    }
+//
+//    val shouldShowSearchBar = true //TODO: Change this
+
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            mainRoutesForProvider(currentProvider).fastForEach { route ->
+                val routeClass = route.formatAsClassToRoute()
+                item(
+                    selected = routeClass == currentRootRoute.value,
+                    onClick = {
+                        navController.navigate(route)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Rounded.Square, contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(text = route.toString())
+                    }
+                )
+            }
+        }, layoutType = if (windowWidthClass == WindowWidthSizeClass.EXPANDED) {
+            NavigationSuiteType.NavigationDrawer
+        } else {
+            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                currentWindowAdaptiveInfo()
+            )
+        }
     ) {
-        val (query, onQueryChange) = rememberSaveable(key = "searchQuery") {
-            mutableStateOf("")
-        }
-        var active by rememberSaveable {
-            mutableStateOf(false)
-        }
-        val onActiveChange: (Boolean) -> Unit = { newActive ->
-            active = newActive
-            if (!newActive) {
-                focusManager.clearFocus()
-                if (childRoutesForProvider(currentProvider.value).fastAny { it.formatAsClassToRoute() == currentRoute.value }) {
-                    onQueryChange("")
-                }
-            }
-        }
-
-        val onSearch: (String) -> Unit = {
-            if (it.isNotEmpty()) {
-                onActiveChange(false)
-                navController.navigate(Route.Spotify.SearchNavigator.Search(it))
-            }
-        }
-
-        var searchSource by remember {
-            mutableStateOf(Preferences.Enumerations.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
-        }
-
-        var openSearchImmediately: Boolean by remember {
-            mutableStateOf(handledIntent?.action == MainActivity.ACTION_SEARCH)
-        }
-
-        val shouldShowSearchBar = true //TODO: Change this
-
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize(),
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState
-                ) { dataReceived ->
-                    Snackbar(
-                        modifier = Modifier,
-                        snackbarData = dataReceived,
-                        containerColor = MaterialTheme.colorScheme.inverseSurface,
-                        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
-                }
-            },
-        ) { scaffoldPadding ->
+        Box(modifier = Modifier.fillMaxSize()) {
             SharedTransitionLayout {
                 NavHost(
                     modifier = Modifier
-                        .consumeWindowInsets(scaffoldPadding)
                         .fillMaxWidth()
                         .align(Alignment.Center),
                     navController = navController,
@@ -160,12 +177,14 @@ fun Navigator(
                                     }) {
                                         Text("Navigate to YouTube Music!")
                                     }
-                                }
-                            }
-
-                            dialog<Route.Spotify.OptionsDialog> {
-                                OptionsDialog {
-                                    navController.navigateBack()
+                                    val scope = rememberCoroutineScope()
+                                    Button(onClick = {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Hello, Snackbar!")
+                                        }
+                                    }) {
+                                        Text("Show Snackbar")
+                                    }
                                 }
                             }
                         }
@@ -200,39 +219,46 @@ fun Navigator(
                                     }
                                 }
                             }
-
-                            dialog<Route.YoutubeMusic.OptionsDialog>(
-                                dialogProperties = DialogProperties(
-                                    usePlatformDefaultWidth = false
-                                )
-                            ) {
-                                OptionsDialog {
-                                    navController.navigateBack()
-                                }
+                        }
+                    }
+                    dialog<Route.OptionsDialog>(
+                        dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth(0.9f)) {
+                            OptionsDialog {
+                                navController.navigateBack()
                             }
                         }
                     }
                 }
             }
+//            AnimatedVisibility(
+//                modifier = Modifier.align(Alignment.TopCenter),
+//                visible = shouldShowSearchBar,
+//                enter = fadeIn(),
+//                exit = fadeOut()
+//            ) {
+//                YtMusicAppSearchBar(
+//                    query = query,
+//                    onQueryChange = onQueryChange,
+//                    onSearch = onSearch,
+//                    active = active,
+//                    onActiveChange = onActiveChange,
+//                    searchSource = searchSource,
+//                    onChangeSearchSource = { newSearchSource ->
+//                        searchSource = newSearchSource
+//                    },
+//                )
+//            }
+            SnackbarHost(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                hostState = snackbarHostState
+            ) { dataReceived ->
+                Snackbar(
+                    modifier = Modifier,
+                    snackbarData = dataReceived
+                )
+            }
         }
-        AnimatedVisibility(
-            modifier = Modifier.align(Alignment.TopCenter),
-            visible = shouldShowSearchBar,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            YtMusicAppSearchBar(
-                query = query,
-                onQueryChange = onQueryChange,
-                onSearch = onSearch,
-                active = active,
-                onActiveChange = onActiveChange,
-                searchSource = searchSource,
-                onChangeSearchSource = { newSearchSource ->
-                    searchSource = newSearchSource
-                },
-            )
-        }
-
     }
 }

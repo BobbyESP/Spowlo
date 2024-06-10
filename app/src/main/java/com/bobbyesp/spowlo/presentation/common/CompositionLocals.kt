@@ -3,7 +3,6 @@ package com.bobbyesp.spowlo.presentation.common
 import android.os.Build
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -15,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
@@ -34,7 +34,7 @@ val LocalSeedColor =
 val LocalDynamicColorSwitch = compositionLocalOf { false }
 val LocalIndexOfPaletteStyle = compositionLocalOf { 0 }
 val LocalWindowWidthState =
-    staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
+    staticCompositionLocalOf { WindowWidthSizeClass.COMPACT } //This value probably will never change, that's why it is static
 val LocalOrientation = compositionLocalOf<Int> { error("No orientation provided") }
 val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }

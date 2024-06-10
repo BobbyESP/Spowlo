@@ -1,15 +1,19 @@
 package com.bobbyesp.spowlo.features.notification_manager.data.local
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.saveable.Saver
+import com.bobbyesp.spowlo.features.notification_manager.domain.NotificationManager
 import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
-class NotificationManagerImpl : NotificationManager {
-    private val _notifications = MutableStateFlow<Map<Int, Notification>>(emptyMap())
-    private val notifications = _notifications.asStateFlow()
+object NotificationManagerImpl : NotificationManager {
+    init {
+        Log.i("NotificationManager", "NotificationManagerImpl created")
+    }
+
+    private val _notifications = mutableStateMapOf<Int, Notification>()
+    val notifications = _notifications
 
     private val _currentNotification = MutableStateFlow<Notification?>(null)
 
@@ -21,16 +25,11 @@ class NotificationManagerImpl : NotificationManager {
         //if the notification id is already present, we just make it visible, otherwise we add it
         val existingNotification = getNotification(notification.id)
         if (existingNotification == null) {
-            Log.i("NotificationManager", "Showing notification ${notification.id}")
             _currentNotification.value = notification
-            _notifications.update {
-                it + (notification.id to notification)
-            }
+            _notifications[notification.id] = notification
         } else {
             //in the value of the list, we locate the notification and we make it visible by using .copy(visible = true)
-            _notifications.update {
-                it + (notification.id to existingNotification)
-            }
+            _notifications[notification.id] = existingNotification
         }
     }
 
@@ -53,8 +52,7 @@ class NotificationManagerImpl : NotificationManager {
     }
 
     override fun showLatestNotificationByTimestamp() {
-        val latestNotification: Notification? =
-            _notifications.value.values.maxByOrNull { it.timestamp }
+        val latestNotification: Notification? = _notifications.values.maxByOrNull { it.timestamp }
         latestNotification?.let {
             showNotification(it)
         }
@@ -73,7 +71,7 @@ class NotificationManagerImpl : NotificationManager {
      * @return the notification with the given id
      */
     override fun getNotification(notificationId: Int): Notification? {
-        return _notifications.value[notificationId]
+        return _notifications[notificationId]
     }
 
     /**
@@ -81,14 +79,22 @@ class NotificationManagerImpl : NotificationManager {
      * @return a list of notifications
      */
     override fun getSessionNotifications(): List<Notification> {
-        return _notifications.value.values.toList()
+        return _notifications.values.toList()
+    }
+
+    override fun getNotificationsSnapshot(): Map<Int, Notification> {
+        return _notifications
     }
 
     /**
      * This method is used to get all the notifications that have been shown in the current session
      * @return a list of notifications
      */
-    override fun getNotificationMapFlow(): StateFlow<Map<Int, Notification>> {
+    override fun getNotificationMapFlow(): MutableMap<Int, Notification> {
         return notifications
     }
 }
+
+val notificationManagerSaver: Saver<NotificationManager, Map<Int, Notification>> =
+    Saver(save = { notificationManager -> notificationManager.getNotificationsSnapshot().toMap() },
+        restore = { NotificationManagerImpl.apply { notifications.putAll(it) } })

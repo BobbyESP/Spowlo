@@ -1,8 +1,7 @@
-package com.bobbyesp.spowlo.features.notification_manager.data.local
+package com.bobbyesp.spowlo.features.notification_manager.domain
 
 import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 interface NotificationManager {
     fun showNotification(notification: Notification)
@@ -12,5 +11,6 @@ interface NotificationManager {
     fun dismissNotification()
     fun getNotification(notificationId: Int): Notification?
     fun getSessionNotifications(): List<Notification>
-    fun getNotificationMapFlow(): StateFlow<Map<Int, Notification>>
+    fun getNotificationsSnapshot(): Map<Int, Notification>
+    fun getNotificationMapFlow(): MutableMap<Int, Notification>
 }

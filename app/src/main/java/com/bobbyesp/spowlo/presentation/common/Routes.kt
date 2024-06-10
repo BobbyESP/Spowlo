@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.presentation.common
 
+import androidx.compose.runtime.saveable.Saver
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,17 +10,17 @@ sealed interface Route {
     data object MainHost : Route
 
     @Serializable
+    data object OptionsDialog : Route
+
+
+    @Serializable
     data object Spotify : Route {
 
         @Serializable
         data object HomeNavigator : Route {
-
             @Serializable
             data object Home : Route
         }
-
-        @Serializable
-        data object OptionsDialog : Route
 
         @Serializable
         data object SearchNavigator : Route {
@@ -36,8 +37,6 @@ sealed interface Route {
             @Serializable
             data object Home : Route
         }
-        @Serializable
-        data object OptionsDialog : Route
         @Serializable
         data object SearchNavigator : Route {
             @Serializable
@@ -57,12 +56,21 @@ val spotifyMainRoutes = listOf(
 
 val youtubeMusicMainRoutes = listOf(
     Route.YoutubeMusic.HomeNavigator,
+    Route.YoutubeMusic.SearchNavigator
 )
 
 val providerRoutes = mapOf(
     Route.Spotify to spotifyMainRoutes,
     Route.YoutubeMusic to youtubeMusicMainRoutes,
 )
+
+fun mainRoutesForProvider(provider: Route): List<Route> {
+    return when (provider) {
+        Route.Spotify -> spotifyMainRoutes
+        Route.YoutubeMusic -> youtubeMusicMainRoutes
+        else -> emptyList()
+    }
+}
 
 fun childRoutesForProvider(provider: Route): List<Route> {
     return providerRoutes[provider] ?: emptyList()
@@ -75,3 +83,8 @@ fun childRoutesForProvider(qualifiedName: String): List<Route> {
 fun String.asProviderRoute(): Route {
     return providers.first { it::class.qualifiedName == this }
 }
+
+val routeSaver: Saver<Route, String> = Saver(
+    save = { route -> route::class.qualifiedName.toString() },
+    restore = { it.asProviderRoute() }
+)

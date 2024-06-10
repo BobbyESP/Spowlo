@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.view.ViewCompat
@@ -30,8 +30,8 @@ class MainActivity : ComponentActivity() {
         activity = this
         enableEdgeToEdge()
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(this)
-            AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
+            val windowWidthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+            AppLocalSettingsProvider(windowWidthClass) {
                 SpowloTheme(
                     darkTheme = LocalDarkTheme.current.isDarkTheme(),
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,

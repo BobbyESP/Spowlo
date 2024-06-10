@@ -119,7 +119,7 @@ fun BoxScope.YtMusicAppSearchBar(
                         }
                         AnimatedVisibility(visible = !active) {
                             ProfilePicture(name = "Bobby", size = 32, onClick = {
-                                navController.navigate(Route.Spotify.OptionsDialog)
+                                navController.navigate(Route.OptionsDialog)
                             })
                         }
                     }
