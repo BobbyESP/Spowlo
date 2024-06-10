@@ -39,7 +39,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.bobbyesp.spowlo.ext.formatAsClassToRoute
+import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
+import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
+import com.bobbyesp.spowlo.presentation.common.LocalNotificationManager
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.spowlo.presentation.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.common.Route
@@ -185,6 +188,14 @@ fun Navigator(
                                     }) {
                                         Text("Show Snackbar")
                                     }
+                                    val notificationsManager = LocalNotificationManager.current
+                                    Button(onClick = {
+                                        scope.launch {
+                                            notificationsManager.showNotification(Notification(title = "Hello, Notification!"))
+                                        }
+                                    }) {
+                                        Text("Show Snackbar")
+                                    }
                                 }
                             }
                         }
@@ -232,6 +243,7 @@ fun Navigator(
                     }
                 }
             }
+            NotificationsHandler()
 //            AnimatedVisibility(
 //                modifier = Modifier.align(Alignment.TopCenter),
 //                visible = shouldShowSearchBar,

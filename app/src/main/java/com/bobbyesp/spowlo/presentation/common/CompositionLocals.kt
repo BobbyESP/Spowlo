@@ -18,6 +18,8 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.bobbyesp.spowlo.features.notification_manager.data.local.NotificationManagerImpl
+import com.bobbyesp.spowlo.features.notification_manager.domain.NotificationManager
 import com.bobbyesp.utilities.DarkThemePreference
 import com.bobbyesp.utilities.Theme.paletteStyles
 import com.bobbyesp.utilities.preferences.Preferences.AppSettingsStateFlow
@@ -40,6 +42,8 @@ val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
 val LocalSnackbarHostState =
     compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
+val LocalNotificationManager =
+    staticCompositionLocalOf<NotificationManager> { error("No notifications manager provided") }
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
@@ -87,6 +91,7 @@ fun AppLocalSettingsProvider(
             LocalCoilImageLoader provides imageLoader,
             LocalOrientation provides config.orientation,
             LocalSnackbarHostState provides snackbarHostState,
+            LocalNotificationManager provides NotificationManagerImpl
         ) {
             content() //The content of the app
         }
