@@ -1,13 +1,13 @@
-package com.bobbyesp.spowlo.ui.components
+package com.bobbyesp.spowlo.presentation.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,15 +22,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
-import com.bobbyesp.spowlo.ui.theme.unbounded
+import com.bobbyesp.spowlo.presentation.theme.SpowloTheme
+import com.bobbyesp.spowlo.presentation.theme.unbounded
 
 @Composable
 fun OptionsDialog(
-    isPreview: Boolean = false, onExit: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    isPreview: Boolean = false,
+    onExit: () -> Unit = {}
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth(),
         tonalElevation = 12.dp,
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 8.dp
@@ -53,7 +56,6 @@ fun OptionsDialog(
                     )
                 )
             }
-            //Icon(bitmap = , contentDescription = )
             Text(
                 text = stringResource(id = R.string.app_name),
                 modifier = Modifier
@@ -68,6 +70,7 @@ fun OptionsDialog(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.theme
+package com.bobbyesp.spowlo.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalTextStyle

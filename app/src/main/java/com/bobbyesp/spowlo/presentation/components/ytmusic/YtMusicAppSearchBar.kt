@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.components
+package com.bobbyesp.spowlo.presentation.components.ytmusic
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -24,13 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.search.SearchSource
-import com.bobbyesp.spowlo.ui.common.LocalNavController
-import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.presentation.common.LocalNavController
+import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.ui.components.image.ProfilePicture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoxScope.AppSearchBar(
+fun BoxScope.YtMusicAppSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
@@ -38,7 +38,7 @@ fun BoxScope.AppSearchBar(
     onActiveChange: (Boolean) -> Unit,
     searchSource: SearchSource,
     onChangeSearchSource: (SearchSource) -> Unit,
-) = with(this@AppSearchBar) {
+) = with(this@YtMusicAppSearchBar) {
     val navController = LocalNavController.current
 
     SearchBar(
@@ -119,7 +119,7 @@ fun BoxScope.AppSearchBar(
                         }
                         AnimatedVisibility(visible = !active) {
                             ProfilePicture(name = "Bobby", size = 32, onClick = {
-                                navController.navigate(Route.OptionsDialog.route)
+                                navController.navigate(Route.Spotify.OptionsDialog)
                             })
                         }
                     }

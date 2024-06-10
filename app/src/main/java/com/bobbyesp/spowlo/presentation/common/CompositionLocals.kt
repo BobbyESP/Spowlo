@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.common
+package com.bobbyesp.spowlo.presentation.common
 
 import android.os.Build
 import androidx.compose.material3.SnackbarHostState

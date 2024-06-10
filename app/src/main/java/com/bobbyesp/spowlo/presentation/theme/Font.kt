@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.theme
+package com.bobbyesp.spowlo.presentation.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily

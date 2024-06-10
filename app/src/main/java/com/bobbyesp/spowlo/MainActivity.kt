@@ -10,10 +10,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.bobbyesp.spowlo.ui.Navigator
-import com.bobbyesp.spowlo.ui.common.AppLocalSettingsProvider
-import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
-import com.bobbyesp.spowlo.ui.theme.SpowloTheme
+import com.bobbyesp.spowlo.presentation.Navigator
+import com.bobbyesp.spowlo.presentation.common.AppLocalSettingsProvider
+import com.bobbyesp.spowlo.presentation.common.LocalDarkTheme
+import com.bobbyesp.spowlo.presentation.theme.SpowloTheme
 import com.zionhuang.innertube.models.SongItem
 import dagger.hilt.android.AndroidEntryPoint
 

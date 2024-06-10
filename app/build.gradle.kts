@@ -7,54 +7,6 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
-sealed class Version(
-    open val versionMajor: Int,
-    val versionMinor: Int,
-    val versionPatch: Int,
-    val versionBuild: Int = 0
-) {
-    abstract fun toVersionName(): String
-    fun toVersionCode(): Int {
-        val minorExtraDigit = if (versionMinor > 9) {
-            (versionMinor / 10).toString()
-        } else {
-            ""
-        }
-
-        return "$versionMajor$minorExtraDigit$versionPatch$versionBuild".toInt()
-    }
-
-    class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-beta.$versionBuild"
-    }
-
-    class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
-        Version(versionMajor, versionMinor, versionPatch) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}"
-    }
-
-    class ReleaseCandidate(
-        versionMajor: Int,
-        versionMinor: Int,
-        versionPatch: Int,
-        versionBuild: Int
-    ) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
-    }
-}
-
-val currentVersion: Version = Version.Stable(
-    versionMajor = 0,
-    versionMinor = 0,
-    versionPatch = 1
-)
-
-
 android {
     namespace = "com.bobbyesp.spowlo"
     compileSdk = 34
@@ -64,18 +16,12 @@ android {
         minSdk = 24
         targetSdk = 34
 
-        versionCode = currentVersion.toVersionCode()
-        versionName = currentVersion.toVersionName().run {
-            this
-        }
+        versionCode = rootProject.extra["versionCode"] as Int
+        versionName = rootProject.extra["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
-        }
-
-        ksp {
-            arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
         }
     }
 
@@ -83,8 +29,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -94,7 +39,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers",
+            "-XXLanguage:+ExplicitBackingFields"
+        )
     }
     buildFeatures {
         compose = true
@@ -106,6 +55,10 @@ android {
     }
 }
 
+ksp {
+    arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
+}
+
 dependencies {
     implementation(project(":app:utilities"))
 
@@ -115,20 +68,18 @@ dependencies {
     //---------------User Interface---------------//
     //Core UI libraries
     implementation(platform(libs.compose.bom.canary))
+    implementation(libs.bundles.compose)
+    implementation(libs.compose.material3.adaptive.navigation)
+    implementation(libs.compose.material3.adaptive.navigation.suite)
     implementation(libs.compose.ui.utilities)
     implementation(project(":app:ui"))
+    implementation(libs.bundles.accompanist)
     api(libs.material)
 
-    //Accompanist libraries
-    implementation(libs.bundles.accompanist)
-
-    //Compose libraries
-    implementation(libs.bundles.compose)
-    //Pagination
+    //---------------Pagination---------------//
     implementation(libs.bundles.pagination)
 
     //-------------------Network-------------------//
-    //Ktor libraries
     implementation(libs.bundles.ktor)
 
     //---------------Media3---------------//
@@ -155,11 +106,6 @@ dependencies {
     //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
 
-    //-------------------FIREBASE-------------------//
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.analytics)
-//    implementation(libs.firebase.crashlytics)
-
     //-------------------Youtube-------------------//
     implementation(project(":innertube"))
 
@@ -167,7 +113,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.qrcode.kotlin.android)
     implementation(libs.profileinstaller)
-    implementation(libs.kotlinx.datetime)
 
     //-------------------Testing-------------------//
     //Android testing libraries
@@ -188,6 +133,9 @@ class RoomSchemaArgProvider(
 ) : CommandLineArgumentProvider {
 
     override fun asArguments(): Iterable<String> {
+        if (!schemaDir.exists()) {
+            schemaDir.mkdirs()
+        }
         return listOf("room.schemaLocation=${schemaDir.path}")
     }
 }

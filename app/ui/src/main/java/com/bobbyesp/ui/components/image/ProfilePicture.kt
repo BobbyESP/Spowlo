@@ -2,6 +2,7 @@ package com.bobbyesp.ui.components.image
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bobbyesp.ui.ext.getInitials
 
 @Composable
 fun ProfilePicture(
@@ -29,7 +31,7 @@ fun ProfilePicture(
     surfaceColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit = {}
 ) {
-    val firstLetter = name.first().toString()
+    val firstLetter = name.getInitials()
     Surface(
         modifier = modifier.size(size.dp),
         shape = shape,
@@ -38,9 +40,9 @@ fun ProfilePicture(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                fontSize = (size / 1.5).sp,
+                fontSize = (size / 2).sp,
                 text = firstLetter,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.W500,
                 textAlign = TextAlign.Center,
             )
         }
@@ -51,11 +53,20 @@ fun ProfilePicture(
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun ProfilePicturePreview() {
-    ProfilePicture(
-        name = "Bobby",
-        onClick = {},
-        shape = RoundedCornerShape(1f),
-        modifier = Modifier,
-        size = 40,
-    )
+    Column {
+        ProfilePicture(
+            name = "Bobby",
+            onClick = {},
+            shape = RoundedCornerShape(1f),
+            modifier = Modifier,
+            size = 40,
+        )
+        ProfilePicture(
+            name = "Gabriel Fontán Rodiño",
+            onClick = {},
+            shape = RoundedCornerShape(1f),
+            modifier = Modifier,
+            size = 40,
+        )
+    }
 }
