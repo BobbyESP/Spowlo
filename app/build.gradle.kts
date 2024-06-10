@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.hilt)
+}
+
+val localProperties = Properties().apply {
+    load(project.rootDir.resolve("local.properties").inputStream())
 }
 
 android {
@@ -23,14 +29,34 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["redirectHostName"] = "spowlo"
+        manifestPlaceholders["redirectSchemeName"] = "spowlo"
     }
 
     buildTypes {
         release {
+            buildConfigField(
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+            )
+            buildConfigField(
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            buildConfigField(
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+            )
+            buildConfigField(
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+            )
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
@@ -47,6 +73,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -112,6 +139,7 @@ dependencies {
     //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.qrcode.kotlin.android)
+    implementation(libs.spotify.api.android)
     implementation(libs.profileinstaller)
 
     //-------------------Testing-------------------//

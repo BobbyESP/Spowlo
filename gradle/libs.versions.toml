@@ -62,6 +62,9 @@ mmkv = "1.3.2"
 #Chrome custom tabs
 customTabs = "1.8.0"
 
+#Spotify API
+spotify-api-library = "4.1.1"
+
 #Markdown handler
 markdown = "0.3.7"
 #Tests
@@ -179,6 +182,7 @@ chrome-custom-tabs = { group = "androidx.browser", name = "browser", version.ref
 
 #Others
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
+spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotify-api-library" }
 
 #Compose tooling and tests
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

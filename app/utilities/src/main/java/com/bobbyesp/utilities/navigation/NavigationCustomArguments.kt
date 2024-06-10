@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.common
+package com.bobbyesp.utilities.navigation
 
 import android.net.Uri
 import android.os.Build

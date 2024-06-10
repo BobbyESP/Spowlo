@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.features.search
+package com.zionhuang.innertube
 
 enum class SearchSource {
     LOCAL, ONLINE
