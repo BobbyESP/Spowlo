@@ -26,13 +26,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".features.spotify.auth.SpotifyAuthActivityImpl"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="spowlo"
-                    android:host="spotify-pkce" />
+                <data android:scheme="spowlo" android:host="spotify-pkce" />
             </intent-filter>
         </activity>
     </application>

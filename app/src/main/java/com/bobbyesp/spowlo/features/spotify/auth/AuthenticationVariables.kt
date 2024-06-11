@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.pages.spotify.auth
+package com.bobbyesp.spowlo.features.spotify.auth
 
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.minutes

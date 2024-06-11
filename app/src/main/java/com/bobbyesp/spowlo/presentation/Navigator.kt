@@ -1,7 +1,9 @@
 package com.bobbyesp.spowlo.presentation
 
+import android.content.Intent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,10 +39,10 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ext.formatAsClassToRoute
 import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
 import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
+import com.bobbyesp.spowlo.features.spotify.auth.SpotifyAuthActivityImpl
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
 import com.bobbyesp.spowlo.presentation.common.LocalNotificationManager
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
@@ -50,14 +51,17 @@ import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.spowlo.presentation.common.asProviderRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
-import com.bobbyesp.spowlo.presentation.pages.spotify.auth.launchSpotifyAuth
+import com.bobbyesp.spowlo.presentation.pages.spotify.auth.AuthenticationPage
+import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun Navigator() {
+fun Navigator(
+    authManagerViewModel: SpotifyAuthManagerViewModel
+) {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -130,7 +134,7 @@ fun Navigator() {
     val context = LocalContext.current
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            mainRoutesForProvider(currentProvider).fastForEach { route ->
+            mainRoutesForProvider(currentProvider).forEach { route ->
                 val routeClass = route.formatAsClassToRoute()
                 item(
                     selected = routeClass == currentRootRoute.value,
@@ -166,10 +170,10 @@ fun Navigator() {
                     route = Route.MainHost::class,
                 ) {
                     navigation<Route.Spotify>(
-                        startDestination = Route.Spotify.HomeNavigator,
+                        startDestination = Route.Spotify.Auth,
                     ) {
                         composable<Route.Spotify.Auth> {
-
+                            AuthenticationPage(authManagerViewModel)
                         }
                         navigation<Route.Spotify.HomeNavigator>(
                             startDestination = Route.Spotify.HomeNavigator.Home,
@@ -177,7 +181,7 @@ fun Navigator() {
                             composable<Route.Spotify.HomeNavigator.Home> {
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                                    verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     Text("Hello, Spotify!")
@@ -203,7 +207,7 @@ fun Navigator() {
                                     }
 
                                     Button(onClick = {
-                                        launchSpotifyAuth(context, MainActivity.getActivity().authorizationUrl)
+                                        context.startActivity(Intent(context, SpotifyAuthActivityImpl::class.java))
                                     }) {
                                         Text("Open auth screen")
                                     }
