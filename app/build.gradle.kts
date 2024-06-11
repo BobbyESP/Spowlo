@@ -42,6 +42,9 @@ android {
             buildConfigField(
                 "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
             )
+            buildConfigField(
+                "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
@@ -54,6 +57,9 @@ android {
             )
             buildConfigField(
                 "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+            )
+            buildConfigField(
+                "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
             )
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
@@ -140,6 +146,7 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.qrcode.kotlin.android)
     implementation(libs.spotify.api.android)
+    implementation(libs.chrome.customTabs)
     implementation(libs.profileinstaller)
 
     //-------------------Testing-------------------//

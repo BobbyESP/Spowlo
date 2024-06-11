@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
+import com.bobbyesp.spowlo.features.spotify.auth.CredentialsStorer
 import com.bobbyesp.utilities.Theme
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -31,7 +32,7 @@ class App : Application() {
         applicationScope = CoroutineScope(SupervisorJob())
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
-
+        CredentialsStorer.initializeCredentials(this)
         Theme.applicationScope = applicationScope
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()

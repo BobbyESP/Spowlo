@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.presentation
 
-import android.content.Intent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
@@ -28,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.DialogProperties
@@ -38,6 +38,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.ext.formatAsClassToRoute
 import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
 import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
@@ -49,20 +50,21 @@ import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.spowlo.presentation.common.asProviderRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
+import com.bobbyesp.spowlo.presentation.pages.spotify.auth.launchSpotifyAuth
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun Navigator(
-    handledIntent: Intent?,
-) {
+fun Navigator() {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val focusManager = LocalFocusManager.current
     val windowWidthClass = LocalWindowWidthState.current
+
+    val scope = rememberCoroutineScope()
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
@@ -125,6 +127,7 @@ fun Navigator(
 //
 //    val shouldShowSearchBar = true //TODO: Change this
 
+    val context = LocalContext.current
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             mainRoutesForProvider(currentProvider).fastForEach { route ->
@@ -165,6 +168,9 @@ fun Navigator(
                     navigation<Route.Spotify>(
                         startDestination = Route.Spotify.HomeNavigator,
                     ) {
+                        composable<Route.Spotify.Auth> {
+
+                        }
                         navigation<Route.Spotify.HomeNavigator>(
                             startDestination = Route.Spotify.HomeNavigator.Home,
                         ) {
@@ -180,7 +186,6 @@ fun Navigator(
                                     }) {
                                         Text("Navigate to YouTube Music!")
                                     }
-                                    val scope = rememberCoroutineScope()
                                     Button(onClick = {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Hello, Snackbar!")
@@ -194,7 +199,13 @@ fun Navigator(
                                             notificationsManager.showNotification(Notification(title = "Hello, Notification!"))
                                         }
                                     }) {
-                                        Text("Show Snackbar")
+                                        Text("Show notificatio")
+                                    }
+
+                                    Button(onClick = {
+                                        launchSpotifyAuth(context, MainActivity.getActivity().authorizationUrl)
+                                    }) {
+                                        Text("Open auth screen")
                                     }
                                 }
                             }

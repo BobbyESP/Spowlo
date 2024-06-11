@@ -1,6 +1,7 @@
 package com.bobbyesp.spowlo.presentation.common
 
 import androidx.compose.runtime.saveable.Saver
+import androidx.compose.ui.util.fastFirstOrNull
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,6 +16,9 @@ sealed interface Route {
 
     @Serializable
     data object Spotify : Route {
+
+        @Serializable
+        data object Auth : Route
 
         @Serializable
         data object HomeNavigator : Route {
@@ -81,7 +85,7 @@ fun childRoutesForProvider(qualifiedName: String): List<Route> {
 }
 
 fun String.asProviderRoute(): Route {
-    return providers.first { it::class.qualifiedName == this }
+    return providers.fastFirstOrNull { it::class.qualifiedName == this } ?: Route.Spotify
 }
 
 val routeSaver: Saver<Route, String> = Saver(
