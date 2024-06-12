@@ -4,6 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.adamratzman.spotify.SpotifyApiOptions
 import com.adamratzman.spotify.SpotifyClientApi
@@ -12,6 +29,10 @@ import com.adamratzman.spotify.auth.SpotifyDefaultCredentialStore
 import com.adamratzman.spotify.auth.pkce.isSpotifyPkceAuthIntent
 import com.adamratzman.spotify.spotifyClientPkceApi
 import com.bobbyesp.spowlo.BuildConfig
+import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.presentation.common.AppLocalSettingsProvider
+import com.bobbyesp.spowlo.presentation.common.LocalDarkTheme
+import com.bobbyesp.spowlo.presentation.theme.SpowloTheme
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +55,13 @@ abstract class SpotifyAuthActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
+            v.setPadding(0, 0, 0, 0)
+            insets
+        }
+
         lifecycleScope.launch {
             spCredentialsStorer = CredentialsStorer.getCredentials()
         }
@@ -45,6 +73,39 @@ abstract class SpotifyAuthActivity : ComponentActivity() {
 
         spCredentialsStorer.currentSpotifyPkceCodeVerifier = pkceCodeVerifier
         launchSpotifyAuth(this, authorizationUrl)
+
+        setContent {
+            val windowWidthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+            AppLocalSettingsProvider(windowWidthClass) {
+                SpowloTheme(
+                    darkTheme = LocalDarkTheme.current.isDarkTheme(),
+                    isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
+                ) {
+                    Scaffold(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(it),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                text = stringResource(R.string.spotify_auth_cancelled_suddenly),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Button(onClick = {
+                                finish()
+                            }) {
+                                Text(stringResource(R.string.spotify_auth_finish))
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -132,7 +193,6 @@ abstract class SpotifyAuthActivity : ComponentActivity() {
                 try {
                     Log.i(TAG, "Attempting to exchange auth code for access token.")
                     setLoadingState(true)()
-                    Log.i(TAG, pkceCodeVerifier)
                     val api = spotifyClientPkceApi(
                         clientId = clientId,
                         redirectUri = redirectUri,
@@ -157,13 +217,13 @@ abstract class SpotifyAuthActivity : ComponentActivity() {
                     Log.e(TAG, "Failed exchanging auth code for access token.", e)
                     onFailure(e)
                 }
-                Log.i(TAG, "Got an auth code of ${authCode.substring(0, 10)}...")
+                Log.d(TAG, "Got an auth code of ${authCode.substring(0, 10)}...")
                 finish()
             }
         } else {
             when (response.type) {
                 AuthorizationResponse.Type.TOKEN, AuthorizationResponse.Type.ERROR, AuthorizationResponse.Type.EMPTY, AuthorizationResponse.Type.UNKNOWN -> {
-                    Log.i(TAG, "Got an error response of ${response.error}")
+                    Log.d(TAG, "Got an error response of ${response.error}")
                     onFailure(IllegalStateException("Received an error response!"))
                 }
 

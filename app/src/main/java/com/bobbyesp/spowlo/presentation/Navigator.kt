@@ -1,8 +1,10 @@
 package com.bobbyesp.spowlo.presentation
 
-import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Square
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -40,24 +43,24 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.bobbyesp.spowlo.ext.formatAsClassToRoute
-import com.bobbyesp.spowlo.features.notification_manager.domain.model.Notification
 import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
-import com.bobbyesp.spowlo.features.spotify.auth.SpotifyAuthActivityImpl
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
-import com.bobbyesp.spowlo.presentation.common.LocalNotificationManager
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.spowlo.presentation.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.spowlo.presentation.common.asProviderRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
+import com.bobbyesp.spowlo.presentation.components.spotify.search.SpAppSearchBarImpl
+import com.bobbyesp.spowlo.presentation.components.ytmusic.search.YtMusicAppSearchBarImpl
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.AuthenticationPage
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
+import com.bobbyesp.spowlo.presentation.pages.spotify.home.HomePage
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
-import kotlinx.coroutines.launch
+import com.bobbyesp.ui.util.appBarScrollBehavior
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Navigator(
     authManagerViewModel: SpotifyAuthManagerViewModel
@@ -84,7 +87,6 @@ fun Navigator(
     val currentProviderRoot = rememberSaveable(navBackStackEntry, key = "currentProvider") {
         mutableStateOf(
             navBackStackEntry?.destination?.parent?.parent?.route
-                ?: Route.Spotify::class.qualifiedName!!
         )
     }
 
@@ -93,45 +95,15 @@ fun Navigator(
     }
 
     LaunchedEffect(currentProviderRoot) {
-        currentProvider = currentProviderRoot.value.asProviderRoute()
+        currentProvider = currentProviderRoot.value?.asProviderRoute() ?: Route.Spotify
     }
 
     val snackbarHostState = LocalSnackbarHostState.current
-
-//    val (query, onQueryChange) = rememberSaveable(key = "searchQuery") {
-//        mutableStateOf("")
-//    }
-//    var active by rememberSaveable {
-//        mutableStateOf(false)
-//    }
-//    val onActiveChange: (Boolean) -> Unit = { newActive ->
-//        active = newActive
-//        if (!newActive) {
-//            focusManager.clearFocus()
-//            if (childRoutesForProvider(currentProviderRoot.value).fastAny { it.formatAsClassToRoute() == currentRoute.value }) {
-//                onQueryChange("")
-//            }
-//        }
-//    }
-//
-//    val onSearch: (String) -> Unit = {
-//        if (it.isNotEmpty()) {
-//            onActiveChange(false)
-//            navController.navigate(Route.Spotify.SearchNavigator.Search(it))
-//        }
-//    }
-//
-//    var searchSource by remember {
-//        mutableStateOf(Preferences.Enumerations.getValue(SEARCH_SOURCE, SearchSource.ONLINE))
-//    }
-//
-//    var openSearchImmediately: Boolean by remember {
-//        mutableStateOf(handledIntent?.action == MainActivity.ACTION_SEARCH)
-//    }
+    val searchBarScrollBehavior = appBarScrollBehavior()
 //
 //    val shouldShowSearchBar = true //TODO: Change this
-
     val context = LocalContext.current
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             mainRoutesForProvider(currentProvider).forEach { route ->
@@ -179,39 +151,7 @@ fun Navigator(
                             startDestination = Route.Spotify.HomeNavigator.Home,
                         ) {
                             composable<Route.Spotify.HomeNavigator.Home> {
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Text("Hello, Spotify!")
-                                    Button(onClick = {
-                                        navController.cleanNavigate(Route.YoutubeMusic)
-                                    }) {
-                                        Text("Navigate to YouTube Music!")
-                                    }
-                                    Button(onClick = {
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar("Hello, Snackbar!")
-                                        }
-                                    }) {
-                                        Text("Show Snackbar")
-                                    }
-                                    val notificationsManager = LocalNotificationManager.current
-                                    Button(onClick = {
-                                        scope.launch {
-                                            notificationsManager.showNotification(Notification(title = "Hello, Notification!"))
-                                        }
-                                    }) {
-                                        Text("Show notificatio")
-                                    }
-
-                                    Button(onClick = {
-                                        context.startActivity(Intent(context, SpotifyAuthActivityImpl::class.java))
-                                    }) {
-                                        Text("Open auth screen")
-                                    }
-                                }
+                                HomePage()
                             }
                         }
 
@@ -234,7 +174,7 @@ fun Navigator(
                             composable<Route.YoutubeMusic.HomeNavigator.Home> {
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                                    verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     Text("Hello, YouTube Music!")
@@ -259,24 +199,18 @@ fun Navigator(
                 }
             }
             NotificationsHandler()
-//            AnimatedVisibility(
-//                modifier = Modifier.align(Alignment.TopCenter),
-//                visible = shouldShowSearchBar,
-//                enter = fadeIn(),
-//                exit = fadeOut()
-//            ) {
-//                YtMusicAppSearchBar(
-//                    query = query,
-//                    onQueryChange = onQueryChange,
-//                    onSearch = onSearch,
-//                    active = active,
-//                    onActiveChange = onActiveChange,
-//                    searchSource = searchSource,
-//                    onChangeSearchSource = { newSearchSource ->
-//                        searchSource = newSearchSource
-//                    },
-//                )
-//            }
+            AnimatedVisibility(
+                modifier = Modifier.align(Alignment.TopCenter),
+                visible = true,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                if(currentProvider == Route.Spotify) {
+                    SpAppSearchBarImpl(searchBarScrollBehavior)
+                } else {
+                    YtMusicAppSearchBarImpl(searchBarScrollBehavior)
+                }
+            }
             SnackbarHost(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 hostState = snackbarHostState

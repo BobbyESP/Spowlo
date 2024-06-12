@@ -46,5 +46,7 @@ class MainActivity : ComponentActivity() {
         fun getActivity(): MainActivity {
             return activity
         }
+
+        const val ACTION_SEARCH = "${App.APP_PACKAGE_NAME}.action.SEARCH"
     }
 }

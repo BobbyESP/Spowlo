@@ -11,9 +11,30 @@
     <string name="options_dialog">Options dialog</string>
     <string name="app_logo">App logo</string>
     <string name="close">Close</string>
-    <plurals name="n_songs">
+    <string name="spotify_auth_cancelled_suddenly">If you have reached this place is because of the fact that something went wrong with your login or got cancelled. Please, click on the button below to finish the login process.</string>
+    <string name="spotify_auth_finish">Finish Spotify authentication</string>
+    <string name="search_tracks">Search for tracks</string>
+    <string name="search_albums">Search for albums</string>
+    <string name="search_artists">Search for artists</string>
+    <string name="search_playlists">Search for playlists</string>
+    <plurals name="numberOfSongs">
         <item quantity="one">%d song</item>
-        <item quantity="many">%d songs</item>
         <item quantity="other">%d songs</item>
+    </plurals>
+    <plurals name="numberOfAlbums">
+        <item quantity="one">%d album</item>
+        <item quantity="other">%d albums</item>
+    </plurals>
+    <plurals name="numberOfArtists">
+        <item quantity="one">%d artist</item>
+        <item quantity="other">%d artists</item>
+    </plurals>
+    <plurals name="numberOfPlaylists">
+        <item quantity="one">%d playlist</item>
+        <item quantity="other">%d playlists</item>
+    </plurals>
+    <plurals name="numberOfTracks">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
     </plurals>
 </resources>

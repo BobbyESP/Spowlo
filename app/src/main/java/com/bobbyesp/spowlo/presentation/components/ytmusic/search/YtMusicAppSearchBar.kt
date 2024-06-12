@@ -1,10 +1,11 @@
-package com.bobbyesp.spowlo.presentation.components.ytmusic
+package com.bobbyesp.spowlo.presentation.components.ytmusic.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.LibraryMusic
@@ -17,20 +18,25 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
 import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.ui.components.image.ProfilePicture
 import com.zionhuang.innertube.SearchSource
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BoxScope.YtMusicAppSearchBar(
+fun YtMusicAppSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
@@ -38,14 +44,30 @@ fun BoxScope.YtMusicAppSearchBar(
     onActiveChange: (Boolean) -> Unit,
     searchSource: SearchSource,
     onChangeSearchSource: (SearchSource) -> Unit,
-) = with(this@YtMusicAppSearchBar) {
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
     val navController = LocalNavController.current
 
+    val heightOffsetLimit = with(LocalDensity.current) {
+        -(64.dp.toPx() + WindowInsets.systemBars.getTop(this))
+    }
+
+    SideEffect {
+        if (scrollBehavior.state.heightOffsetLimit != heightOffsetLimit) {
+            scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
+        }
+    }
+
     SearchBar(
-        modifier = Modifier
-            .align(Alignment.TopCenter),
+        modifier = Modifier,
         inputField = {
             SearchBarDefaults.InputField(
+                modifier = Modifier.offset {
+                    IntOffset(
+                        x = 0,
+                        y = scrollBehavior.state.heightOffset.roundToInt()
+                    )
+                },
                 query = query,
                 onQueryChange = onQueryChange,
                 onSearch = onSearch,
@@ -83,7 +105,7 @@ fun BoxScope.YtMusicAppSearchBar(
                 },
                 trailingIcon = {
                     Row(
-                        modifier = Modifier.padding(end = 4.dp),
+                        modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconButton(onClick = {

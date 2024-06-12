@@ -29,8 +29,8 @@
         </activity>
         <activity
             android:name=".features.spotify.auth.SpotifyAuthActivityImpl"
-            android:exported="true"
-            >
+            android:launchMode="singleTop"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
