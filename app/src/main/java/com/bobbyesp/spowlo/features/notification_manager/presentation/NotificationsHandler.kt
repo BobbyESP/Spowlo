@@ -10,8 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material.Text
 import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +47,8 @@ fun NotificationsHandler(modifier: Modifier = Modifier) {
                 notificationManager.dismissNotification()
             }
 
+            job.start()
+
             onDispose {
                 job.cancel()
             }
@@ -55,8 +57,8 @@ fun NotificationsHandler(modifier: Modifier = Modifier) {
 
     AnimatedVisibility(
         visible = notificationVisible,
-        enter = fadeIn(), // You can customize enter and exit animations
-        exit = fadeOut() // As an example, fadeIn and fadeOut are used
+        enter = fadeIn(),
+        exit = fadeOut()
     ) {
         Box(
             modifier = modifier

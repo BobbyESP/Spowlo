@@ -198,7 +198,6 @@ fun Navigator(
                     }
                 }
             }
-            NotificationsHandler()
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.TopCenter),
                 visible = true,
@@ -211,6 +210,8 @@ fun Navigator(
                     YtMusicAppSearchBarImpl(searchBarScrollBehavior)
                 }
             }
+
+            NotificationsHandler()
             SnackbarHost(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 hostState = snackbarHostState
