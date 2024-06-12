@@ -1,3 +1,3 @@
 package com.bobbyesp.spowlo.ext
 
-fun Any.formatAsClassToRoute(): String = this::class.qualifiedName.toString()
+fun Any.asQualifiedName(): String = this::class.qualifiedName.toString()

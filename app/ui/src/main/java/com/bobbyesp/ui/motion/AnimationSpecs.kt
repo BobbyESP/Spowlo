@@ -19,20 +19,19 @@ private val path = Path().apply {
     cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
 }
 
-val emphasizePathInterpolator = PathInterpolator(path)
-val emphasizeEasing = emphasizePathInterpolator.toEasing()
-val emphasizeEasingVariant = CubicBezierEasing(.2f, 0f, 0f, 1f)
-val emphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-val emphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 1f, 1f)
+val EmphasizePathInterpolator = PathInterpolator(path)
+val EmphasizeEasing = EmphasizePathInterpolator.toEasing()
 
+val EmphasizeEasingVariant = CubicBezierEasing(.2f, 0f, 0f, 1f)
+val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 1f, 1f)
 val EmphasizedDecelerateEasing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 val EmphasizedAccelerateEasing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
 
-val standardDecelerate = CubicBezierEasing(.0f, .0f, 0f, 1f)
+val StandardDecelerate = CubicBezierEasing(.0f, .0f, 0f, 1f)
+val MotionEasingStandard = CubicBezierEasing(0.4F, 0.0F, 0.2F, 1F)
 
-val motionEasingStandard = CubicBezierEasing(0.4F, 0.0F, 0.2F, 1F)
-
-val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
+val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = EmphasizeEasing)
 
 fun <T> tweenEnter(
     delayMillis: Int = DURATION_EXIT,

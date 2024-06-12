@@ -17,6 +17,8 @@
     <string name="search_albums">Search for albums</string>
     <string name="search_artists">Search for artists</string>
     <string name="search_playlists">Search for playlists</string>
+    <string name="unknown">Unknown</string>
+    <string name="profile">Profile</string>
     <plurals name="numberOfSongs">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>

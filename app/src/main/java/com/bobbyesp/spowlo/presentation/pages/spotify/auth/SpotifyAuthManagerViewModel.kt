@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SpotifyAuthManagerViewModel @Inject constructor(
-    private val credentialsStore: CredentialsStorer
+    val credentialsStore: CredentialsStorer
 ) : SpotifyAuthManager, ViewModel() {
     private val mutableAuthManagerState: MutableStateFlow<SpotifyAuthState> =
         MutableStateFlow(SpotifyAuthState.LoggingIn(true))

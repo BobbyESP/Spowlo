@@ -27,14 +27,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,13 +42,16 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.bobbyesp.spowlo.ext.formatAsClassToRoute
+import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ext.asQualifiedName
 import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
 import com.bobbyesp.spowlo.presentation.common.LocalNavController
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.spowlo.presentation.common.LocalWindowWidthState
+import com.bobbyesp.spowlo.presentation.common.NavigatorInfo
 import com.bobbyesp.spowlo.presentation.common.Route
 import com.bobbyesp.spowlo.presentation.common.asProviderRoute
+import com.bobbyesp.spowlo.presentation.common.isHomeRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
 import com.bobbyesp.spowlo.presentation.components.spotify.search.SpAppSearchBarImpl
@@ -56,8 +59,11 @@ import com.bobbyesp.spowlo.presentation.components.ytmusic.search.YtMusicAppSear
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.AuthenticationPage
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
 import com.bobbyesp.spowlo.presentation.pages.spotify.home.HomePage
+import com.bobbyesp.spowlo.presentation.pages.spotify.profile.ProfilePage
+import com.bobbyesp.spowlo.presentation.pages.spotify.profile.SpProfilePageViewModel
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
+import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.util.appBarScrollBehavior
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
@@ -65,13 +71,9 @@ import com.bobbyesp.ui.util.appBarScrollBehavior
 fun Navigator(
     authManagerViewModel: SpotifyAuthManagerViewModel
 ) {
+    val snackbarHostState = LocalSnackbarHostState.current
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-    val focusManager = LocalFocusManager.current
-    val windowWidthClass = LocalWindowWidthState.current
-
-    val scope = rememberCoroutineScope()
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
@@ -83,13 +85,11 @@ fun Navigator(
             navBackStackEntry?.destination?.route
         )
     }
-
     val currentProviderRoot = rememberSaveable(navBackStackEntry, key = "currentProvider") {
         mutableStateOf(
             navBackStackEntry?.destination?.parent?.parent?.route
         )
     }
-
     var currentProvider: Route by remember("provider") {
         mutableStateOf(Route.Spotify)
     }
@@ -98,28 +98,31 @@ fun Navigator(
         currentProvider = currentProviderRoot.value?.asProviderRoute() ?: Route.Spotify
     }
 
-    val snackbarHostState = LocalSnackbarHostState.current
+    val shouldShowSearchBar by remember(currentRoute) {
+        mutableStateOf(currentRoute.value?.isHomeRoute() == true)
+    }
     val searchBarScrollBehavior = appBarScrollBehavior()
-//
-//    val shouldShowSearchBar = true //TODO: Change this
-    val context = LocalContext.current
+
+    val windowWidthClass = LocalWindowWidthState.current
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             mainRoutesForProvider(currentProvider).forEach { route ->
-                val routeClass = route.formatAsClassToRoute()
+                val navigatorInfo = NavigatorInfo.fromRoute(route)
+                val routeQualifiedName = route.asQualifiedName()
                 item(
-                    selected = routeClass == currentRootRoute.value,
+                    selected = routeQualifiedName == currentRootRoute.value,
                     onClick = {
-                        navController.navigate(route)
+                        navController.cleanNavigate(route)
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Rounded.Square, contentDescription = null
+                            imageVector = navigatorInfo?.icon ?: Icons.Rounded.Square,
+                            contentDescription = stringResource(navigatorInfo?.title ?: R.string.unknown)
                         )
                     },
                     label = {
-                        Text(text = route.toString())
+                        Text(text = navigatorInfo?.title?.let { stringResource(it) } ?: route.toString())
                     }
                 )
             }
@@ -136,21 +139,22 @@ fun Navigator(
                 NavHost(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .nestedScroll(searchBarScrollBehavior.nestedScrollConnection)
                         .align(Alignment.Center),
                     navController = navController,
                     startDestination = Route.Spotify,
                     route = Route.MainHost::class,
                 ) {
                     navigation<Route.Spotify>(
-                        startDestination = Route.Spotify.Auth,
+                        startDestination = Route.Spotify.HomeNavigator,
                     ) {
-                        composable<Route.Spotify.Auth> {
+                        animatedComposable<Route.Spotify.Auth> {
                             AuthenticationPage(authManagerViewModel)
                         }
                         navigation<Route.Spotify.HomeNavigator>(
                             startDestination = Route.Spotify.HomeNavigator.Home,
                         ) {
-                            composable<Route.Spotify.HomeNavigator.Home> {
+                            animatedComposable<Route.Spotify.HomeNavigator.Home> {
                                 HomePage()
                             }
                         }
@@ -158,9 +162,18 @@ fun Navigator(
                         navigation<Route.Spotify.SearchNavigator>(
                             startDestination = Route.Spotify.SearchNavigator.Search::class,
                         ) {
-                            composable<Route.Spotify.SearchNavigator.Search> {
+                            animatedComposable<Route.Spotify.SearchNavigator.Search> {
                                 val args = it.toRoute<Route.Spotify.SearchNavigator.Search>()
                                 Text("Search results for ${args.query}")
+                            }
+                        }
+
+                        navigation<Route.Spotify.ProfileNavigator>(
+                            startDestination = Route.Spotify.ProfileNavigator.Profile,
+                        ) {
+                            animatedComposable<Route.Spotify.ProfileNavigator.Profile> {
+                                val profilePageViewModel = hiltViewModel<SpProfilePageViewModel>()
+                                ProfilePage(profilePageViewModel)
                             }
                         }
                     }
@@ -186,6 +199,15 @@ fun Navigator(
                                 }
                             }
                         }
+
+                        navigation<Route.YoutubeMusic.SearchNavigator>(
+                            startDestination = Route.YoutubeMusic.SearchNavigator.Search::class,
+                        ) {
+                            composable<Route.YoutubeMusic.SearchNavigator.Search> {
+                                val args = it.toRoute<Route.YoutubeMusic.SearchNavigator.Search>()
+                                Text("Search results for ${args.query}")
+                            }
+                        }
                     }
                     dialog<Route.OptionsDialog>(
                         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
@@ -200,11 +222,11 @@ fun Navigator(
             }
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.TopCenter),
-                visible = true,
+                visible = shouldShowSearchBar,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                if(currentProvider == Route.Spotify) {
+                if (currentProvider == Route.Spotify) {
                     SpAppSearchBarImpl(searchBarScrollBehavior)
                 } else {
                     YtMusicAppSearchBarImpl(searchBarScrollBehavior)

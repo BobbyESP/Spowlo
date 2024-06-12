@@ -32,5 +32,5 @@ object MotionConstants {
     const val DURATION_EXIT = 200
     const val DURATION_EXIT_SHORT = 100
 
-    const val initialOffset = 0.10f
+    const val InitialOffset = 0.10f
 }

@@ -13,7 +13,6 @@ sealed interface Route {
     @Serializable
     data object OptionsDialog : Route
 
-
     @Serializable
     data object Spotify : Route {
 
@@ -32,6 +31,12 @@ sealed interface Route {
             @Serializable
             data class Search(val query: String) : Route
         }
+
+        @Serializable
+        data object ProfileNavigator : Route {
+            @Serializable
+            data object Profile : Route
+        }
     }
 
     @Serializable
@@ -41,6 +46,7 @@ sealed interface Route {
             @Serializable
             data object Home : Route
         }
+
         @Serializable
         data object SearchNavigator : Route {
             @Serializable
@@ -54,38 +60,41 @@ val providers = listOf(
     Route.YoutubeMusic,
 )
 
-val spotifyMainRoutes = listOf(
-    Route.Spotify.HomeNavigator,
-)
-
-val youtubeMusicMainRoutes = listOf(
-    Route.YoutubeMusic.HomeNavigator,
-    Route.YoutubeMusic.SearchNavigator
-)
-
 val providerRoutes = mapOf(
-    Route.Spotify to spotifyMainRoutes,
-    Route.YoutubeMusic to youtubeMusicMainRoutes,
+    Route.Spotify to listOf(
+        Route.Spotify.HomeNavigator,
+        Route.Spotify.SearchNavigator,
+        Route.Spotify.ProfileNavigator
+    ),
+    Route.YoutubeMusic to listOf(
+        Route.YoutubeMusic.HomeNavigator,
+        Route.YoutubeMusic.SearchNavigator
+    )
 )
 
 fun mainRoutesForProvider(provider: Route): List<Route> {
-    return when (provider) {
-        Route.Spotify -> spotifyMainRoutes
-        Route.YoutubeMusic -> youtubeMusicMainRoutes
-        else -> emptyList()
-    }
-}
-
-fun childRoutesForProvider(provider: Route): List<Route> {
     return providerRoutes[provider] ?: emptyList()
 }
 
-fun childRoutesForProvider(qualifiedName: String): List<Route> {
-    return providerRoutes[providers.first { it::class.qualifiedName == qualifiedName }] ?: emptyList()
+fun childRoutesForProvider(provider: Any): List<Route> {
+    return when (provider) {
+        is Route -> providerRoutes[provider]
+        is String -> providerRoutes[providers.first { it::class.qualifiedName == provider }]
+        else -> null
+    } ?: emptyList()
 }
 
 fun String.asProviderRoute(): Route {
     return providers.fastFirstOrNull { it::class.qualifiedName == this } ?: Route.Spotify
+}
+
+fun Any.isHomeRoute(): Boolean {
+    return when (this) {
+        is Route -> this is Route.Spotify.HomeNavigator.Home || this is Route.YoutubeMusic.HomeNavigator.Home
+        is String -> this == Route.Spotify.HomeNavigator.Home::class.qualifiedName ||
+            this == Route.YoutubeMusic.HomeNavigator.Home::class.qualifiedName
+        else -> false
+    }
 }
 
 val routeSaver: Saver<Route, String> = Saver(

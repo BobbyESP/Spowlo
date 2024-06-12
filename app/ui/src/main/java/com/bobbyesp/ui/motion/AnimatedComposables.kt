@@ -1,6 +1,5 @@
 package com.bobbyesp.ui.motion
 
-import android.graphics.Path
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,9 +16,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
-import com.bobbyesp.ui.motion.MotionConstants.initialOffset
+import com.bobbyesp.ui.motion.MotionConstants.InitialOffset
 
 fun NavGraphBuilder.fadeThroughComposable(
     route: String,
@@ -53,44 +51,10 @@ fun NavGraphBuilder.fadeThroughComposable(
     content = content
 )
 
+val enterTween = tweenEnter<IntOffset>()
+val exitTween = tweenExit<IntOffset>()
+val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
 
-private val path = Path().apply {
-    moveTo(0f, 0f)
-    cubicTo(0.05F, 0F, 0.133333F, 0.06F, 0.166666F, 0.4F)
-    cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
-}
-
-val enterTween =
-    tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
-private val exitTween =
-    tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
-private val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
-
-private val fadeSpec = fadeTween
-
-fun NavGraphBuilder.animatedComposable(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
-    deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
-) = composable(
-    route = route,
-    arguments = arguments,
-    deepLinks = deepLinks,
-    enterTransition = {
-        materialSharedAxisXIn(initialOffsetX = { (it * initialOffset).toInt() })
-    },
-    exitTransition = {
-        materialSharedAxisXOut(targetOffsetX = { -(it * initialOffset).toInt() })
-    },
-    popEnterTransition = {
-        materialSharedAxisXIn(initialOffsetX = { -(it * initialOffset).toInt() })
-    },
-    popExitTransition = {
-        materialSharedAxisXOut(targetOffsetX = { (it * initialOffset).toInt() })
-    },
-    content = content
-)
 
 inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
     deepLinks: List<NavDeepLink> = emptyList(),
@@ -98,104 +62,40 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
 ) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
-        materialSharedAxisXIn(initialOffsetX = { (it * initialOffset).toInt() })
+        materialSharedAxisXIn(initialOffsetX = { (it * InitialOffset).toInt() })
     },
     exitTransition = {
-        materialSharedAxisXOut(targetOffsetX = { -(it * initialOffset).toInt() })
+        materialSharedAxisXOut(targetOffsetX = { -(it * InitialOffset).toInt() })
     },
     popEnterTransition = {
-        materialSharedAxisXIn(initialOffsetX = { -(it * initialOffset).toInt() })
+        materialSharedAxisXIn(initialOffsetX = { -(it * InitialOffset).toInt() })
     },
     popExitTransition = {
-        materialSharedAxisXOut(targetOffsetX = { (it * initialOffset).toInt() })
+        materialSharedAxisXOut(targetOffsetX = { (it * InitialOffset).toInt() })
     },
     content = content
 )
 
-
-
-fun NavGraphBuilder.animatedComposableLegacy(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
+inline fun <reified T: Any> NavGraphBuilder.animatedComposableVariant(
     deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
-) = composable(
-    route = route,
-    arguments = arguments,
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
         slideInHorizontally(
             enterTween,
-            initialOffsetX = { (it * initialOffset).toInt() }) + fadeIn(fadeSpec)
+            initialOffsetX = { (it * InitialOffset).toInt() }) + fadeIn(fadeTween)
     },
     exitTransition = {
-        slideOutHorizontally(
-            exitTween,
-            targetOffsetX = { -(it * initialOffset).toInt() }) + fadeOut(fadeSpec)
+        fadeOut(fadeTween)
     },
     popEnterTransition = {
-        slideInHorizontally(
-            enterTween,
-            initialOffsetX = { -(it * initialOffset).toInt() }) + fadeIn(fadeSpec)
+        fadeIn(fadeTween)
     },
     popExitTransition = {
         slideOutHorizontally(
             exitTween,
-            targetOffsetX = { (it * initialOffset).toInt() }) + fadeOut(fadeSpec)
-    },
-    content = content
-)
-
-
-fun NavGraphBuilder.animatedComposableVariant(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
-    deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
-) = composable(
-    route = route,
-    arguments = arguments,
-    deepLinks = deepLinks,
-    enterTransition = {
-        slideInHorizontally(
-            enterTween,
-            initialOffsetX = { (it * initialOffset).toInt() }) + fadeIn(fadeSpec)
-    },
-    exitTransition = {
-        fadeOut(fadeSpec)
-    },
-    popEnterTransition = {
-        fadeIn(fadeSpec)
-    },
-    popExitTransition = {
-        slideOutHorizontally(
-            exitTween,
-            targetOffsetX = { (it * initialOffset).toInt() }) + fadeOut(fadeSpec)
-    },
-    content = content
-)
-
-fun NavGraphBuilder.slideInVerticallyComposable(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
-    deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
-) = composable(
-    route = route,
-    arguments = arguments,
-    deepLinks = deepLinks,
-    enterTransition = {
-        slideInVertically(
-            initialOffsetY = { it }, animationSpec = enterTween
-        ) + fadeIn()
-    },
-    exitTransition = { slideOutVertically() },
-    popEnterTransition = { slideInVertically() },
-    popExitTransition = {
-        slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = enterTween
-        ) + fadeOut()
+            targetOffsetX = { (it * InitialOffset).toInt() }) + fadeOut(fadeTween)
     },
     content = content
 )
