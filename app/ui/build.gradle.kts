@@ -37,6 +37,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs = listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers",
+            "-XXLanguage:+ExplicitBackingFields"
+        )
     }
     buildFeatures {
         compose = true

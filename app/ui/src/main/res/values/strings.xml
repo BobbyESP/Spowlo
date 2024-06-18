@@ -11,4 +11,5 @@
     <string name="error">Error</string>
     <string name="unknown_error_title">An unknown error has occurred!</string>
     <string name="open_settings">Open settings</string>
+    <string name="line">Line %1$s</string>
 </resources>
