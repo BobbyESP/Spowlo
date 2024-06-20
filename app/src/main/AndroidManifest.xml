@@ -38,6 +38,17 @@
                 <data android:scheme="spowlo" android:host="spotify-pkce" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".features.spotify.data.local.broadcast.SpotifyBroadcastObserverImpl"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.spotify.music.playbackstatechanged" />
+                <action android:name="com.spotify.music.queuechanged" />
+                <action android:name="com.spotify.music.metadatachanged" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

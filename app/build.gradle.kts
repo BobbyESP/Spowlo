@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.compose.ui.utilities)
     implementation(project(":app:ui"))
     implementation(libs.bundles.accompanist)
+    implementation(libs.palette)
     api(libs.material)
 
     //---------------Pagination---------------//

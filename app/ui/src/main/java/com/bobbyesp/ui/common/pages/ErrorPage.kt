@@ -13,7 +13,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +61,7 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ErrorPage(
-    modifier: Modifier = Modifier, exception: Exception, onRetry: () -> Unit
+    modifier: Modifier = Modifier, throwable: Throwable, onRetry: () -> Unit
 ) {
     var showFullscreenError by remember { mutableStateOf(false) }
     SharedTransitionLayout {
@@ -84,12 +83,12 @@ fun ErrorPage(
             }, targetState = showFullscreenError, label = "Error Page animated content transition"
         ) { wantsFullscreen ->
             if (wantsFullscreen) {
-                ExpandedErrorPage(modifier = modifier, exception = exception, onMinimize = {
+                ExpandedErrorPage(modifier = modifier, throwable = throwable, onMinimize = {
                     showFullscreenError = false
                 })
             } else {
                 MinimizedErrorPage(
-                    modifier = modifier, exception = exception, onCardClicked = {
+                    modifier = modifier, throwable = throwable, onCardClicked = {
                         showFullscreenError = true
                     }, onRetry = onRetry
                 )
@@ -103,7 +102,7 @@ context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun MinimizedErrorPage(
     modifier: Modifier = Modifier,
-    exception: Exception,
+    throwable: Throwable,
     onCardClicked: () -> Unit,
     onRetry: () -> Unit,
 ) {
@@ -147,11 +146,11 @@ private fun MinimizedErrorPage(
                 )
                 .padding(horizontal = 12.dp, vertical = 8.dp)
                 .fillMaxWidth(),
-            errorType = exception::class.simpleName
+            errorType = throwable::class.simpleName
                 ?: stringResource(id = R.string.unknown_error_title),
-            methodFailed = exception.localizedMessage
+            methodFailed = throwable.localizedMessage
                 ?: stringResource(id = R.string.unknown_error_title),
-            line = exception.stackTrace.firstOrNull()?.lineNumber ?: 0,
+            line = throwable.stackTrace.firstOrNull()?.lineNumber ?: 0,
             onClick = onCardClicked
         )
         Button(onClick = onRetry) {
@@ -165,7 +164,7 @@ context(SharedTransitionScope, AnimatedVisibilityScope)
 @Composable
 private fun ExpandedErrorPage(
     modifier: Modifier = Modifier,
-    exception: Exception,
+    throwable: Throwable,
     onMinimize: () -> Unit,
 ) {
     BackHandler {
@@ -220,17 +219,15 @@ private fun ExpandedErrorPage(
         Column(
             modifier = Modifier
                 .padding(12.dp)
-                .verticalScroll(rememberScrollState())
-                .horizontalScroll(rememberScrollState())
         ) {
             Text(
-                text = exception.stackTrace.joinToString("\n") {
+                text = throwable.stackTrace.joinToString("\n") {
                     it.toString()
                 },
                 style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth()
             )
         }
@@ -302,7 +299,7 @@ private fun PrimaryStacktraceCard(
 private fun ErrorPagePrev() {
     MaterialTheme(colorScheme = darkColorScheme()) {
         ErrorPage(modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            exception = Exception("An error occurred"),
+            throwable = Exception("An error occurred"),
             onRetry = {})
     }
 }
@@ -312,7 +309,7 @@ private fun ErrorPagePrev() {
 private fun ErrorPagePrevWhite() {
     MaterialTheme {
         ErrorPage(modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            exception = Exception("An error occurred"),
+            throwable = Exception("An error occurred"),
             onRetry = {})
     }
 }

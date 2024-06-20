@@ -27,8 +27,7 @@ fun OutlinedButtonWithIcon(
         onClick = onClick,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
         colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
-    )
-    {
+    ) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,

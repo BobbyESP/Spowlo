@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.features.spotify.data.local.broadcast
 
+import android.util.Log
 import com.adamratzman.spotify.notifications.AbstractSpotifyBroadcastReceiver
 import com.adamratzman.spotify.notifications.SpotifyMetadataChangedData
 import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
@@ -12,6 +13,7 @@ class SpotifyBroadcastObserverImpl : AbstractSpotifyBroadcastReceiver() {
     private val observers: MutableSet<SpotifyBroadcastObserver> = mutableSetOf()
 
     fun addObserver(observer: SpotifyBroadcastObserver) {
+        Log.d("SpotifyBroadcastObserverImpl", "Adding observer $observer")
         observers.add(observer)
     }
 

@@ -110,6 +110,7 @@ compose-material3-adaptive-navigation = { group = "androidx.compose.material3.ad
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 compose-ui-utilities = { module = "com.github.BobbyESP:compose-ui-utilities", version.ref = "composeUiUtilities" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
 
 #Paging3
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }

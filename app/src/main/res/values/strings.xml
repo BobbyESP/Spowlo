@@ -19,6 +19,10 @@
     <string name="search_playlists">Search for playlists</string>
     <string name="unknown">Unknown</string>
     <string name="profile">Profile</string>
+    <string name="followers">%1$s followers</string>
+    <string name="most_played_artists">Most played artists</string>
+    <string name="most_played_songs">Most played songs</string>
+    <string name="library">Library</string>
     <plurals name="numberOfSongs">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>
