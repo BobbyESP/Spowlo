@@ -13,6 +13,7 @@ import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.PlayHistory
 import com.adamratzman.spotify.models.SpotifyUserInformation
 import com.adamratzman.spotify.models.Track
+import com.adamratzman.spotify.notifications.SpotifyBroadcastEventData
 import com.adamratzman.spotify.notifications.SpotifyMetadataChangedData
 import com.adamratzman.spotify.notifications.SpotifyPlaybackStateChangedData
 import com.adamratzman.spotify.notifications.SpotifyQueueChangedData
@@ -85,6 +86,17 @@ class SpProfilePageViewModel @Inject constructor(
         val recentlyPlayedSongs: List<PlayHistory> = emptyList(),
     )
 
+    private val mutableBroadcastsViewState = MutableStateFlow(BroadcastsViewState())
+    val broadcastsViewState = mutableBroadcastsViewState.asStateFlow()
+
+    data class BroadcastsViewState(
+        val broadcasts: List<SpotifyBroadcastEventData> = emptyList(),
+        val metadataState: SpotifyMetadataChangedData? = null,
+        val playbackState: SpotifyPlaybackStateChangedData? = null,
+        val queueState: SpotifyQueueChangedData? = null,
+        val nowPlayingTrack: Track? = null,
+    )
+
     fun reloadProfileInformation() {
         viewModelScope.launch {
             mutablePageViewState.update {
@@ -136,6 +148,21 @@ class SpProfilePageViewModel @Inject constructor(
         ) }
     }
 
+    suspend fun handleBroadcastTrackUpdate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val nowPlayingApiResponse = clientApi.player.getCurrentlyPlaying()
+            val apiSongId = nowPlayingApiResponse?.item?.id
+            val broadcastSongId = broadcastsViewState.value.nowPlayingTrack?.id
+            if (broadcastSongId == null) {
+                if (apiSongId != null) {
+                    searchSongAndUpdateUiState(apiSongId)
+                }
+            } else {
+                searchSongAndUpdateUiState(broadcastSongId)
+            }
+        }
+    }
+
     private suspend fun loadRecentlyPlayedSongs() {
         val recentlyPlayedSongs = viewModelScope.async {
             clientApi.player.getRecentlyPlayed(limit = 25).items
@@ -147,16 +174,45 @@ class SpProfilePageViewModel @Inject constructor(
         }
     }
 
+    private suspend fun searchSongById(id: String): Track? {
+        return viewModelScope.async(Dispatchers.IO) { clientApi.tracks.getTrack(id) }.await()
+    }
+
+    private suspend fun searchSongAndUpdateUiState(id: String) {
+        val song = searchSongById(id)
+        mutableBroadcastsViewState.update {
+            it.copy(nowPlayingTrack = song)
+        }
+    }
+
     override fun onMetadataChanged(data: SpotifyMetadataChangedData) {
-        Log.i("SpotifyBroadcastObserver", "Metadata changed: $data")
+        mutableBroadcastsViewState.update {
+            it.copy(
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
+                metadataState = data
+            )
+        }
+        Log.i("SpProfilePageViewModel", "onMetadataChanged: $data")
     }
 
     override fun onPlaybackStateChanged(data: SpotifyPlaybackStateChangedData) {
-        Log.i("SpotifyBroadcastObserver", "Playback state changed: $data")
+        mutableBroadcastsViewState.update {
+            it.copy(
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
+                playbackState = data
+            )
+        }
+        Log.i("SpProfilePageViewModel", "onPlaybackStateChanged: $data")
     }
 
     override fun onQueueChanged(data: SpotifyQueueChangedData) {
-        Log.i("SpotifyBroadcastObserver", "Queue changed: $data")
+        mutableBroadcastsViewState.update {
+            it.copy(
+                broadcasts = it.broadcasts.toMutableList().apply { add(data) },
+                queueState = data
+            )
+        }
+        Log.i("SpProfilePageViewModel", "onQueueChanged: $data")
     }
 
     sealed class UiEvent {

@@ -23,6 +23,7 @@
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_songs">Most played songs</string>
     <string name="library">Library</string>
+    <string name="listening_now">Listening now</string>
     <plurals name="numberOfSongs">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>

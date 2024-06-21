@@ -1,9 +1,27 @@
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalAnimationSpecApi::class
+)
+
 package com.bobbyesp.spowlo.presentation.pages.spotify.profile
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.ArcMode
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.keyframes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,17 +29,24 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,14 +77,17 @@ import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactArtistCar
 import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactCardSize
 import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactSongCard
 import com.bobbyesp.spowlo.presentation.components.spotify.image.AsyncImage
+import com.bobbyesp.spowlo.presentation.components.spotify.others.PlayingIndicator
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.FilledTonalButtonWithIcon
 import com.bobbyesp.ui.components.tags.RoundedTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
+import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.utilities.states.NoDataScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
@@ -67,10 +95,26 @@ fun ProfilePage(
     viewModel: SpProfilePageViewModel
 ) {
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle()
+    val broadcastsState = viewModel.broadcastsViewState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.eventFlow.collectLatest { event ->
+//            when(event) {
+//                is WordInfoViewModel.UIEvent.ShowSnackbar -> {
+//                    scaffoldState.snackbarHostState.showSnackbar(
+//                        message = event.message
+//                    )
+//                }
+//            }
+        }
+    }
+
+    LaunchedEffect(broadcastsState.value.metadataState) {
+        viewModel.handleBroadcastTrackUpdate()
+    }
 
     Crossfade(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         targetState = viewState.value.state,
         label = "Main crossfade Profile Page"
     ) { state ->
@@ -87,7 +131,8 @@ fun ProfilePage(
                 userInfo = viewState.value.profileInformation
                     ?: throw IllegalStateException("Profile information is null"),
                 mostPlayedArtistsFlow = viewState.value.userMusicalData.mostPlayedArtists,
-                mostPlayedSongsFlow = viewState.value.userMusicalData.mostPlayedSongs
+                mostPlayedSongsFlow = viewState.value.userMusicalData.mostPlayedSongs,
+                broadcastsState = broadcastsState
             )
         }
     }
@@ -97,85 +142,43 @@ fun ProfilePage(
 private fun ProfilePageImpl(
     userInfo: SpotifyUserInformation,
     mostPlayedArtistsFlow: Flow<PagingData<Artist>> = emptyFlow(),
-    mostPlayedSongsFlow: Flow<PagingData<Track>> = emptyFlow()
+    mostPlayedSongsFlow: Flow<PagingData<Track>> = emptyFlow(),
+    broadcastsState: State<SpProfilePageViewModel.BroadcastsViewState>,
 ) {
     val mostPlayedArtists = mostPlayedArtistsFlow.collectAsLazyPagingItems()
     val mostPlayedSongs = mostPlayedSongsFlow.collectAsLazyPagingItems()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        userScrollEnabled = true,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        item {
+    Scaffold {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = it.calculateBottomPadding())
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             ProfileHero(
-                modifier = Modifier.safeContentPadding(),
-                userInfo = userInfo
+                modifier = Modifier.safeContentPadding(), userInfo = userInfo
             )
-        }
-        item {
-            Column(
+            ProfileActions(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilledTonalButtonWithIcon(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(12.dp),
-                        onClick = { /*TODO*/ },
-                        icon = Icons.Rounded.LibraryMusic,
-                        text = stringResource(id = R.string.library)
-                    )
-                    FilledTonalButtonWithIcon(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        shape = MaterialTheme.shapes.small,
-                        onClick = { /*TODO*/ },
-                        contentPadding = PaddingValues(12.dp),
-                        icon = Icons.Rounded.LibraryMusic,
-                        text = stringResource(id = R.string.unknown)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilledTonalButtonWithIcon(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        shape = MaterialTheme.shapes.small,
-                        onClick = { /*TODO*/ },
-                        contentPadding = PaddingValues(12.dp),
-                        icon = Icons.Rounded.LibraryMusic,
-                        text = stringResource(id = R.string.library)
-                    )
-                    FilledTonalButtonWithIcon(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        shape = MaterialTheme.shapes.small,
-                        onClick = { /*TODO*/ },
-                        contentPadding = PaddingValues(12.dp),
-                        icon = Icons.Rounded.LibraryMusic,
-                        text = stringResource(id = R.string.unknown)
-                    )
-                }
+            )
+            broadcastsState.value.nowPlayingTrack?.let { track ->
+                LargeCategoryTitle(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    text = stringResource(id = R.string.listening_now)
+                )
+                ListeningNow(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    track = track,
+                    isPlaying = broadcastsState.value.playbackState?.playing ?: false
+                )
             }
-        }
-        item {
+
             LargeCategoryTitle(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 text = stringResource(id = R.string.most_played_artists)
             )
-        }
-        item {
             LazyRow(
                 modifier = Modifier,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -197,16 +200,11 @@ private fun ProfilePageImpl(
                     }
                 }
             }
-        }
 
-        item {
             LargeCategoryTitle(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 text = stringResource(id = R.string.most_played_songs)
             )
-        }
-
-        item {
             LazyRow(
                 modifier = Modifier,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -235,8 +233,7 @@ private fun ProfilePageImpl(
 
 @Composable
 private fun ProfileHero(
-    modifier: Modifier = Modifier,
-    userInfo: SpotifyUserInformation
+    modifier: Modifier = Modifier, userInfo: SpotifyUserInformation
 ) {
     var dominantColor: Color by remember {
         mutableStateOf(Color.Transparent)
@@ -248,8 +245,7 @@ private fun ProfileHero(
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    animatedColor,
-                    Color.Transparent
+                    animatedColor, Color.Transparent
                 ),
             )
         ),
@@ -266,16 +262,13 @@ private fun ProfileHero(
                         .size(128.dp)
                         .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
                     imageModel = imageUrl,
-                    imageLoader = ImageLoader.Builder(LocalContext.current)
-                        .allowHardware(false)
-                        .crossfade(true)
-                        .dispatcher(Dispatchers.IO)
-                        .build(),
+                    imageLoader = ImageLoader.Builder(LocalContext.current).allowHardware(false)
+                        .crossfade(true).dispatcher(Dispatchers.IO).build(),
                 ) { data ->
                     data.drawable?.toBitmap()?.let { bitmap ->
                         Palette.Builder(bitmap).generate { palette ->
-                            dominantColor = palette?.mutedSwatch?.rgb?.let { Color(it) }
-                                ?: Color.Transparent
+                            dominantColor =
+                                palette?.mutedSwatch?.rgb?.let { Color(it) } ?: Color.Transparent
                         }
                     }
                 }
@@ -313,6 +306,222 @@ private fun ProfileHero(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileActions(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilledTonalButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                shape = MaterialTheme.shapes.small,
+                contentPadding = PaddingValues(12.dp),
+                onClick = { /*TODO*/ },
+                icon = Icons.Rounded.LibraryMusic,
+                text = stringResource(id = R.string.library)
+            )
+            FilledTonalButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                shape = MaterialTheme.shapes.small,
+                onClick = { /*TODO*/ },
+                contentPadding = PaddingValues(12.dp),
+                icon = Icons.Rounded.LibraryMusic,
+                text = stringResource(id = R.string.unknown)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilledTonalButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                shape = MaterialTheme.shapes.small,
+                onClick = { /*TODO*/ },
+                contentPadding = PaddingValues(12.dp),
+                icon = Icons.Rounded.LibraryMusic,
+                text = stringResource(id = R.string.library)
+            )
+            FilledTonalButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                shape = MaterialTheme.shapes.small,
+                onClick = { /*TODO*/ },
+                contentPadding = PaddingValues(12.dp),
+                icon = Icons.Rounded.LibraryMusic,
+                text = stringResource(id = R.string.unknown)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ListeningNow(
+    modifier: Modifier = Modifier, track: Track, isPlaying: Boolean = false
+) {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    SharedTransitionLayout {
+        AnimatedContent(
+            targetState = isExpanded, label = "Transition between closed and expanded ListeningNow"
+        ) {
+            when (it) {
+                false -> ClosedListeningNow(modifier = modifier,
+                    track = track,
+                    isPlaying = isPlaying,
+                    onClick = { isExpanded = true })
+
+                true -> ExpandedListeningNow(modifier = modifier,
+                    track = track,
+                    onClick = { isExpanded = false })
+            }
+        }
+    }
+}
+
+context(SharedTransitionScope, AnimatedContentScope)
+@Composable
+private fun ClosedListeningNow(
+    modifier: Modifier = Modifier,
+    track: Track,
+    isPlaying: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+    Surface(
+        modifier = modifier
+            .sharedBounds(
+                sharedContentState = rememberSharedContentState("listeningNowBounds"),
+                animatedVisibilityScope = this@AnimatedContentScope,
+            )
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .combinedClickable(onClick = onClick, onLongClick = { /*TODO*/ }),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .size(72.dp)
+                    .sharedElement(state = rememberSharedContentState("listeningNowImage"),
+                        animatedVisibilityScope = this@AnimatedContentScope,
+                        boundsTransform = { initialBounds, targetBounds ->
+                            keyframes {
+                                durationMillis = DURATION_ENTER
+                                initialBounds at 0 using ArcMode.ArcBelow using FastOutSlowInEasing
+                                targetBounds at DURATION_ENTER
+                            }
+                        }),
+                imageModel = track.album.images?.firstOrNull()?.url,
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = track.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Text(
+                    text = track.artists.formatArtistsName(),
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            AnimatedVisibility(visible = isPlaying) {
+                PlayingIndicator(
+                    modifier = Modifier.height(24.dp), color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
+    }
+}
+
+context(AnimatedContentScope, SharedTransitionScope)
+@Composable
+private fun ExpandedListeningNow(
+    modifier: Modifier = Modifier, track: Track, onClick: () -> Unit = {}
+) {
+    Surface(
+        modifier = modifier
+            .sharedBounds(
+                sharedContentState = rememberSharedContentState("listeningNowBounds"),
+                animatedVisibilityScope = this@AnimatedContentScope,
+            )
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .combinedClickable(onClick = onClick, onLongClick = { /*TODO*/ }),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .size(128.dp)
+                    .sharedElement(
+                        state = rememberSharedContentState("listeningNowImage"),
+                        animatedVisibilityScope = this@AnimatedContentScope
+                    ),
+                imageModel = track.album.images?.firstOrNull()?.url,
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = track.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Text(
+                    text = track.artists.formatArtistsName(),
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
     }
