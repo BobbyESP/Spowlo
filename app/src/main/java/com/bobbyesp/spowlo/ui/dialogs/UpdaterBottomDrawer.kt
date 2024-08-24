@@ -39,13 +39,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.imageLoader
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.FilledTonalButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
-import com.bobbyesp.spowlo.ui.pages.imageLoader
 import com.bobbyesp.spowlo.ui.theme.contraryColor
 import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.ToastUtil
@@ -158,7 +158,7 @@ fun UpdaterBottomDrawerImpl(
                         onLinkClicked = { url ->
                             ChromeCustomTabsUtil.openUrl(url)
                         },
-                        imageLoader = imageLoader
+                        imageLoader = LocalContext.current.imageLoader,
                     )
                 }
             }

@@ -37,7 +37,7 @@ fun SpotifyPageBinder(
                 val artist = data as? Artist
                 item {
                     artist?.let {
-                        ArtistPage(artist, modifier)
+                        ArtistPage(artist, modifier, trackDownloadCallback)
                     }
                 }
             }

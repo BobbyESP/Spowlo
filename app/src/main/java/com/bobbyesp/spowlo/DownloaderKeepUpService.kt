@@ -7,8 +7,10 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import com.bobbyesp.spowlo.utils.NOTIFICATION
 import com.bobbyesp.spowlo.utils.NotificationsUtil
 import com.bobbyesp.spowlo.utils.NotificationsUtil.SERVICE_NOTIFICATION_ID
+import com.bobbyesp.spowlo.utils.PreferencesUtil
 
 private val TAG = DownloaderKeepUpService::class.java.simpleName
 
@@ -22,8 +24,10 @@ class DownloaderKeepUpService : Service() {
                     PendingIntent.FLAG_IMMUTABLE
                 )
             }
-        val notification = NotificationsUtil.makeServiceNotification(pendingIntent)
-        startForeground(SERVICE_NOTIFICATION_ID, notification)
+        if (PreferencesUtil.getValue(NOTIFICATION)) {
+            val notification = NotificationsUtil.makeServiceNotification(pendingIntent)
+            startForeground(SERVICE_NOTIFICATION_ID, notification)
+        }
         return DownloadServiceBinder()
     }
 

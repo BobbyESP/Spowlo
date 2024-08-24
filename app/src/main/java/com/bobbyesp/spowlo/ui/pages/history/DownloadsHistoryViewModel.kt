@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.DatabaseUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,11 +16,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @OptIn(ExperimentalMaterialApi::class)
-@HiltViewModel
-class DownloadsHistoryViewModel @Inject constructor() : ViewModel() {
+class DownloadsHistoryViewModel : ViewModel() {
 
     private val _mediaInfoFlow = DatabaseUtil.getMediaInfo()
 

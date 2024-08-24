@@ -135,7 +135,7 @@ fun BottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = state,
         dragHandle = { BottomSheetDefaults.DragHandle() },
-        windowInsets = windowInsets,
+        // windowInsets = windowInsets,
     ) {
         content()
     }

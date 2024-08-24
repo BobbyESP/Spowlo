@@ -1,5 +1,7 @@
 package com.bobbyesp.spowlo.ui.pages.settings.appearance
 
+//import com.kyant.monet.Hct
+//import com.kyant.monet.toColor
 import android.os.Build
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -70,7 +72,6 @@ import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitchWithDivider
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
-import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.bobbyesp.spowlo.utils.DarkThemePreference.Companion.FOLLOW_SYSTEM
 import com.bobbyesp.spowlo.utils.DarkThemePreference.Companion.OFF
 import com.bobbyesp.spowlo.utils.DarkThemePreference.Companion.ON
@@ -80,7 +81,6 @@ import com.bobbyesp.spowlo.utils.palettesMap
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.android.material.color.DynamicColors
-import com.kyant.monet.Hct
 import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes
@@ -88,9 +88,12 @@ import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
 import com.kyant.monet.a1
 import com.kyant.monet.a2
 import com.kyant.monet.a3
-import com.kyant.monet.toColor
+import io.material.hct.Hct
 
-val colorList = listOf(
+val colorList =
+    ((4..10) + (1..3)).map { it * 35.0 }.map { Color(Hct.from(it, 40.0, 40.0).toInt()) }
+
+/*val colorList = listOf(
     Color(DEFAULT_SEED_COLOR),
     Color.Blue,
     Hct(60.0, 100.0, 70.0).toSrgb().toColor(),
@@ -101,7 +104,7 @@ val colorList = listOf(
     Color.Magenta,
     //RGB(30, 215, 96) in code
     Color(30, 215, 96)
-)
+)*/
 
 @OptIn(
     ExperimentalMaterial3Api::class,

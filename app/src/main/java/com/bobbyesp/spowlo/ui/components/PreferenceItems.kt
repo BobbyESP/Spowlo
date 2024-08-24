@@ -803,17 +803,18 @@ fun PreferenceInfo(
     icon: ImageVector = Icons.Outlined.Info,
     applyPaddings: Boolean = true
 ) {
-    Column(modifier = modifier
+    Row(modifier = modifier
         .fillMaxWidth()
         .run {
             if (applyPaddings) padding(horizontal = 16.dp, vertical = 16.dp)
             else this
         }) {
         Icon(
-            modifier = Modifier.padding(), imageVector = icon, contentDescription = null
+            modifier = Modifier.padding(end = 8.dp),
+            imageVector = icon,
+            contentDescription = null
         )
         Text(
-            modifier = Modifier.padding(vertical = 16.dp),
             text = text,
             style = MaterialTheme.typography.bodyMedium
         )

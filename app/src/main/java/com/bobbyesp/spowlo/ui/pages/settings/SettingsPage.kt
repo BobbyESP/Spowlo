@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Aod
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Cookie
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
@@ -206,25 +205,6 @@ fun SettingsPage(navController: NavController) {
                     icon = Icons.Filled.Folder,
                     onClick = {
                         navController.navigate(Route.DOWNLOAD_DIRECTORY) {
-                            launchSingleTop = true
-                        }
-                    },
-                    addTonalElevation = true,
-                    highlightIcon = true
-                )
-            }
-            item {
-                SettingsItemNew(
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.format),
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    description = { Text(text = stringResource(id = R.string.format_settings_desc)) },
-                    icon = Icons.Filled.AudioFile,
-                    onClick = {
-                        navController.navigate(Route.DOWNLOAD_FORMAT) {
                             launchSingleTop = true
                         }
                     },

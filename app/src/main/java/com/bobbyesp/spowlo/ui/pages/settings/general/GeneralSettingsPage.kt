@@ -1,11 +1,15 @@
 package com.bobbyesp.spowlo.ui.pages.settings.general
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Construction
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.HistoryToggleOff
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.NotificationsOff
@@ -38,22 +42,32 @@ import com.bobbyesp.spowlo.ui.common.booleanState
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.LargeTopAppBar
 import com.bobbyesp.spowlo.ui.components.PreferenceSubtitle
-import com.bobbyesp.spowlo.ui.components.WarningCard
 import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
 import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
+import com.bobbyesp.spowlo.ui.dialogs.NotificationPermissionDialog
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.getString
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
+import com.bobbyesp.spowlo.utils.INCOGNITO_MODE
 import com.bobbyesp.spowlo.utils.NOTIFICATION
+import com.bobbyesp.spowlo.utils.NotificationsUtil
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.PreferencesUtil.updateBoolean
+import com.bobbyesp.spowlo.utils.SPOTDL
+import com.bobbyesp.spowlo.utils.ToastUtil
+import com.bobbyesp.spowlo.utils.UpdateUtil
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun GeneralSettingsPage(
     onBackPressed: () -> Unit,
@@ -89,6 +103,23 @@ fun GeneralSettingsPage(
         )
     }
 
+    var incognitoMode by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(INCOGNITO_MODE)
+        )
+    }
+
+    var isNotificationPermissionGranted by remember {
+        mutableStateOf(NotificationsUtil.areNotificationsEnabled())
+    }
+
+    var showNotificationDialog by remember {mutableStateOf(false)}
+    val notificationPermission =
+        if (Build.VERSION.SDK_INT >= 33) rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { status ->
+            if (!status) ToastUtil.makeToast(context.getString(R.string.permission_denied))
+            else isNotificationPermissionGranted = true
+        } else null
+
     //create a non-blocking coroutine to get the version
     LaunchedEffect(Unit) {
         GlobalScope.launch {
@@ -123,7 +154,7 @@ fun GeneralSettingsPage(
                     .padding(it)
                     .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
-                item {
+                /* item {
                     WarningCard(
                         modifier = Modifier.padding(vertical = 10.dp),
                         title = stringResource(id = R.string.updates_blocked),
@@ -131,10 +162,48 @@ fun GeneralSettingsPage(
                             id = R.string.updates_blocked_description
                         )
                     )
-                }
+                } */
                 item {
                     ElevatedSettingsCard {
                         SettingsItemNew(
+                            onClick = {
+                                /*val spotDLNewVersion = SpotDL.getInstance().version(appContext = App.context) ?: getString(R.string.unknown)
+                                var spotDLVersion = SPOTDL.getString()
+                                if (spotDLNewVersion != spotDLVersion) {
+                                    scope.launch {
+                                        runCatching {
+                                            isUpdatingLib = true
+                                            UpdateUtil.updateSpotDL()
+                                            spotDLVersion = SPOTDL.getString()
+                                        }.onFailure { e ->
+                                            e.printStackTrace()
+                                            ToastUtil.makeToastSuspend(App.context.getString(R.string.spotdl_update_failed))
+                                        }.onSuccess {
+                                            ToastUtil.makeToastSuspend(
+                                                App.context.getString(R.string.spotdl_update_success)
+                                                    .format(spotDLVersion)
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    ToastUtil.makeToast(App.context.getString(R.string.spotDl_uptodate))
+                                }*/
+                                scope.launch {
+                                    runCatching {
+                                        isUpdatingLib = true
+                                        UpdateUtil.updateSpotDL()
+                                        spotDLVersion = SPOTDL.getString()
+                                    }.onFailure { e ->
+                                        e.printStackTrace()
+                                        ToastUtil.makeToastSuspend(App.context.getString(R.string.spotdl_update_failed))
+                                    }.onSuccess {
+                                        ToastUtil.makeToastSuspend(
+                                            App.context.getString(R.string.spotdl_update_success)
+                                                .format(spotDLVersion)
+                                        )
+                                    }
+                                }
+                            },
                             title = {
                                 Text(
                                     text = stringResource(id = R.string.spotdl_version),
@@ -144,35 +213,51 @@ fun GeneralSettingsPage(
                             icon = Icons.Outlined.Info,
                             description = { Text(text = spotDLVersion) }
                         )
-
-                        SettingsSwitch(
-                            onCheckedChange = {
-                                displayErrorReport = !displayErrorReport
-                                PreferencesUtil.updateValue(DEBUG, displayErrorReport)
-                            },
-                            checked = displayErrorReport,
-                            title = {
-                                Text(
-                                    text = stringResource(R.string.print_details),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
-                            icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
-                            description = { Text(text = stringResource(R.string.print_details_desc)) },
-                        )
                     }
                 }
 
                 item {
                     PreferenceSubtitle(text = stringResource(id = R.string.general_settings))
                 }
+                item{
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            displayErrorReport = !displayErrorReport
+                            PreferencesUtil.updateValue(DEBUG, displayErrorReport)
+                        },
+                        checked = displayErrorReport,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.print_details),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = if (displayErrorReport) Icons.Outlined.Print else Icons.Outlined.PrintDisabled,
+                        description = { Text(text = stringResource(R.string.print_details_desc)) },
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                topStart = 8.dp, topEnd = 8.dp,
+                                bottomEnd = 0.dp, bottomStart = 0.dp
+                            )
+                        ),
+                    )
+                }
                 item {
                     SettingsSwitch(
                         onCheckedChange = {
-                            useNotifications = !useNotifications
-                            PreferencesUtil.updateValue(NOTIFICATION, useNotifications)
+                            if (notificationPermission?.status is PermissionStatus.Denied) {
+                                showNotificationDialog = true
+                            } else if (isNotificationPermissionGranted) {
+                                if (useNotifications)
+                                    NotificationsUtil.cancelAllNotifications()
+                                useNotifications = !useNotifications
+                                PreferencesUtil.updateValue(
+                                    NOTIFICATION, useNotifications
+                                )
+
+                            }
                         },
-                        checked = useNotifications,
+                        checked = useNotifications && isNotificationPermissionGranted,
                         title = {
                             Text(
                                 text = stringResource(R.string.use_notifications),
@@ -183,11 +268,25 @@ fun GeneralSettingsPage(
                         description = {
                             Text(text = stringResource(R.string.use_notifications_desc))
                         },
-                        modifier = Modifier.clip(
-                            RoundedCornerShape(
-                                topStart = 8.dp, topEnd = 8.dp
+                    )
+                }
+                item {
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            incognitoMode = !incognitoMode
+                            PreferencesUtil.updateValue(INCOGNITO_MODE, incognitoMode)
+                        },
+                        checked = incognitoMode,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.incognito_mode),
+                                fontWeight = FontWeight.Bold
                             )
-                        ),
+                        },
+                        icon = if (incognitoMode) Icons.Outlined.HistoryToggleOff else Icons.Outlined.History,
+                        description = {
+                            Text(text = stringResource(R.string.incognito_mode_desc))
+                        },
                     )
                 }
                 item {
@@ -207,6 +306,7 @@ fun GeneralSettingsPage(
                         description = {
                             Text(text = stringResource(R.string.pre_configure_download_desc))
                         },
+                        clipCorners = false,
                         modifier = Modifier.clip(
                             RoundedCornerShape(
                                 bottomStart = 8.dp, bottomEnd = 8.dp
@@ -215,5 +315,16 @@ fun GeneralSettingsPage(
                     )
                 }
             }
+        }
+    )
+    if (showNotificationDialog) {
+        NotificationPermissionDialog(onDismissRequest = {
+            showNotificationDialog = false
+        }, onPermissionGranted = {
+            notificationPermission?.launchPermissionRequest()
+            NOTIFICATION.updateBoolean(true)
+            useNotifications = true
+            showNotificationDialog = false
         })
+    }
 }
