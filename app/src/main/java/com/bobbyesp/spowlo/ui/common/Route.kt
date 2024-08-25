@@ -39,7 +39,7 @@ object Route {
     const val LANGUAGES = "languages"
     const val DOWNLOAD_QUEUE = "queue"
     const val FULLSCREEN_LOG = "fullscreen_log"
-    const val DOWNLOAD_FORMAT = "download_format"
+
     const val NETWORK_PREFERENCES = "network_preferences"
     const val COOKIE_PROFILE = "cookie_profile"
     const val COOKIE_GENERATOR_WEBVIEW = "cookie_webview"

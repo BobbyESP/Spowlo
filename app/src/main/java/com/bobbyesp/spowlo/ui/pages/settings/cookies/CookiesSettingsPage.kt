@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cookie
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ContentPasteGo
 import androidx.compose.material.icons.outlined.Cookie
@@ -131,7 +132,7 @@ fun CookieProfilePage(
             item {
                 PreferenceSwitchWithContainer(
                     title = stringResource(R.string.use_cookies),
-                    icon = null,
+                    icon = if (!isCookieEnabled) Icons.Outlined.Cookie else Icons.Filled.Cookie,
                     isChecked = isCookieEnabled,
                     onClick = {
                         if (cookies.isEmpty() || (!cookieManager.hasCookies()) && !isCookieEnabled)

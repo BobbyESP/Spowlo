@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.ui.components.songs
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 fun SongMetadataCard(
     song: Song
 ) {
+    Log.d("SongMetadataCard", "Logging song details: ${song.toString()}")
     val isrc = song.isrc ?: "Unknown"
     val genres = song.genres ?: listOf("Unknown")
     val disc_number = song.disc_number ?: 0
@@ -54,18 +56,18 @@ fun SongMetadataCard(
     val metadataMap = mapOf(
         stringResource(id = R.string.song_name) to song.name,
         stringResource(id = R.string.main_artist) to song.artist,
-        stringResource(id = R.string.song_artists) to song.artists.toString(),
+        stringResource(id = R.string.song_artists) to song.artists.joinToString(),
         stringResource(id = R.string.song_album) to song.album_name,
         stringResource(id = R.string.song_album_artist) to song.album_artist,
-        stringResource(id = R.string.song_genres) to genres.toString(),
+        stringResource(id = R.string.song_genres) to genres.joinToString(),
         stringResource(id = R.string.song_disc_number) to disc_number.toString(),
         stringResource(id = R.string.song_disc_count) to disc_count.toString(),
-        stringResource(id = R.string.song_duration) to song.duration.toString(),
+        stringResource(id = R.string.song_duration) to formatDuration(song.duration),
         stringResource(id = R.string.song_year) to song.year.toString(),
         stringResource(id = R.string.song_date) to song.date,
         stringResource(id = R.string.song_track_number) to track_number.toString(),
         stringResource(id = R.string.song_spotify_id) to song.song_id,
-        stringResource(id = R.string.song_is_explicit) to song.explicit.toString(),
+        stringResource(id = R.string.song_is_explicit) to if (song.explicit) "Yes" else "No",
         stringResource(id = R.string.song_publisher) to publisher,
         stringResource(id = R.string.song_isrc) to isrc,
         stringResource(id = R.string.song_url) to song.url,
@@ -248,4 +250,16 @@ fun SongMetadataCardPreview() {
             cover_url = ""
         )
     )
+}
+
+fun formatDuration(durationInSeconds: Double): String {
+    val hours = (durationInSeconds / 3600).toInt()
+    val minutes = ((durationInSeconds % 3600) / 60).toInt()
+    val seconds = (durationInSeconds % 60).toInt()
+
+    return when {
+        hours > 0 -> String.format("%dh %dm %ds", hours, minutes, seconds)
+        minutes > 0 -> String.format("%dm %ds", minutes, seconds)
+        else -> String.format("%ds", seconds)
+    }
 }

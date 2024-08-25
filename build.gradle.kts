@@ -12,9 +12,10 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlin.gradlePlugin) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }

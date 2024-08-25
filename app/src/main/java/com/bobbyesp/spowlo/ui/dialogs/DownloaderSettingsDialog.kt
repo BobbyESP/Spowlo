@@ -42,16 +42,16 @@ import com.bobbyesp.spowlo.ui.components.BottomDrawer
 import com.bobbyesp.spowlo.ui.components.DismissButton
 import com.bobbyesp.spowlo.ui.components.FilledButtonWithIcon
 import com.bobbyesp.spowlo.ui.components.OutlinedButtonWithIcon
-import com.bobbyesp.spowlo.ui.pages.settings.format.AudioFormatDialog
-import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
+import com.bobbyesp.spowlo.ui.pages.settings.downloader.AudioFormatDialog
+import com.bobbyesp.spowlo.ui.pages.settings.downloader.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
+import com.bobbyesp.spowlo.utils.DOWNLOAD_LYRICS
 import com.bobbyesp.spowlo.utils.ORIGINAL_AUDIO
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.SKIP_INFO_FETCH
-import com.bobbyesp.spowlo.utils.SYNCED_LYRICS
 import com.bobbyesp.spowlo.utils.USE_CACHING
 import com.bobbyesp.spowlo.utils.USE_SPOTIFY_CREDENTIALS
 import com.bobbyesp.spowlo.utils.USE_YT_METADATA
@@ -120,9 +120,9 @@ fun DownloaderSettingsDialog(
         )
     }
 
-    var useSyncedLyrics by remember {
+    var downloadLyrics by remember {
         mutableStateOf(
-            settings.getValue(SYNCED_LYRICS)
+            settings.getValue(DOWNLOAD_LYRICS)
         )
     }
 
@@ -262,13 +262,13 @@ fun DownloaderSettingsDialog(
                     ),
             ) {
                 AudioFilterChip(
-                    label = stringResource(id = R.string.synced_lyrics),
+                    label = stringResource(id = R.string.download_lyrics),
                     animated = true,
-                    selected = useSyncedLyrics,
+                    selected = downloadLyrics,
                     onClick = {
-                        useSyncedLyrics = !useSyncedLyrics
+                        downloadLyrics = !downloadLyrics
                         scope.launch {
-                            settings.updateValue(SYNCED_LYRICS, useSyncedLyrics)
+                            settings.updateValue(DOWNLOAD_LYRICS, downloadLyrics)
                         }
                     }
                 )

@@ -30,12 +30,10 @@ import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.matchUrlFromSharedText
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val downloaderViewModel: DownloaderViewModel by viewModels()
     private val modsDownloaderViewModel: ModsDownloaderViewModel by viewModels()

@@ -9,6 +9,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization")
+    alias(libs.plugins.compose.compiler)
 }
 apply(plugin = "dagger.hilt.android.plugin")
 
@@ -143,20 +144,18 @@ android {
                 "CLIENT_SECRET",
                 "\"${localProperties["spotifyClientSecret"]}\""
             )
+            System.setProperty("CLIENT_ID", "\"${localProperties["spotifyClientID"]}\"")
+            System.setProperty("CLIENT_SECRET", "\"${localProperties["spotifyClientSecret"]}\"")
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Spowlo (Debug)")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     lint {
@@ -173,10 +172,7 @@ android {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
-    }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/*.kotlin_module"
@@ -184,6 +180,10 @@ android {
         jniLibs.useLegacyPackaging = true
     }
     namespace = "com.bobbyesp.spowlo"
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 dependencies {

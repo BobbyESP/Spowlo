@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.pages.common_pages.LoadingPage
@@ -29,7 +29,7 @@ import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataTyp
 @Composable
 fun PlaylistPage(
     onBackPressed: () -> Unit,
-    playlistPageViewModel: PlaylistPageViewModel = hiltViewModel(),
+    playlistPageViewModel: PlaylistPageViewModel = viewModel(),
     id: String,
     type: String,
 ) {

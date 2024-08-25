@@ -111,7 +111,29 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
             }
 
             SpotifyDataType.ARTIST -> {
+                try {
+                    val artistDeferred = withContext(Dispatchers.IO) {
+                        async {
+                            Log.d("SpotifyApiRequests", "provideGetArtistById($id)")
+                            SpotifyApiRequests.provideGetArtistById(id)
+                        }
+                    }
+                    val artist = artistDeferred.await()
 
+                    mutableViewStateFlow.update {
+                        it.copy(
+                            state = PlaylistDataState.Loaded(
+                                artist!!
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    mutableViewStateFlow.update {
+                        it.copy(
+                            state = PlaylistDataState.Error(Exception("Error while loading data"))
+                        )
+                    }
+                }
             }
         }
     }
@@ -119,7 +141,4 @@ class PlaylistPageViewModel @Inject constructor() : ViewModel() {
     fun downloadTrack(url: String, name: String) {
         Downloader.executeParallelDownloadWithUrl(url, name)
     }
-
 }
-
-

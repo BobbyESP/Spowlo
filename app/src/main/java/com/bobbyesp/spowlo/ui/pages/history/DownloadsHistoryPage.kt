@@ -62,8 +62,8 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
@@ -82,7 +82,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 import com.bobbyesp.spowlo.utils.toFileSizeText
 import kotlinx.coroutines.launch
 
-const val AUDIO_REGEX = "(mp3|aac|opus|m4a)$"
+const val AUDIO_REGEX = "(mp3|aac|opus|m4a|flac|ogg)$"
 const val THUMBNAIL_REGEX = "\\.(jpg|png)$"
 
 fun DownloadedSongInfo.filterByExtractor(author: String?): Boolean {
@@ -92,7 +92,7 @@ fun DownloadedSongInfo.filterByExtractor(author: String?): Boolean {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DownloadsHistoryPage(
-    downloadsHistoryViewModel: DownloadsHistoryViewModel = hiltViewModel(),
+    downloadsHistoryViewModel: DownloadsHistoryViewModel = viewModel(),
     onBackPressed: () -> Unit
 ) {
     val viewState = downloadsHistoryViewModel.stateFlow.collectAsStateWithLifecycle().value

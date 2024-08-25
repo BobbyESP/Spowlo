@@ -8,10 +8,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.features.spotify_api.data.paging.ArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.SimpleAlbumPagingSource
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.SimplePlaylistPagingSource
 import com.bobbyesp.spowlo.features.spotify_api.data.paging.TrackPagingSource
@@ -39,6 +41,7 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
         val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
         val searchedAlbums: Flow<PagingData<SimpleAlbum>> = emptyFlow(),
         val searchedPlaylists: Flow<PagingData<SimplePlaylist>> = emptyFlow(),
+        val searchedArtists: Flow<PagingData<Artist>> = emptyFlow(),
     )
 
     private fun chooseSearchType(spotifyItemType: SpotifySearchType) {
@@ -88,6 +91,10 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
 
                     SpotifySearchType.PLAYLIST -> {
                         getSimplePaginatedData(query = query)
+                    }
+
+                    SpotifySearchType.ARTIST -> {
+                        getArtistPaginatedData(query = query)
                     }
                 }
 
@@ -162,6 +169,27 @@ class SearcherPageViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    private fun getArtistPaginatedData(query: String) {
+        val artistsPager = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                initialLoadSize = 40,
+            ),
+            pagingSourceFactory = {
+                ArtistsPagingSource(
+                    spotifyApi = null,
+                    query = query,
+                )
+            },
+        ).flow.cachedIn(viewModelScope)
+        mutableViewStateFlow.update {
+            it.copy(
+                searchedArtists = artistsPager
+            )
+        }
+    }
+
     private fun updateViewState(searchViewState: ViewSearchState) {
         mutableViewStateFlow.update {
             it.copy(
@@ -183,13 +211,15 @@ sealed class ViewSearchState {
 enum class SpotifySearchType {
     TRACK,
     ALBUM,
-    PLAYLIST;
+    PLAYLIST,
+    ARTIST;
 
     fun asString(): String {
         return when (this) {
             TRACK -> "track"
             ALBUM -> "album"
             PLAYLIST -> "playlist"
+            ARTIST -> "artist"
         }
     }
 
@@ -198,6 +228,7 @@ enum class SpotifySearchType {
             "track" -> TRACK
             "album" -> ALBUM
             "playlist" -> PLAYLIST
+            "artist" -> ARTIST
             else -> TRACK
         }
     }
@@ -208,6 +239,7 @@ enum class SpotifySearchType {
             ALBUM -> stringResource(id = R.string.album)
             PLAYLIST -> stringResource(id = R.string.playlist)
             TRACK -> stringResource(id = R.string.track)
+            ARTIST -> stringResource(id = R.string.main_artist)
         }
     }
 }

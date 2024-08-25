@@ -31,12 +31,12 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -48,9 +48,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,8 +75,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
@@ -90,7 +88,6 @@ import com.bobbyesp.spowlo.ui.components.SpowloDialog
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
 import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
-import com.bobbyesp.spowlo.ui.theme.harmonizeWith
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -114,7 +111,7 @@ fun DownloaderPage(
     onSongCardClicked: () -> Unit = {},
     navigateToMods: () -> Unit = {},
     isModsDownloaderEnabled: Boolean = false,
-    downloaderViewModel: DownloaderViewModel = hiltViewModel(),
+    downloaderViewModel: DownloaderViewModel = viewModel(),
 ) {
     val scope = rememberCoroutineScope()
 
@@ -142,15 +139,26 @@ fun DownloaderPage(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val checkPermissionOrDownload = {
-        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
-        else {
+        if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) {
+            val url = viewState.url
+            if (url.isNotEmpty()) {
+                if (CONFIGURE.getBoolean()) {
+                    navigateToDownloaderSheet()
+                } else {
+                    if (url.contains("track")) {
+                        downloaderViewModel.startDownloadSong()
+                    } else if (url.contains("album") || url.contains("artist") || url.contains("playlist")) {
+                        navigateToDownloaderSheet()
+                    }
+                }
+            }
+        } else {
             storagePermission.launchPermissionRequest()
         }
     }
 
     val downloadCallback = {
-        if (CONFIGURE.getBoolean()) navigateToDownloaderSheet()
-        else checkPermissionOrDownload()
+        checkPermissionOrDownload()
         keyboardController?.hide()
     }
 
@@ -162,7 +170,20 @@ fun DownloaderPage(
     }
 
     if (viewState.isUrlSharingTriggered) {
-        downloadCallback()
+        val url = viewState.url
+        if (url.isNotEmpty()) {
+            if (CONFIGURE.getBoolean()) {
+                navigateToDownloaderSheet()
+            } else {
+                if (url.contains("track")) {
+                    ToastUtil.makeToast(R.string.fetching_metadata)
+                    downloaderViewModel.requestMetadata()
+                } else if (url.contains("album") || url.contains("artist") || url.contains("playlist")) {
+                    navigateToDownloaderSheet()
+                }
+            }
+        }
+        //downloadCallback()
         downloaderViewModel.onShareIntentConsumed()
     }
 
@@ -175,7 +196,8 @@ fun DownloaderPage(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        DownloaderPageImplementation(downloaderState = downloaderState,
+        DownloaderPageImplementation(
+            downloaderState = downloaderState,
             taskState = taskState,
             viewState = viewState,
             errorState = errorState,
@@ -195,7 +217,24 @@ fun DownloaderPage(
             pasteCallback = {
                 matchUrlFromClipboard(
                     string = clipboardManager.getText().toString(),
-                ).let { downloaderViewModel.updateUrl(it) }
+                ).let { url ->
+                    downloaderViewModel.updateUrl(url)
+                    if (url.isNotEmpty()) {
+                        if (CONFIGURE.getBoolean()) {
+                            navigateToDownloaderSheet()
+                        } else {
+                            if (url.contains("track")) {
+                                ToastUtil.makeToast(R.string.fetching_metadata)
+                                downloaderViewModel.requestMetadata()
+                            } else if (url.contains("album") || url.contains("artist") || url.contains(
+                                    "playlist"
+                                )
+                            ) {
+                                navigateToDownloaderSheet()
+                            }
+                        }
+                    }
+                }
             },
             cancelCallback = {
                 Downloader.cancelDownload()
@@ -203,7 +242,7 @@ fun DownloaderPage(
             isModsDownloaderEnabled = isModsDownloaderEnabled,
             onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
-        with(viewState) {
+        /*with(viewState) {
             DownloaderSettingsDialog(
                 useDialog = useDialog,
                 dialogState = showDownloadSettingDialog,
@@ -211,10 +250,10 @@ fun DownloaderPage(
                 confirm = { checkPermissionOrDownload() },
                 onRequestMetadata = { downloaderViewModel.requestMetadata() },
                 hide = { downloaderViewModel.hideDialog(scope, useDialog) })
-        }
+        }*/
     }
 
-    if(showModsBannedDialog) {
+    if (showModsBannedDialog) {
         SpowloDialog(
             title = {
                 Text(text = stringResource(id = R.string.mods_downloader))
@@ -261,7 +300,7 @@ fun DownloaderPageImplementation(
         TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp), navigationIcon = {
             IconButton(onClick = { navigateToSettings() }) {
                 Icon(
-                    imageVector = Icons.Filled.FormatListBulleted,
+                    imageVector = Icons.Rounded.Settings,
                     contentDescription = stringResource(id = R.string.show_more_actions)
                 )
             }
@@ -464,17 +503,6 @@ fun InputUrl(
             onDone()
         }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                8.dp
-            ),
-            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-            errorContainerColor = MaterialTheme.colorScheme.errorContainer.harmonizeWith(
-                other = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    8.dp
-                )
-            ),
-        ),
     )
     AnimatedVisibility(visible = showDownloadProgress) {
         Row(

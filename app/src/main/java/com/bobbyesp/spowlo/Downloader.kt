@@ -348,7 +348,8 @@ object Downloader {
                 it,
                 false,
                 notificationId = notificationId,
-                isTaskAborted = !isDownloadingPlaylist
+                isTaskAborted = !isDownloadingPlaylist,
+                songName = "${songInfo.artist} - ${songInfo.name}",
             )
         }.onSuccess {
             if (!isDownloadingPlaylist) finishProcessing()
@@ -357,7 +358,7 @@ object Downloader {
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
                 NotificationsUtil.finishNotification(
                     notificationId,
-                    title = songInfo.name,
+                    title = "${songInfo.artist} - ${songInfo.name}",
                     text = text,
                     intent = if (this != null) PendingIntent.getActivity(
                         context,
@@ -480,6 +481,7 @@ object Downloader {
         isFetchingInfo: Boolean,
         isTaskAborted: Boolean = true,
         notificationId: Int? = null,
+        songName: String? = null
     ) {
         if (th is SpotDL.CanceledException) return
         th.printStackTrace()
@@ -495,7 +497,8 @@ object Downloader {
         notificationId?.let {
             NotificationsUtil.finishNotification(
                 notificationId = notificationId,
-                text = context.getString(R.string.download_error_msg),
+                title = songName,
+                text = "${context.getString(R.string.download_error_msg)}\n\n${th.message.toString()}"
             )
         }
         if (isTaskAborted) {

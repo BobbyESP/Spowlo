@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.PermIdentity
 import androidx.compose.material3.AlertDialog
@@ -99,7 +99,7 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                         showHelpDialog = !showHelpDialog
                     }) {
                         Icon(
-                            imageVector = Icons.Outlined.HelpOutline,
+                            imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
                             contentDescription = stringResource(R.string.how_does_it_work)
                         )
                     }
@@ -178,7 +178,7 @@ fun SpotifySettingsPage(onBackPressed: () -> Unit) {
                     }
                 }
                 item {
-                    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+                    HorizontalDivider(Modifier.padding(vertical = 12.dp))
                     PreferenceInfo(
                         modifier = Modifier
                             .padding(horizontal = 4.dp),
@@ -221,7 +221,7 @@ fun SpotifySettingsPageInfoDialog(onDismiss: () -> Unit) {
         },
         icon = {
             Icon(
-                imageVector = Icons.Outlined.HelpOutline,
+                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
                 contentDescription = stringResource(id = R.string.how_does_it_work)
             )
         }
