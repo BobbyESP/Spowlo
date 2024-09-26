@@ -117,11 +117,14 @@ private fun MinimizedErrorPage(
             modifier = Modifier.size(48.dp),
             imageVector = Icons.Rounded.WarningAmber,
             contentDescription = stringResource(id = R.string.error),
+            tint = MaterialTheme.colorScheme.error
         )
         Text(
             text = stringResource(id = R.string.unknown_error_title),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            fontWeight = FontWeight.SemiBold,
         )
         PrimaryStacktraceCard(
             modifier = Modifier
@@ -217,8 +220,7 @@ private fun ExpandedErrorPage(
             }
         }
         Column(
-            modifier = Modifier
-                .padding(12.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
             Text(
                 text = throwable.stackTrace.joinToString("\n") {

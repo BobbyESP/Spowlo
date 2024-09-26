@@ -15,12 +15,12 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.bobbyesp.spowlo"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
 
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
@@ -66,11 +66,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
         freeCompilerArgs = listOf(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xcontext-receivers",
@@ -139,9 +139,6 @@ dependencies {
 
     //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
-
-    //-------------------Youtube-------------------//
-//    implementation(project(":innertube"))
 
     //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)

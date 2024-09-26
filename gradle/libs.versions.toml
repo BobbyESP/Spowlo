@@ -1,43 +1,43 @@
 [versions]
 #General, lifecycle and core
-agp = "8.5.0"
+agp = "8.6.1"
 composeUiUtilities = "770003841d"
-gradle = "8.5.0"
-kotlin = "2.0.0"
+gradle = "8.6.1"
+kotlin = "2.0.20"
 appcompat = "1.7.0"
 core-ktx = "1.13.1"
-lifecycle-runtime-ktx = "2.8.2"
-activity-compose = "1.9.0"
+lifecycle-runtime-ktx = "2.8.6"
+activity-compose = "1.9.2"
 
-ksp = "2.0.0-1.0.21"
-media3 = "1.3.1"
+ksp = "2.0.20-1.0.25"
+media3 = "1.4.1"
 leakcanary = "2.13"
 
 #Compose
 compose-bom-canary = "2024.05.00-alpha03"
-constraintLayout = "1.1.0-alpha13"
-androidx-compose-material3 = "1.2.1"
-compose-util = "1.6.8"
+constraintLayout = "1.1.0-beta01"
+androidx-compose-material3 = "1.3.0"
+compose-util = "1.7.2"
 accompanist = "0.34.0"
-compose-pagination = "3.3.0"
-adaptiveNavigationSuite = "1.0.0-alpha07"
-material3-adaptive = "1.0.0-beta03"
+compose-pagination = "3.3.2"
+adaptiveNavigationSuite = "1.3.0"
+material3-adaptive = "1.0.0"
 
 #More UI
-androidx-paging = "3.3.0"
+androidx-paging = "3.3.2"
 qrcodeKotlinAndroid = "4.1.0"
 shimmer = "1.3.0"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.8.0-beta03"
+androidx-navigation = "2.8.1"
 
 #Coroutines
 kotlinx-coroutines = "1.8.0"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.1"
-kotlinx-serializationJson = "1.6.3"
+kotlinx-serializationJson = "1.7.2"
 kotlinx-collectionsImmutable = "0.3.7"
 
 #Image loading
@@ -45,7 +45,7 @@ coil = "2.6.0"
 landscapistCoil = "2.2.13"
 
 #Network
-ktor = "2.3.7" #For me the best client
+ktor = "3.0.0-rc-1" #For me the best client
 brotli = "0.1.2"
 
 #Dependency injection
@@ -70,16 +70,16 @@ spotify-api-library = "4.1.3"
 markdown = "0.3.7"
 #Tests
 junit = "4.13.2"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
+androidx-test-ext-junit = "1.2.1"
+espresso-core = "3.6.1"
 
 #Modal Bottom Sheet
 uiautomator = "2.3.0"
-benchmark-macro-junit4 = "1.2.4"
-androidx-baselineprofile = "1.2.4"
-profileinstaller = "1.3.1"
+benchmark-macro-junit4 = "1.3.1"
+androidx-baselineprofile = "1.3.1"
+profileinstaller = "1.4.0"
 materialVersion = "1.12.0"
-media3DatasourceOkhttp = "1.3.1"
+media3DatasourceOkhttp = "1.4.1"
 
 [libraries]
 #Build (Gradle)
