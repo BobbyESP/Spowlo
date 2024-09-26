@@ -204,7 +204,7 @@ fun Navigator(
 //                            }
 //                        }
 //                    }
-                    dialog<Route.OptionsDialog>(
+                    dialog<Route.Dialogs.MainSettings>(
                         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.9f)) {

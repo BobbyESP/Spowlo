@@ -11,7 +11,10 @@ sealed interface Route {
     data object MainHost : Route
 
     @Serializable
-    data object OptionsDialog : Route
+    data object Dialogs : Route {
+        @Serializable
+        data object MainSettings : Route
+    }
 
     @Serializable
     data object Spotify : Route {
@@ -38,26 +41,10 @@ sealed interface Route {
             data object Profile : Route
         }
     }
-
-    @Serializable
-    data object YoutubeMusic : Route {
-        @Serializable
-        data object HomeNavigator : Route {
-            @Serializable
-            data object Home : Route
-        }
-
-        @Serializable
-        data object SearchNavigator : Route {
-            @Serializable
-            data class Search(val query: String) : Route
-        }
-    }
 }
 
 val providers = listOf(
     Route.Spotify,
-    Route.YoutubeMusic,
 )
 
 val providerRoutes = mapOf(
@@ -65,10 +52,6 @@ val providerRoutes = mapOf(
         Route.Spotify.HomeNavigator,
         Route.Spotify.SearchNavigator,
         Route.Spotify.ProfileNavigator
-    ),
-    Route.YoutubeMusic to listOf(
-        Route.YoutubeMusic.HomeNavigator,
-        Route.YoutubeMusic.SearchNavigator
     )
 )
 
@@ -90,9 +73,8 @@ fun String.asProviderRoute(): Route {
 
 fun Any.isHomeRoute(): Boolean {
     return when (this) {
-        is Route -> this is Route.Spotify.HomeNavigator.Home || this is Route.YoutubeMusic.HomeNavigator.Home
-        is String -> this == Route.Spotify.HomeNavigator.Home::class.qualifiedName ||
-            this == Route.YoutubeMusic.HomeNavigator.Home::class.qualifiedName
+        is Route -> this is Route.Spotify.HomeNavigator.Home
+        is String -> this == Route.Spotify.HomeNavigator.Home::class.qualifiedName
         else -> false
     }
 }
