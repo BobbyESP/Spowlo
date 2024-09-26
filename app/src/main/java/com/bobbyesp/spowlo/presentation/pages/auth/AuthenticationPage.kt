@@ -8,39 +8,31 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.spowlo.features.spotify.auth.SpotifyAuthActivityImpl
 import com.bobbyesp.spowlo.features.spotify.auth.SpotifyAuthState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun AuthenticationPage(
-    authManagerViewModel: SpotifyAuthManagerViewModel
+    authState: State<SpotifyAuthState>,
+    onLogout: () -> Unit
 ) {
-    val authState = authManagerViewModel.authManagerViewState.collectAsStateWithLifecycle().value
-    val scope = rememberCoroutineScope()
-
-    AuthenticationPageContent(authState, onLogout = {
-        scope.launch(Dispatchers.IO) {
-            authManagerViewModel.logout()
-        }
-    })
+    AuthenticationPageContent(authState, onLogout = onLogout)
 }
 
 @Composable
 private fun AuthenticationPageContent(
-    authenticationState: SpotifyAuthState,
+    authenticationState: State<SpotifyAuthState>,
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
+    val authState = authenticationState.value
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        when(authenticationState) {
+        when(authState) {
             is SpotifyAuthState.NotAuthenticated -> {
                 Button(onClick = {
                     context.startActivity(Intent(context, SpotifyAuthActivityImpl::class.java))
@@ -49,7 +41,7 @@ private fun AuthenticationPageContent(
                 }
             }
             is SpotifyAuthState.LoggingIn -> {
-                if(authenticationState.isLoading) {
+                if(authState.isLoading) {
                     CircularProgressIndicator()
                     Text("Logging in...")
                 } else {
@@ -70,7 +62,7 @@ private fun AuthenticationPageContent(
                 }
             }
             is SpotifyAuthState.Error -> {
-                Text("An error occurred: ${authenticationState.message}")
+                Text("An error occurred: ${authState.message}")
             }
         }
     }

@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,12 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ext.asQualifiedName
 import com.bobbyesp.spowlo.features.notification_manager.presentation.NotificationsHandler
@@ -59,6 +62,8 @@ import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.util.appBarScrollBehavior
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
@@ -66,6 +71,8 @@ import org.koin.androidx.compose.koinViewModel
 fun Navigator(
     authManagerViewModel: SpotifyAuthManagerViewModel
 ) {
+    val scope = rememberCoroutineScope()
+
     val snackbarHostState = LocalSnackbarHostState.current
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -147,7 +154,13 @@ fun Navigator(
                         startDestination = Route.Spotify.HomeNavigator,
                     ) {
                         animatedComposable<Route.Spotify.Auth> {
-                            AuthenticationPage(authManagerViewModel)
+                            val authState =
+                                authManagerViewModel.authManagerViewState.collectAsStateWithLifecycle()
+                            AuthenticationPage(authState, onLogout = {
+                                App.applicationScope.launch(Dispatchers.Default) {
+                                    authManagerViewModel.logout()
+                                }
+                            })
                         }
                         navigation<Route.Spotify.HomeNavigator>(
                             startDestination = Route.Spotify.HomeNavigator.Home,
@@ -171,7 +184,20 @@ fun Navigator(
                         ) {
                             animatedComposable<Route.Spotify.ProfileNavigator.Profile> {
                                 val profilePageViewModel = koinViewModel<SpProfilePageViewModel>()
-                                ProfilePage(profilePageViewModel)
+                                val viewState =
+                                    profilePageViewModel.pageViewState.collectAsStateWithLifecycle()
+                                val broadcastsState =
+                                    profilePageViewModel.broadcastsViewState.collectAsStateWithLifecycle()
+
+                                ProfilePage(
+                                    viewState = viewState,
+                                    broadcastsState = broadcastsState,
+                                    onReloadProfileInfo = {
+                                        scope.launch(Dispatchers.IO) {
+                                            profilePageViewModel.reloadProfileInformation()
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
