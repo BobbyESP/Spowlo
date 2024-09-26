@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.image
+package com.bobbyesp.spowlo.presentation.components.image
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box

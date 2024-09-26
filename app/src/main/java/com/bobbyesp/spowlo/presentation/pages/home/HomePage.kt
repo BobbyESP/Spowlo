@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.pages.spotify.home
+package com.bobbyesp.spowlo.presentation.pages.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,6 @@ import com.bobbyesp.spowlo.presentation.common.LocalNavController
 import com.bobbyesp.spowlo.presentation.common.LocalNotificationManager
 import com.bobbyesp.spowlo.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.spowlo.presentation.common.Route
-import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import kotlinx.coroutines.launch
 
 @Composable
@@ -29,11 +28,6 @@ fun HomePage() {
     ) {
         Text("Hello, Spotify!")
         Button(onClick = {
-            navController.cleanNavigate(Route.YoutubeMusic)
-        }) {
-            Text("Navigate to YouTube Music!")
-        }
-        Button(onClick = {
             scope.launch {
                 snackbarHostState.showSnackbar("Hello, Snackbar!")
             }
@@ -46,7 +40,7 @@ fun HomePage() {
                 notificationsManager.showNotification(Notification(title = "Hello, Notification!"))
             }
         }) {
-            Text("Show notificatio")
+            Text("Show notification")
         }
 
         Button(onClick = {

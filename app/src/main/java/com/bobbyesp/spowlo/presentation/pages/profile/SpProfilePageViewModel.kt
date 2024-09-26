@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.pages.spotify.profile
+package com.bobbyesp.spowlo.presentation.pages.profile
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -23,7 +23,6 @@ import com.bobbyesp.spowlo.features.spotify.data.local.broadcast.SpotifyBroadcas
 import com.bobbyesp.spowlo.features.spotify.data.remote.ClientMostListenedArtistsPagingSource
 import com.bobbyesp.spowlo.features.spotify.data.remote.ClientMostListenedSongsPagingSource
 import com.bobbyesp.utilities.states.NoDataScreenState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -35,12 +34,12 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-@HiltViewModel
-class SpProfilePageViewModel @Inject constructor(
-    private val credentialsStore: CredentialsStorer
-) : ViewModel(), SpotifyBroadcastObserver {
+class SpProfilePageViewModel: KoinComponent, ViewModel(), SpotifyBroadcastObserver {
+    private val credentialsStore: CredentialsStorer by inject()
+
     private lateinit var clientApi: SpotifyClientApi
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
@@ -148,7 +147,7 @@ class SpProfilePageViewModel @Inject constructor(
         ) }
     }
 
-    suspend fun handleBroadcastTrackUpdate() {
+    fun handleBroadcastTrackUpdate() {
         viewModelScope.launch(Dispatchers.IO) {
             val nowPlayingApiResponse = clientApi.player.getCurrentlyPlaying()
             val apiSongId = nowPlayingApiResponse?.item?.id

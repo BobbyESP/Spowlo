@@ -31,8 +31,7 @@ fun OptionsDialog(
     onExit: () -> Unit = {}
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         tonalElevation = 12.dp,
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 8.dp

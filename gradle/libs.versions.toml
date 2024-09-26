@@ -33,7 +33,7 @@ palette = "1.0.0"
 androidx-navigation = "2.8.1"
 
 #Coroutines
-kotlinx-coroutines = "1.8.0"
+kotlinx-coroutines = "1.8.1"
 
 #Serialization and more related
 kotlinx-datetime = "0.4.1"
@@ -51,6 +51,7 @@ brotli = "0.1.2"
 #Dependency injection
 hilt = "2.51"
 hilt-ext = "1.2.0"
+koin = "4.0.0"
 
 #Database
 room = "2.6.1"
@@ -147,6 +148,10 @@ ktor-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref 
 brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 
 #Dependency injection
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin" }
+
 compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-ext" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -221,6 +226,7 @@ accompanist = ["accompanist-permissions"]
 compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
+koin = ["koin-android", "koin-compose"]
 pagination = ["paging-compose", "paging-runtime"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 media3 = ["media3-exoplayer", "media3-ui", "media3-session", "media3-common"]

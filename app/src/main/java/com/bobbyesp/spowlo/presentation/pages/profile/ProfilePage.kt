@@ -4,7 +4,7 @@
     ExperimentalAnimationSpecApi::class
 )
 
-package com.bobbyesp.spowlo.presentation.pages.spotify.profile
+package com.bobbyesp.spowlo.presentation.pages.profile
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
@@ -73,11 +73,11 @@ import com.adamratzman.spotify.models.SpotifyUserInformation
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ext.formatArtistsName
-import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactArtistCard
-import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactCardSize
-import com.bobbyesp.spowlo.presentation.components.spotify.card.CompactSongCard
-import com.bobbyesp.spowlo.presentation.components.spotify.image.AsyncImage
-import com.bobbyesp.spowlo.presentation.components.spotify.others.PlayingIndicator
+import com.bobbyesp.spowlo.presentation.components.card.CompactArtistCard
+import com.bobbyesp.spowlo.presentation.components.card.CompactCardSize
+import com.bobbyesp.spowlo.presentation.components.card.CompactSongCard
+import com.bobbyesp.spowlo.presentation.components.image.AsyncImage
+import com.bobbyesp.spowlo.presentation.components.others.PlayingIndicator
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.FilledTonalButtonWithIcon

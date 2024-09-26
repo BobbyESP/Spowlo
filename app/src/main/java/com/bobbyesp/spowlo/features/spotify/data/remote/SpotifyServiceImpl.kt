@@ -7,12 +7,14 @@ import com.adamratzman.spotify.models.Token
 import com.adamratzman.spotify.spotifyAppApi
 import com.bobbyesp.spowlo.features.spotify.domain.services.SpotifyService
 import com.bobbyesp.utilities.Logging.isDebug
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class SpotifyServiceImpl @Inject constructor(
-    private val clientId: String,
-    private val clientSecret: String
-) : SpotifyService {
+class SpotifyServiceImpl: SpotifyService, KoinComponent {
+    private val clientId: String by inject(named("client_id"))
+    private val clientSecret: String by inject(named("client_secret"))
+
     private var token: Token? = null
     private var api: SpotifyAppApi? = null
 

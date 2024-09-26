@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.search
+package com.bobbyesp.spowlo.presentation.components.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.WindowInsets
@@ -109,7 +109,7 @@ fun SpAppSearchBar(
                             name = "Bobby",
                             size = 32,
                             onClick = {
-                                navController.navigate(Route.OptionsDialog)
+                                navController.navigate(Route.Dialogs.MainSettings)
                             }
                         )
                     }

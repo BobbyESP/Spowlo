@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.card
+package com.bobbyesp.spowlo.presentation.components.card
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.others
+package com.bobbyesp.spowlo.presentation.components.others
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize

@@ -14,11 +14,9 @@ import com.bobbyesp.spowlo.features.spotify.data.local.broadcast.registerSpotify
 import com.bobbyesp.spowlo.presentation.Navigator
 import com.bobbyesp.spowlo.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.spowlo.presentation.common.LocalDarkTheme
-import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
+import com.bobbyesp.spowlo.presentation.pages.auth.SpotifyAuthManagerViewModel
 import com.bobbyesp.spowlo.presentation.theme.SpowloTheme
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val authManagerViewModel: SpotifyAuthManagerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {

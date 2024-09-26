@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.card
+package com.bobbyesp.spowlo.presentation.components.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.spowlo.presentation.components.spotify.image.AsyncImage
+import com.bobbyesp.spowlo.presentation.components.image.AsyncImage
 
 @Composable
 fun CompactArtistCard(

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.components.spotify.search
+package com.bobbyesp.spowlo.presentation.components.search
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior

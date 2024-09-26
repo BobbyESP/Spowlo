@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.hilt)
 }
 
 val localProperties = Properties().apply {
@@ -86,10 +85,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    applicationVariants.all {
+        val variantName = name
+        sourceSets {
+            getByName("main") {
+                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+            }
+        }
+    }
 }
 
 ksp {
     arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
@@ -120,10 +128,7 @@ dependencies {
     implementation(libs.bundles.media3)
 
     //---------------Dependency Injection---------------//
-    implementation(libs.bundles.hilt)
-    implementation(libs.androidx.media3.datasource.okhttp)
-    ksp(libs.hilt.ext.compiler)
-    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.koin)
 
     //-------------------Database-------------------//
     implementation(libs.room.runtime)
@@ -146,6 +151,7 @@ dependencies {
     implementation(libs.spotify.api.android)
     implementation(libs.chrome.customTabs)
     implementation(libs.profileinstaller)
+    implementation(libs.androidx.media3.datasource.okhttp)
 
     //-------------------Testing-------------------//
     //Android testing libraries

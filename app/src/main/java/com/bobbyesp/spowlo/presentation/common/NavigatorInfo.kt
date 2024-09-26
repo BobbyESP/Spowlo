@@ -28,8 +28,8 @@ enum class NavigatorInfo(
     companion object {
         fun fromRoute(route: Route): NavigatorInfo? {
             return when (route) {
-                is Route.YoutubeMusic.HomeNavigator, Route.Spotify.HomeNavigator -> HOME
-                is Route.YoutubeMusic.SearchNavigator, Route.Spotify.SearchNavigator -> SEARCH
+                is Route.Spotify.HomeNavigator -> HOME
+                is Route.Spotify.SearchNavigator -> SEARCH
                 is Route.Spotify.ProfileNavigator -> PROFILE
                 else -> null
             }

@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.presentation.pages.spotify.auth
+package com.bobbyesp.spowlo.presentation.pages.auth
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Box

@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
@@ -50,16 +49,17 @@ import com.bobbyesp.spowlo.presentation.common.asProviderRoute
 import com.bobbyesp.spowlo.presentation.common.isHomeRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
-import com.bobbyesp.spowlo.presentation.components.spotify.search.SpAppSearchBarImpl
-import com.bobbyesp.spowlo.presentation.pages.spotify.auth.AuthenticationPage
-import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
-import com.bobbyesp.spowlo.presentation.pages.spotify.home.HomePage
-import com.bobbyesp.spowlo.presentation.pages.spotify.profile.ProfilePage
-import com.bobbyesp.spowlo.presentation.pages.spotify.profile.SpProfilePageViewModel
+import com.bobbyesp.spowlo.presentation.components.search.SpAppSearchBarImpl
+import com.bobbyesp.spowlo.presentation.pages.auth.AuthenticationPage
+import com.bobbyesp.spowlo.presentation.pages.auth.SpotifyAuthManagerViewModel
+import com.bobbyesp.spowlo.presentation.pages.home.HomePage
+import com.bobbyesp.spowlo.presentation.pages.profile.ProfilePage
+import com.bobbyesp.spowlo.presentation.pages.profile.SpProfilePageViewModel
 import com.bobbyesp.spowlo.utils.navigation.cleanNavigate
 import com.bobbyesp.spowlo.utils.navigation.navigateBack
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.util.appBarScrollBehavior
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -113,11 +113,14 @@ fun Navigator(
                     icon = {
                         Icon(
                             imageVector = navigatorInfo?.icon ?: Icons.Rounded.Square,
-                            contentDescription = stringResource(navigatorInfo?.title ?: R.string.unknown)
+                            contentDescription = stringResource(
+                                navigatorInfo?.title ?: R.string.unknown
+                            )
                         )
                     },
                     label = {
-                        Text(text = navigatorInfo?.title?.let { stringResource(it) } ?: route.toString())
+                        Text(text = navigatorInfo?.title?.let { stringResource(it) }
+                            ?: route.toString())
                     }
                 )
             }
@@ -167,7 +170,7 @@ fun Navigator(
                             startDestination = Route.Spotify.ProfileNavigator.Profile,
                         ) {
                             animatedComposable<Route.Spotify.ProfileNavigator.Profile> {
-                                val profilePageViewModel = hiltViewModel<SpProfilePageViewModel>()
+                                val profilePageViewModel = koinViewModel<SpProfilePageViewModel>()
                                 ProfilePage(profilePageViewModel)
                             }
                         }
@@ -207,10 +210,10 @@ fun Navigator(
                     dialog<Route.Dialogs.MainSettings>(
                         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                     ) {
-                        Box(modifier = Modifier.fillMaxWidth(0.9f)) {
-                            OptionsDialog {
-                                navController.navigateBack()
-                            }
+                        OptionsDialog(
+                            modifier = Modifier.fillMaxWidth(0.9f)
+                        ) {
+                            navController.navigateBack()
                         }
                     }
                 }
@@ -221,10 +224,9 @@ fun Navigator(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                if (currentProvider == Route.Spotify) {
-                    SpAppSearchBarImpl(searchBarScrollBehavior)
-                } else {
-//                    YtMusicAppSearchBarImpl(searchBarScrollBehavior)
+                when (currentProvider) {
+                    Route.Spotify -> SpAppSearchBarImpl(searchBarScrollBehavior)
+                    else -> {}
                 }
             }
 
