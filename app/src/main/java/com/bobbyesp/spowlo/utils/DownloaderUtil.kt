@@ -6,7 +6,8 @@ import android.webkit.CookieManager
 import androidx.annotation.CheckResult
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.SpotDLRequest
-import com.bobbyesp.library.dto.Song
+import com.bobbyesp.library.domain.model.SpotifySong
+import com.bobbyesp.library.util.exceptions.CanceledException
 import com.bobbyesp.spowlo.App.Companion.audioDownloadDir
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.Downloader
@@ -44,7 +45,7 @@ object DownloaderUtil {
     val settings = PreferencesUtil
 
     //SONGS FLOW
-    private val mutableSongsState = MutableStateFlow(listOf<Song>())
+    private val mutableSongsState = MutableStateFlow(listOf<SpotifySong>())
     val songsState = mutableSongsState.asStateFlow()
 
     data class DownloadPreferences(
@@ -91,7 +92,10 @@ object DownloaderUtil {
 
             downloadPreferences.outputFormat.isNotEmpty() -> {
                 // this.append("/{artist}/")
-                this.append(downloadPreferences.outputFormat.split(",").joinToString("/") + "/{title}.{output-ext}")
+                this.append(
+                    downloadPreferences.outputFormat.split(",")
+                        .joinToString("/") + "/{title}.{output-ext}"
+                )
             }
 
             else -> {
@@ -99,6 +103,7 @@ object DownloaderUtil {
             }
         }
     }
+
     object CookieScheme {
         const val NAME = "name"
         const val VALUE = "value"
@@ -176,8 +181,8 @@ object DownloaderUtil {
     @CheckResult
     private fun getSongInfo(
         url: String? = null,
-    ): Result<List<Song>> = kotlin.runCatching {
-        val response: List<Song> = SpotDL.getInstance().getSongInfo(url ?: "")
+    ): Result<List<SpotifySong>> = kotlin.runCatching {
+        val response: List<SpotifySong> = SpotDL.getInstance().getSongInfo(url ?: "")
         mutableSongsState.update {
             response
         }
@@ -187,11 +192,11 @@ object DownloaderUtil {
     @CheckResult
     fun fetchSongInfoFromUrl(
         url: String
-    ): Result<List<Song>> = kotlin.run {
+    ): Result<List<SpotifySong>> = kotlin.run {
         getSongInfo(url)
     }
 
-    fun updateSongsState(songs: List<Song>) {
+    fun updateSongsState(songs: List<SpotifySong>) {
         mutableSongsState.update {
             songs
         }
@@ -234,10 +239,8 @@ object DownloaderUtil {
         }
     }
 
-    private fun SpotDLRequest.addAudioProvider(downloadPreferences: DownloadPreferences): SpotDLRequest = this.apply {
-        if (downloadPreferences.audioProviders.isEmpty()) {
-            addOption("--audio", "youtube")
-        } else {
+    private fun SpotDLRequest.addAudioProvider(downloadPreferences: DownloadPreferences): SpotDLRequest =
+        this.apply {
             if (downloadPreferences.audioProviders.isNotEmpty()) {
                 addOption("--audio")
                 if (downloadPreferences.audioProviders.contains("YouTube")) {
@@ -265,7 +268,6 @@ object DownloaderUtil {
                 }
             }
         }
-    }
 
     //HERE GOES ALL THE DOWNLOADER OPTIONS
     private fun commonRequest(
@@ -359,12 +361,12 @@ object DownloaderUtil {
 
     @CheckResult
     fun downloadSong(
-        songInfo: Song = Song(),
+        songInfo: SpotifySong = SpotifySong(),
         taskId: String,
         downloadPreferences: DownloadPreferences,
         progressCallback: ((Float, Long, String) -> Unit)?
     ): Result<List<String>> {
-        if (songInfo == Song()) return Result.failure(Throwable(context.getString(R.string.fetch_info_error_msg)))
+        if (songInfo == SpotifySong()) return Result.failure(Throwable(context.getString(R.string.fetch_info_error_msg)))
         with(downloadPreferences) {
             val url = songInfo.url
 
@@ -400,7 +402,10 @@ object DownloaderUtil {
                         response.output.contains("HTTPError") -> Result.failure(Throwable("A HTTPError occurred. Try changing providers."))
                         response.output.contains("ReadTimeout") -> Result.failure(Throwable("A ReadTimeout occurred. Try changing providers."))
                         response.output.contains("ValueError") -> Result.failure(Throwable("A ValueError occurred. Try changing providers."))
-                        response.output.contains("Skipping explicit song") -> Result.failure(Throwable("An explicit song has been skipped. Disable 'Skip explicit songs' in spotDL settings to download this song."))
+                        response.output.contains("Skipping explicit song") -> Result.failure(
+                            Throwable("An explicit song has been skipped. Disable 'Skip explicit songs' in spotDL settings to download this song.")
+                        )
+
                         else -> onFinishDownloading(
                             this,
                             songInfo = songInfo,
@@ -420,7 +425,10 @@ object DownloaderUtil {
     }
 
     private fun onFinishDownloading(
-        preferences: DownloadPreferences, songInfo: Song, downloadPath: String, sdcardUri: String
+        preferences: DownloadPreferences,
+        songInfo: SpotifySong,
+        downloadPath: String,
+        sdcardUri: String
     ): Result<List<String>> = preferences.run {
         if (incognitoMode) {
             Result.success(emptyList())
@@ -442,7 +450,7 @@ object DownloaderUtil {
 
     @CheckResult
     private fun scanSongIntoDownloadHistory(
-        songInfo: Song,
+        songInfo: SpotifySong,
         downloadPath: String,
     ): List<String> = FilesUtil.scanFileToMediaLibraryPostDownload(
         title = songInfo.name, downloadDir = downloadPath
@@ -452,7 +460,7 @@ object DownloaderUtil {
     }
 
     private fun insertInfoIntoDownloadHistory(
-        songInfo: Song, filePaths: List<String>
+        songInfo: SpotifySong, filePaths: List<String>
     ) {
         filePaths.forEach { filePath ->
             val fullString = StringBuilder()
@@ -500,7 +508,6 @@ object DownloaderUtil {
             val response = SpotDL.getInstance().execute(
                 request = request,
                 processId = taskId,
-                forceProcessDestroy = true,
                 callback = { progress, _, text ->
                     NotificationsUtil.makeNotificationForParallelDownloads(
                         notificationId = taskId.toNotificationId(),
@@ -521,7 +528,7 @@ object DownloaderUtil {
             Log.d("Canceled?", "Exception: $it")
             it.printStackTrace()
             ToastUtil.makeToastSuspend(context.getString(R.string.download_error_msg))
-            if (it is SpotDL.CanceledException) return@onFailure
+            if (it is CanceledException) return@onFailure
             it.message.run {
                 if (isNullOrEmpty()) onTaskEnded(url)
                 else onTaskError(this, url)
@@ -545,9 +552,9 @@ object DownloaderUtil {
         return lines
     }
 
-    fun buildPathForDatabase(path: String, songInfo: Song = Song()): String {
+    fun buildPathForDatabase(path: String, songInfo: SpotifySong = SpotifySong()): String {
         var newPath = path
-        
+
         newPath = newPath.replace("\\{album\\}".toRegex(), songInfo.album_name)
         newPath = newPath.replace("\\{artist\\}".toRegex(), songInfo.artist)
         newPath = newPath.replace("\\{title\\}".toRegex(), songInfo.name)
@@ -556,7 +563,7 @@ object DownloaderUtil {
         newPath = newPath.replace("\\{year\\}".toRegex(), songInfo.year.toString())
         newPath = newPath.replace("\\{list-name\\}".toRegex(), songInfo.song_list?.toString() ?: "")
         newPath = newPath.replace("\\{output-ext\\}".toRegex(), getExtension() ?: "")
-        
+
         return newPath
     }
 

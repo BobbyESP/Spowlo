@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bobbyesp.library.dto.Song
+import com.bobbyesp.library.domain.model.SpotifySong
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
@@ -42,7 +42,7 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 
 @Composable
 fun SongMetadataCard(
-    song: Song
+    song: SpotifySong
 ) {
     Log.d("SongMetadataCard", "Logging song details: ${song.toString()}")
     val isrc = song.isrc ?: "Unknown"
@@ -165,7 +165,7 @@ fun SongMetadataCard(
 
 @Composable
 fun PlaylistHeaderItem(
-    playlist: Song,
+    playlist: SpotifySong,
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
@@ -244,7 +244,7 @@ fun MetadataTag(
 @Composable
 fun SongMetadataCardPreview() {
     SongMetadataCard(
-        song = Song(
+        song = SpotifySong(
             name = "Song name",
             artist = "Artist name",
             cover_url = ""

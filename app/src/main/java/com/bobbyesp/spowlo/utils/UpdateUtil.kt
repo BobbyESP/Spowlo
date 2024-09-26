@@ -10,6 +10,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.core.content.FileProvider
 import com.bobbyesp.library.SpotDL
+import com.bobbyesp.library.domain.UpdateStatus
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
@@ -84,11 +85,11 @@ object UpdateUtil {
 
     private val jsonFormat = Json { ignoreUnknownKeys = true }
 
-    suspend fun updateSpotDL(): SpotDL.UpdateStatus? = withContext(Dispatchers.IO) {
+    suspend fun updateSpotDL(): UpdateStatus? = withContext(Dispatchers.IO) {
         SpotDL.getInstance().updateSpotDL(
             context
         ).apply {
-            if (this == SpotDL.UpdateStatus.DONE) SpotDL.getInstance().version(context)?.let {
+            if (this == UpdateStatus.DONE) SpotDL.getInstance().version(context)?.let {
                 PreferencesUtil.encodeString(SPOTDL, it)
             }
         }

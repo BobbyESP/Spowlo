@@ -32,7 +32,6 @@ fun PlaylistMetadataPage(onBackPressed: () -> Unit) {
 
     //val songs = downloaderViewModel.songInfoFlow.collectAsStateWithLifecycle()
     val songs = DownloaderUtil.songsState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 

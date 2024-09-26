@@ -56,7 +56,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.bobbyesp.library.dto.Song
+import com.bobbyesp.library.domain.model.SpotifySong
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.LocalDarkTheme
 import com.bobbyesp.spowlo.ui.common.LocalDynamicColorSwitch
@@ -154,7 +154,7 @@ fun AppearancePage(
             ) {
                 item {
                     SongCard(
-                        song = Song(
+                        song = SpotifySong(
                             name = "Shut Up",
                             artist = "Alan Walker",
                             explicit = true,

@@ -1,8 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
 buildscript {
-
     repositories {
+        maven {
+            url = uri("libs/maven-repo")
+        }
         mavenCentral()
         google()
     }

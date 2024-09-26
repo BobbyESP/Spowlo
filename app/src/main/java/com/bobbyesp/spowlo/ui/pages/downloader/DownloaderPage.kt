@@ -379,7 +379,6 @@ fun DownloaderPageImplementation(
                             SongCard(song = info,
                                 progress = progress,
                                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-                                isLyrics = hasLyrics,
                                 isExplicit = info.explicit,
                                 onClick = { onSongCardClicked() })
                             Text(

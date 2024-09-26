@@ -47,7 +47,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
     private fun cancelTask(taskId: String?, notificationId: Int) {
         if (taskId.isNullOrEmpty()) return
         NotificationsUtil.cancelNotification(notificationId)
-        val result = SpotDL.getInstance().destroyProcessById(taskId, true)
+        val result = SpotDL.getInstance().destroyProcessById(taskId)
         NotificationsUtil.cancelNotification(notificationId)
         if (result) {
             Log.d(TAG, "Task (id:$taskId) was killed.")

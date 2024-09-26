@@ -57,6 +57,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.bobbyesp.library.SpotDL
+import com.bobbyesp.library.domain.UpdateStatus
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
@@ -525,7 +526,7 @@ fun InitialEntry(
         kotlin.runCatching {
             withContext(Dispatchers.IO) {
                 val result = UpdateUtil.updateSpotDL()
-                if (result == SpotDL.UpdateStatus.DONE) {
+                if (result == UpdateStatus.DONE) {
                     ToastUtil.makeToastSuspend(
                         App.context.getString(R.string.spotdl_update_success)
                             .format(SPOTDL.getString())

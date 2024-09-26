@@ -219,7 +219,6 @@ object SpotifyApiRequests {
                 provideSpotifyApi().artists.getArtistAlbums(artist=artistId, market=Market.US, limit=20)
             }.onFailure {
                 Log.d("SpotifyApiRequests", "Error: ${it.message}")
-                null
             }.getOrNull()
         }
     }
