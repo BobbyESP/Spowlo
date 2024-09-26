@@ -141,7 +141,7 @@ dependencies {
     implementation(libs.landscapist.coil)
 
     //-------------------Youtube-------------------//
-    implementation(project(":innertube"))
+//    implementation(project(":innertube"))
 
     //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)

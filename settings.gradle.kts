@@ -25,5 +25,3 @@ rootProject.name = "spowlo"
 include(":app")
 include(":app:utilities")
 include(":app:ui")
-include(":innertube")
-include(":kugou")

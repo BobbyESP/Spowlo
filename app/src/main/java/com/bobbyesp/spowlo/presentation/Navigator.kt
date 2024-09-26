@@ -5,14 +5,11 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Square
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -36,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
@@ -55,7 +51,6 @@ import com.bobbyesp.spowlo.presentation.common.isHomeRoute
 import com.bobbyesp.spowlo.presentation.common.mainRoutesForProvider
 import com.bobbyesp.spowlo.presentation.components.OptionsDialog
 import com.bobbyesp.spowlo.presentation.components.spotify.search.SpAppSearchBarImpl
-import com.bobbyesp.spowlo.presentation.components.ytmusic.search.YtMusicAppSearchBarImpl
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.AuthenticationPage
 import com.bobbyesp.spowlo.presentation.pages.spotify.auth.SpotifyAuthManagerViewModel
 import com.bobbyesp.spowlo.presentation.pages.spotify.home.HomePage
@@ -178,37 +173,37 @@ fun Navigator(
                         }
                     }
 
-                    navigation<Route.YoutubeMusic>(
-                        startDestination = Route.YoutubeMusic.HomeNavigator,
-                    ) {
-                        navigation<Route.YoutubeMusic.HomeNavigator>(
-                            startDestination = Route.YoutubeMusic.HomeNavigator.Home,
-                        ) {
-                            composable<Route.YoutubeMusic.HomeNavigator.Home> {
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Text("Hello, YouTube Music!")
-                                    Button(onClick = {
-                                        navController.cleanNavigate(Route.Spotify)
-                                    }) {
-                                        Text("Navigate to Spotify!")
-                                    }
-                                }
-                            }
-                        }
-
-                        navigation<Route.YoutubeMusic.SearchNavigator>(
-                            startDestination = Route.YoutubeMusic.SearchNavigator.Search::class,
-                        ) {
-                            composable<Route.YoutubeMusic.SearchNavigator.Search> {
-                                val args = it.toRoute<Route.YoutubeMusic.SearchNavigator.Search>()
-                                Text("Search results for ${args.query}")
-                            }
-                        }
-                    }
+//                    navigation<Route.YoutubeMusic>(
+//                        startDestination = Route.YoutubeMusic.HomeNavigator,
+//                    ) {
+//                        navigation<Route.YoutubeMusic.HomeNavigator>(
+//                            startDestination = Route.YoutubeMusic.HomeNavigator.Home,
+//                        ) {
+//                            composable<Route.YoutubeMusic.HomeNavigator.Home> {
+//                                Column(
+//                                    modifier = Modifier.fillMaxSize(),
+//                                    verticalArrangement = Arrangement.Center,
+//                                    horizontalAlignment = Alignment.CenterHorizontally,
+//                                ) {
+//                                    Text("Hello, YouTube Music!")
+//                                    Button(onClick = {
+//                                        navController.cleanNavigate(Route.Spotify)
+//                                    }) {
+//                                        Text("Navigate to Spotify!")
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        navigation<Route.YoutubeMusic.SearchNavigator>(
+//                            startDestination = Route.YoutubeMusic.SearchNavigator.Search::class,
+//                        ) {
+//                            composable<Route.YoutubeMusic.SearchNavigator.Search> {
+//                                val args = it.toRoute<Route.YoutubeMusic.SearchNavigator.Search>()
+//                                Text("Search results for ${args.query}")
+//                            }
+//                        }
+//                    }
                     dialog<Route.OptionsDialog>(
                         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                     ) {
@@ -229,7 +224,7 @@ fun Navigator(
                 if (currentProvider == Route.Spotify) {
                     SpAppSearchBarImpl(searchBarScrollBehavior)
                 } else {
-                    YtMusicAppSearchBarImpl(searchBarScrollBehavior)
+//                    YtMusicAppSearchBarImpl(searchBarScrollBehavior)
                 }
             }
 
