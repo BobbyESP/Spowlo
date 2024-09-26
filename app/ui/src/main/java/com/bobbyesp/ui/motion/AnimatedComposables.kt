@@ -25,12 +25,15 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
 import com.bobbyesp.ui.motion.MotionConstants.InitialOffset
 
+// This file is part of Seal (https://github.com/junkfood02/Seal). Thanks for the share!
+
 fun <T> enterTween() = tween<T>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 
 fun <T> exitTween() = tween<T>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 
 private val fadeSpring =
     spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium)
+
 private val fadeTween = tween<Float>(durationMillis = DURATION_EXIT)
 val fadeSpec = fadeTween
 
@@ -115,15 +118,11 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposableVariant(
 val springSpec =
     spring(stiffness = Spring.StiffnessMedium, visibilityThreshold = IntOffset.VisibilityThreshold)
 
-fun NavGraphBuilder.slideInVerticallyComposable(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
+inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
     deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
 ) =
-    composable(
-        route = route,
-        arguments = arguments,
+    composable<T>(
         deepLinks = deepLinks,
         enterTransition = {
             slideInVertically(initialOffsetY = { it }, animationSpec = enterTween()) + fadeIn()
