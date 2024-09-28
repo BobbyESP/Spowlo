@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
+import com.bobbyesp.spowlo.R
 import com.bobbyesp.ui.components.others.PlaceholderCreator
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -74,7 +75,7 @@ fun AsyncImage(
                     contentDescription = "Song cover failed to load"
                 )
             },
-//                previewPlaceholder = R.drawable.bones_imaginedragons,
+            previewPlaceholder = R.drawable.bones_imaginedragons,
             imageLoader = { imageLoader ?: ImageLoader(context) },
         )
     }

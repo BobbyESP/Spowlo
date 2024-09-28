@@ -24,6 +24,7 @@
     <string name="most_played_songs">Most played songs</string>
     <string name="library">Library</string>
     <string name="listening_now">Listening now</string>
+    <string name="lets_start_downloading">Let\'s start downloading</string>
     <plurals name="numberOfSongs">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>

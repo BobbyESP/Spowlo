@@ -7,6 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +22,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.LibraryMusic
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Microwave
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +43,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -50,6 +57,7 @@ import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SpotifyUserInformation
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
+import com.bobbyesp.spowlo.ext.capitalize
 import com.bobbyesp.spowlo.ext.formatArtistsName
 import com.bobbyesp.spowlo.presentation.components.card.CompactArtistCard
 import com.bobbyesp.spowlo.presentation.components.card.CompactCardSize
@@ -142,8 +150,8 @@ private fun ProfilePageImpl(
                     count = mostPlayedArtists.itemCount,
                     key = mostPlayedArtists.itemKey(),
                     contentType = mostPlayedArtists.itemContentType()
-                ) {
-                    mostPlayedArtists[it]?.let { artist ->
+                ) { index ->
+                    mostPlayedArtists[index]?.let { artist ->
                         CompactArtistCard(
                             pictureUrl = artist.images?.firstOrNull()?.url,
                             name = artist.name ?: stringResource(R.string.unknown),
@@ -168,13 +176,13 @@ private fun ProfilePageImpl(
                     count = mostPlayedSongs.itemCount,
                     key = mostPlayedSongs.itemKey(),
                     contentType = mostPlayedSongs.itemContentType()
-                ) {
-                    mostPlayedSongs[it]?.let { song ->
+                ) { index ->
+                    mostPlayedSongs[index]?.let { song ->
                         CompactSongCard(
                             artworkUrl = song.album.images?.firstOrNull()?.url,
                             name = song.name,
                             artists = song.artists.formatArtistsName(),
-                            listIndex = it + 1,
+                            listIndex = index + 1,
                             size = CompactCardSize.LARGE
                         )
                     }
@@ -184,6 +192,7 @@ private fun ProfilePageImpl(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun ProfileHero(
     modifier: Modifier = Modifier, userInfo: SpotifyUserInformation
@@ -194,6 +203,9 @@ private fun ProfileHero(
 
     val animatedColor by animateColorAsState(dominantColor, label = "Background color animation")
 
+    val customImageLoader =
+        ImageLoader.Builder(LocalContext.current).allowHardware(false).crossfade(true)
+            .dispatcher(Dispatchers.IO).build()
     Box(
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
@@ -204,61 +216,68 @@ private fun ProfileHero(
         ),
     ) {
         Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
         ) {
-            userInfo.images?.firstOrNull()?.url?.let { imageUrl ->
-                AsyncImage(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(128.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
-                    imageModel = imageUrl,
-                    imageLoader = ImageLoader.Builder(LocalContext.current).allowHardware(false)
-                        .crossfade(true).dispatcher(Dispatchers.IO).build(),
-                ) { data ->
-                    data.drawable?.toBitmap()?.let { bitmap ->
-                        Palette.Builder(bitmap).generate { palette ->
-                            dominantColor =
-                                palette?.mutedSwatch?.rgb?.let { Color(it) } ?: Color.Transparent
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.lets_start_downloading),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.W200
+                    )
+                    Text(
+                        text = userInfo.displayName ?: stringResource(id = R.string.unknown),
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    RoundedTag(modifier = Modifier, "@${userInfo.id}")
+                }
+
+                userInfo.images?.firstOrNull()?.url?.let { imageUrl ->
+                    AsyncImage(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(72.dp)
+                            .border(0.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                        imageModel = imageUrl,
+                        imageLoader = customImageLoader
+                    ) { data ->
+                        data.drawable?.toBitmap()?.let { bitmap ->
+                            Palette.Builder(bitmap).generate { palette ->
+                                dominantColor = palette?.mutedSwatch?.rgb?.let { Color(it) }
+                                    ?: Color.Transparent
+                            }
                         }
                     }
                 }
             }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+            FlowRow(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(
-                    text = userInfo.displayName ?: stringResource(R.string.unknown),
-                    style = MaterialTheme.typography.titleMedium,
-                    overflow = TextOverflow.Ellipsis,
+                RoundedTag(
+                    imageVector = Icons.Rounded.Microwave,
+                    text = userInfo.product?.capitalize() ?: stringResource(R.string.unknown)
                 )
-
-                Text(
-                    text = userInfo.email ?: stringResource(R.string.unknown),
-                    style = MaterialTheme.typography.bodyMedium,
-                    overflow = TextOverflow.Ellipsis,
+                RoundedTag(
+                    imageVector = Icons.Rounded.LocationOn,
+                    text = userInfo.country ?: stringResource(R.string.unknown)
                 )
-
-                RoundedTag(modifier = Modifier, "@${userInfo.id}")
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-            ) {
-                userInfo.followers.total?.let { followers ->
-                    Text(
-                        text = stringResource(R.string.followers, followers),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
+                RoundedTag(
+                    imageVector = Icons.Rounded.Person, text = stringResource(R.string.followers, userInfo.followers.total ?: -1)
+                )
+                RoundedTag(
+                    imageVector = Icons.Rounded.Email,
+                    text = userInfo.email ?: stringResource(R.string.unknown)
+                )
             }
         }
     }
