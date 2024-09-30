@@ -12,9 +12,19 @@ enum class DURATION(val time: Long) {
 
 @Stable
 data class Notification(
-    val id: Int = Random.nextInt(),
-    val title: String = "",
-    val subtitle: String = "",
-    val duration: DURATION = DURATION.MEDIUM,
-    val timestamp: Long = System.currentTimeMillis(),
-)
+    val id: Int,
+    val title: String,
+    val subtitle: String,
+    val duration: DURATION,
+    val timestamp: Long,
+) {
+    companion object {
+        fun default() = Notification(
+            id = Random.nextInt(),
+            title = "",
+            subtitle = "",
+            duration = DURATION.MEDIUM,
+            timestamp = System.currentTimeMillis()
+        )
+    }
+}
