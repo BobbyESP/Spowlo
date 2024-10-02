@@ -320,7 +320,7 @@ fun <T : Any> ResultsList(
             val item = paginatedItems[index] as T
             SearchingResult(
                 modifier = Modifier.fillMaxWidth(),
-                insideModifier = Modifier.padding(vertical = 8.dp),
+                insideModifier = Modifier.padding(vertical = 4.dp),
                 name = itemName(item),
                 artists = itemArtists(item),
                 artworkUrl = itemArtworkUrl(item),

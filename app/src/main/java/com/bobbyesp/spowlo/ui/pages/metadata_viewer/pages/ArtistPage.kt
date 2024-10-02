@@ -1,9 +1,9 @@
 package com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -53,7 +54,6 @@ fun ArtistPage(
     modifier: Modifier,
     trackDownloadCallback: (String, String) -> Unit
 ) {
-    // NotImplementedPage()
     val localConfig = LocalConfiguration.current
     val topTracks = remember { mutableStateOf<List<Track>?>(null) }
 
@@ -69,37 +69,35 @@ fun ArtistPage(
         }
     }
 
-    Column(
+    LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp),
     ) {
-        data.images.getOrNull(0)?.url?.let { imageUrl ->
-            Box(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.extraSmall)
-                    .fillMaxWidth()
-                    .padding(bottom = 6.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
-                val size = (localConfig.screenHeightDp / 3)
-                AsyncImageImpl(
+        item {
+            data.images.getOrNull(0)?.url?.let { imageUrl ->
+                Box(
                     modifier = Modifier
-                        .size(size.dp)
-                        .aspectRatio(1f, matchHeightConstraintsFirst = true)
-                        .clip(MaterialTheme.shapes.small),
-                    model = imageUrl,
-                    contentDescription = stringResource(id = R.string.track_artwork),
-                    contentScale = ContentScale.Crop,
-                )
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .fillMaxWidth()
+                        .padding(bottom = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
+                    val size = (localConfig.screenHeightDp / 3)
+                    AsyncImageImpl(
+                        modifier = Modifier
+                            .size(size.dp)
+                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                            .clip(MaterialTheme.shapes.small),
+                        model = imageUrl,
+                        contentDescription = stringResource(id = R.string.track_artwork),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-        ) {
+        item {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,16 +132,6 @@ fun ArtistPage(
                         modifier = Modifier.alpha(alpha = 0.8f)
                     )
                 }
-                /*Spacer(modifier = Modifier.height(6.dp))
-                SelectionContainer {
-                    Text(
-                        text = "${stringResource(id = R.string.song_genres)}: ${data.genres.joinToString(", ")}",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.alpha(alpha = 0.8f)
-                    )
-                }*/
                 FilledTonalButton(
                     modifier = Modifier.padding(start = 8.dp),
                     onClick = { ChromeCustomTabsUtil.openUrl(data.externalUrls.spotify!!) },
@@ -163,54 +151,35 @@ fun ArtistPage(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            SelectionContainer {
-                Text(
-                    text = stringResource(id = R.string.artist_top_tracks),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.alpha(alpha = 0.8f)
+        }
+
+        item {
+            Text(
+                text = stringResource(id = R.string.artist_top_tracks),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.alpha(alpha = 0.8f)
+            )
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
+        }
+
+        if (topTracks.value != null) {
+            items(topTracks.value!!.size) { index ->
+                val track = topTracks.value!![index]
+                val taskName =
+                    "${track.name} - ${track.artists.joinToString(", ") { it.name }}"
+                TrackComponent(
+                    contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    songName = track.name,
+                    artists = track.artists.joinToString(", ") { it.name },
+                    spotifyUrl = track.externalUrls.spotify ?: "",
+                    isExplicit = track.explicit,
+                    onClick = {
+                        trackDownloadCallback(track.externalUrls.spotify ?: "", taskName)
+                    }
                 )
             }
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
-            if (topTracks.value != null) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    topTracks.value!!.forEach { track ->
-                        val taskName =
-                            "${track.name} - ${track.artists.joinToString(", ") { it.name }}"
-                        TrackComponent(
-                            contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                            songName = track.name,
-                            artists = track.artists.joinToString(", ") { it.name },
-                            spotifyUrl = track.externalUrls.spotify ?: "",
-                            isExplicit = track.explicit,
-                            onClick = {
-                                trackDownloadCallback(track.externalUrls.spotify ?: "", taskName)
-                            }
-                        )
-                    }
-                }
-            }
         }
-    }
-}
-
-suspend fun geArtistTopTracks(id: String): List<Track> {
-    try {
-        val tracksDeferred = withContext(Dispatchers.IO) {
-            async {
-                Log.d("SpotifyApiRequests", "providesGetArtistTopTracks($id)")
-                SpotifyApiRequests.providesGetArtistTopTracks(id)
-            }
-        }
-        val tracks = tracksDeferred.await() ?: emptyList()
-
-        return tracks
-    } catch (e: Exception) {
-        Log.e("geArtistTopTracks", "Error fetching top tracks: $e")
-        return emptyList()
     }
 }

@@ -3,6 +3,7 @@ package com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -79,113 +81,121 @@ fun TrackPage(
         }
     }
 
-    Column(
-        modifier = modifier.fillMaxSize()
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.extraSmall)
-                .fillMaxWidth()
-                .padding(bottom = 6.dp), contentAlignment = Alignment.Center
-        ) {
-            //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
-            val size = (localConfig.screenHeightDp / 3)
-            AsyncImageImpl(
+        item {
+            Box(
                 modifier = Modifier
-                    .size(size.dp)
-                    .aspectRatio(
-                        1f, matchHeightConstraintsFirst = true
-                    )
-                    .clip(MaterialTheme.shapes.small),
-                model = trackData.album.images[0].url,
-                contentDescription = stringResource(id = R.string.track_artwork),
-                contentScale = ContentScale.Crop,
-            )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-        ) {
-            SelectionContainer {
-                MarqueeText(
-                    text = trackData.name,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
-            Spacer(modifier = Modifier.height(6.dp))
-            SelectionContainer {
-                Text(
-                    text = trackData.artists.joinToString(", ") { it.name },
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.alpha(alpha = 0.8f)
-                )
-            }
-            Spacer(modifier = Modifier.height(6.dp))
-            SelectionContainer {
-                Text(
-                    text = dataStringToString(
-                        data = trackData.type,
-                        additional = trackData.album.releaseDate?.year.toString()
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.alpha(alpha = 0.8f)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .fillMaxWidth()
+                    .padding(bottom = 6.dp), contentAlignment = Alignment.Center
+            ) {
+                //calculate the image size based on the screen size and the aspect ratio as 1:1 (square) based on the height
+                val size = (localConfig.screenHeightDp / 3)
+                AsyncImageImpl(
+                    modifier = Modifier
+                        .size(size.dp)
+                        .aspectRatio(
+                            1f, matchHeightConstraintsFirst = true
+                        )
+                        .clip(MaterialTheme.shapes.small),
+                    model = trackData.album.images[0].url,
+                    contentDescription = stringResource(id = R.string.track_artwork),
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
-
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            val taskName = StringBuilder().append(trackData.name).append(" - ")
-                .append(trackData.artists.joinToString(", ") { it.name }).toString()
-            TrackComponent(contentModifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                songName = trackData.name,
-                artists = trackData.artists.joinToString(", ") { it.name },
-                spotifyUrl = trackData.externalUrls.spotify!!,
-                isExplicit = trackData.explicit,
-                onClick = { trackDownloadCallback(trackData.externalUrls.spotify!!, taskName) })
-        }
-        Spacer(modifier = Modifier.padding(vertical = 8.dp))
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
+        item {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                ExtraInfoCard(
-                    headlineText = stringResource(id = R.string.track_popularity),
-                    bodyText = trackData.popularity.toString(),
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                ExtraInfoCard(
-                    headlineText = stringResource(id = R.string.track_duration),
-                    bodyText = GeneralTextUtils.convertDuration(trackData.durationMs.toDouble()),
-                    modifier = Modifier.weight(1f)
-                )
+                    .padding(horizontal = 8.dp),
+                ) {
+                SelectionContainer {
+                    MarqueeText(
+                        text = trackData.name,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                SelectionContainer {
+                    Text(
+                        text = trackData.artists.joinToString(", ") { it.name },
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.alpha(alpha = 0.8f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+                SelectionContainer {
+                    Text(
+                        text = dataStringToString(
+                            data = trackData.type,
+                            additional = trackData.album.releaseDate?.year.toString()
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.alpha(alpha = 0.8f)
+                    )
+                }
             }
-            AnimatedVisibility(visible = audioFeatures != null) {
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+        }
+
+        item {
+            val songData = trackData
+            val taskName = StringBuilder().append(songData.name).append(" - ")
+                .append(songData.artists.joinToString(", ") { it.name }).toString()
+
+            TrackComponent(
+                contentModifier = Modifier,
+                songName = songData.name,
+                artists = songData.artists.joinToString(", ") { it.name },
+                spotifyUrl = songData.externalUrls.spotify!!,
+                isExplicit = songData.explicit,
+                onClick = { trackDownloadCallback(songData.externalUrls.spotify!!, taskName) })
+        }
+
+        item {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = 16.dp)
                 ) {
                     ExtraInfoCard(
-                        headlineText = stringResource(id = R.string.loudness),
-                        bodyText = audioFeatures!!.loudness.toString(),
+                        headlineText = stringResource(id = R.string.track_popularity),
+                        bodyText = trackData.popularity.toString(),
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     ExtraInfoCard(
-                        headlineText = stringResource(id = R.string.tempo),
-                        bodyText = audioFeatures!!.tempo.toString() + " BPM",
+                        headlineText = stringResource(id = R.string.track_duration),
+                        bodyText = GeneralTextUtils.convertDuration(trackData.durationMs.toDouble()),
                         modifier = Modifier.weight(1f)
                     )
+                }
+                AnimatedVisibility(visible = audioFeatures != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        ExtraInfoCard(
+                            headlineText = stringResource(id = R.string.loudness),
+                            bodyText = audioFeatures!!.loudness.toString(),
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        ExtraInfoCard(
+                            headlineText = stringResource(id = R.string.tempo),
+                            bodyText = audioFeatures!!.tempo.toString() + " BPM",
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
         }

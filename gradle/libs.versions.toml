@@ -22,7 +22,7 @@ androidxHiltNavigationCompose = "1.2.0"
 
 androidxTestExt = "1.2.1"
 
-spotdlAndroidVersion = "0.2.1"
+spotdlAndroidVersion = "0.3.0-alpha.03b1b47"
 spotifyApiKotlinVersion = "4.0.2"
 
 crashHandlerVersion = "2.0.2"
@@ -110,8 +110,8 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
-spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlAndroidVersion" }
-spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlAndroidVersion" }
+spotdl-android-library = { group = "com.github.BobbyESP.spotdl_android", name = "library", version.ref = "spotdlAndroidVersion" }
+spotdl-android-ffmpeg = { group = "com.github.BobbyESP.spotdl_android", name = "ffmpeg", version.ref = "spotdlAndroidVersion" }
 
 spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotifyApiKotlinVersion" }
 

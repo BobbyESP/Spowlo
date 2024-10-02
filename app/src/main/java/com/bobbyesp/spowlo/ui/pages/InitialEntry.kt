@@ -56,7 +56,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.domain.UpdateStatus
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
@@ -77,7 +76,7 @@ import com.bobbyesp.spowlo.ui.pages.download_tasks.FullscreenConsoleOutput
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPage
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.SpotifyItemPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPageViewModel
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
@@ -458,7 +457,7 @@ fun InitialEntry(
                         val type =
                             backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
 
-                        PlaylistPage(
+                        SpotifyItemPage(
                             onBackPressed,
                             id = id,
                             type = type,

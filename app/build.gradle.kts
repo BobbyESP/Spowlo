@@ -233,11 +233,8 @@ dependencies {
     ksp(libs.room.compiler)
 
     //spotDL library
-//    implementation(libs.spotdl.android.library)
-//    implementation(libs.spotdl.android.ffmpeg)
-    implementation("com.github.BobbyESP.spotdl_android:library:3000")
-    implementation("com.github.BobbyESP.spotdl_android:ffmpeg:3000")
-    implementation("com.github.BobbyESP.spotdl_android:common:0.3.0-alpha.f51af0d")
+    implementation(libs.spotdl.android.library)
+    implementation(libs.spotdl.android.ffmpeg)
 
     implementation(libs.spotify.api.android)
 
