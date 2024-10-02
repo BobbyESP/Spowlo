@@ -37,7 +37,12 @@ fun HomePage() {
         val notificationsManager = LocalNotificationManager.current
         Button(onClick = {
             scope.launch {
-                notificationsManager.showNotification(Notification(title = "Hello, Notification!"))
+                notificationsManager.showNotification(
+                    Notification.default().copy(
+                        title = "Hello, Notification!",
+                        subtitle = "This is a notification!"
+                    )
+                )
             }
         }) {
             Text("Show notification")

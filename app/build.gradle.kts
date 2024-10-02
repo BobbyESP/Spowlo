@@ -44,11 +44,13 @@ android {
             buildConfigField(
                 "String", "SPOTIFY_REDIRECT_URI_PKCE", "\"spowlo://spotify-pkce\""
             )
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            packaging {
+                resources.excludes.add("META-INF/*.kotlin_module")
+            }
         }
         debug {
             buildConfigField(
@@ -62,6 +64,12 @@ android {
             )
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
+        }
+    }
+    applicationVariants.all {
+        outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "Spowlo-${defaultConfig.versionName}-${name}.apk"
         }
     }
     compileOptions {
