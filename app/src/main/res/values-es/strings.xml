@@ -27,7 +27,6 @@
     <string name="check_source_code">Mira el código fuente de Spowlo en GitHub!</string>
     <string name="appearance_settings">Cambia como se ve la aplicación</string>
     <string name="spotify_settings_desc">Cambia ajustes relacionados con la API de Spotify…</string>
-    <string name="format_settings_desc">Cambia el formato de tus descargas</string>
     <string name="additional_settings">Ajustes adicionales</string>
     <string name="download_error_msg">Ocurrió un error al intentar descargar la canción</string>
     <string name="about">Acerca de</string>

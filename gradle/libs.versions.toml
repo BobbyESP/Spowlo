@@ -1,53 +1,50 @@
 [versions]
-accompanist = "0.32.0"
-androidGradlePlugin = "8.1.2"
-androidxComposeBom = "2023.10.01"
-androidxComposeCompiler = "1.5.6"
-androidxCore = "1.12.0"
-androidMaterial = "1.11.0"
-androidxAppCompat = "1.7.0-alpha03"
-androidxActivity = "1.8.2"
+accompanist = "0.34.0"
+androidGradlePlugin = "8.8.0-alpha01"
+androidxComposeBom = "2024.06.00"
+androidxCore = "1.13.1"
+androidMaterial = "1.12.0"
+androidxAppCompat = "1.7.0"
+androidxActivity = "1.9.2"
 markdownDependency = "0.3.6"
-navTransitions = "0.11.0-alpha"
-androidxPaging = "3.2.1"
-paginationCompose = "3.2.1"
-ksp = "1.9.21-1.0.15"
+androidxPaging = "3.3.2"
+paginationCompose = "3.3.2"
+ksp = "2.0.0-1.0.22"
+commonsIo = "2.15.0"
+commonsCompress = "1.24.0"
 
-androidxLifecycle = "2.6.2"
-androidxNavigation = "2.7.6"
-androidxComposeMaterial3 = "1.1.2"
+androidxLifecycle = "2.8.6"
+androidxNavigation = "2.8.1"
+androidxComposeMaterial3 = "1.3.0-alpha06"
 
-androidxEspresso = "3.5.1"
-androidxHiltNavigationCompose = "1.1.0"
+androidxEspresso = "3.6.1"
+androidxHiltNavigationCompose = "1.2.0"
 
-androidxTestExt = "1.1.5"
+androidxTestExt = "1.2.1"
 
-spotdlAndroidVersion = "0.2.1"
+spotdlAndroidVersion = "0.3.0-alpha.03b1b47"
 spotifyApiKotlinVersion = "4.0.2"
 
-shimmerLibrary = "1.0.4"
 crashHandlerVersion = "2.0.2"
 
-coil = "2.5.0"
-hilt = "2.49"
-hiltExt = "1.1.0"
+coil = "2.6.0"
+hilt = "2.51"
+hiltExt = "1.2.0"
 
 junit4 = "4.13.2"
-kotlin = "1.9.21"
-kotlinxCoroutines = "1.7.3"
-kotlinxDatetime = "0.4.0"
-kotlinxSerializationJson = "1.5.1"
+kotlin = "2.0.0"
+kotlinxCoroutines = "1.8.0"
+kotlinxDatetime = "0.5.0"
+kotlinxSerializationJson = "1.6.3"
 okhttp = "5.0.0-alpha.11"
-ktor = "2.3.7"
-
-exoplayer = "2.19.1"
+ktor = "2.3.8"
 
 room = "2.6.1"
 
 mmkv = "1.3.2"
 
 #chrome custom tabs
-customTabs = "1.7.0"
+customTabs = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -62,7 +59,6 @@ accompanist-navigation-animation = { group = "com.google.accompanist", name = "a
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
-accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 #Accompanist material component
@@ -80,18 +76,14 @@ markdown = { group = "com.github.jeziellago", name = "compose-markdown", version
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
-
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 
@@ -111,12 +103,15 @@ hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.r
 
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 
+commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
+
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
-spotdl-android-library = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-library", version.ref = "spotdlAndroidVersion" }
-spotdl-android-ffmpeg = { group = "com.github.bobbyesp.spotdl-android", name = "spotdl-android-ffmpeg", version.ref = "spotdlAndroidVersion" }
+spotdl-android-library = { group = "com.github.BobbyESP.spotdl_android", name = "library", version.ref = "spotdlAndroidVersion" }
+spotdl-android-ffmpeg = { group = "com.github.BobbyESP.spotdl_android", name = "ffmpeg", version.ref = "spotdlAndroidVersion" }
 
 spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotifyApiKotlinVersion" }
 
@@ -127,10 +122,6 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
 
 crash-handler = { group = "com.github.thelumiereguy", name = "CrashWatcher-Android", version.ref = "crashHandlerVersion" }
-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmerLibrary" }
-
-soup-anims-core = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "navTransitions" }
-soup-anims-navigation = { group = "io.github.fornewid", name = "material-motion-compose-navigation", version.ref = "navTransitions" }
 
 #Ktor (also network)
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
@@ -144,13 +135,12 @@ customtabs = { group = "androidx.browser", name = "browser", version.ref = "cust
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 ktor = ["ktor-android", "ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation"]

@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bobbyesp.library.dto.Song
+import com.bobbyesp.library.domain.model.SpotifySong
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.text.MarqueeText
 import com.bobbyesp.spowlo.utils.GeneralTextUtils
@@ -41,12 +41,11 @@ import com.bobbyesp.spowlo.utils.GeneralTextUtils
 @Composable
 fun SongCard(
     modifier: Modifier = Modifier,
-    song: Song,
+    song: SpotifySong,
     onClick: () -> Unit = {},
     progress: Float = 0.69f,
     isPreview: Boolean = false,
     isExplicit: Boolean = true,
-    isLyrics: Boolean = false,
 ) {
     Box(modifier) {
         ElevatedCard(
@@ -179,7 +178,7 @@ fun ShowSongCard() {
     Surface {
         SongCard(
             song =
-            Song(
+            SpotifySong(
                 "Save Your Tears",
                 listOf("The Weekend"),
                 "The Weeknd",
@@ -219,7 +218,7 @@ fun ShowSongCardNight() {
     Surface {
         SongCard(
             song =
-            Song(
+            SpotifySong(
                 "mariposas",
                 listOf("sangiovanni"),
                 "sangiovanni",

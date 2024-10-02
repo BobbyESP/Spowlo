@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
-import java.time.LocalDate
-import kotlin.math.roundToInt
 
 val LocalTonalPalettes = staticCompositionLocalOf {
     Color(0xFF007FAC).toTonalPalettes()
@@ -35,7 +33,7 @@ inline val Number.n2: Color
 fun dynamicColorScheme(isLight: Boolean = !isSystemInDarkTheme()): ColorScheme {
     return if (isLight) {
         lightColorScheme(
-            background = 99.n1,
+            background = 98.n1,
             inverseOnSurface = 95.n1,
             inversePrimary = 80.a1,
             inverseSurface = 20.n1,
@@ -49,20 +47,27 @@ fun dynamicColorScheme(isLight: Boolean = !isSystemInDarkTheme()): ColorScheme {
             onTertiary = 100.a3,
             onTertiaryContainer = 10.a3,
             outline = 50.n2,
-//            outlineVariant = 80.n2,
+            outlineVariant = 80.n2,
             primary = 40.a1,
             primaryContainer = 90.a1,
 //            scrim = 0.n1,
             secondary = 40.a2,
             secondaryContainer = 90.a2,
-            surface = 99.n1,
+            surface = 98.n1,
             surfaceVariant = 90.n2,
             tertiary = 40.a3,
-            tertiaryContainer = 90.a3
+            tertiaryContainer = 90.a3,
+            surfaceBright = 98.n1,
+            surfaceDim = 87.n1,
+            surfaceContainerLowest = 100.n1,
+            surfaceContainerLow = 96.n1,
+            surfaceContainer = 94.n1,
+            surfaceContainerHigh = 92.n1,
+            surfaceContainerHighest = 90.n1,
         )
     } else {
         darkColorScheme(
-            background = 10.n1,
+            background = 6.n1,
             inverseOnSurface = 20.n1,
             inversePrimary = 40.a1,
             inverseSurface = 90.n1,
@@ -76,32 +81,23 @@ fun dynamicColorScheme(isLight: Boolean = !isSystemInDarkTheme()): ColorScheme {
             onTertiary = 20.a3,
             onTertiaryContainer = 90.a3,
             outline = 60.n2,
-//            outlineVariant = 30.n2,
+            outlineVariant = 30.n2,
             primary = 80.a1,
             primaryContainer = 30.a1,
 //            scrim = 0.n1,
             secondary = 80.a2,
             secondaryContainer = 30.a2,
-            surface = 10.n1,
+            surface = 6.n1,
             surfaceVariant = 30.n2,
             tertiary = 80.a3,
-            tertiaryContainer = 30.a3
+            tertiaryContainer = 30.a3,
+            surfaceBright = 24.n1,
+            surfaceDim = 6.n1,
+            surfaceContainerLowest = 4.n1,
+            surfaceContainerLow = 10.n1,
+            surfaceContainer = 12.n1,
+            surfaceContainerHigh = 17.n1,
+            surfaceContainerHighest = 22.n1,
         )
     }
-}
-
-fun Srgb.toColor(): Color {
-    return Color(
-        (r * 255).roundToInt(),
-        (g * 255).roundToInt(),
-        (b * 255).roundToInt()
-    )
-}
-
-fun Color.toSrgb(): Srgb {
-    return Srgb(
-        red.toDouble(),
-        green.toDouble(),
-        blue.toDouble()
-    )
 }

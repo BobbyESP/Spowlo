@@ -68,8 +68,8 @@ fun AppThemePreferencesPage(onBackPressed: () -> Unit) {
                         selected = darkThemePreference.darkThemeValue == FOLLOW_SYSTEM,
                         modifier = Modifier.clip(
                             RoundedCornerShape(
-                                topStart = 16.dp,
-                                topEnd = 16.dp
+                                topStart = 8.dp,
+                                topEnd = 8.dp
                             )
                         )
                     ) { PreferencesUtil.modifyDarkThemePreference(FOLLOW_SYSTEM) }
@@ -88,8 +88,8 @@ fun AppThemePreferencesPage(onBackPressed: () -> Unit) {
                         selected = darkThemePreference.darkThemeValue == OFF,
                         modifier = Modifier.clip(
                             RoundedCornerShape(
-                                bottomStart = 16.dp,
-                                bottomEnd = 16.dp
+                                bottomStart = 8.dp,
+                                bottomEnd = 8.dp
                             )
                         )
                     ) { PreferencesUtil.modifyDarkThemePreference(OFF) }
@@ -105,7 +105,13 @@ fun AppThemePreferencesPage(onBackPressed: () -> Unit) {
                         checked = isHighContrastModeEnabled,
                         title = { Text(text = stringResource(R.string.high_contrast)) },
                         icon = Icons.Outlined.Contrast,
-                        clipCorners = true
+                        clipCorners = false,
+                        modifier = Modifier.clip(
+                            RoundedCornerShape(
+                                bottomStart = 8.dp, bottomEnd = 8.dp,
+                                topStart = 8.dp, topEnd = 8.dp
+                            )
+                        ),
                     )
                 }
             }

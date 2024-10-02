@@ -58,7 +58,7 @@ class PaletteStyle(
             accent1Spec = ColorSpec({ 36.0 }) { 0.0 },
             accent2Spec = ColorSpec({ 16.0 }) { 0.0 },
             accent3Spec = ColorSpec({ 24.0 }) { 60.0 },
-            neutral1Spec = ColorSpec({ 4.0 }) { 0.0 },
+            neutral1Spec = ColorSpec({ 6.0 }) { 0.0 },
             neutral2Spec = ColorSpec({ 8.0 }) { 0.0 }
         )
         val Spritz: PaletteStyle = PaletteStyle(
@@ -110,6 +110,13 @@ class PaletteStyle(
             accent3Spec = ColorSpec({ 32.0 }) { 0.0 },
             neutral1Spec = ColorSpec({ 10.0 }) { 0.0 },
             neutral2Spec = ColorSpec({ 12.0 }) { 0.0 }
+        )
+        val Monochrome: PaletteStyle = PaletteStyle(
+            accent1Spec = ColorSpec({ 0.0 }) { 0.0 },
+            accent2Spec = ColorSpec({ 0.0 }) { 0.0 },
+            accent3Spec = ColorSpec({ 0.0 }) { 0.0 },
+            neutral1Spec = ColorSpec({ 0.0 }) { 0.0 },
+            neutral2Spec = ColorSpec({ 0.0 }) { 0.0 },
         )
 
         private fun Double.hueRotation(list: Array<Pair<Int, Int>>): Double {

@@ -6,7 +6,8 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.text.AnnotatedString
 import com.bobbyesp.library.SpotDL
-import com.bobbyesp.library.dto.Song
+import com.bobbyesp.library.domain.model.SpotifySong
+import com.bobbyesp.library.util.exceptions.CanceledException
 import com.bobbyesp.spowlo.App.Companion.applicationScope
 import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.startService
@@ -108,7 +109,7 @@ object Downloader {
 
         fun onCancel() {
             toKey().run {
-                SpotDL.getInstance().destroyProcessById(this, true)
+                SpotDL.getInstance().destroyProcessById(this)
                 onProcessCanceled(this)
             }
         }
@@ -118,7 +119,7 @@ object Downloader {
     //----------------------------
 
     data class DownloadTaskItem(
-        val info: Song = Song(),
+        val info: SpotifySong = SpotifySong(),
         val spotifyUrl: String = "",
         val name: String = "",
         val artist: String = "",
@@ -132,7 +133,7 @@ object Downloader {
         val output: String = "",
     )
 
-    private fun Song.toTask(preferencesHash: Int): DownloadTaskItem =
+    private fun SpotifySong.toTask(preferencesHash: Int): DownloadTaskItem =
         DownloadTaskItem(
             info = this,
             spotifyUrl = this.url,
@@ -315,7 +316,7 @@ object Downloader {
 
     @CheckResult
     private fun downloadSong(
-        songInfo: Song,
+        songInfo: SpotifySong,
         preferences: DownloaderUtil.DownloadPreferences = DownloaderUtil.DownloadPreferences()
     ): Result<List<String>> {
 
@@ -342,13 +343,14 @@ object Downloader {
             )
         }.onFailure {
             Log.d("Downloader", "$it")
-            if (it is SpotDL.CanceledException) return@onFailure
+            if (it is CanceledException) return@onFailure
             Log.d("Downloader", "The download has been canceled (app thread)")
             manageDownloadError(
                 it,
                 false,
                 notificationId = notificationId,
-                isTaskAborted = !isDownloadingPlaylist
+                isTaskAborted = !isDownloadingPlaylist,
+                songName = "${songInfo.artist} - ${songInfo.name}",
             )
         }.onSuccess {
             if (!isDownloadingPlaylist) finishProcessing()
@@ -357,7 +359,7 @@ object Downloader {
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
                 NotificationsUtil.finishNotification(
                     notificationId,
-                    title = songInfo.name,
+                    title = "${songInfo.artist} - ${songInfo.name}",
                     text = text,
                     intent = if (this != null) PendingIntent.getActivity(
                         context,
@@ -379,7 +381,7 @@ object Downloader {
             updateState(State.FetchingInfo)
             if (skipInfoFetch) {
                 downloadResultTemp = downloadSong(
-                    songInfo = Song(url = url),
+                    songInfo = SpotifySong(url = url),
                     preferences = downloadPreferences
                 ).onFailure {
                     manageDownloadError(
@@ -480,8 +482,9 @@ object Downloader {
         isFetchingInfo: Boolean,
         isTaskAborted: Boolean = true,
         notificationId: Int? = null,
+        songName: String? = null
     ) {
-        if (th is SpotDL.CanceledException) return
+        if (th is CanceledException) return
         th.printStackTrace()
         val resId =
             if (isFetchingInfo) R.string.fetch_info_error_msg else R.string.download_error_msg
@@ -495,7 +498,8 @@ object Downloader {
         notificationId?.let {
             NotificationsUtil.finishNotification(
                 notificationId = notificationId,
-                text = context.getString(R.string.download_error_msg),
+                title = songName,
+                text = "${context.getString(R.string.download_error_msg)}\n\n${th.message.toString()}"
             )
         }
         if (isTaskAborted) {
@@ -511,7 +515,7 @@ object Downloader {
         updateState(State.Idle)
         clearProgressState(isFinished = false)
         taskState.value.taskId.run {
-            SpotDL.getInstance().destroyProcessById(this, true)
+            SpotDL.getInstance().destroyProcessById(this)
             NotificationsUtil.cancelNotification(this.toNotificationId())
         }
     }

@@ -38,8 +38,8 @@ import kotlinx.coroutines.launch
 fun IndicatorBehindScrollableTabRow(
     selectedTabIndex: Int,
     modifier: Modifier = Modifier,
-    containerColor: Color = TabRowDefaults.containerColor,
-    contentColor: Color = TabRowDefaults.contentColor,
+    containerColor: Color = TabRowDefaults.primaryContainerColor,
+    contentColor: Color = TabRowDefaults.primaryContentColor,
     edgePadding: Dp = ScrollableTabRowPadding,
     tabAlignment: Alignment = Alignment.CenterStart,
     indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,

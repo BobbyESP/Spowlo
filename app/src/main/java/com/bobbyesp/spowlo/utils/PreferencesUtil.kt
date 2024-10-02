@@ -3,7 +3,6 @@ package com.bobbyesp.spowlo.utils
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import com.bobbyesp.spowlo.App
@@ -12,7 +11,6 @@ import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.App.Companion.isFDroidBuild
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.database.CookieProfile
-import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.ui.theme.DEFAULT_SEED_COLOR
 import com.google.android.material.color.DynamicColors
 import com.kyant.monet.PaletteStyle
@@ -49,7 +47,15 @@ const val CUSTOM_PATH = "custom_path"
 
 const val USE_YT_METADATA = "use_yt_metadata"
 const val USE_SPOTIFY_CREDENTIALS = "use_spotify_credentials"
-const val SYNCED_LYRICS = "synced_lyrics"
+const val DOWNLOAD_LYRICS = "download_lyrics"
+const val LYRIC_PROVIDERS = "lyric_providers"
+const val AUDIO_PROVIDERS = "audio_providers"
+const val SPONSORBLOCK = "sponsorblock"
+const val ONLY_VERIFIED_RESULTS = "only_verified_results"
+const val SKIP_EXPLICIT = "skip_explicit"
+const val GENERATE_LRC = "generate_lrc"
+const val SKIP_ALBUM_ART = "skip_album_art"
+const val OUTPUT_FORMAT = "output_format"
 
 const val SKIP_INFO_FETCH = "skip_info_fetch"
 
@@ -58,7 +64,6 @@ const val SPOTIFY_CLIENT_SECRET = "spotify_client_secret"
 
 const val USE_CACHING = "use_caching"
 const val DONT_FILTER_RESULTS = "dont_filter_results"
-const val AUDIO_PROVIDER = "audio_provider"
 const val SPLIT_BY_PLAYLIST = "split_by_playlist"
 const val SPLIT_BY_MAIN_ARTIST = "split_by_main_artist"
 const val THREADS = "threads"
@@ -69,7 +74,7 @@ const val MAX_FILE_SIZE = "max_file_size"
 const val COOKIES = "cookies"
 const val AUTO_UPDATE = "auto_update"
 const val UPDATE_CHANNEL = "update_channel"
-const val PRIVATE_MODE = "private_mode"
+const val INCOGNITO_MODE = "incognito_mode"
 private const val DYNAMIC_COLOR = "dynamic_color"
 const val CELLULAR_DOWNLOAD = "cellular_download"
 private const val HIGH_CONTRAST = "high_contrast"
@@ -86,6 +91,9 @@ private val StringPreferenceDefaults =
         EXTRA_DIRECTORY to "",
         SPOTIFY_CLIENT_ID to "",
         SPOTIFY_CLIENT_SECRET to "",
+        LYRIC_PROVIDERS to "",
+        AUDIO_PROVIDERS to "",
+        OUTPUT_FORMAT to "",
     )
 
 private val BooleanPreferenceDefaults =
@@ -96,13 +104,13 @@ private val BooleanPreferenceDefaults =
         ORIGINAL_AUDIO to false,
         USE_SPOTIFY_CREDENTIALS to false,
         USE_YT_METADATA to false,
-        SYNCED_LYRICS to false,
+        DOWNLOAD_LYRICS to false,
         AUTO_UPDATE to true,
-        USE_CACHING to true,
+        USE_CACHING to false,
         DONT_FILTER_RESULTS to false,
         SPOTDL_UPDATE to true,
         SKIP_INFO_FETCH to false,
-        NOTIFICATION to true,
+        NOTIFICATION to false,
     )
 
 private val IntPreferenceDefaults = mapOf(
@@ -111,9 +119,8 @@ private val IntPreferenceDefaults = mapOf(
     PALETTE_STYLE to 0,
     DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
     WELCOME_DIALOG to 1,
-    AUDIO_FORMAT to 5,
+    AUDIO_FORMAT to 6,
     AUDIO_QUALITY to 17,
-    AUDIO_PROVIDER to 0,
     UPDATE_CHANNEL to STABLE,
     THREADS to 1,
 )
@@ -124,7 +131,14 @@ val palettesMap = mapOf(
     2 to PaletteStyle.FruitSalad,
     3 to PaletteStyle.Vibrant,
     4 to PaletteStyle.Spotify,
+    5 to PaletteStyle.Monochrome,
 )
+
+val lyricProvidersList = listOf("Genius", "Musixmatch", "AZLyrics", "Synced")
+val audioProvidersList =
+    listOf("YouTube", "YouTube Music", "Slider KZ", "Soundcloud", "Bandcamp", "Piped")
+val outputFormatList =
+    listOf("{artist}", "{album}", "{album-artist}", "{genre}", "{year}", "{list-name}")
 
 object PreferencesUtil {
     private val kv = MMKV.defaultMMKV()
@@ -153,9 +167,25 @@ object PreferencesUtil {
 
     fun getAudioFormat(): Int = AUDIO_FORMAT.getInt()
 
-    fun getAudioProvider(): Int = AUDIO_PROVIDER.getInt()
+    fun getAudioProvider(): List<String> {
+        val audioProviderString = AUDIO_PROVIDERS.getString()
+        val providersList = audioProviderString?.split(",") ?: emptyList()
+        return providersList
+    }
 
     fun getAudioQuality(): Int = AUDIO_QUALITY.getInt()
+
+    fun getLyricProviders(): List<String> {
+        val lyricProviderString = LYRIC_PROVIDERS.getString()
+        val providersList = lyricProviderString?.split(",") ?: emptyList()
+        return providersList
+    }
+
+    fun getOutputFormat(): List<String> {
+        val outputFormatrString = OUTPUT_FORMAT.getString()
+        val outputFormat = outputFormatrString?.split(",") ?: emptyList()
+        return outputFormat
+    }
 
     fun getAudioFormatDesc(audioQualityStr: Int = getAudioFormat()): String {
         return when (audioQualityStr) {
@@ -164,27 +194,9 @@ object PreferencesUtil {
             2 -> "ogg"
             3 -> "opus"
             4 -> "m4a"
-            5 -> context.getString(R.string.not_specified)
+            5 -> "wav"
+            6 -> context.getString(R.string.not_specified)
             else -> "mp3"
-        }
-    }
-
-    fun getAudioProviderDesc(audioProviderInt: Int = getAudioProvider()): String {
-        return when (audioProviderInt) {
-            0 -> context.getString(R.string.default_option)
-            1 -> context.getString(R.string.both)
-            2 -> "Youtube Music"
-            3 -> "Youtube"
-            else -> "Youtube Music"
-        }
-    }
-
-    @Composable
-    fun getAudioProviderIcon(audioProviderInt: Int = getAudioProvider()): ImageVector {
-        return when (audioProviderInt) {
-            2 -> LocalAsset(id = R.drawable.youtube_music_icons8)
-            3 -> LocalAsset(id = R.drawable.icons8_youtube)
-            else -> LocalAsset(id = R.drawable.youtube_music_icons8)
         }
     }
 

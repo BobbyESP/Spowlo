@@ -45,8 +45,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
@@ -67,7 +67,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SearcherPage(
-    viewModel: SearcherPageViewModel = hiltViewModel(), navController: NavController
+    viewModel: SearcherPageViewModel = viewModel(), navController: NavController
 ) {
     val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
 
@@ -93,11 +93,15 @@ fun SearcherPage(
         SearchType(searchType = SpotifySearchType.PLAYLIST, onClick = {
             viewModel.chooseSearchTypeAndSearch(SpotifySearchType.PLAYLIST)
         }),
+        SearchType(searchType = SpotifySearchType.ARTIST, onClick = {
+            viewModel.chooseSearchTypeAndSearch(SpotifySearchType.ARTIST)
+        }),
     )
 
     val paginatedTracks = viewState.searchedTracks.collectAsLazyPagingItems()
     val paginatedAlbums = viewState.searchedAlbums.collectAsLazyPagingItems()
     val paginatedPlaylists = viewState.searchedPlaylists.collectAsLazyPagingItems()
+    val paginatedArtists = viewState.searchedArtists.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -208,6 +212,22 @@ fun SearcherPage(
                                             )
                                         })
                                 }
+
+                                SpotifySearchType.ARTIST -> {
+                                    ResultsList(modifier = Modifier.fillMaxSize(),
+                                        paginatedItems = paginatedArtists,
+                                        itemName = { item -> item.name },
+                                        itemArtists = { item -> item.name },
+                                        itemArtworkUrl = { item ->
+                                            item.images.secondOrNull()?.url ?: ""
+                                        },
+                                        itemType = SpotifySearchType.ARTIST,
+                                        onItemClick = { artist ->
+                                            onItemClick(
+                                                SpotifySearchType.ARTIST.asString(), artist.id
+                                            )
+                                        })
+                                }
                             }
                         }
                     }
@@ -300,7 +320,7 @@ fun <T : Any> ResultsList(
             val item = paginatedItems[index] as T
             SearchingResult(
                 modifier = Modifier.fillMaxWidth(),
-                insideModifier = Modifier.padding(vertical = 8.dp),
+                insideModifier = Modifier.padding(vertical = 4.dp),
                 name = itemName(item),
                 artists = itemArtists(item),
                 artworkUrl = itemArtworkUrl(item),

@@ -5,10 +5,10 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization")
+    alias(libs.plugins.compose.compiler)
 }
 apply(plugin = "dagger.hilt.android.plugin")
 
@@ -49,8 +49,8 @@ sealed class Version(
 
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
-    versionMinor = 4,
-    versionPatch = 1,
+    versionMinor = 5,
+    versionPatch = 0,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -105,7 +105,7 @@ android {
             abi {
                 isEnable = !project.hasProperty("noSplits")
                 reset()
-                include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                include("arm64-v8a", "armeabi-v7a")
                 isUniversalApk = false
             }
         }
@@ -122,11 +122,11 @@ android {
             if (keystorePropertiesFile.exists())
                 signingConfig = signingConfigs.getByName("debug")
             //add client id and secret to build config
-            buildConfigField("String", "CLIENT_ID", "\"${localProperties["spotifyClientID"]}\"")
+            buildConfigField("String", "CLIENT_ID", "\"${localProperties["CLIENT_ID"]}\"")
             buildConfigField(
                 "String",
                 "CLIENT_SECRET",
-                "\"${localProperties["spotifyClientSecret"]}\""
+                "\"${localProperties["CLIENT_SECRET"]}\""
             )
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
@@ -137,26 +137,25 @@ android {
             packaging {
                 resources.excludes.add("META-INF/*.kotlin_module")
             }
-            buildConfigField("String", "CLIENT_ID", "\"${localProperties["spotifyClientID"]}\"")
+            buildConfigField("String", "CLIENT_ID", "\"${localProperties["CLIENT_ID"]}\"")
             buildConfigField(
                 "String",
                 "CLIENT_SECRET",
-                "\"${localProperties["spotifyClientSecret"]}\""
+                "\"${localProperties["CLIENT_SECRET"]}\""
             )
+            System.setProperty("CLIENT_ID", "\"${localProperties["CLIENT_ID"]}\"")
+            System.setProperty("CLIENT_SECRET", "\"${localProperties["CLIENT_SECRET"]}\"")
             matchingFallbacks.add(0, "debug")
             matchingFallbacks.add(1, "release")
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Spowlo (Debug)")
+            isMinifyEnabled = false
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     lint {
@@ -173,10 +172,7 @@ android {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
-    }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/*.kotlin_module"
@@ -184,6 +180,10 @@ android {
         jniLibs.useLegacyPackaging = true
     }
     namespace = "com.bobbyesp.spowlo"
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 dependencies {
@@ -224,9 +224,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.ext.compiler)
+    ksp(libs.hilt.ext.compiler)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

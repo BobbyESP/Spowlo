@@ -10,30 +10,12 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
-import coil.ImageLoader
 import coil.compose.AsyncImagePainter
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+import coil.imageLoader
 import coil.request.ImageRequest
-import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.App.Companion.userAgentHeader
 import com.bobbyesp.spowlo.R
-
-
-val imageLoader = ImageLoader.Builder(context)
-    .memoryCache {
-        MemoryCache.Builder(context)
-            .maxSizePercent(0.25)
-            .build()
-    }
-    .diskCache {
-        DiskCache.Builder()
-            .directory(context.cacheDir.resolve("image_cache"))
-            .maxSizePercent(0.02)
-            .build()
-    }
-    .build()
 
 @Composable
 fun AsyncImageImpl(
@@ -47,7 +29,7 @@ fun AsyncImageImpl(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-    isPreview: Boolean = false
+    isPreview: Boolean = LocalInspectionMode.current
 ) {
     if (isPreview) Image(
         painter = painterResource(R.drawable.ic_launcher_foreground),
@@ -59,12 +41,9 @@ fun AsyncImageImpl(
         colorFilter = colorFilter,
     )
     else coil.compose.AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .addHeader("user-agent", userAgentHeader).data(model)
-            .crossfade(true)
-            .build(),
+        model = ImageRequest.Builder(LocalContext.current).data(model).crossfade(true).build(),
         contentDescription = contentDescription,
-        imageLoader = imageLoader,
+        imageLoader = LocalContext.current.imageLoader,
         modifier = modifier,
         transform = transform,
         onState = onState,

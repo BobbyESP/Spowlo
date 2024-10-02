@@ -5,7 +5,9 @@ import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Album
 import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.AudioFeatures
+import com.adamratzman.spotify.models.PagingObject
 import com.adamratzman.spotify.models.Playlist
+import com.adamratzman.spotify.models.SimpleAlbum
 import com.adamratzman.spotify.models.SpotifyPublicUser
 import com.adamratzman.spotify.models.SpotifySearchResult
 import com.adamratzman.spotify.models.Token
@@ -23,8 +25,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SpotifyApiRequests {
 
-    private const val clientId = BuildConfig.CLIENT_ID
-    private const val clientSecret = BuildConfig.CLIENT_SECRET
+    private val clientId = BuildConfig.CLIENT_ID ?: System.getenv("CLIENT_ID")
+    private val clientSecret = BuildConfig.CLIENT_SECRET ?: System.getenv("CLIENT_SECRET")
     private var api: SpotifyAppApi? = null
     private var token: Token? = null
 
@@ -66,7 +68,7 @@ object SpotifyApiRequests {
                 searchQuery,
                 limit = 50,
                 offset = 0,
-                market = Market.ES
+                market = Market.US
             )
         }.onFailure {
             Log.d("SpotifyApiRequests", "Error: ${it.message}")
@@ -153,7 +155,7 @@ object SpotifyApiRequests {
 
     @Provides
     @Singleton
-    suspend fun providesGetArtistById(id: String): Artist? {
+    suspend fun provideGetArtistById(id: String): Artist? {
         return getArtistById(id)
     }
 
@@ -191,4 +193,40 @@ object SpotifyApiRequests {
     suspend fun providesGetAudioFeatures(id: String): AudioFeatures? {
         return getAudioFeatures(id)
     }
+
+    private suspend fun getArtistTopTracks(artistId: String): List<Track>? {
+        val artist = provideGetArtistById(artistId)
+        return artist?.let {
+            kotlin.runCatching {
+                provideSpotifyApi().artists.getArtistTopTracks(artistId, Market.US)
+            }.onFailure {
+                Log.d("SpotifyApiRequests", "Error: ${it.message}")
+                null
+            }.getOrNull()
+        }
+    }
+
+    @Provides
+    @Singleton
+    suspend fun providesGetArtistTopTracks(id: String): List<Track>? {
+        return getArtistTopTracks(id)
+    }
+
+    private suspend fun getArtistAlbums(artistId: String): PagingObject<SimpleAlbum>? {
+        val artist = provideGetArtistById(artistId)
+        return artist?.let {
+            kotlin.runCatching {
+                provideSpotifyApi().artists.getArtistAlbums(artist=artistId, market=Market.US, limit=20)
+            }.onFailure {
+                Log.d("SpotifyApiRequests", "Error: ${it.message}")
+            }.getOrNull()
+        }
+    }
+
+    @Provides
+    @Singleton
+    suspend fun providesGetArtistAlbums(id: String): PagingObject<SimpleAlbum>? {
+        return getArtistAlbums(id)
+    }
+    
 }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -50,14 +51,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.bobbyesp.library.domain.UpdateStatus
 import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.MainActivity
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.features.mod_downloader.data.remote.ModsDownloaderAPIService
 import com.bobbyesp.spowlo.features.spotify_api.data.remote.SpotifyApiRequests
 import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.common.Route
@@ -69,13 +71,12 @@ import com.bobbyesp.spowlo.ui.common.id
 import com.bobbyesp.spowlo.ui.common.slideInVerticallyComposable
 import com.bobbyesp.spowlo.ui.dialogs.UpdaterBottomDrawer
 import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.DownloaderBottomSheet
-import com.bobbyesp.spowlo.ui.dialogs.bottomsheets.MoreOptionsHomeBottomSheet
 import com.bobbyesp.spowlo.ui.pages.download_tasks.DownloadTasksPage
 import com.bobbyesp.spowlo.ui.pages.download_tasks.FullscreenConsoleOutput
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderPage
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.history.DownloadsHistoryPage
-import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPage
+import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.SpotifyItemPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPageViewModel
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderPage
 import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
@@ -91,16 +92,16 @@ import com.bobbyesp.spowlo.ui.pages.settings.cookies.CookiesSettingsViewModel
 import com.bobbyesp.spowlo.ui.pages.settings.cookies.WebViewPage
 import com.bobbyesp.spowlo.ui.pages.settings.directories.DownloadsDirectoriesPage
 import com.bobbyesp.spowlo.ui.pages.settings.documentation.DocumentationPage
+import com.bobbyesp.spowlo.ui.pages.settings.downloader.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.downloader.DownloaderSettingsPage
-import com.bobbyesp.spowlo.ui.pages.settings.format.AudioQualityDialog
-import com.bobbyesp.spowlo.ui.pages.settings.format.SettingsFormatsPage
 import com.bobbyesp.spowlo.ui.pages.settings.general.GeneralSettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifySettingsPage
 import com.bobbyesp.spowlo.ui.pages.settings.updater.UpdaterPage
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
+import com.bobbyesp.spowlo.utils.SPOTDL
 import com.bobbyesp.spowlo.utils.ToastUtil
 import com.bobbyesp.spowlo.utils.UpdateUtil
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -109,6 +110,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "InitialEntry"
 
@@ -127,7 +129,7 @@ fun InitialEntry(
 ) {
     //bottom sheet remember state
     val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val navController = rememberAnimatedNavController(bottomSheetNavigator)
+    val navController = rememberNavController(bottomSheetNavigator)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentRootRoute = remember(navBackStackEntry) {
@@ -154,7 +156,6 @@ fun InitialEntry(
     val context = LocalContext.current
     var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
     var showDownloaderBottomSheet by remember { mutableStateOf(false) }
-    var showOptionsBottomSheet by remember { mutableStateOf(false) }
     var currentDownloadStatus by remember { mutableStateOf(UpdateUtil.DownloadStatus.NotYet as UpdateUtil.DownloadStatus) }
     val scope = rememberCoroutineScope()
     var updateJob: Job? = null
@@ -285,7 +286,7 @@ fun InitialEntry(
                                 }
                             },
                             navigateToSettings = {
-                                showOptionsBottomSheet = true
+                                navController.navigate(Route.SETTINGS)
                             },
                             navigateToDownloaderSheet = {
                                 showDownloaderBottomSheet = true
@@ -329,11 +330,6 @@ fun InitialEntry(
                     }
                     animatedComposable(Route.APP_THEME) {
                         AppThemePreferencesPage {
-                            onBackPressed()
-                        }
-                    }
-                    animatedComposable(Route.DOWNLOAD_FORMAT) {
-                        SettingsFormatsPage {
                             onBackPressed()
                         }
                     }
@@ -461,7 +457,7 @@ fun InitialEntry(
                         val type =
                             backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
 
-                        PlaylistPage(
+                        SpotifyItemPage(
                             onBackPressed,
                             id = id,
                             type = type,
@@ -516,6 +512,7 @@ fun InitialEntry(
                     UpdateUtil.showUpdateDrawer()
                 }
             }.onFailure {
+                Looper.prepare()
                 it.printStackTrace()
                 ToastUtil.makeToast(context.getString(R.string.update_check_failed))
                 return@launch
@@ -523,20 +520,20 @@ fun InitialEntry(
         }
     }
 
-//    LaunchedEffect(Unit) {
-//        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
-//        kotlin.runCatching {
-//            withContext(Dispatchers.IO) {
-//                val result = UpdateUtil.updateSpotDL()
-//                if (result == SpotDL.UpdateStatus.DONE) {
-//                    ToastUtil.makeToastSuspend(
-//                        App.context.getString(R.string.spotdl_update_success)
-//                            .format(SPOTDL.getString())
-//                    )
-//                }
-//            }
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        if (SPOTDL.getString().isNotEmpty()) return@LaunchedEffect
+        kotlin.runCatching {
+            withContext(Dispatchers.IO) {
+                val result = UpdateUtil.updateSpotDL()
+                if (result == UpdateStatus.DONE) {
+                    ToastUtil.makeToastSuspend(
+                        App.context.getString(R.string.spotdl_update_success)
+                            .format(SPOTDL.getString())
+                    )
+                }
+            }
+        }
+    }
 
     if (showDownloaderBottomSheet) {
         val storagePermission = rememberPermissionState(
@@ -581,14 +578,17 @@ fun InitialEntry(
                         restoreState = true
                     })
             },
+            navigateToArtist = { id ->
+                navController.navigate(
+                    Route.PLAYLIST_PAGE + "/" + "artist" + "/" + id,
+                    navOptions = navOptions {
+                        launchSingleTop = true
+                        restoreState = true
+                    })
+            },
         )
     }
 
-    if (showOptionsBottomSheet) {
-        MoreOptionsHomeBottomSheet(
-            onBackPressed = { showOptionsBottomSheet = false }, navController
-        )
-    }
     if (showUpdateDialog) {
         UpdaterBottomDrawer(latestRelease = latestRelease)
     }

@@ -50,8 +50,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.components.BottomDrawer
@@ -67,7 +67,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewModel = hiltViewModel()) {
+fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewModel = viewModel()) {
 
     val viewState = downloadsHistoryViewModel.detailViewState.collectAsStateWithLifecycle().value
     val scope = rememberCoroutineScope()

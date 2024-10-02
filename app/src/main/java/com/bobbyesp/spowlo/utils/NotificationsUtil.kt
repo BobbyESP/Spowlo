@@ -44,6 +44,7 @@ object NotificationsUtil {
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
         val name = context.getString(R.string.channel_name)
+        val serviceChannelName = context.getString(R.string.service_channel_name)
         val descriptionText = context.getString(R.string.channel_description)
         val importance = NotificationManager.IMPORTANCE_LOW
         val channelGroup =
@@ -52,10 +53,11 @@ object NotificationsUtil {
             description = descriptionText
             group = NOTIFICATION_GROUP_ID
         }
-        val serviceChannel = NotificationChannel(SERVICE_CHANNEL_ID, name, importance).apply {
-            description = context.getString(R.string.service_title)
-            group = NOTIFICATION_GROUP_ID
-        }
+        val serviceChannel =
+            NotificationChannel(SERVICE_CHANNEL_ID, serviceChannelName, importance).apply {
+                description = context.getString(R.string.service_title)
+                group = NOTIFICATION_GROUP_ID
+            }
         notificationManager.createNotificationChannelGroup(channelGroup)
         notificationManager.createNotificationChannel(channel)
         notificationManager.createNotificationChannel(serviceChannel)
@@ -69,6 +71,7 @@ object NotificationsUtil {
         text: String? = null
     ) {
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
+
         val pendingIntent = taskId?.let {
             Intent(context.applicationContext, NotificationActionReceiver::class.java)
                 .putExtra(TASK_ID_KEY, taskId)
@@ -108,17 +111,20 @@ object NotificationsUtil {
         text: String? = null,
         intent: PendingIntent? = null,
     ) {
-        Log.d(TAG, "finishNotification: ")
-        notificationManager.cancel(notificationId)
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
 
-        val builder =
-            NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
-                .setContentText(text)
-                .setOngoing(false)
-                .setAutoCancel(true)
-        title?.let { builder.setContentTitle(title) }
+        Log.d(TAG, "finishNotification: ")
+        notificationManager.cancel(notificationId)
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+            .setContentTitle(title)
+            .setOngoing(false)
+            .setAutoCancel(true)
+
+        text?.let {
+            builder.setStyle(NotificationCompat.BigTextStyle().bigText(text))
+        }
+
         intent?.let { builder.setContentIntent(intent) }
         notificationManager.notify(notificationId, builder.build())
     }
@@ -128,7 +134,9 @@ object NotificationsUtil {
         title: String? = null,
         text: String? = null,
     ) {
-//        notificationManager.cancel(notificationId)
+        if (!PreferencesUtil.getValue(NOTIFICATION)) return
+
+        notificationManager.cancel(notificationId)
         val builder =
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_monochrome)
@@ -145,7 +153,8 @@ object NotificationsUtil {
     fun makeServiceNotification(intent: PendingIntent): Notification {
         serviceNotification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_monochrome)
-            .setContentTitle(context.getString(R.string.service_title))
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(context.getString(R.string.service_title))
             .setOngoing(true)
             .setContentIntent(intent)
             .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
@@ -154,6 +163,8 @@ object NotificationsUtil {
     }
 
     fun updateServiceNotification(index: Int, itemCount: Int) {
+        if (!PreferencesUtil.getValue(NOTIFICATION)) return
+
         serviceNotification = NotificationCompat.Builder(context, serviceNotification)
             .setContentTitle(context.getString(R.string.service_title) + " ($index/$itemCount)")
             .build()
