@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/libs
+/app/release
+/githubpasskey.jks
+/.idea/runConfigurations.xml
+/.idea/studiobot.xml
