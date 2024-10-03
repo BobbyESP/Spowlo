@@ -282,12 +282,6 @@ fun OutputFormatDialog(
         )
     }
 
-    LaunchedEffect(outputFormatText) {
-        Log.i("OutputFormatDialog", OUTPUT_FORMAT.getString())
-        Log.d("OutputFormatDialog", "The original text is: ${PreferencesUtil.getOutputFormat()}" )
-        Log.d("OutputFormatDialog", "The outputFormatText is: $outputFormatText")
-    }
-
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text(stringResource(id = R.string.output_format)) },
