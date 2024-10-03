@@ -1,19 +1,18 @@
 package com.bobbyesp.spowlo.ui.pages.settings.downloader
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,9 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,16 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.components.AudioFilterChip
 import com.bobbyesp.spowlo.ui.components.ConfirmButton
 import com.bobbyesp.spowlo.ui.components.SingleChoiceItem
 import com.bobbyesp.spowlo.utils.AUDIO_FORMAT
@@ -59,6 +55,7 @@ import com.bobbyesp.spowlo.utils.ChromeCustomTabsUtil
 import com.bobbyesp.spowlo.utils.LYRIC_PROVIDERS
 import com.bobbyesp.spowlo.utils.OUTPUT_FORMAT
 import com.bobbyesp.spowlo.utils.PreferencesUtil
+import com.bobbyesp.spowlo.utils.PreferencesUtil.getString
 import com.bobbyesp.spowlo.utils.audioProvidersList
 import com.bobbyesp.spowlo.utils.lyricProvidersList
 import com.bobbyesp.spowlo.utils.outputFormatList
@@ -274,16 +271,21 @@ fun LyricProviderDialog(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OutputFormatDialog(
     onDismissRequest: () -> Unit
 ) {
-    var outputFormat by remember { mutableStateOf(PreferencesUtil.getOutputFormat()) }
-    var outputFormatText by remember { mutableStateOf(outputFormat.joinToString("/")) }
-    val chunked = outputFormatList.chunked((outputFormatList.size + 1) / 2)
+    var outputFormatText by remember {
+        mutableStateOf(
+            PreferencesUtil.getOutputFormat().joinToString("/")
+        )
+    }
 
-    LaunchedEffect(outputFormat) {
-        outputFormatText = outputFormat.joinToString("/")
+    LaunchedEffect(outputFormatText) {
+        Log.i("OutputFormatDialog", OUTPUT_FORMAT.getString())
+        Log.d("OutputFormatDialog", "The original text is: ${PreferencesUtil.getOutputFormat()}" )
+        Log.d("OutputFormatDialog", "The outputFormatText is: $outputFormatText")
     }
 
     AlertDialog(
@@ -299,113 +301,56 @@ fun OutputFormatDialog(
                         .padding(bottom = 12.dp),
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    AnnotatedBasicTextField(
-                        value = AnnotatedString(
-                            text = if (outputFormatText.isEmpty()) {
-                                "download_dir/{title}.{output-ext}"
-                            } else {
-                                "download_dir" + outputFormatText + "/{title}.{output-ext}"
-                            },
-                            spanStyles = listOf(
-                                AnnotatedString.Range(
-                                    item = SpanStyle(color = MaterialTheme.colorScheme.primary),
-                                    start = "download_dir".length,
-                                    end = "download_dir".length + outputFormatText.length
-                                )
-                            )
-                        ),
-                        onValueChange = {
-                            outputFormatText = it.text
-                            outputFormat = it.text.split("/")
-                        },
-                        singleLine = false,
-                        readOnly = true,
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Start),
-                        modifier = Modifier.fillMaxWidth().height(100.dp).padding(8.dp)
-                            .width(100.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                TextField(
+                    value = outputFormatText,
+                    onValueChange = { newText ->
+                        outputFormatText = newText
+                    },
+                    placeholder = {
+                        Text(text = "{artists} - {title}.{output-ext}", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), style = MaterialTheme.typography.bodyMedium)
+                    },
+                    leadingIcon = {
                         Text(
-                            stringResource(id = R.string.available_output_formats),
-                            modifier = Modifier.padding(end = 4.dp),
-                            style = MaterialTheme.typography.bodyMedium
+                            text = "download_dir/",
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(6.dp)
                         )
-                        IconButton(
-                            onClick = {
-                                ChromeCustomTabsUtil.openUrl("https://spotdl.github.io/spotify-downloader/usage/#output-variables")
-                            }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(
+                    },
+                    singleLine = false,
+                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Start),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(6.dp))
+                        .padding(8.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.width(16.dp))
-                    chunked[0].indices.forEach { index ->
-                        Row {
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                chunked[0][index].let { element ->
-                                    val isSelected = outputFormat.contains(element)
-                                    AudioFilterChip(
-                                        label = element,
-                                        selected = isSelected,
-                                        onClick = {
-                                            if (isSelected) {
-                                                outputFormat =
-                                                    outputFormat.filterNot { it == element }
-                                            } else {
-                                                outputFormat = outputFormat + element
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            if (chunked.size > 1) {
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    chunked[1][index].let { element ->
-                                        val isSelected = outputFormat.contains(element)
-                                        AudioFilterChip(
-                                            label = element,
-                                            selected = isSelected,
-                                            onClick = {
-                                                if (isSelected) {
-                                                    outputFormat =
-                                                        outputFormat.filterNot { it == element }
-                                                } else {
-                                                    outputFormat = outputFormat + element
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
+                    Text(
+                        stringResource(id = R.string.available_output_formats),
+                        modifier = Modifier.padding(end = 4.dp).weight(1f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    IconButton(
+                        onClick = {
+                            ChromeCustomTabsUtil.openUrl("https://spotdl.github.io/spotify-downloader/usage/#output-variables")
+                        }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+                FlowColumn(
+                    modifier = Modifier,
+                    maxItemsInEachColumn = 3
+                ) {
+                    outputFormatList.forEach { element ->
+                        TextButton(onClick = {
+                            outputFormatText += "/$element"
+                        }) {
+                            Text(text = element)
                         }
                     }
                 }
@@ -414,8 +359,7 @@ fun OutputFormatDialog(
         confirmButton = {
             ConfirmButton(
                 onClick = {
-                    val selectedFormatString = outputFormat.joinToString(separator = ",")
-                    PreferencesUtil.encodeString(OUTPUT_FORMAT, selectedFormatString)
+                    PreferencesUtil.encodeString(OUTPUT_FORMAT, outputFormatText)
                     onDismissRequest()
                 }
             )
