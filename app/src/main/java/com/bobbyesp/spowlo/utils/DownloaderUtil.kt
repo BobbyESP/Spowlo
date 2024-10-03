@@ -85,22 +85,10 @@ object DownloaderUtil {
 
     private fun StringBuilder.buildPathExtensions(downloadPreferences: DownloadPreferences) {
         when {
-            downloadPreferences.outputFormat.isEmpty() -> {
-                // this.append("/{list-name}/{artist}/")
-                return
-            }
-
             downloadPreferences.outputFormat.isNotEmpty() -> {
-                // this.append("/{artist}/")
-                this.append(
-                    downloadPreferences.outputFormat.split(",")
-                        .joinToString("/") + "/{title}.{output-ext}"
-                )
+                    this.append("/").append(downloadPreferences.outputFormat)
             }
-
-            else -> {
-                return
-            }
+            else -> return
         }
     }
 

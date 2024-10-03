@@ -182,8 +182,8 @@ object PreferencesUtil {
     }
 
     fun getOutputFormat(): List<String> {
-        val outputFormatrString = OUTPUT_FORMAT.getString()
-        val outputFormat = outputFormatrString?.split(",") ?: emptyList()
+        val outputFormatString = OUTPUT_FORMAT.getString()
+        val outputFormat = outputFormatString.split("/") ?: emptyList()
         return outputFormat
     }
 
