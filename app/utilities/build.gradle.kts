@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.bundles.coroutines)
     //Accompanist libraries
-    implementation(libs.bundles.accompanist)
+    implementation(libs.accompanist.permissions)
     api(libs.material)
     api(libs.compose.ui.utilities)
 

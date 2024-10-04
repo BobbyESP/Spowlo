@@ -109,10 +109,10 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":app:utilities"))
 
     //---------------Core----------------//
     implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
+    implementation(project(":app:utilities"))
 
     //---------------User Interface---------------//
     //Core UI libraries
@@ -122,7 +122,6 @@ dependencies {
     implementation(libs.compose.material3.adaptive.navigation.suite)
     implementation(libs.compose.ui.utilities)
     implementation(project(":app:ui"))
-    implementation(libs.bundles.accompanist)
     implementation(libs.palette)
     api(libs.material)
 
@@ -159,6 +158,7 @@ dependencies {
     implementation(libs.spotify.api.android)
     implementation(libs.chrome.customTabs)
     implementation(libs.profileinstaller)
+    implementation(libs.accompanist.permissions)
     implementation(libs.androidx.media3.datasource.okhttp)
 
     //-------------------Testing-------------------//
