@@ -42,7 +42,6 @@ fun BottomDrawer(
     modifier: Modifier = Modifier,
     drawerState: ModalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it == ModalBottomSheetValue.Hidden || it == ModalBottomSheetValue.Expanded },
     ),
     sheetContent: @Composable ColumnScope.() -> Unit = {},
     content: @Composable () -> Unit = {},

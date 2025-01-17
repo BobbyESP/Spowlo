@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -128,7 +129,9 @@ fun DownloadHistoryBottomDrawer(downloadsHistoryViewModel: DownloadsHistoryViewM
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DownloadHistoryBottomDrawerImpl(
-    drawerState: ModalBottomSheetState = ModalBottomSheetState(ModalBottomSheetValue.Hidden),
+    drawerState: ModalBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    ),
     songName: String,
     songAuthor: String,
     songUrl: String,

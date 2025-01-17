@@ -47,6 +47,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -86,7 +87,6 @@ import com.bobbyesp.spowlo.ui.components.ConsoleOutputComponent
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
 import com.bobbyesp.spowlo.ui.components.SpowloDialog
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
-import com.bobbyesp.spowlo.ui.dialogs.DownloaderSettingsDialog
 import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
@@ -102,14 +102,14 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(
     ExperimentalPermissionsApi::class,
     ExperimentalComposeUiApi::class,
-    ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class
 )
 fun DownloaderPage(
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
     navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
-    navigateToMods: () -> Unit = {},
+    sheetState: SheetState,
     isModsDownloaderEnabled: Boolean = false,
     downloaderViewModel: DownloaderViewModel = viewModel(),
 ) {
@@ -187,8 +187,8 @@ fun DownloaderPage(
         downloaderViewModel.onShareIntentConsumed()
     }
 
-    BackHandler(viewState.drawerState.isVisible) {
-        downloaderViewModel.hideDialog(scope, useDialog)
+    BackHandler(sheetState.isVisible) {
+        downloaderViewModel.hideDialog(scope, useDialog, sheetState)
     }
 
     Box(

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
+      <module name="spowlo.app.ui" target="21" />
+      <module name="spowlo.app.utilities" target="21" />
       <module name="Spowlo.appModules.auth" target="17" />
       <module name="Spowlo.appModules.core" target="17" />
       <module name="Spowlo.appModules.hub" target="17" />

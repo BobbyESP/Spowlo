@@ -3,8 +3,10 @@ package com.bobbyesp.spowlo.ui.pages.history
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bobbyesp.spowlo.App
 import com.bobbyesp.spowlo.database.DownloadedSongInfo
 import com.bobbyesp.spowlo.utils.DatabaseUtil
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +53,8 @@ class DownloadsHistoryViewModel : ViewModel() {
         val path: String = "",
         val duration: Double = 0.0,
         val drawerState: ModalBottomSheetState = ModalBottomSheetState(
-            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true
+            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true,
+            density = Density(context = App.context)
         ),
         val showDialog: Boolean = false,
     ) {

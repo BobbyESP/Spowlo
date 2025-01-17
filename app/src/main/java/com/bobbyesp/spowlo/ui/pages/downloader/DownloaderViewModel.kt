@@ -1,8 +1,8 @@
 package com.bobbyesp.spowlo.ui.pages.downloader
 
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.lifecycle.ViewModel
 import com.bobbyesp.library.domain.model.SpotifySong
 import com.bobbyesp.spowlo.Downloader
@@ -24,9 +24,6 @@ class DownloaderViewModel : ViewModel() {
 
     data class ViewState(
         val url: String = "",
-        val drawerState: ModalBottomSheetState = ModalBottomSheetState(
-            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true
-        ),
         val showDownloadSettingDialog: Boolean = false,
         val isUrlSharingTriggered: Boolean = false,
     )
@@ -38,17 +35,19 @@ class DownloaderViewModel : ViewModel() {
             )
         }
 
-    fun hideDialog(scope: CoroutineScope, isDialog: Boolean) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun hideDialog(scope: CoroutineScope, isDialog: Boolean, sheetState: SheetState) {
         scope.launch {
             if (isDialog) mutableViewStateFlow.update { it.copy(showDownloadSettingDialog = false) }
-            else viewStateFlow.value.drawerState.hide()
+            else sheetState.hide()
         }
     }
 
-    fun showDialog(scope: CoroutineScope, isDialog: Boolean) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun showDialog(scope: CoroutineScope, isDialog: Boolean, sheetState: SheetState) {
         scope.launch {
             if (isDialog) mutableViewStateFlow.update { it.copy(showDownloadSettingDialog = true) }
-            else viewStateFlow.value.drawerState.show()
+            else sheetState.show()
         }
     }
 

@@ -50,7 +50,7 @@ sealed class Version(
 val currentVersion: Version = Version.Stable(
     versionMajor = 1,
     versionMinor = 5,
-    versionPatch = 1,
+    versionPatch = 2,
 )
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -75,11 +75,11 @@ android {
     val localProperties = Properties()
     localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.bobbyesp.spowlo"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = currentVersion.toVersionCode()
 
         versionName = currentVersion.toVersionName().run {
