@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.ui.unit.Density
 import androidx.core.content.FileProvider
 import com.bobbyesp.library.SpotDL
 import com.bobbyesp.library.domain.UpdateStatus
@@ -46,7 +47,8 @@ object UpdateUtil {
 
     data class UpdateViewState(
         val drawerState: ModalBottomSheetState = ModalBottomSheetState(
-            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true
+            ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true,
+            density = Density(App.context)
         ),
     )
 
@@ -55,13 +57,13 @@ object UpdateUtil {
 
     fun showUpdateDrawer() {
         _updateViewState.update {
-            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Expanded))
+            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Expanded, density = Density(App.context)))
         }
     }
 
     fun hideUpdateDrawer() {
         _updateViewState.update {
-            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Hidden))
+            it.copy(drawerState = ModalBottomSheetState(ModalBottomSheetValue.Hidden, density = Density(App.context)))
         }
     }
 

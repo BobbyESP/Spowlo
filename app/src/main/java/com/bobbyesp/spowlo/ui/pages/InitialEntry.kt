@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -118,7 +120,7 @@ private const val TAG = "InitialEntry"
     ExperimentalAnimationApi::class,
     ExperimentalMaterialNavigationApi::class,
     ExperimentalLayoutApi::class,
-    ExperimentalPermissionsApi::class
+    ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class
 )
 @Composable
 fun InitialEntry(
@@ -164,6 +166,8 @@ fun InitialEntry(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             UpdateUtil.installLatestApk()
         }
+
+    val sheetState = androidx.compose.material3.rememberModalBottomSheetState()
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -296,13 +300,9 @@ fun InitialEntry(
                                     launchSingleTop = true
                                 }
                             },
-                            navigateToMods = {
-                                navController.navigate(Route.MODS_DOWNLOADER) {
-                                    launchSingleTop = true
-                                }
-                            },
                             downloaderViewModel = downloaderViewModel,
-                            isModsDownloaderEnabled = modsDownloaderResponse.Latest_Versions.Regular.isNotBlank()
+                            isModsDownloaderEnabled = modsDownloaderResponse.Latest_Versions.Regular.isNotBlank(),
+                            sheetState = sheetState
                         )
                     }
                     animatedComposable(Route.SETTINGS) {
@@ -548,11 +548,11 @@ fun InitialEntry(
 
         val viewModelState = downloaderViewModel.viewStateFlow.collectAsStateWithLifecycle().value
         DownloaderBottomSheet(
+            bottomSheetState = sheetState ,
             onBackPressed = {
                 showDownloaderBottomSheet = false
             },
-            viewModelState.url,
-            navController,
+            url = viewModelState.url,
             onDownloadPressed = {
                 if (Build.VERSION.SDK_INT > 29 || storagePermission.status == PermissionStatus.Granted) downloaderViewModel.startDownloadSong()
                 else {

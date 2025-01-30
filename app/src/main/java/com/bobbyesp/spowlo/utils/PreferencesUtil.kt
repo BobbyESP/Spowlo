@@ -93,7 +93,6 @@ private val StringPreferenceDefaults =
         SPOTIFY_CLIENT_SECRET to "",
         LYRIC_PROVIDERS to "",
         AUDIO_PROVIDERS to "",
-        OUTPUT_FORMAT to "",
     )
 
 private val BooleanPreferenceDefaults =
@@ -182,7 +181,7 @@ object PreferencesUtil {
     }
 
     fun getOutputFormat(): List<String> {
-        val outputFormatString = OUTPUT_FORMAT.getString()
+        val outputFormatString = OUTPUT_FORMAT.getString(default = "{artists} - {title}.{output-ext}")
         val outputFormat = outputFormatString.split("/") ?: emptyList()
         return outputFormat
     }
