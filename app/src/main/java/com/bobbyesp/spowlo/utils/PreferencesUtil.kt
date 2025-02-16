@@ -135,7 +135,7 @@ val palettesMap = mapOf(
 
 val lyricProvidersList = listOf("Genius", "Musixmatch", "AZLyrics", "Synced")
 val audioProvidersList =
-    listOf("YouTube", "YouTube Music", "Slider KZ", "Soundcloud", "Bandcamp", "Piped")
+    listOf("YouTube", "YouTube Music", "Soundcloud", "Bandcamp", "Piped")
 val outputFormatList =
     listOf("{artist}", "{album}", "{album-artist}", "{genre}", "{year}", "{list-name}")
 
