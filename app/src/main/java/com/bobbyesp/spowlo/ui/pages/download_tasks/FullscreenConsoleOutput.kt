@@ -1,6 +1,5 @@
 package com.bobbyesp.spowlo.ui.pages.download_tasks
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.RestartAlt
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,7 +57,7 @@ fun FullscreenConsoleOutput(
     taskHashCode: Int
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val task = Downloader.mutableTaskList.values.find { it.hashCode() == taskHashCode } ?: return
+    val task = Downloader.mutableTaskList.values.find { it.hashCode() == taskHashCode } ?: throw IllegalArgumentException("Task not found")
     val clipboardManager = LocalClipboardManager.current
 
     val minFontSize = 8
@@ -72,17 +69,18 @@ fun FullscreenConsoleOutput(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(title = {
-                Text(
-                    text = stringResource(R.string.download_log),
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
-                )
-            }, navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(Icons.Outlined.Close, stringResource(R.string.close))
-                }
-            }, actions = {
-            }, scrollBehavior = scrollBehavior
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.download_log),
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
+                    )
+                }, navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Icon(Icons.Outlined.Close, stringResource(R.string.close))
+                    }
+                }, actions = {
+                }, scrollBehavior = scrollBehavior
             )
         }, bottomBar = {
             Column(
@@ -92,7 +90,7 @@ fun FullscreenConsoleOutput(
                     .navigationBarsPadding(),
                 verticalArrangement = Arrangement.Center
             ) {
-                Divider(modifier = Modifier.fillMaxWidth())
+                androidx.compose.material3.HorizontalDivider(modifier = Modifier.fillMaxWidth())
                 Row(
                     Modifier
                         .fillMaxWidth()

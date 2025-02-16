@@ -11,9 +11,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,9 +28,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Error
@@ -39,7 +39,6 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,9 +84,7 @@ import com.bobbyesp.spowlo.ui.common.LocalWindowWidthState
 import com.bobbyesp.spowlo.ui.components.ClearButton
 import com.bobbyesp.spowlo.ui.components.ConsoleOutputComponent
 import com.bobbyesp.spowlo.ui.components.NavigationBarSpacer
-import com.bobbyesp.spowlo.ui.components.SpowloDialog
 import com.bobbyesp.spowlo.ui.components.songs.SongCard
-import com.bobbyesp.spowlo.ui.pages.settings.about.LocalAsset
 import com.bobbyesp.spowlo.utils.CONFIGURE
 import com.bobbyesp.spowlo.utils.DEBUG
 import com.bobbyesp.spowlo.utils.PreferencesUtil
@@ -109,8 +106,9 @@ fun DownloaderPage(
     navigateToDownloads: () -> Unit = {},
     navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
+    navigateToSearch: () -> Unit = {},
+    navigateToTasks: () -> Unit = {},
     sheetState: SheetState,
-    isModsDownloaderEnabled: Boolean = false,
     downloaderViewModel: DownloaderViewModel = viewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -132,8 +130,6 @@ fun DownloaderPage(
     val errorState by Downloader.errorState.collectAsStateWithLifecycle()
 
     val useDialog = LocalWindowWidthState.current != WindowWidthSizeClass.Compact
-
-    val (showModsBannedDialog, updateShowModsBannedDialog) = remember { mutableStateOf(false) }
 
     val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -191,84 +187,49 @@ fun DownloaderPage(
         downloaderViewModel.hideDialog(scope, useDialog, sheetState)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        DownloaderPageImplementation(
-            downloaderState = downloaderState,
-            taskState = taskState,
-            viewState = viewState,
-            errorState = errorState,
-            downloadCallback = { downloadCallback() },
-            navigateToSettings = {
-                navigateToSettings()
-                keyboardController?.hide()
-            },
-            navigateToDownloads = navigateToDownloads,
-            navigateToMods = {
-                updateShowModsBannedDialog(!showModsBannedDialog)
-            },
-            onSongCardClicked = { onSongCardClicked() },
-            showOutput = showConsoleOutput,
-            showSongCard = true,
-            showDownloadProgress = taskState.taskId.isNotEmpty(),
-            pasteCallback = {
-                matchUrlFromClipboard(
-                    string = clipboardManager.getText().toString(),
-                ).let { url ->
-                    downloaderViewModel.updateUrl(url)
-                    if (url.isNotEmpty()) {
-                        if (CONFIGURE.getBoolean()) {
+    DownloaderPageImplementation(
+        downloaderState = downloaderState,
+        taskState = taskState,
+        viewState = viewState,
+        errorState = errorState,
+        downloadCallback = { downloadCallback() },
+        navigateToSettings = {
+            navigateToSettings()
+            keyboardController?.hide()
+        },
+        navigateToTasks = navigateToTasks,
+        navigateToSearch = navigateToSearch,
+        navigateToDownloads = navigateToDownloads,
+        onSongCardClicked = { onSongCardClicked() },
+        showOutput = showConsoleOutput,
+        showSongCard = true,
+        showDownloadProgress = taskState.taskId.isNotEmpty(),
+        pasteCallback = {
+            matchUrlFromClipboard(
+                string = clipboardManager.getText().toString(),
+            ).let { url ->
+                downloaderViewModel.updateUrl(url)
+                if (url.isNotEmpty()) {
+                    if (CONFIGURE.getBoolean()) {
+                        navigateToDownloaderSheet()
+                    } else {
+                        if (url.contains("track")) {
+                            ToastUtil.makeToast(R.string.fetching_metadata)
+                            downloaderViewModel.requestMetadata()
+                        } else if (url.contains("album") || url.contains("artist") || url.contains(
+                                "playlist"
+                            )
+                        ) {
                             navigateToDownloaderSheet()
-                        } else {
-                            if (url.contains("track")) {
-                                ToastUtil.makeToast(R.string.fetching_metadata)
-                                downloaderViewModel.requestMetadata()
-                            } else if (url.contains("album") || url.contains("artist") || url.contains(
-                                    "playlist"
-                                )
-                            ) {
-                                navigateToDownloaderSheet()
-                            }
                         }
                     }
                 }
-            },
-            cancelCallback = {
-                Downloader.cancelDownload()
-            },
-            isModsDownloaderEnabled = isModsDownloaderEnabled,
-            onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
-
-        /*with(viewState) {
-            DownloaderSettingsDialog(
-                useDialog = useDialog,
-                dialogState = showDownloadSettingDialog,
-                drawerState = drawerState,
-                confirm = { checkPermissionOrDownload() },
-                onRequestMetadata = { downloaderViewModel.requestMetadata() },
-                hide = { downloaderViewModel.hideDialog(scope, useDialog) })
-        }*/
-    }
-
-    if (showModsBannedDialog) {
-        SpowloDialog(
-            title = {
-                Text(text = stringResource(id = R.string.mods_downloader))
-            },
-            text = {
-                Text(text = stringResource(id = R.string.mods_downloader_banned))
-            },
-            onDismissRequest = { updateShowModsBannedDialog(false) },
-            confirmButton = {
-                TextButton(onClick = { updateShowModsBannedDialog(false) }) {
-                    Text(text = stringResource(id = R.string.agree))
-                }
             }
-        )
-    }
+        },
+        cancelCallback = {
+            Downloader.cancelDownload()
+        },
+        onUrlChanged = { url -> downloaderViewModel.updateUrl(url) }) {}
 
 }
 
@@ -287,38 +248,45 @@ fun DownloaderPageImplementation(
     downloadCallback: () -> Unit = {},
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
-    navigateToMods: () -> Unit = {},
+    navigateToTasks: () -> Unit = {},
+    navigateToSearch: () -> Unit = {},
     pasteCallback: () -> Unit = {},
     cancelCallback: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
     onUrlChanged: (String) -> Unit = {},
-    isModsDownloaderEnabled: Boolean = false,
-    isPreview: Boolean = false,
     content: @Composable () -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = {}, modifier = Modifier.padding(horizontal = 8.dp), navigationIcon = {
-            IconButton(onClick = { navigateToSettings() }) {
-                Icon(
-                    imageVector = Icons.Rounded.Settings,
-                    contentDescription = stringResource(id = R.string.show_more_actions)
-                )
-            }
-        }, actions = {
-            IconButton(onClick = { navigateToMods() }, enabled = isModsDownloaderEnabled) {
-                Icon(
-                    imageVector = LocalAsset(id = R.drawable.spotify_logo),
-                    contentDescription = stringResource(id = R.string.mods_downloader)
-                )
-            }
-
-            IconButton(onClick = { navigateToDownloads() }) {
-                Icon(
-                    imageVector = Icons.Filled.LibraryMusic,
-                    contentDescription = stringResource(id = R.string.downloads_history)
-                )
-            }
-        })
+        TopAppBar(
+            title = {},
+            modifier = Modifier.padding(horizontal = 8.dp),
+            navigationIcon = {
+                IconButton(onClick = { navigateToSettings() }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Settings,
+                        contentDescription = stringResource(id = R.string.show_more_actions)
+                    )
+                }
+            }, actions = {
+                IconButton(onClick = { navigateToSearch() }) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(id = R.string.searcher)
+                    )
+                }
+                IconButton(onClick = { navigateToTasks() }) {
+                    Icon(
+                        imageVector = Icons.Filled.Terminal,
+                        contentDescription = stringResource(id = R.string.download_tasks)
+                    )
+                }
+                IconButton(onClick = { navigateToDownloads() }) {
+                    Icon(
+                        imageVector = Icons.Filled.LibraryMusic,
+                        contentDescription = stringResource(id = R.string.downloads_history)
+                    )
+                }
+            })
     }, floatingActionButton = {
         FABs(
             modifier = with(Modifier) { if (showDownloadProgress) this else this.imePadding() },
@@ -376,7 +344,8 @@ fun DownloaderPageImplementation(
                 with(taskState) {
                     AnimatedVisibility(visible = showSongCard && showDownloadProgress) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            SongCard(song = info,
+                            SongCard(
+                                song = info,
                                 progress = progress,
                                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
                                 isExplicit = info.explicit,
@@ -433,17 +402,22 @@ fun FABs(
     isDownloading: Boolean = false
 ) {
     Column(
-        modifier = modifier.padding(6.dp), horizontalAlignment = Alignment.End
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ExtendedFloatingActionButton(onClick = pasteCallback, text = {
-            Text(stringResource(R.string.paste))
-        }, icon = {
-            Icon(
-                Icons.Outlined.ContentPaste, contentDescription = stringResource(R.string.paste)
-            )
-        }, modifier = Modifier.padding(vertical = 12.dp)
+        FloatingActionButton(
+            onClick = pasteCallback,
+            content = {
+                Icon(
+                    Icons.Outlined.ContentPaste, contentDescription = stringResource(R.string.paste)
+                )
+            }
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             AnimatedVisibility(visible = isDownloading) {
                 FloatingActionButton(
                     onClick = cancelCallback,
@@ -453,17 +427,19 @@ fun FABs(
                             contentDescription = stringResource(R.string.cancel_download)
                         )
                     },
-                    modifier = Modifier.padding(horizontal = 12.dp),
+                    modifier = Modifier,
                 )
             }
-            ExtendedFloatingActionButton(onClick = downloadCallback, text = {
-                Text(stringResource(R.string.download))
-            }, icon = {
-                Icon(
-                    Icons.Outlined.FileDownload,
-                    contentDescription = stringResource(R.string.download)
-                )
-            }, modifier = Modifier.padding(vertical = 12.dp))
+            FloatingActionButton(
+                modifier = Modifier,
+                onClick = downloadCallback,
+                content = {
+                    Icon(
+                        Icons.Outlined.FileDownload,
+                        contentDescription = stringResource(R.string.download)
+                    )
+                }
+            )
         }
 
     }
@@ -542,17 +518,18 @@ fun ErrorMessage(
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .run {
-            if (errorReport.isNotEmpty()) {
-                clip(MaterialTheme.shapes.large).clickable {
-                    clipboardManager.setText(AnnotatedString(App.getVersionReport() + "\nURL: $url\n$errorReport"))
-                    ToastUtil.makeToastSuspend(context.getString(R.string.error_copied))
-                }
-            } else this
-        }
-        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .run {
+                if (errorReport.isNotEmpty()) {
+                    clip(MaterialTheme.shapes.large).clickable {
+                        clipboardManager.setText(AnnotatedString(App.getVersionReport() + "\nURL: $url\n$errorReport"))
+                        ToastUtil.makeToastSuspend(context.getString(R.string.error_copied))
+                    }
+                } else this
+            }
+            .padding(horizontal = 8.dp, vertical = 8.dp)) {
         Icon(
             Icons.Outlined.Error, contentDescription = null, tint = MaterialTheme.colorScheme.error
         )

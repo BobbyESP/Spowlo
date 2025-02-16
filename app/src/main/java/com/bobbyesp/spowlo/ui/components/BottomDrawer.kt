@@ -122,19 +122,14 @@ fun DrawerSheetSubtitle(
 fun BottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    edgeToEdge: Boolean = true,
     state: SheetState = androidx.compose.material3.rememberModalBottomSheetState(),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val windowInsets = if (edgeToEdge)
-        WindowInsets(bottom = 0, top = 0) else BottomSheetDefaults.windowInsets
-
     ModalBottomSheet(
         modifier = modifier,
         onDismissRequest = { onDismiss() },
         sheetState = state,
         dragHandle = { BottomSheetDefaults.DragHandle() },
-        // windowInsets = windowInsets,
     ) {
         content()
     }

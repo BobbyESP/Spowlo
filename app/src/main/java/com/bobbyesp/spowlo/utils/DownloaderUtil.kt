@@ -239,10 +239,6 @@ object DownloaderUtil {
                     addOption("youtube-music")
                 }
 
-                if (downloadPreferences.audioProviders.contains("Slider KZ")) {
-                    addOption("slider-kz")
-                }
-
                 if (downloadPreferences.audioProviders.contains("Soundcloud")) {
                     addOption("soundcloud")
                 }
