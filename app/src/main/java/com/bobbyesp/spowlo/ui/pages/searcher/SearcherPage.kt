@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,8 +48,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -56,6 +58,7 @@ import androidx.paging.compose.itemKey
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.ui.common.AsyncImageImpl
 import com.bobbyesp.spowlo.ui.common.Route
+import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.QueryTextBox
 import com.bobbyesp.spowlo.ui.components.others.shimmer.cards.HorizontalSongCardShimmer
@@ -103,142 +106,157 @@ fun SearcherPage(
     val paginatedPlaylists = viewState.searchedPlaylists.collectAsLazyPagingItems()
     val paginatedArtists = viewState.searchedArtists.collectAsLazyPagingItems()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
     ) {
-        QueryTextBox(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 16.dp),
-            query = query,
-            onValueChange = onValueChange,
-            onSearchCallback = {
-                viewModel.viewModelScope.launch {
-                    viewModel.search()
-                }
-            })
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp)
-                .animateContentSize(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            items(types) {
-                SearchTypeChip(
-                    modifier = Modifier,
-                    searchType = it.searchType,
-                    isActive = viewState.activeSearchType == it.searchType,
-                    onClick = it.onClick
-                )
-            }
-        }
-        HorizontalDivider(modifier = Modifier.padding(8.dp))
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize().padding(it),
         ) {
-            with(viewState) {
-                when (this.viewState) {
-                    is ViewSearchState.Idle -> {
-                        Text(
-                            text = stringResource(id = R.string.search),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        )
-                    }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BackButton { navController.popBackStack() }
+                QueryTextBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    query = query,
+                    onValueChange = onValueChange,
+                    onSearchCallback = {
+                        viewModel.viewModelScope.launch {
+                            viewModel.search()
+                        }
+                    })
+            }
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(types) {
+                    SearchTypeChip(
+                        modifier = Modifier,
+                        searchType = it.searchType,
+                        isActive = viewState.activeSearchType == it.searchType,
+                        onClick = it.onClick
+                    )
+                }
+            }
+            HorizontalDivider(modifier = Modifier.padding(8.dp))
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                with(viewState) {
+                    when (this.viewState) {
+                        is ViewSearchState.Idle -> {
+                            Text(
+                                text = stringResource(id = R.string.search),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                            )
+                        }
 
-                    is ViewSearchState.Loading -> {
-                        CircularProgressIndicator()
-                    }
+                        is ViewSearchState.Loading -> {
+                            CircularProgressIndicator()
+                        }
 
-                    is ViewSearchState.Success -> {
-                        Crossfade(
-                            modifier = Modifier.fillMaxSize(),
-                            targetState = activeSearchType,
-                            label = ""
-                        ) { searchType ->
-                            when (searchType) {
-                                SpotifySearchType.TRACK -> {
-                                    ResultsList(modifier = Modifier.fillMaxSize(),
-                                        paginatedItems = paginatedTracks,
-                                        itemName = { item -> item.name },
-                                        itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                        itemArtworkUrl = { item ->
-                                            item.album.images.secondOrNull()?.url ?: ""
-                                        },
-                                        itemType = SpotifySearchType.TRACK,
-                                        onItemClick = { track ->
-                                            onItemClick(
-                                                SpotifySearchType.TRACK.asString(), track.id
-                                            )
-                                        })
-                                }
+                        is ViewSearchState.Success -> {
+                            Crossfade(
+                                modifier = Modifier.fillMaxSize(),
+                                targetState = activeSearchType,
+                                label = ""
+                            ) { searchType ->
+                                when (searchType) {
+                                    SpotifySearchType.TRACK -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedTracks,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item ->
+                                                item.album.images.secondOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.TRACK,
+                                            onItemClick = { track ->
+                                                onItemClick(
+                                                    SpotifySearchType.TRACK.asString(), track.id
+                                                )
+                                            })
+                                    }
 
-                                SpotifySearchType.ALBUM -> {
-                                    ResultsList(modifier = Modifier.fillMaxSize(),
-                                        paginatedItems = paginatedAlbums,
-                                        itemName = { item -> item.name },
-                                        itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
-                                        itemArtworkUrl = { item ->
-                                            item.images.secondOrNull()?.url ?: ""
-                                        },
-                                        itemType = SpotifySearchType.ALBUM,
-                                        onItemClick = { album ->
-                                            onItemClick(
-                                                SpotifySearchType.ALBUM.asString(), album.id
-                                            )
-                                        })
-                                }
+                                    SpotifySearchType.ALBUM -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedAlbums,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.artists.joinToString(", ") { it.name } },
+                                            itemArtworkUrl = { item ->
+                                                item.images.secondOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.ALBUM,
+                                            onItemClick = { album ->
+                                                onItemClick(
+                                                    SpotifySearchType.ALBUM.asString(), album.id
+                                                )
+                                            })
+                                    }
 
-                                SpotifySearchType.PLAYLIST -> {
-                                    ResultsList(modifier = Modifier.fillMaxSize(),
-                                        paginatedItems = paginatedPlaylists,
-                                        itemName = { item -> item.name },
-                                        itemArtists = { item -> item.owner.displayName ?: "" },
-                                        itemArtworkUrl = { item ->
-                                            item.images.firstOrNull()?.url ?: ""
-                                        },
-                                        itemType = SpotifySearchType.PLAYLIST,
-                                        onItemClick = { playlist ->
-                                            onItemClick(
-                                                SpotifySearchType.PLAYLIST.asString(), playlist.id
-                                            )
-                                        })
-                                }
+                                    SpotifySearchType.PLAYLIST -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedPlaylists,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.owner.displayName ?: "" },
+                                            itemArtworkUrl = { item ->
+                                                item.images.firstOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.PLAYLIST,
+                                            onItemClick = { playlist ->
+                                                onItemClick(
+                                                    SpotifySearchType.PLAYLIST.asString(), playlist.id
+                                                )
+                                            })
+                                    }
 
-                                SpotifySearchType.ARTIST -> {
-                                    ResultsList(modifier = Modifier.fillMaxSize(),
-                                        paginatedItems = paginatedArtists,
-                                        itemName = { item -> item.name },
-                                        itemArtists = { item -> item.name },
-                                        itemArtworkUrl = { item ->
-                                            item.images.secondOrNull()?.url ?: ""
-                                        },
-                                        itemType = SpotifySearchType.ARTIST,
-                                        onItemClick = { artist ->
-                                            onItemClick(
-                                                SpotifySearchType.ARTIST.asString(), artist.id
-                                            )
-                                        })
+                                    SpotifySearchType.ARTIST -> {
+                                        ResultsList(
+                                            modifier = Modifier.fillMaxSize(),
+                                            paginatedItems = paginatedArtists,
+                                            itemName = { item -> item.name },
+                                            itemArtists = { item -> item.name },
+                                            itemArtworkUrl = { item ->
+                                                item.images.secondOrNull()?.url ?: ""
+                                            },
+                                            itemType = SpotifySearchType.ARTIST,
+                                            onItemClick = { artist ->
+                                                onItemClick(
+                                                    SpotifySearchType.ARTIST.asString(), artist.id
+                                                )
+                                            })
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    is ViewSearchState.Error -> {
-                        Text(text = "Error")
+                        is ViewSearchState.Error -> {
+                            Text(text = "Error")
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
