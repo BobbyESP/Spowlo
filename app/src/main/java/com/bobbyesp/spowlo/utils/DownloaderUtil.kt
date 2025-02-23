@@ -500,6 +500,7 @@ object DownloaderUtil {
                         text = text,
                         extraString = name + " - " + context.getString(R.string.parallel_download),
                         taskUrl = url,
+                        context = context
                     )
                     Downloader.updateTaskOutput(
                         url = url, line = text, progress = progress, isPlaylist = isPlaylist
@@ -553,20 +554,28 @@ object DownloaderUtil {
 
     fun getExtension(): String? {
         val audioFormat = PreferencesUtil.getAudioFormat()
-        if (audioFormat == 0) {
-            return "mp3"
-        } else if (audioFormat == 1) {
-            return "flac"
-        } else if (audioFormat == 2) {
-            return "ogg"
-        } else if (audioFormat == 3) {
-            return "opus"
-        } else if (audioFormat == 4) {
-            return "m4a"
-        } else if (audioFormat == 5) {
-            return "wav"
-        } else {
-            return null
+        when (audioFormat) {
+            0 -> {
+                return "mp3"
+            }
+            1 -> {
+                return "flac"
+            }
+            2 -> {
+                return "ogg"
+            }
+            3 -> {
+                return "opus"
+            }
+            4 -> {
+                return "m4a"
+            }
+            5 -> {
+                return "wav"
+            }
+            else -> {
+                return null
+            }
         }
     }
 }

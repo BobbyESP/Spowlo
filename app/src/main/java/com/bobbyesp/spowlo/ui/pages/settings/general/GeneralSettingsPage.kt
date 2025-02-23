@@ -109,16 +109,22 @@ fun GeneralSettingsPage(
         )
     }
 
-    var isNotificationPermissionGranted by remember {
-        mutableStateOf(NotificationsUtil.areNotificationsEnabled())
+    var showNotificationDialog by remember {mutableStateOf(false)}
+    val notificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    } else {
+        null
     }
 
-    var showNotificationDialog by remember {mutableStateOf(false)}
-    val notificationPermission =
-        if (Build.VERSION.SDK_INT >= 33) rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS) { status ->
-            if (!status) ToastUtil.makeToast(context.getString(R.string.permission_denied))
-            else isNotificationPermissionGranted = true
-        } else null
+    val isNotificationPermissionGranted by remember {
+        mutableStateOf(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermission?.status is PermissionStatus.Granted
+            } else {
+                false
+            }
+        )
+    }
 
     //create a non-blocking coroutine to get the version
     LaunchedEffect(Unit) {

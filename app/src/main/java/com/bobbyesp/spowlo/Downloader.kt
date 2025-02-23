@@ -30,11 +30,7 @@ import java.util.UUID
 object Downloader {
 
     sealed class State {
-        data class DownloadingPlaylist(
-            val currentItem: Int = 0,
-            val itemCount: Int = 0,
-        ) : State()
-
+        data class DownloadingPlaylist(val currentItem: Int = 0, val itemCount: Int = 0) : State()
         data object DownloadingSong : State()
         data object FetchingInfo : State()
         data object Idle : State()
@@ -59,16 +55,15 @@ object Downloader {
         val taskName: String,
     ) {
         fun toKey() = makeKey(url, url.reversed())
+
         sealed class State {
             data class Error(val errorReport: String) : State()
-            object Completed : State()
-            object Canceled : State()
+            data object Completed : State()
+            data object Canceled : State()
             data class Running(val progress: Float) : State()
         }
 
-        override fun hashCode(): Int {
-            return (this.url + this.url.reversed()).hashCode()
-        }
+        override fun hashCode(): Int = (this.url + this.url.reversed()).hashCode()
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -76,12 +71,7 @@ object Downloader {
 
             other as DownloadTask
 
-            if (url != other.url) return false
-            if (consoleOutput != other.consoleOutput) return false
-            if (state != other.state) return false
-            if (currentLine != other.currentLine) return false
-
-            return true
+            return url == other.url && consoleOutput == other.consoleOutput && state == other.state && currentLine == other.currentLine
         }
 
         fun onCopyLog(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
@@ -94,13 +84,11 @@ object Downloader {
             ToastUtil.makeToastSuspend(context.getString(R.string.link_copied))
         }
 
-
         fun onRestart() {
             applicationScope.launch(Dispatchers.IO) {
                 executeParallelDownloadWithUrl(url, name = taskName)
             }
         }
-
 
         fun onCopyError(clipboardManager: androidx.compose.ui.platform.ClipboardManager) {
             clipboardManager.setText(AnnotatedString(currentLine))
@@ -113,10 +101,7 @@ object Downloader {
                 onProcessCanceled(this)
             }
         }
-
     }
-
-    //----------------------------
 
     data class DownloadTaskItem(
         val info: SpotifySong = SpotifySong(),
@@ -133,137 +118,118 @@ object Downloader {
         val output: String = "",
     )
 
-    private fun SpotifySong.toTask(preferencesHash: Int): DownloadTaskItem =
-        DownloadTaskItem(
-            info = this,
-            spotifyUrl = this.url,
-            name = this.name,
-            artist = this.artist,
-            duration = this.duration,
-            isExplicit = this.explicit,
-            hasLyrics = this.lyrics.isNullOrEmpty(),
-            progress = 0f,
-            progressText = "",
-            thumbnailUrl = this.cover_url,
-            taskId = this.song_id + preferencesHash,
-        )
+    private fun SpotifySong.toTask(preferencesHash: Int): DownloadTaskItem = DownloadTaskItem(
+        info = this,
+        spotifyUrl = this.url,
+        name = this.name,
+        artist = this.artist,
+        duration = this.duration,
+        isExplicit = this.explicit,
+        hasLyrics = this.lyrics.isNullOrEmpty(),
+        progress = 0f,
+        progressText = "",
+        thumbnailUrl = this.cover_url,
+        taskId = this.song_id + preferencesHash,
+    )
 
     private var currentJob: Job? = null
     private var downloadResultTemp: Result<List<String>> = Result.failure(Exception())
 
-    //DOWNLOADER STATE FLOW
     private val mutableDownloaderState: MutableStateFlow<State> = MutableStateFlow(State.Idle)
     val downloaderState = mutableDownloaderState.asStateFlow()
 
-    //TASK ITEM FLOW
     private val mutableTaskState = MutableStateFlow(DownloadTaskItem())
     val taskState = mutableTaskState.asStateFlow()
 
-    //ERROR STATE FLOW
     private val mutableErrorState = MutableStateFlow(ErrorState())
     val errorState = mutableErrorState.asStateFlow()
 
-    //PROCESSES COUNT
     private val mutableProcessCount = MutableStateFlow(0)
     private val processCount = mutableProcessCount.asStateFlow()
 
     private val mutableQuickDownloadCount = MutableStateFlow(0)
-
-
-    //-------------------------------------
 
     val mutableTaskList = mutableStateMapOf<String, DownloadTask>()
 
     init {
         applicationScope.launch {
             downloaderState.combine(processCount) { state, cnt ->
-                if (cnt > 0) true
-                else when (state) {
-                    is State.Idle -> false
-                    else -> true
-                }
+                if (cnt > 0) true else state !is State.Idle
             }.combine(mutableQuickDownloadCount) { isRunning, cnt ->
                 if (!isRunning) cnt > 0 else true
             }.collect {
-                if (it) startService()
-                else stopService()
+                if (it) startService() else stopService()
             }
         }
     }
 
-    fun onTaskStarted(url: String, name: String) =
-        DownloadTask(
-            url = url,
-            consoleOutput = "",
-            state = DownloadTask.State.Running(0f),
-            currentLine = "",
-            taskName = name
-        ).run {
-            mutableTaskList[this.toKey()] = this
+    fun onTaskStarted(url: String, name: String) = DownloadTask(
+        url = url,
+        consoleOutput = "",
+        state = DownloadTask.State.Running(0f),
+        currentLine = "",
+        taskName = name
+    ).apply {
+        mutableTaskList[this.toKey()] = this
 
-            val key = makeKey(url, url.reversed())
-            NotificationsUtil.notifyProgress(
-                name + " - " + context.getString(R.string.parallel_download),
-                notificationId = key.toNotificationId(),
-                progress = (state as DownloadTask.State.Running).progress.toInt(),
-                text = currentLine
-            )
-        }
-
-    fun updateTaskOutput(url: String, line: String, progress: Float, isPlaylist: Boolean = false) {
         val key = makeKey(url, url.reversed())
-        val oldValue = mutableTaskList[key] ?: return
-        val newValue = oldValue.run {
-            if (currentLine == line || line.containsEllipsis() || consoleOutput.contains(line)) return
-            when (isPlaylist) {
-                true -> {
-                    copy(
-                        consoleOutput = consoleOutput + line + "\n",
-                        currentLine = line,
-                        state = DownloadTask.State.Running(
-                            if (line.contains("Total")) {
-                                getProgress(line)
-                            } else {
-                                (state as DownloadTask.State.Running).progress
-                            }
-                        )
-                    )
-                }
+        NotificationsUtil.notifyProgress(
+            context = context,
+            name + " - " + context.getString(R.string.parallel_download),
+            notificationId = key.toNotificationId(),
+            progress = (state as DownloadTask.State.Running).progress.toInt(),
+            text = currentLine
+        )
+    }
 
-                false -> {
-                    copy(
-                        consoleOutput = consoleOutput + line + "\n",
-                        currentLine = line,
-                        state = DownloadTask.State.Running(progress)
+fun updateTaskOutput(url: String, line: String, progress: Float, isPlaylist: Boolean = false) {
+    val key = makeKey(url, url.reversed())
+    val oldValue = mutableTaskList[key] ?: return
+    val newValue = oldValue.let { task ->
+        if (task.currentLine == line || line.containsEllipsis() || task.consoleOutput.contains(line)) return
+        val newState = when (task.state) {
+            is DownloadTask.State.Running -> task.state
+            else -> null
+        }
+        when (isPlaylist) {
+            true -> {
+                task.copy(
+                    consoleOutput = task.consoleOutput + line + "\n",
+                    currentLine = line,
+                    state = DownloadTask.State.Running(
+                        if (line.contains("Total")) {
+                            getProgress(line)
+                        } else {
+                            newState?.progress ?: 0f
+                        }
                     )
-                }
+                )
+            }
+            false -> {
+                task.copy(
+                    consoleOutput = task.consoleOutput + line + "\n",
+                    currentLine = line,
+                    state = DownloadTask.State.Running(progress)
+                )
             }
         }
-        mutableTaskList[key] = newValue
     }
+    mutableTaskList[key] = newValue
+}
 
     private fun getProgress(line: String): Float {
-        val PERCENT: Float
-        //Get the two numbers before an % in the line
         val regex = Regex("(\\d+)%")
         val matchResult = regex.find(line)
-        //Log the result
-        ///if (BuildConfig.DEBUG) Log.d(TAG, "Progress: ${matchResult?.groupValues?.get(1)?.toFloat() ?: 0f}")
-        PERCENT = matchResult?.groupValues?.get(1)?.toFloat() ?: 0f
-        //divide percent by 100 to get a value between 0 and 1
-        return PERCENT / 100f
+        return (matchResult?.groupValues?.get(1)?.toFloat() ?: 0f) / 100f
     }
 
-    fun onTaskEnded(
-        url: String,
-        response: String? = null,
-        notificationTitle: String? = null
-    ) {
+    fun onTaskEnded(url: String, response: String? = null, notificationTitle: String? = null) {
         val key = makeKey(url, url.reversed())
         NotificationsUtil.finishNotification(
             notificationId = key.toNotificationId(),
             title = notificationTitle,
             text = context.getString(R.string.status_completed),
+            context = context
         )
         mutableTaskList.run {
             val oldValue = get(key) ?: return
@@ -275,36 +241,26 @@ object Downloader {
         FilesUtil.scanDownloadDirectoryToMediaLibrary(App.audioDownloadDir)
     }
 
-    fun onTaskError(errorReport: String, url: String) =
-        mutableTaskList.run {
-            val key = makeKey(url, url.reversed())
-            NotificationsUtil.makeErrorReportNotification(
-                notificationId = key.toNotificationId(),
-                error = errorReport
-            )
-            val oldValue = mutableTaskList[key] ?: return
-            mutableTaskList[key] = oldValue.copy(
-                state = DownloadTask.State.Error(
-                    errorReport
-                ),
-                currentLine = errorReport,
-                consoleOutput = oldValue.consoleOutput + "\n" + errorReport
-            )
+    fun onTaskError(errorReport: String, url: String) = mutableTaskList.run {
+        val key = makeKey(url, url.reversed())
+        NotificationsUtil.makeErrorReportNotification(
+            notificationId = key.toNotificationId(), error = errorReport, context = context
+        )
+        val oldValue = mutableTaskList[key] ?: return
+        mutableTaskList[key] = oldValue.copy(
+            state = DownloadTask.State.Error(errorReport),
+            currentLine = errorReport,
+            consoleOutput = oldValue.consoleOutput + "\n" + errorReport
+        )
+    }
+
+    fun onProcessEnded() = mutableProcessCount.update { it - 1 }
+
+    fun onProcessCanceled(taskId: String) = mutableTaskList.run {
+        get(taskId)?.let {
+            this[taskId] = it.copy(state = DownloadTask.State.Canceled)
         }
-
-
-    fun onProcessEnded() =
-        mutableProcessCount.update { it - 1 }
-
-    fun onProcessCanceled(taskId: String) =
-        mutableTaskList.run {
-            get(taskId)?.let {
-                this.put(
-                    taskId,
-                    it.copy(state = DownloadTask.State.Canceled)
-                )
-            }
-        }
+    }
 
     fun isDownloaderAvailable(): Boolean {
         if (downloaderState.value !is State.Idle) {
@@ -339,7 +295,8 @@ object Downloader {
                 notificationId = notificationId,
                 progress = progress.toInt(),
                 text = line,
-                title = songInfo.name
+                title = songInfo.name,
+                context = context
             )
         }.onFailure {
             Log.d("Downloader", "$it")
@@ -358,14 +315,12 @@ object Downloader {
                 context.getString(if (it.isEmpty()) R.string.status_completed else R.string.download_finish_notification)
             FilesUtil.createIntentForOpeningFile(it.firstOrNull()).run {
                 NotificationsUtil.finishNotification(
+                    context = context,
                     notificationId,
                     title = "${songInfo.artist} - ${songInfo.name}",
                     text = text,
                     intent = if (this != null) PendingIntent.getActivity(
-                        context,
-                        0,
-                        this,
-                        PendingIntent.FLAG_IMMUTABLE
+                        context, 0, this, PendingIntent.FLAG_IMMUTABLE
                     ) else null
                 )
             }
@@ -381,33 +336,23 @@ object Downloader {
             updateState(State.FetchingInfo)
             if (skipInfoFetch) {
                 downloadResultTemp = downloadSong(
-                    songInfo = SpotifySong(url = url),
-                    preferences = downloadPreferences
+                    songInfo = SpotifySong(url = url), preferences = downloadPreferences
                 ).onFailure {
                     manageDownloadError(
-                        it,
-                        isFetchingInfo = true,
-                        isTaskAborted = true
+                        it, isFetchingInfo = true, isTaskAborted = true
                     )
                 }
                 return@launch
             } else {
-                DownloaderUtil.fetchSongInfoFromUrl(
-                    url = url
-                )
-                    .onFailure {
+                DownloaderUtil.fetchSongInfoFromUrl(url).onFailure {
                         manageDownloadError(
-                            it,
-                            isFetchingInfo = true,
-                            isTaskAborted = true
+                            it, isFetchingInfo = true, isTaskAborted = true
                         )
                         return@launch
-                    }
-                    .onSuccess { info ->
+                    }.onSuccess { info ->
                         for (song in info) {
                             downloadResultTemp = downloadSong(
-                                songInfo = song,
-                                preferences = downloadPreferences
+                                songInfo = song, preferences = downloadPreferences
                             )
                         }
                     }
@@ -421,16 +366,11 @@ object Downloader {
     ) {
         currentJob = applicationScope.launch(Dispatchers.IO) {
             updateState(State.FetchingInfo)
-            DownloaderUtil.fetchSongInfoFromUrl(
-                url = url
-            ).onFailure {
-                manageDownloadError(
-                    it,
-                    isFetchingInfo = true,
-                    isTaskAborted = true
-                )
-            }
-                .onSuccess { info ->
+            DownloaderUtil.fetchSongInfoFromUrl(url).onFailure {
+                    manageDownloadError(
+                        it, isFetchingInfo = true, isTaskAborted = true
+                    )
+                }.onSuccess { info ->
                     DownloaderUtil.updateSongsState(info)
                     mutableTaskState.update {
                         DownloaderUtil.songsState.value[0].toTask(
@@ -460,8 +400,10 @@ object Downloader {
                 progressText = "",
             )
         }
-        if (!isFinished)
+        if (!isFinished) {
+            NotificationsUtil.cancelNotification(taskState.value.taskId.toNotificationId(), context)
             downloadResultTemp = Result.failure(Exception())
+        }
     }
 
     private fun finishProcessing() {
@@ -474,9 +416,6 @@ object Downloader {
         clearErrorState()
     }
 
-    /**
-     * @param isTaskAborted Determines if the download task is aborted due to the given `Exception`
-     */
     private fun manageDownloadError(
         th: Throwable,
         isFetchingInfo: Boolean,
@@ -499,14 +438,14 @@ object Downloader {
             NotificationsUtil.finishNotification(
                 notificationId = notificationId,
                 title = songName,
-                text = "${context.getString(R.string.download_error_msg)}\n\n${th.message.toString()}"
+                text = "${context.getString(R.string.download_error_msg)}\n\n${th.message.toString()}",
+                context = context
             )
         }
         if (isTaskAborted) {
             updateState(State.Idle)
             clearProgressState(isFinished = false)
         }
-
     }
 
     fun cancelDownload() {
@@ -516,23 +455,18 @@ object Downloader {
         clearProgressState(isFinished = false)
         taskState.value.taskId.run {
             SpotDL.getInstance().destroyProcessById(this)
-            NotificationsUtil.cancelNotification(this.toNotificationId())
+            NotificationsUtil.cancelNotification(this.toNotificationId(), context = context)
         }
     }
 
     fun executeParallelDownloadWithUrl(url: String, name: String) =
         applicationScope.launch(Dispatchers.IO) {
-
-            DownloaderUtil.executeParallelDownload(
-                url, name
-            )
-
+            DownloaderUtil.executeParallelDownload(url, name)
         }
 
     fun onProcessStarted() = mutableProcessCount.update { it + 1 }
     fun String.toNotificationId(): Int = this.hashCode()
 
-    //get just the numbers from a string and return an int
     private fun String.getNumbers(): Int {
         val sb = StringBuilder()
         for (c in this) {

@@ -15,6 +15,7 @@ import com.bobbyesp.spowlo.utils.PreferencesUtil
 private val TAG = DownloaderKeepUpService::class.java.simpleName
 
 class DownloaderKeepUpService : Service() {
+
     override fun onBind(intent: Intent): IBinder {
         Log.d(TAG, "onBind: ")
         val pendingIntent: PendingIntent =
@@ -25,20 +26,15 @@ class DownloaderKeepUpService : Service() {
                 )
             }
         if (PreferencesUtil.getValue(NOTIFICATION)) {
-            val notification = NotificationsUtil.makeServiceNotification(pendingIntent)
+            val notification = NotificationsUtil.makeServiceNotification(applicationContext, pendingIntent)
             startForeground(SERVICE_NOTIFICATION_ID, notification)
         }
         return DownloadServiceBinder()
     }
 
-
     override fun onUnbind(intent: Intent?): Boolean {
         Log.d(TAG, "onUnbind: ")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-        } else {
-            stopForeground(true)
-        }
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
         return super.onUnbind(intent)
     }

@@ -1,5 +1,6 @@
 package com.bobbyesp.spowlo.utils
 
+import NotificationActionReceiver
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -13,22 +14,13 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
-import com.bobbyesp.spowlo.App.Companion.context
-import com.bobbyesp.spowlo.NotificationActionReceiver
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_CANCEL_TASK
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_ERROR_REPORT
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ACTION_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.ERROR_REPORT_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.NOTIFICATION_ID_KEY
-import com.bobbyesp.spowlo.NotificationActionReceiver.Companion.TASK_ID_KEY
 import com.bobbyesp.spowlo.R
 
-private const val TAG = "NotificationUtil"
+private const val TAG = "NotificationsUtil"
 
 @SuppressLint("StaticFieldLeak")
 object NotificationsUtil {
-    private val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private lateinit var notificationManager: NotificationManager
     private const val PROGRESS_MAX = 100
     private const val PROGRESS_INITIAL = 0
     private const val CHANNEL_ID = "download_notification"
@@ -37,12 +29,18 @@ object NotificationsUtil {
     private const val DEFAULT_NOTIFICATION_ID = 100
     const val SERVICE_NOTIFICATION_ID = 123
     private lateinit var serviceNotification: Notification
-    private val commandNotificationBuilder =
+    private val commandNotificationBuilder = { context: Context ->
         NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_monochrome)
+    }
+
+    fun init(context: Context) {
+        notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createNotificationChannel() {
+    fun createNotificationChannel(context: Context) {
         val name = context.getString(R.string.channel_name)
         val serviceChannelName = context.getString(R.string.service_channel_name)
         val descriptionText = context.getString(R.string.channel_description)
@@ -64,6 +62,7 @@ object NotificationsUtil {
     }
 
     fun notifyProgress(
+        context: Context,
         title: String,
         notificationId: Int = DEFAULT_NOTIFICATION_ID,
         progress: Int = PROGRESS_INITIAL,
@@ -74,9 +73,9 @@ object NotificationsUtil {
 
         val pendingIntent = taskId?.let {
             Intent(context.applicationContext, NotificationActionReceiver::class.java)
-                .putExtra(TASK_ID_KEY, taskId)
-                .putExtra(NOTIFICATION_ID_KEY, notificationId)
-                .putExtra(ACTION_KEY, ACTION_CANCEL_TASK).run {
+                .putExtra(NotificationActionReceiver.TASK_ID, taskId)
+                .putExtra(NotificationActionReceiver.NOTIFICATION_ID, notificationId)
+                .putExtra(NotificationActionReceiver.ACTION, NotificationActionReceiver.ActionType.CANCEL_TASK.ordinal).run {
                     PendingIntent.getBroadcast(
                         context.applicationContext,
                         notificationId,
@@ -86,8 +85,7 @@ object NotificationsUtil {
                 }
         }
 
-        NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+        commandNotificationBuilder(context)
             .setContentTitle(title)
             .setProgress(PROGRESS_MAX, progress, progress <= 0)
             .setOngoing(true)
@@ -106,6 +104,7 @@ object NotificationsUtil {
     }
 
     fun finishNotification(
+        context: Context,
         notificationId: Int = DEFAULT_NOTIFICATION_ID,
         title: String? = null,
         text: String? = null,
@@ -115,8 +114,7 @@ object NotificationsUtil {
 
         Log.d(TAG, "finishNotification: ")
         notificationManager.cancel(notificationId)
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+        val builder = commandNotificationBuilder(context)
             .setContentTitle(title)
             .setOngoing(false)
             .setAutoCancel(true)
@@ -130,6 +128,7 @@ object NotificationsUtil {
     }
 
     fun finishNotificationForParallelDownloads(
+        context: Context,
         notificationId: Int = DEFAULT_NOTIFICATION_ID,
         title: String? = null,
         text: String? = null,
@@ -138,8 +137,7 @@ object NotificationsUtil {
 
         notificationManager.cancel(notificationId)
         val builder =
-            NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
+            commandNotificationBuilder(context)
                 .setContentText(text)
                 .setProgress(0, 0, false)
                 .setAutoCancel(true)
@@ -150,7 +148,7 @@ object NotificationsUtil {
         notificationManager.notify(notificationId, builder.build())
     }
 
-    fun makeServiceNotification(intent: PendingIntent): Notification {
+    fun makeServiceNotification(context: Context, intent: PendingIntent): Notification {
         serviceNotification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setContentTitle(context.getString(R.string.app_name))
@@ -162,7 +160,7 @@ object NotificationsUtil {
         return serviceNotification
     }
 
-    fun updateServiceNotification(index: Int, itemCount: Int) {
+    fun updateServiceNotification(context: Context, index: Int, itemCount: Int) {
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
 
         serviceNotification = NotificationCompat.Builder(context, serviceNotification)
@@ -171,22 +169,26 @@ object NotificationsUtil {
         notificationManager.notify(SERVICE_NOTIFICATION_ID, serviceNotification)
     }
 
-    fun cancelNotification(notificationId: Int) {
+    fun cancelNotification(notificationId: Int, context: Context) {
         notificationManager.cancel(notificationId)
     }
 
+    fun cancelAllNotifications() {
+        notificationManager.cancelAll()
+    }
+
     fun makeErrorReportNotification(
+        context: Context,
         title: String = context.getString(R.string.download_error_msg),
         notificationId: Int,
         error: String,
     ) {
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
 
-        val intent = Intent()
-            .setClass(context, NotificationActionReceiver::class.java)
-            .putExtra(NOTIFICATION_ID_KEY, notificationId)
-            .putExtra(ERROR_REPORT_KEY, error)
-            .putExtra(ACTION_KEY, ACTION_ERROR_REPORT)
+        val intent = Intent(context, NotificationActionReceiver::class.java)
+            .putExtra(NotificationActionReceiver.NOTIFICATION_ID, notificationId)
+            .putExtra(NotificationActionReceiver.ERROR_REPORT, error)
+            .putExtra(NotificationActionReceiver.ACTION, NotificationActionReceiver.ActionType.ERROR_REPORT.ordinal)
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -194,8 +196,7 @@ object NotificationsUtil {
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+        commandNotificationBuilder(context)
             .setContentTitle(title)
             .setContentText(error)
             .setOngoing(false)
@@ -210,6 +211,7 @@ object NotificationsUtil {
     }
 
     fun makeNotificationForParallelDownloads(
+        context: Context,
         notificationId: Int,
         taskId: String,
         progress: Int,
@@ -220,9 +222,9 @@ object NotificationsUtil {
         if (!PreferencesUtil.getValue(NOTIFICATION)) return
 
         val intent = Intent(context.applicationContext, NotificationActionReceiver::class.java)
-            .putExtra(TASK_ID_KEY, taskId)
-            .putExtra(NOTIFICATION_ID_KEY, notificationId)
-            .putExtra(ACTION_KEY, ACTION_CANCEL_TASK)
+            .putExtra(NotificationActionReceiver.TASK_ID, taskId)
+            .putExtra(NotificationActionReceiver.NOTIFICATION_ID, notificationId)
+            .putExtra(NotificationActionReceiver.ACTION, NotificationActionReceiver.ActionType.CANCEL_TASK.ordinal)
 
         val pendingIntent = PendingIntent.getBroadcast(
             context.applicationContext,
@@ -231,12 +233,12 @@ object NotificationsUtil {
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
-            .setContentTitle("[${extraString}_${taskUrl}] " + context.getString(R.string.execute_parallel_download))
-            .setContentText(text)
+        commandNotificationBuilder(context)
+            .setContentTitle(extraString)
+            .setProgress(PROGRESS_MAX, progress, progress <= 0)
             .setOngoing(true)
-            .setProgress(PROGRESS_MAX, progress, progress == -1)
+            .setOnlyAlertOnce(true)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .addAction(
                 R.drawable.outline_cancel_24,
                 context.getString(R.string.cancel),
@@ -245,13 +247,5 @@ object NotificationsUtil {
             .run {
                 notificationManager.notify(notificationId, build())
             }
-    }
-
-    fun cancelAllNotifications() {
-        notificationManager.cancelAll()
-    }
-
-    fun areNotificationsEnabled(): Boolean {
-        return if (Build.VERSION.SDK_INT <= 24) true else notificationManager.areNotificationsEnabled()
     }
 }

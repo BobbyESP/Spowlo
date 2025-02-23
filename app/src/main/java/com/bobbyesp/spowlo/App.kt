@@ -78,7 +78,8 @@ class App : Application() {
         extraDownloadDir = EXTRA_DIRECTORY.getString(
             ""
         )
-        if (Build.VERSION.SDK_INT >= 26) NotificationsUtil.createNotificationChannel()
+        NotificationsUtil.init(this)
+        NotificationsUtil.createNotificationChannel(context = this)
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
             val stackTrace = e.stackTraceToString()
             val logfile = createLogFile(this, stackTrace)

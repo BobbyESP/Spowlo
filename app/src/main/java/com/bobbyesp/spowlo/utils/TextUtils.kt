@@ -12,6 +12,7 @@ import com.bobbyesp.spowlo.App.Companion.context
 import com.bobbyesp.spowlo.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 import java.util.regex.Pattern
 
 object ToastUtil {
@@ -53,9 +54,9 @@ object GeneralTextUtils {
         val minutes = ((duration % 3600) / 60).toInt()
         val seconds = (duration % 60).toInt()
         return if (hours > 0) {
-            String.format("%d:%02d:%02d", hours, minutes, seconds)
+            String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
         } else {
-            String.format("%02d:%02d", minutes, seconds)
+            String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds)
         }
     }
 
