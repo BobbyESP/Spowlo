@@ -55,6 +55,7 @@ const val ONLY_VERIFIED_RESULTS = "only_verified_results"
 const val SKIP_EXPLICIT = "skip_explicit"
 const val GENERATE_LRC = "generate_lrc"
 const val SKIP_ALBUM_ART = "skip_album_art"
+const val COMMA_ARTISTS_SEPARATOR = "comma_artists_separator"
 const val OUTPUT_FORMAT = "output_format"
 
 const val SKIP_INFO_FETCH = "skip_info_fetch"
@@ -110,6 +111,7 @@ private val BooleanPreferenceDefaults =
         SPOTDL_UPDATE to true,
         SKIP_INFO_FETCH to false,
         NOTIFICATION to false,
+        COMMA_ARTISTS_SEPARATOR to true,
     )
 
 private val IntPreferenceDefaults = mapOf(

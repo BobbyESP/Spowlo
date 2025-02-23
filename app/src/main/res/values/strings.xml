@@ -370,4 +370,6 @@
     <string name="artist_top_tracks">Top Tracks</string>
     <string name="artist_top_albums">Top Albums</string>
     <string name="uncomplete_playlist">Right now Spowlo may not show all songs due to the lack of pagination, but when trying to download the full playlist, all the songs will be downloaded. This is already fixed in the upcoming Spowlo 2.0.0</string>
+    <string name="comma_artists_separator">Comma separator</string>
+    <string name="comma_artists_separator_desc">Use `,` as the separator for the artists</string>
 </resources>

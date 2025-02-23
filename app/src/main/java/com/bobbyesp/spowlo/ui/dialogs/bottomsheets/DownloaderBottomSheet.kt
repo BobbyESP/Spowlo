@@ -66,6 +66,7 @@ import com.bobbyesp.spowlo.ui.pages.settings.downloader.AudioQualityDialog
 import com.bobbyesp.spowlo.ui.pages.settings.downloader.OutputFormatDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientIDDialog
 import com.bobbyesp.spowlo.ui.pages.settings.spotify.SpotifyClientSecretDialog
+import com.bobbyesp.spowlo.utils.COMMA_ARTISTS_SEPARATOR
 import com.bobbyesp.spowlo.utils.COOKIES
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.DOWNLOAD_LYRICS
@@ -211,6 +212,12 @@ fun DownloaderBottomSheet(
     var skipAlbumArt by remember {
         mutableStateOf(
             PreferencesUtil.getValue(SKIP_ALBUM_ART)
+        )
+    }
+
+    var commaArtistsSeparator by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(COMMA_ARTISTS_SEPARATOR)
         )
     }
 
@@ -466,6 +473,16 @@ fun DownloaderBottomSheet(
                                     skipAlbumArt = !skipAlbumArt
                                     scope.launch {
                                         settings.updateValue(SKIP_ALBUM_ART, skipAlbumArt)
+                                    }
+                                })
+                            AudioFilterChip(
+                                label = stringResource(id = R.string.comma_artists_separator),
+                                animated = true,
+                                selected = commaArtistsSeparator,
+                                onClick = {
+                                    commaArtistsSeparator = !commaArtistsSeparator
+                                    scope.launch {
+                                        settings.updateValue(COMMA_ARTISTS_SEPARATOR, commaArtistsSeparator)
                                     }
                                 })
                         }

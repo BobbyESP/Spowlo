@@ -80,6 +80,7 @@ object DownloaderUtil {
         val skipExplicit: Boolean = PreferencesUtil.getValue(SKIP_EXPLICIT),
         val generateLRC: Boolean = PreferencesUtil.getValue(GENERATE_LRC),
         val skipAlbumArt: Boolean = PreferencesUtil.getValue(SKIP_ALBUM_ART),
+        val useCommaForArtistsSeparation: Boolean = PreferencesUtil.getValue(COMMA_ARTISTS_SEPARATOR),
         val outputFormat: String = OUTPUT_FORMAT.getString(),
     )
 
@@ -313,6 +314,10 @@ object DownloaderUtil {
 
                 if (onlyVerifiedResults) {
                     addOption("--only-verified-results")
+                }
+
+                if(useCommaForArtistsSeparation) {
+                    addOption("--id3-separator", ", ")
                 }
 
                 if (skipExplicit) {

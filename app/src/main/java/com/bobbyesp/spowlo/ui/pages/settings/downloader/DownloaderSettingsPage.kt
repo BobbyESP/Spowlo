@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Lyrics
 import androidx.compose.material.icons.outlined.MoneyOff
 import androidx.compose.material.icons.outlined.Output
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShuffleOn
 import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.outlined.Verified
@@ -51,6 +52,7 @@ import com.bobbyesp.spowlo.ui.components.settings.ElevatedSettingsCard
 import com.bobbyesp.spowlo.ui.components.settings.SettingsItemNew
 import com.bobbyesp.spowlo.ui.components.settings.SettingsSwitch
 import com.bobbyesp.spowlo.ui.icons.YouTubeMusic
+import com.bobbyesp.spowlo.utils.COMMA_ARTISTS_SEPARATOR
 import com.bobbyesp.spowlo.utils.DONT_FILTER_RESULTS
 import com.bobbyesp.spowlo.utils.DOWNLOAD_LYRICS
 import com.bobbyesp.spowlo.utils.GENERATE_LRC
@@ -97,6 +99,12 @@ fun DownloaderSettingsPage(
     var splitByMainArtist by remember {
         mutableStateOf(
             PreferencesUtil.getValue(SPLIT_BY_MAIN_ARTIST)
+        )
+    }
+
+    var commaArtistsSeparator by remember {
+        mutableStateOf(
+            PreferencesUtil.getValue(COMMA_ARTISTS_SEPARATOR)
         )
     }
 
@@ -245,6 +253,25 @@ fun DownloaderSettingsPage(
                         clipCorners = false,
                     )
                 }*/
+
+                item {
+                    SettingsSwitch(
+                        onCheckedChange = {
+                            commaArtistsSeparator = !commaArtistsSeparator
+                            PreferencesUtil.updateValue(COMMA_ARTISTS_SEPARATOR, commaArtistsSeparator)
+                        },
+                        checked = commaArtistsSeparator,
+                        title = {
+                            Text(
+                                text = stringResource(id = R.string.comma_artists_separator),
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        icon = Icons.Outlined.Person    ,
+                        description = { Text(text = stringResource(id = R.string.comma_artists_separator_desc)) },
+                        clipCorners = false,
+                    )
+                }
 
                 item {
                     SettingsItemNew(
