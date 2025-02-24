@@ -23,10 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.bobbyesp.spowlo.Downloader
 import com.bobbyesp.spowlo.R
-import com.bobbyesp.spowlo.ui.components.BackButton
 import com.bobbyesp.spowlo.ui.components.HorizontalDivider
 import com.bobbyesp.spowlo.ui.components.download_tasks.DownloadingTaskItem
 import com.bobbyesp.spowlo.ui.components.download_tasks.TaskState
@@ -34,7 +32,6 @@ import com.bobbyesp.spowlo.ui.components.download_tasks.TaskState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DownloadTasksPage(
-    onGoBack: () -> Unit = {},
     onNavigateToDetail: (Int) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -50,10 +47,6 @@ fun DownloadTasksPage(
                         text = stringResource(R.string.download_tasks),
                         style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
                     )
-                }, navigationIcon = {
-                    BackButton {
-                        onGoBack()
-                    }
                 }, scrollBehavior = scrollBehavior
             )
         }) { paddings ->

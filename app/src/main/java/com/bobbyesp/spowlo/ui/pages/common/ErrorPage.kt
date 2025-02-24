@@ -1,4 +1,4 @@
-package com.bobbyesp.spowlo.ui.pages.common_pages
+package com.bobbyesp.spowlo.ui.pages.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

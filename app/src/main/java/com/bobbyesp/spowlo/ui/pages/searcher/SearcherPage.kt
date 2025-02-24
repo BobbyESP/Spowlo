@@ -117,7 +117,6 @@ fun SearcherPage(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                BackButton { navController.popBackStack() }
                 QueryTextBox(
                     modifier = Modifier
                         .fillMaxWidth()

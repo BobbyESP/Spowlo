@@ -268,18 +268,6 @@ fun DownloaderPageImplementation(
                     )
                 }
             }, actions = {
-                IconButton(onClick = { navigateToSearch() }) {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = stringResource(id = R.string.searcher)
-                    )
-                }
-                IconButton(onClick = { navigateToTasks() }) {
-                    Icon(
-                        imageVector = Icons.Filled.Terminal,
-                        contentDescription = stringResource(id = R.string.download_tasks)
-                    )
-                }
                 IconButton(onClick = { navigateToDownloads() }) {
                     Icon(
                         imageVector = Icons.Filled.LibraryMusic,

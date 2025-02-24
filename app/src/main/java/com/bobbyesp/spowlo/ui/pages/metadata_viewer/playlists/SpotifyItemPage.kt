@@ -25,7 +25,7 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.spowlo.R
 import com.bobbyesp.spowlo.features.spotify_api.model.SpotifyDataType
 import com.bobbyesp.spowlo.ui.components.BackButton
-import com.bobbyesp.spowlo.ui.pages.common_pages.LoadingPage
+import com.bobbyesp.spowlo.ui.pages.common.LoadingPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.binders.typeOfSpotifyDataType
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.AlbumPage
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.pages.ArtistPage

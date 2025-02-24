@@ -25,7 +25,6 @@ import com.bobbyesp.spowlo.ui.common.SettingsProvider
 import com.bobbyesp.spowlo.ui.pages.InitialEntry
 import com.bobbyesp.spowlo.ui.pages.downloader.DownloaderViewModel
 import com.bobbyesp.spowlo.ui.pages.metadata_viewer.playlists.PlaylistPageViewModel
-import com.bobbyesp.spowlo.ui.pages.mod_downloader.ModsDownloaderViewModel
 import com.bobbyesp.spowlo.ui.theme.SpowloTheme
 import com.bobbyesp.spowlo.utils.PreferencesUtil
 import com.bobbyesp.spowlo.utils.matchUrlFromSharedText
@@ -35,7 +34,6 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     private val downloaderViewModel: DownloaderViewModel by viewModels()
-    private val modsDownloaderViewModel: ModsDownloaderViewModel by viewModels()
     private val playlistPageViewModel: PlaylistPageViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -60,7 +58,6 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     InitialEntry(
                         downloaderViewModel = downloaderViewModel,
-                        modsDownloaderViewModel = modsDownloaderViewModel,
                         playlistPageViewModel = playlistPageViewModel,
                         isUrlShared = isUrlSharingTriggered
                     )
