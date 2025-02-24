@@ -117,5 +117,11 @@ class MainActivity : AppCompatActivity() {
             Route.SearcherNavi to Icons.Rounded.Search,
             Route.DownloadTasksNavi to Icons.Rounded.FileDownloadDone,
         )
+
+        val mainRoutesForNavigators = mapOf(
+            Route.DownloaderNavi to Route.DOWNLOADER,
+            Route.SearcherNavi to Route.SEARCHER,
+            Route.DownloadTasksNavi to Route.DOWNLOAD_TASKS
+        )
     }
 }

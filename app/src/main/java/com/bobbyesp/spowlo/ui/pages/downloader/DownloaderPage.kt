@@ -106,8 +106,6 @@ fun DownloaderPage(
     navigateToDownloads: () -> Unit = {},
     navigateToDownloaderSheet: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},
-    navigateToSearch: () -> Unit = {},
-    navigateToTasks: () -> Unit = {},
     sheetState: SheetState,
     downloaderViewModel: DownloaderViewModel = viewModel(),
 ) {
@@ -197,8 +195,6 @@ fun DownloaderPage(
             navigateToSettings()
             keyboardController?.hide()
         },
-        navigateToTasks = navigateToTasks,
-        navigateToSearch = navigateToSearch,
         navigateToDownloads = navigateToDownloads,
         onSongCardClicked = { onSongCardClicked() },
         showOutput = showConsoleOutput,
@@ -248,8 +244,6 @@ fun DownloaderPageImplementation(
     downloadCallback: () -> Unit = {},
     navigateToSettings: () -> Unit = {},
     navigateToDownloads: () -> Unit = {},
-    navigateToTasks: () -> Unit = {},
-    navigateToSearch: () -> Unit = {},
     pasteCallback: () -> Unit = {},
     cancelCallback: () -> Unit = {},
     onSongCardClicked: () -> Unit = {},

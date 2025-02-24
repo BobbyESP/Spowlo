@@ -2,14 +2,19 @@ package com.bobbyesp.spowlo.ui.pages
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -25,10 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -93,7 +96,8 @@ private const val TAG = "InitialEntry"
     ExperimentalAnimationApi::class,
     ExperimentalMaterialNavigationApi::class,
     ExperimentalLayoutApi::class,
-    ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalPermissionsApi::class,
+    ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
@@ -114,8 +118,15 @@ fun InitialEntry(
         )
     }
 
+    val currentRoute = remember(navBackStackEntry) {
+        mutableStateOf(
+            navBackStackEntry?.destination?.route ?: Route.DownloaderNavi
+        )
+    }
+
+    //Hide nav bar when we are not in a navigator route
     val shouldHideBottomNavBar = remember(navBackStackEntry) {
-        navBackStackEntry?.destination?.hierarchy?.any { it.route == Route.SPOTIFY_SETUP } == true
+        currentRoute.value !in MainActivity.mainRoutesForNavigators.values
     }
 
     val isLandscape = remember { MutableTransitionState(false) }
@@ -146,14 +157,13 @@ fun InitialEntry(
         modifier = Modifier.fillMaxSize()
     ) {
         NavHost(
-            modifier = Modifier
-                .fillMaxWidth(
-                    when (LocalWindowWidthState.current) {
-                        WindowWidthSizeClass.Compact -> 1f
-                        WindowWidthSizeClass.Expanded -> 1f
-                        else -> 0.8f
-                    }
-                ),
+            modifier = Modifier.fillMaxWidth(
+                when (LocalWindowWidthState.current) {
+                    WindowWidthSizeClass.Compact -> 1f
+                    WindowWidthSizeClass.Expanded -> 1f
+                    else -> 0.8f
+                }
+            ),
             navController = navController,
             startDestination = Route.DownloaderNavi,
             route = Route.NavGraph
@@ -162,29 +172,18 @@ fun InitialEntry(
                 animatedComposable(Route.DOWNLOADER) {
                     DownloaderPage(
                         navigateToDownloads = {
-                            navController.navigate(Route.DOWNLOADS_HISTORY) {
-                                launchSingleTop = true
-                            }
-                        },
-                        navigateToSettings = {
-                            navController.navigate(Route.SETTINGS)
-                        },
-                        navigateToDownloaderSheet = {
-                            showDownloaderBottomSheet = true
-                        },
-                        onSongCardClicked = {
-                            navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
-                                launchSingleTop = true
-                            }
-                        },
-                        navigateToTasks = {
-                            navController.navigate(Route.DownloadTasksNavi)
-                        },
-                        navigateToSearch = {
-                            navController.navigate(route = Route.SearcherNavi)
-                        },
-                        downloaderViewModel = downloaderViewModel,
-                        sheetState = sheetState
+                        navController.navigate(Route.DOWNLOADS_HISTORY) {
+                            launchSingleTop = true
+                        }
+                    }, navigateToSettings = {
+                        navController.navigate(Route.SETTINGS)
+                    }, navigateToDownloaderSheet = {
+                        showDownloaderBottomSheet = true
+                    }, onSongCardClicked = {
+                        navController.navigate(Route.PLAYLIST_METADATA_PAGE) {
+                            launchSingleTop = true
+                        }
+                    }, downloaderViewModel = downloaderViewModel, sheetState = sheetState
                     )
                 }
                 animatedComposable(Route.SETTINGS) {
@@ -294,16 +293,15 @@ fun InitialEntry(
 
                 //We build the route with the type of the destination and the id of it
                 val routeWithIdPattern: String =
-                    StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}")
-                        .append("/{id}").toString()
+                    StringBuilder().append(Route.PLAYLIST_PAGE).append("/{type}").append("/{id}")
+                        .toString()
 
                 //We create the composable with the route and the arguments
                 animatedComposableVariant(
                     routeWithIdPattern, arguments = listOf(typeArg, idArg)
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getString("id") ?: "SOMETHING WENT WRONG"
-                    val type =
-                        backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
+                    val type = backStackEntry.arguments?.getString("type") ?: "SOMETHING WENT WRONG"
 
                     SpotifyItemPage(
                         onBackPressed,
@@ -333,40 +331,53 @@ fun InitialEntry(
 
                 animatedComposable(Route.DOWNLOAD_TASKS) {
                     DownloadTasksPage(
-                        onNavigateToDetail = { navController.navigate(Route.FULLSCREEN_LOG id it) }
-                    )
+                        onNavigateToDetail = { navController.navigate(Route.FULLSCREEN_LOG id it) })
                 }
             }
         }
 
-        HorizontalFloatingToolbar(
-            modifier = Modifier.align(Alignment.BottomCenter).safeContentPadding(),
-            expanded = false,
-        ) {
-            MainActivity.showInBottomNavigation.forEach {
-                val text = when (it.key) {
-                    Route.DownloaderNavi -> stringResource(R.string.downloader)
-                    Route.SearcherNavi -> stringResource(R.string.searcher)
-                    Route.DownloadTasksNavi -> stringResource(R.string.tasks)
-                    else -> ""
-                }
-
-                val isSelected by remember(currentRootRoute) { mutableStateOf(currentRootRoute.value == it.key) }
-
-                CircularNavigationButton(
-                    selected = isSelected,
-                    icon = it.value,
-                    text = text,
-                    onClick = {
-                        navController.navigate(it.key) {
-                            popUpTo(Route.NavGraph) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+        AnimatedContent(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .safeContentPadding(),
+            targetState = !shouldHideBottomNavBar,
+            transitionSpec = {
+                (slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(200)
+                ) + fadeIn()).togetherWith(
+                    slideOutVertically(
+                        targetOffsetY = { it }, animationSpec = tween(200)
+                    ) + fadeOut()
                 )
+            }) { show ->
+            if (show) HorizontalFloatingToolbar(
+                modifier = Modifier, expanded = false
+            ) {
+                MainActivity.showInBottomNavigation.forEach {
+                    val text = when (it.key) {
+                        Route.DownloaderNavi -> stringResource(R.string.downloader)
+                        Route.SearcherNavi -> stringResource(R.string.searcher)
+                        Route.DownloadTasksNavi -> stringResource(R.string.tasks)
+                        else -> ""
+                    }
+
+                    val isSelected by remember(currentRootRoute) {
+                        mutableStateOf(
+                            currentRootRoute.value == it.key
+                        )
+                    }
+
+                    CircularNavigationButton(
+                        selected = isSelected, icon = it.value, text = text, onClick = {
+                            navController.navigate(it.key) {
+                                popUpTo(Route.NavGraph) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        })
+                }
             }
         }
     }
@@ -425,24 +436,21 @@ fun InitialEntry(
             },
             navigateToPlaylist = { id ->
                 navController.navigate(
-                    Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id,
-                    navOptions = navOptions {
+                    Route.PLAYLIST_PAGE + "/" + "playlist" + "/" + id, navOptions = navOptions {
                         launchSingleTop = true
                         restoreState = true
                     })
             },
             navigateToAlbum = { id ->
                 navController.navigate(
-                    Route.PLAYLIST_PAGE + "/" + "album" + "/" + id,
-                    navOptions = navOptions {
+                    Route.PLAYLIST_PAGE + "/" + "album" + "/" + id, navOptions = navOptions {
                         launchSingleTop = true
                         restoreState = true
                     })
             },
             navigateToArtist = { id ->
                 navController.navigate(
-                    Route.PLAYLIST_PAGE + "/" + "artist" + "/" + id,
-                    navOptions = navOptions {
+                    Route.PLAYLIST_PAGE + "/" + "artist" + "/" + id, navOptions = navOptions {
                         launchSingleTop = true
                         restoreState = true
                     })

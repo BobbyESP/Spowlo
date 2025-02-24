@@ -87,7 +87,7 @@ private val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = e
 private val enterTween =
     tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
 private val exitTween =
-    tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
+    tween<IntOffset>(durationMillis = DURATION_EXIT, easing = emphasizeEasing)
 
 private val fadeSpring = spring<Float>(
     dampingRatio = Spring.DampingRatioNoBouncy,
