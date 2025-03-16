@@ -14,6 +14,17 @@ A Spotify songs downloader powered by [spotDL](https://github.com/spotDL/spotify
   ![GitHub top language](https://img.shields.io/github/languages/top/BobbyESP/Spowlo?style=for-the-badge)
 </div>
 
+## 📖 Important notice
+Hello everyone,
+
+I want to share a quick update regarding the future of Spowlo. Due to ongoing challenges, including instability with SpotDL and increased personal commitments, I’m currently taking a break from maintaining the app. The changes from Spotify have also made it harder to keep things running smoothly.
+
+While this isn't a final goodbye, I will reflect and assess the best way forward.
+
+If you have any questions or concerns, feel free to reach out in our [Telegram channel](https://t.me/spowlo_chatroom).
+
+Thank you for your understanding and support!
+
 ## 📸 Screenshots
 
 <div align="center">
